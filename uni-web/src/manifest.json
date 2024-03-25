@@ -1,5 +1,5 @@
 {
-    "name" : "uni-web",
+    "name" : "uni-weapp",
     "appid" : "__UNI__614EF21",
     "description" : "",
     "versionName" : "1.0.0",
@@ -54,10 +54,12 @@
     "quickapp" : {},
     /* 快应用特有相关 */
     "mp-weixin" : {
-        /* 微信小程序特有相关 */
-        "appid" : "",
+        "appid" : "wx48e2cfb0c4cf59db",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "es6" : true,
+            "postcss" : true,
+            "minified" : true
         },
         "usingComponents" : true
     },

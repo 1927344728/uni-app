@@ -1,3 +1,4 @@
+import Jax from '@bxs/jax'
 import { isAfterIphoneX } from './env.js'
 import { IS_PRODUCT_ENV, APP_CHANNEL, URL_PARAM } from '@/utils/variables.js'
 
@@ -94,7 +95,7 @@ export function WeiyiStatSDKInit({
   isProduct = IS_PRODUCT_ENV, // [必填] false: 测试环境、true: 正式环境
   heartBeatRate = 1000,
   projectInfo = {
-    url: location.href,
+    url: location ? location.href : '',
     productId: URL_PARAM.planbookId
   },
 
@@ -103,7 +104,7 @@ export function WeiyiStatSDKInit({
   name = process.env.PKG_NAME, // 必选, package.json 中的 name
   version = process.env.PKG_VERSION // 必选, package.json 中的 version
 }) {
-  window.WeiyiStatSDK && window.WeiyiStatSDK.init({
+  window && window.WeiyiStatSDK && window.WeiyiStatSDK.init({
     pageId,
     isProduct, // [必填] false: 测试环境、true: 正式环境
     heartBeatRate,
@@ -117,27 +118,29 @@ export function WeiyiStatSDKInit({
 }
 
 export function gotoLogin() {
-  if (window.appBridge && window.appBridge.checkAppFeature('APP_VIEW')) {
+  if (window && window.appBridge && window.appBridge.checkAppFeature('APP_VIEW')) {
     window.appBridge.gotoAppView('login')
     return
   }
+	const _WeCom = window && window.WeCom
   if (['WXWORK', 'WXQYH'].includes(APP_CHANNEL)) {
-    window.WeCom && window.WeCom.gotoLogin()
+    _WeCom && _WeCom.gotoLogin()
     return
   }
-  if (window.WeCom && WeCom.isMiniBankInsurance()) {
-    WeCom.gotoLogin()
+  if (_WeCom && _WeCom.isMiniBankInsurance()) {
+    _WeCom.gotoLogin()
     return
   }
   if (['WXMP'].includes(APP_CHANNEL)) {
     window.wx && window.wx.miniProgram.navigateTo({ url: '/pages/index/index' })
     return
   }
-  if (window.WeCom && WeCom.gotoLogin && window.WeCom.WEIYI_APPID) {
-    WeCom.gotoLogin()
+  if (_WeCom && _WeCom.gotoLogin && _WeCom.WEIYI_APPID) {
+    _WeCom.gotoLogin()
     return
   }
-  window.location.href = `https://app.winbaoxian.${IS_PRODUCT_ENV ? 'com' : 'cn'}/user/login?requestUrl=${encodeURIComponent(location.href)}`
+	const _href = location ? location.href : ''
+  window.location.href = `https://app.winbaoxian.${IS_PRODUCT_ENV ? 'com' : 'cn'}/user/login?requestUrl=${encodeURIComponent(_href)}`
 }
 
 export function parseTime(time, cFormat) {
@@ -208,18 +211,19 @@ export function getUrlParam(name, url) {
 
 let positionTop = 0
 export function stopBodyScroll(isFixed) {
-  if (document) {
-    var bodyEl = document.body
+  var _body = document && document.body
+  var _documentElement = document && document.documentElement
+  if (window && _body && _documentElement) {
     if (isFixed) {
       positionTop = window.scrollY
 
-      bodyEl.style.position = 'fixed'
-      bodyEl.style.top = - positionTop + 'px'
-      document.documentElement.style.height = (window.innerHeight + _SAFE_AREA_INSET_BOTTOM) + 'px'
+      _body.style.position = 'fixed'
+      _body.style.top = - positionTop + 'px'
+      _documentElement.style.height = (window.innerHeight + _SAFE_AREA_INSET_BOTTOM) + 'px'
     } else {
-      bodyEl.style.position = ''
-      bodyEl.style.top = ''
-      document.documentElement.style.height = ''
+      _body.style.position = ''
+      _body.style.top = ''
+      _documentElement.style.height = ''
       window.scrollTo(0, positionTop) // 回到原先的top
     }
   }
@@ -231,20 +235,27 @@ export function convertNumberToWan(value) {
 
 export function setDocumentAndViewportTitle(title) {
   document.title = title
-  if (window.appBridge && appBridge.checkAppFeature('CHANGE_WEBVIEW_TITLE')) {
+  if (window && window.appBridge && appBridge.checkAppFeature('CHANGE_WEBVIEW_TITLE')) {
     window.appBridge.changeWebviewTitle(document.title);
   }
 }
 
 export function setHTMLFontSize() {
+	const _documentElement = document && document.documentElement
+	if (!_documentElement) {
+		return
+	}
   const baseFontSize = 50
-  const realFontSize = Math.min(baseFontSize * document.documentElement.clientWidth / 375, baseFontSize * 1.75)
-  document.documentElement.style.fontSize = `${realFontSize}px`
+  const realFontSize = Math.min(baseFontSize * _documentElement.clientWidth / 375, baseFontSize * 1.75)
+  _documentElement.style.fontSize = `${realFontSize}px`
   window.onresize = () => {
-    document.documentElement.style.fontSize = `${realFontSize}px`
+    _documentElement.style.fontSize = `${realFontSize}px`
   }
 }
 export function setThinnerBorder() {
+	if (!document) {
+		return
+	}
   if (window.devicePixelRatio && devicePixelRatio >= 2) { // 高分辨率上1px问题
     var divElem = document.createElement('div');
     divElem.style.border = '.5px solid transparent';
@@ -256,19 +267,25 @@ export function setThinnerBorder() {
   }
 }
 export function patchIOSViewportOffset() { // IOS 12以上，(app4.6.0或者 app.4.8及以上版本)或者(微信)中元素错位问题
-  var iosVersion = navigator.userAgent.toLowerCase().match(/cpu iphone os ((\d*)_(.*)?) like mac os/)
+	const _userAgent = navigator ? navigator.userAgent : '';
+  var iosVersion = _userAgent.toLowerCase().match(/cpu iphone os ((\d*)_(.*)?) like mac os/)
   if (!(iosVersion && iosVersion[2] && iosVersion[2] >= 12)) {
     return
   }
-  if (!window.Jax || !(window.Jax.isApp() || window.Jax.isWeChat())) {
+  if (!(Jax.isApp() || Jax.isWeChat())) {
     return
   }
-  document.body.addEventListener('blur', function (e) {
+	const _body = document ? document.body : null
+	const _documentElement = document ? document.documentElement : null
+	if (!(window && _body && _documentElement) ) {
+		return
+	}
+  _body.addEventListener('blur', function (e) {
     if (["TEXTAREA", "INPUT", "SELECT"].indexOf(e.target.tagName) === -1) {
       return
     }
     setTimeout(function () {
-      window.scrollTo(0, document.documentElement.scrollTop || document.body.scrollTop);
+      window.scrollTo(0, _documentElement.scrollTop || _body.scrollTop);
     }, 100)
   }, true)
 }
@@ -287,6 +304,7 @@ export function initBasicConfig(options = {}) {
     options.pageWrapperDom.style.minHeight = window.innerHeight + SAFE_AREA_INSET_BOTTOM + 'px'
   }
 }
+
 
 export default {
   getTimeStr,

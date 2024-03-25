@@ -23,7 +23,8 @@ export function getToken() {
 }
 
 export function oCheckUserInfoExists() {
-  const isWechat = /micromessenger/.test(navigator.userAgent.toLowerCase())
+	const _userAgent = navigator ? navigator.userAgent : '';
+  const isWechat = /micromessenger/.test(_userAgent.toLowerCase())
   if (!isWechat) {
     return Promise.reject('请在微信下打开')
   }
@@ -54,7 +55,9 @@ export function oWeixinAuthorize() {
   const redirectUrl = `${WX_HOSTNAME}/box/wx/authorizeUserInfoWithCode?return_url=${encodeURIComponent(returnUrl)}`
   const authorizeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`
   console.log(authorizeUrl)
-  location.href = authorizeUrl
+	uni.navigateTo({
+		url: authorizeUrl
+	});
 }
 
 export function oWeixinUserinfo() {

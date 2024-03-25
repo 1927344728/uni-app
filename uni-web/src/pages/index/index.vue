@@ -2,6 +2,9 @@
 	<view class="content">
 		<view>
 			<text class="title">{{title}}</text>
+			<navigator url="/pages/company/index?companyId=1" open-type="navigate">
+				<button type="default">跳转公司介绍</button>
+			</navigator>
 		</view>
 	</view>
 </template>

@@ -1,35 +1,38 @@
-const ua = navigator.userAgent;
+const _userAgent = navigator ? navigator.userAgent : '';
 const env = {
-  isAndroid: /Android/i.test(ua),
-  isIos: /(iPhone|iPad|iPod)/i.test(ua),
+  isAndroid: /Android/i.test(_userAgent),
+  isIos: /(iPhone|iPad|iPod)/i.test(_userAgent),
   supportTouch: (function isSupportTouch() {
-    return !!(
+    return window && !!(
       'ontouchstart' in window ||
       (window.DocumentTouch && document instanceof window.DocumentTouch)
     );
   })(),
 };
 
+const _devicePixelRatio = window && window.devicePixelRatio ? window.devicePixelRatio : null
+const _screenWidth = window && window.screen && window.screen.width ? window.screen.width : null
+const _screenHeight = window && window.screen && window.screen.height ? window.screen.height : null
 const isIphoneX = () =>
-  /iphone/gi.test(window.navigator.userAgent) &&
-  window.devicePixelRatio &&
-  window.devicePixelRatio === 3 &&
-  ((window.screen.width === 375 && window.screen.height === 812) ||
-    (window.screen.height === 375 && window.screen.width === 812));
+  /iphone/gi.test(_userAgent) &&
+  _devicePixelRatio &&
+  _devicePixelRatio === 3 &&
+  ((_screenWidth === 375 && _screenHeight === 812) ||
+    (_screenHeight === 375 && _screenWidth === 812));
 
 const isIphoneXR = () =>
-  /iphone/gi.test(window.navigator.userAgent) &&
-  window.devicePixelRatio &&
-  window.devicePixelRatio === 2 &&
-  ((window.screen.width === 414 && window.screen.height === 896) ||
-    (window.screen.height === 414 && window.screen.width === 896));
+  /iphone/gi.test(_userAgent) &&
+  _devicePixelRatio &&
+  _devicePixelRatio === 2 &&
+  ((_screenWidth === 414 && _screenHeight === 896) ||
+    (_screenHeight === 414 && _screenWidth === 896));
 
 const iphoneXSMax = () =>
-  /iphone/gi.test(window.navigator.userAgent) &&
-  window.devicePixelRatio &&
-  window.devicePixelRatio === 3 &&
-  ((window.screen.width === 414 && window.screen.height === 896) ||
-    (window.screen.height === 414 && window.screen.width === 896));
+  /iphone/gi.test(_userAgent) &&
+  _devicePixelRatio &&
+  _devicePixelRatio === 3 &&
+  ((_screenWidth === 414 && _screenHeight === 896) ||
+    (_screenHeight === 414 && _screenWidth === 896));
 
 export const isAfterIphoneX = () =>
   isIphoneX() || isIphoneXR() || iphoneXSMax();

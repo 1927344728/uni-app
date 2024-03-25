@@ -7,7 +7,8 @@
 
 import axios from 'axios';
 
-const IS_PRODUCT_ENV = location.hostname.search(/\.winbaoxian\.com/) !== -1;
+const _hostname = location ? location.hostname : ''
+const IS_PRODUCT_ENV = _hostname.search(/\.winbaoxian\.com/) !== -1;
 const JWEIXIN_URL = 'https://res.wx.qq.com/open/js/jweixin-1.6.0.js';
 let appShareConfig = [];
 /**
@@ -190,7 +191,7 @@ export function nativeShare(shareGroup) {
  * @param {Array} config 分享渠道集合
  */
 export function h5ButtonShare(config) {
-  if (!(window.appBridge && window.appBridge.isApp())) {
+  if (!(window && window.appBridge && window.appBridge.isApp())) {
     return;
   }
   if (!window.appBridge.checkAppFeature('DIRECT_SHOW_ACTION_SHEET')) {
@@ -269,7 +270,8 @@ export function dynamicLoadingJs(url) {
  * });
  */
 export function wechatShare(config = {}, options = {}) {
-  const isWechat = /micromessenger/.test(navigator.userAgent.toLowerCase());
+	const _userAgent = navigator ? navigator.userAgent : '';
+  const isWechat = /micromessenger/.test(_userAgent.toLowerCase());
   if (!isWechat) {
     return;
   }
@@ -287,7 +289,7 @@ export function wechatShare(config = {}, options = {}) {
     }/wx/page/createJsApiSignature`;
     const JsApiSignatureParams = {
       appId: appId || 'wxe2a04a49c02b1d5d', // 默认，微易计划书公众号AppId
-      url: ticketLink || location.href,
+      url: ticketLink || (location ? location.href : ''),
     };
     return axios
       .get(JsApiSignatureUrl, { params: JsApiSignatureParams })

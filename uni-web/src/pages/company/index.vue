@@ -2,11 +2,13 @@
   <view v-if="isLoaded">
     <view class="companyv4_index" v-if="companyData">
       <CompanyBasic :companyData="companyData" />
-      <CompanyShareholder :company-logo="companyData.logo" />
-      <CompanyOrganization
-        v-if="companyData.orgCityList && companyData.orgCityList.length"
-        :companyData="companyData"
-      />
+			<!-- #ifdef WEB -->
+				<CompanyShareholder v-if="companyData.logo" :company-logo="companyData.logo" />
+				<CompanyOrganization
+					v-if="companyData.orgCityList && companyData.orgCityList.length"
+					:companyData="companyData"
+				/>
+			<!-- #endif -->
       <CompanyRisk
         v-if="companyData.latestRiskData"
         :companyData="companyData"
@@ -24,7 +26,6 @@
         :list="companyData.honors"
       />
     </view>
-    <!-- <bxs-default-page v-else :large="!0" /> -->
   </view>
 </template>
 
@@ -46,21 +47,25 @@ import {
 } from '@/utils/variables.js';
 
 import CompanyBasic from './components/basic.vue';
+// #ifdef WEB
+import CompanyShareholder from './components/shareholder.vue';
 import CompanyOrganization from './components/organization.vue';
+// #endif
 import CompanyRisk from './components/risk.vue';
 import CompanyCourse from './components/course.vue';
 import CompanyCulture from './components/culture.vue';
 import CompanyHonor from './components/honor.vue';
-import CompanyShareholder from './components/shareholder.vue';
 export default {
   components: {
     CompanyBasic,
+		// #ifdef WEB
+    CompanyShareholder,
     CompanyOrganization,
+		// #endif
     CompanyRisk,
     CompanyCourse,
     CompanyCulture,
     CompanyHonor,
-    CompanyShareholder,
   },
   filters: {
     formatNumber(n) {
@@ -76,7 +81,7 @@ export default {
   async created() {
     initBasicConfig({
       statSDKPageId: 'GSJS_V4_SY',
-      pageWrapperDom: document.body,
+      pageWrapperDom: document ? document.body : '',
     });
     await this.getCompanyDetailV4();
     await this.getSimpleCurrentUser2C();
@@ -127,7 +132,7 @@ export default {
       const { companyData } = this;
       const { fromWyjhs, companyId, uuid } = URL_PARAM;
       const { APP_ID } = COMMON_PARAM;
-      if (window.appBridge && !window.appBridge.isWechat()) {
+      if (window && window.appBridge && !window.appBridge.isWechat()) {
         return;
       }
       if (fromWyjhs === '1') {

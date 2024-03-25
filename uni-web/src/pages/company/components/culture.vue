@@ -4,7 +4,7 @@
       <view class="cv4i_culture_dt">
 				<text>企业文化</text>
 			</view>
-      <dd v-for="(item, i) in list" :key="item.key + i" class="cv4i_culture_dd">
+      <dd v-for="(item, i) in list" :key="JSON.stringify(item.key)" class="cv4i_culture_dd">
         <view class="key">
           <text>{{ item.key }}</text>
         </view>
@@ -18,7 +18,10 @@
 <script>
 export default {
   props: {
-    list: Array,
+    list: {
+    	type: Array,
+    	default: () => []
+    },
   },
 };
 </script>

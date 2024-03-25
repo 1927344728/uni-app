@@ -18,14 +18,19 @@
 </template>
 <script>
 // import Mock from '../mock.js'
+// #ifdef WEB
 import { get as _get, cloneDeep } from 'lodash';
+// #endif
 import { Graph, ObjectExt, Path } from '@antv/x6';
 import { URL_PARAM } from '@/utils/variables.js';
 import { getCompanyHolderShare } from '@/api';
 import { shareholderDataHandler } from '../handler.js';
 export default {
   props: {
-    companyLogo: String,
+    companyLogo: {
+			type: String,
+			default: '',
+		},
   },
   data() {
     return {
@@ -233,7 +238,7 @@ export default {
       // 在 2.x 版本中已经将画布设置为无法双指缩放
       // https://github.com/antvis/X6/issues/2813
       const graph = new Graph({
-        container: document.getElementById('shareholderChart'),
+        container: document ? document.getElementById('shareholderChart') : null,
         background: {
           color: '#deeaff',
         },

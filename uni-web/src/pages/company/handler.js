@@ -42,6 +42,7 @@ export function shareholderDataHandler(data) {
 
   const list = [];
   const countByLevel = [];
+	const _innerWidth = window.innerWidth
   companyArrayByLevel.forEach((arr, i) => {
     arr.forEach(e => {
       countByLevel[i] = countByLevel[i] ? countByLevel[i] + 1 : 1;
@@ -57,7 +58,7 @@ export function shareholderDataHandler(data) {
           ? 'company-level1-node'
           : 'company-node';
       const startX =
-        210 + window.innerWidth / 2 - (id === 'root' ? 220 : 136) / 2 - 24 / 2;
+        210 + _innerWidth / 2 - (id === 'root' ? 220 : 136) / 2 - 24 / 2;
       const ports = [];
       if (i < companyArrayByLevel.length - 1) {
         ports.push({

@@ -4,16 +4,17 @@ const NOT_LOGGED_IN_CODE = -1;
 
 const BASE_API = (() => {
   var env;
-  if (location.hostname.search(/pbf\.winbaoxian\.com/) !== -1) {
-    // 线上环境接口地址
-    env = 'https://app.winbaoxian.com';
-  } else if (location.hostname.search(/pbf\.winbaoxian\.cn/) !== -1) {
-    // 测试环境接口地址
-    env = 'https://app.winbaoxian.cn';
-  } else if (location.hostname.search(/192\.168|localhost/) !== -1) {
-    // 开发环境接口地址
-    env = 'https://app.winbaoxian.cn';
-  }
+	const _hostname = location ? location.hostname : ''
+	if (_hostname.search(/pbf\.winbaoxian\.com/) !== -1) {
+		// 线上环境接口地址
+		env = 'https://app.winbaoxian.com';
+	} else if (_hostname.search(/pbf\.winbaoxian\.cn/) !== -1) {
+		// 测试环境接口地址
+		env = 'https://app.winbaoxian.cn';
+	} else if (_hostname.search(/192\.168|localhost/) !== -1) {
+		// 开发环境接口地址
+		env = 'https://app.winbaoxian.cn';
+	}
   return env;
 })();
 
@@ -29,7 +30,7 @@ const service = axios.create({
 
 let loadingTimer = null;
 const loading = show => {
-  if (window.appBridge && window.appBridge.showLoading) {
+  if (window && window.appBridge && window.appBridge.showLoading) {
     if (show) {
       window.appBridge.showLoading();
     } else {

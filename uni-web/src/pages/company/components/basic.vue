@@ -1,7 +1,7 @@
 <template>
   <view class="cv4i_basic">
     <view class="cv4i_basic_logo">
-      <image class="image" :src="companyData.logo" mode="aspectFit" />
+      <image v-if="companyData.logo" class="image" :src="companyData.logo" mode="aspectFit" />
       <view class="content">
 				<view class="company_name">
 					<text >{{ companyData.cname }}</text>
@@ -22,15 +22,14 @@
 					{{ o.label }}
 				</label>
         <view
-          :class="{
-            content: true,
-            [o.key]: true,
+					class="content"
+					:class="{
             introduction_fold: o.key === 'introduction' && !isShowIntroduction,
           }"
           @click="onClickItem(o)"
         >
-          <view class="tx">{{ o.value }}</view>
-          <view class="more" v-if="o.key === 'introduction' && o.value">
+          <text class="tx">{{ o.value }}</text>
+         <view class="more" v-if="o.key === 'introduction' && o.value">
             <text @click="isShowIntroduction = !isShowIntroduction">
               <text>{{ isShowIntroduction ? '收起' : '展开' }}</text>
               <text 
@@ -86,7 +85,9 @@ export default {
   methods: {
     onClickItem(item) {
       if (item.key === 'webUrl' && item.value) {
-        location.href = item.value;
+				uni.navigateTo({
+					url: item.value
+				});
       }
     },
   },

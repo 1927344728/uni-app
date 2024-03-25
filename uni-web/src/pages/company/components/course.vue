@@ -6,7 +6,7 @@
 			</view>
       <view class="cv4i_course_dd"
         v-for="(item, i) in list.filter((e, i) => isShowMore || i < 5)"
-        :key="item.description + i"
+        :key="JSON.stringify(item.description)"
       >
         <view class="year">
           <text>{{ item.year }}年</text>
@@ -30,7 +30,10 @@
 <script>
 export default {
   props: {
-    list: Array,
+    list: {
+			type: Array,
+			default: () => []
+		},
   },
   data() {
     return {
