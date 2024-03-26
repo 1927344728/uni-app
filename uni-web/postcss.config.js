@@ -16,8 +16,10 @@ const config = {
       }
     }),
 		require('postcss-apply')({}),
+		require('postcss-custom-media')({}),
+		require('postcss-nested')({}),
 		require('postcss-pxtorem')({
-			"rootValue": 100,
+			"rootValue": 32,
 			"propList": ['*'],
 			"exclude": /node_modules/i
 		}),

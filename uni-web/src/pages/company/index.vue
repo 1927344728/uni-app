@@ -40,11 +40,7 @@ import {
 import { initBasicConfig } from '@/utils/index.js';
 import { initShareAction } from '@/utils/shareActions@1.1.0.js';
 import { oCheckUserInfoExists } from '@/utils/wxAuthorize@1.1.0.js';
-import {
-  URL_PARAM,
-  COMMON_PARAM,
-  WX_GUANJIA_MP_ID,
-} from '@/utils/variables.js';
+import { COMMON_PARAM, WX_GUANJIA_MP_ID } from '@/utils/variables.js';
 
 import CompanyBasic from './components/basic.vue';
 // #ifdef WEB
@@ -83,12 +79,16 @@ export default {
       statSDKPageId: 'GSJS_V4_SY',
       pageWrapperDom: document ? document.body : '',
     });
+  },
+	async onLoad (option) {
+		this.URL_PARAM = option
     await this.getCompanyDetailV4();
     await this.getSimpleCurrentUser2C();
     // this.fnWxClientSaveOperate();
-  },
+	},
   methods: {
     getCompanyDetailV4() {
+			const { URL_PARAM } = this
       this.isLoaded = false;
       return getCompanyDetailV4(URL_PARAM.companyId)
         .then(({ success, data }) => {
