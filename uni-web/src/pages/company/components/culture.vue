@@ -6,7 +6,7 @@
 			</view>
       <dd v-for="(item, i) in list" :key="JSON.stringify(item.key)" class="cv4i_culture_dd">
         <view class="key">
-          <text>{{ item.key }}</text>
+          <text class="tx">{{ item.key }}</text>
         </view>
         <view class="desc">
 					<text>{{ item.value }}</text>
@@ -47,7 +47,7 @@ export default {
       & .key {
         flex: 0 0 140px;
         margin-right: 24px;
-        & span {
+        & .tx {
           display: inline-block;
           padding: 6px 16px;
           font-size: 26px;

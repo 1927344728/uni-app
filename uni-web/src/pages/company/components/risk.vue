@@ -14,18 +14,23 @@
         <label class="cv4i_risk_item_label">
 					{{ o.label }}
 				</label>
-        <view :class="['wrapper', o.key]" @click="onClickItem(o)">
-          <view
-            :class="[
-              'content',
-              o.key === 'sarData.time' ? (time ? 'active' : 'disable') : '',
-            ]"
-          >
+				<picker
+					v-if="o.key === 'sarData.time'"
+					class="cv4i_risk_picker"
+					:value="time"
+					:range="seasonList"
+					@change="onChangeSarDataTime"
+				>
+					<view :class="['wrapper', o.key]">
+						<view :class="['content', time !== null ? 'active' : 'disable']">							
+							<text class="tx">{{ o.value }}</text>
+							<text class="iconfont icon-arrows_right"></text>
+						</view>
+					</view>
+				</picker>
+        <view v-else :class="['wrapper', o.key]">
+          <view class="content">
             <text class="tx">{{ o.value }}</text>
-            <text
-              v-if="o.key === 'sarData.time'"
-              class="iconfont icon-arrows_right"
-            ></text>
           </view>
         </view>
       </view>
@@ -46,7 +51,7 @@ export default {
   },
   data() {
     return {
-      time: _get(this.companyData, 'sarData[0].time') || '',
+      time: 0
     };
   },
   computed: {
@@ -58,18 +63,16 @@ export default {
         .map(e => e.replace('-', '年') + '季度');
     },
     list() {
-      const _sarData = _get(this.companyData, 'sarData', []) || [];
-      const index = _sarData.findIndex(e => e.time === this.time);
-      const timeStr = this.time
-        ? this.time.replace('-', '年') + '季度'
-        : '请选择报告季度';
+			const { companyData, time, seasonList } = this
+      const _sarData = _get(companyData, 'sarData', []) || [];
+      const timeStr = seasonList[time] ? seasonList[time] : '请选择报告季度';
       return [
         { key: 'sarData.time', label: '选择时间', value: timeStr },
         {
-          key: `sarData[${index}].comprehensiveSar`,
+          key: `sarData[${time}].comprehensiveSar`,
           label: '综合偿付能力充足率',
         },
-        { key: `sarData[${index}].coreSar`, label: '核心偿付能力充足率' },
+        { key: `sarData[${time}].coreSar`, label: '核心偿付能力充足率' },
         // { key: 'latestRiskData[0].recognizedAssets', label: '认可资产' },
         // { key: 'latestRiskData[0].recognizedLiabilities', label: '认可负债' },
       ].map(e => {
@@ -78,16 +81,14 @@ export default {
         }
         if (
           [
-            `sarData[${index}].comprehensiveSar`,
-            `sarData[${index}].coreSar`,
+            `sarData[${time}].comprehensiveSar`,
+            `sarData[${time}].coreSar`,
           ].includes(e.key)
         ) {
-          e.value = _get(this.companyData, e.key)
-            ? _get(this.companyData, e.key) + '%'
-            : '-';
+          e.value = _get(companyData, e.key) ? _get(companyData, e.key) + '%' : '-';
           return e;
         }
-        e.value = _get(this.companyData, e.key) || '-';
+        e.value = _get(companyData, e.key) || '-';
         return e;
       });
     },
@@ -107,23 +108,8 @@ export default {
     this.initLine();
   },
   methods: {
-    onClickItem(item) {
-      const self = this;
-      if (item.key === 'sarData.time') {
-        // self.$picker({
-        //   title: '请选择报告季度',
-        //   defaultValue: [
-        //     self.time ? self.time.replace('-', '年') + '季度' : '',
-        //   ],
-        //   pickerData: self.seasonList,
-        //   callback(backInfo) {
-        //     if (backInfo.type === 'confirm') {
-        //       self.time = backInfo.value.replace(/年/, '-').replace(/季度/, '');
-        //       self.initLine();
-        //     }
-        //   },
-        // });
-      }
+    onChangeSarDataTime(item) {
+			this.time = item.detail.value
     },
     initLine() {
       const _sarData = cloneDeep(
@@ -238,6 +224,6 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
 @import './risk.css';
 </style>

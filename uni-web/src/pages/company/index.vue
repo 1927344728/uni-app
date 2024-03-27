@@ -8,11 +8,11 @@
 					v-if="companyData.orgCityList && companyData.orgCityList.length"
 					:companyData="companyData"
 				/>
+				<CompanyRisk
+					v-if="companyData.latestRiskData"
+					:companyData="companyData"
+				/>
 			<!-- #endif -->
-      <CompanyRisk
-        v-if="companyData.latestRiskData"
-        :companyData="companyData"
-      />
       <CompanyCourse
         v-if="companyData.developPathDTOS && companyData.developPathDTOS.length"
         :list="companyData.developPathDTOS"
@@ -46,8 +46,8 @@ import CompanyBasic from './components/basic.vue';
 // #ifdef WEB
 import CompanyShareholder from './components/shareholder.vue';
 import CompanyOrganization from './components/organization.vue';
-// #endif
 import CompanyRisk from './components/risk.vue';
+// #endif
 import CompanyCourse from './components/course.vue';
 import CompanyCulture from './components/culture.vue';
 import CompanyHonor from './components/honor.vue';
@@ -57,8 +57,8 @@ export default {
 		// #ifdef WEB
     CompanyShareholder,
     CompanyOrganization,
-		// #endif
     CompanyRisk,
+		// #endif
     CompanyCourse,
     CompanyCulture,
     CompanyHonor,
@@ -74,14 +74,12 @@ export default {
       companyData: {},
     };
   },
-  async created() {
+	async onLoad (option) {
+		this.URL_PARAM = option
     initBasicConfig({
       statSDKPageId: 'GSJS_V4_SY',
       pageWrapperDom: document ? document.body : '',
     });
-  },
-	async onLoad (option) {
-		this.URL_PARAM = option
     await this.getCompanyDetailV4();
     await this.getSimpleCurrentUser2C();
     // this.fnWxClientSaveOperate();
@@ -89,34 +87,28 @@ export default {
   methods: {
     getCompanyDetailV4() {
 			const { URL_PARAM } = this
-      this.isLoaded = false;
+      this.isLoaded = false
       return getCompanyDetailV4(URL_PARAM.companyId)
-        .then(({ success, data }) => {
-          if (!success || !data) {
-            return;
-          }
-          this.companyData = data;
+        .then(data => {
+          this.companyData = data
         })
         .finally(() => {
-          this.isLoaded = true;
-        });
+          this.isLoaded = true
+        })
     },
     getSimpleCurrentUser2C() {
-      if (URL_PARAM.fromWyjhs === '1') {
+			const { URL_PARAM } = this
+			const { companyId, uuid, fromWyjhs } = URL_PARAM
+      if (!uuid || fromWyjhs === '1') {
         return;
       }
       return getSimpleCurrentUser2C({
-        uuid: URL_PARAM.uuid,
-      }).then(({ success, data }) => {
-        if (!success || !data) {
-          return;
-        }
-        const shareUrl =
-          `${location.origin}${location.pathname}?` +
-          QS.stringify({
-            companyId: URL_PARAM.companyId,
-            uuid: URL_PARAM.uuid || data.uuid,
-          });
+        uuid,
+      }).then(data => {
+        const shareUrl = `${location.origin}${location.pathname}?` + QS.stringify({
+					companyId,
+					uuid: uuid || data.uuid
+				})
         initShareAction({
           title: `${this.companyData.cname}公司介绍`,
           content: `${data.name}老师推荐您查看保险公司的全景资料，请查阅！`,
@@ -129,21 +121,19 @@ export default {
       });
     },
     fnWxClientSaveOperate() {
-      const { companyData } = this;
-      const { fromWyjhs, companyId, uuid } = URL_PARAM;
-      const { APP_ID } = COMMON_PARAM;
+      const { URL_PARAM, companyData } = this
+      const { fromWyjhs, companyId, uuid } = URL_PARAM
+      const { APP_ID } = COMMON_PARAM
       if (window && window.appBridge && !window.appBridge.isWechat()) {
-        return;
+        return
       }
       if (fromWyjhs === '1') {
-        return;
+        return
       }
       return oCheckUserInfoExists().then(({ token }) => {
-        const jumpUrl =
-          `${location.origin}${location.pathname}?` +
-          QS.stringify({
-            companyId,
-          });
+        const jumpUrl = `${location.origin}${location.pathname}?` + QS.stringify({
+					companyId
+				})
         wxClientSaveOperate({
           appId: WX_GUANJIA_MP_ID, // 微信公众号ID
           token,
@@ -161,6 +151,11 @@ export default {
   },
 };
 </script>
+// #ifdef MP-WEIXIN
+<style>
+@import '/static/css/icon-font.css';
+</style>
+// #endif
 
 <style>
 @import './index.css';

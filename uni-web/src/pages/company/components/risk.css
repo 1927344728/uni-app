@@ -12,18 +12,13 @@
     & .title {
       position: relative;
       margin-bottom: 24px;
-
-      & span {
-        font-size: 34px;
-        font-weight: bold;
-      }
+			font-size: 34px;
+			font-weight: bold;
     }
 
     & .tips {
-      & span {
-        color: #999;
-        font-size: 28px;
-      }
+			color: #999;
+			font-size: 28px;
     }
   }
 
@@ -40,12 +35,15 @@
       display: flex;
       padding: 18px 0;
 
-      & > .cv4i_risk_item_label {
+      & .cv4i_risk_item_label {
         flex: 0 0 360px;
         color: #999;
       }
 
-      & > .wrapper {
+			& .cv4i_risk_picker {
+				flex: 1;
+			}
+      & .wrapper {
         flex: 1;
 
         & > .content {

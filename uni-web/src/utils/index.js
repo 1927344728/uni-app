@@ -245,7 +245,7 @@ export function setHTMLFontSize() {
 	if (!_documentElement) {
 		return
 	}
-  const baseFontSize = 50
+  const baseFontSize = 16
   const realFontSize = Math.min(baseFontSize * _documentElement.clientWidth / 375, baseFontSize * 1.75)
   _documentElement.style.fontSize = `${realFontSize}px`
   window.onresize = () => {

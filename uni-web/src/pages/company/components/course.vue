@@ -9,7 +9,7 @@
         :key="JSON.stringify(item.description)"
       >
         <view class="year">
-          <text>{{ item.year }}年</text>
+          <text class="tx">{{ item.year }}年</text>
         </view>
         <view class="desc">
 					<text>{{ item.description }}</text>
@@ -64,7 +64,7 @@ export default {
       & .year {
         flex: 0 0 120px;
         margin-right: 24px;
-        & span {
+        & .tx {
           display: inline-block;
           padding: 6px 16px;
           font-size: 26px;
@@ -72,6 +72,7 @@ export default {
           color: white;
           background: #fe7c00;
           border-radius: 6px;
+					white-space: nowrap;
         }
       }
       & .desc {
