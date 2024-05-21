@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.simple">
+    package="com.android.unilizhao">
 
     <application
         android:allowBackup="true"
@@ -41,7 +41,7 @@
         </activity>
         <meta-data
             android:name="dcloud_appkey"
-            android:value="开发者需登录https://dev.dcloud.net.cn/申请签名" />
+            android:value="ed7f3033a803579e7e23089ba5a76019" />
     </application>
 
 </manifest>
