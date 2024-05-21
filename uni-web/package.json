@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@antv/x6": "^2.15.2",
+    "@bxs/jax": "^1.0.9",
     "@dcloudio/uni-app": "^2.0.2-3090820231124001",
     "@dcloudio/uni-app-plus": "^2.0.2-3090820231124001",
     "@dcloudio/uni-h5": "^2.0.2-3090820231124001",
