@@ -9,6 +9,8 @@ dump
 .vscode/
 .metadata/
 .project
+**/build/
+**/release/
 Thumbs.db
 *.iml
 #media
