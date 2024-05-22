@@ -13,20 +13,20 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			console.log('aa')
-			return {
-				title: 'Hello, Lizhao!'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
+export default {
+	data() {
+		console.log('aa')
+		return {
+			title: 'Hello, Lizhao!'
 		}
+	},
+	onLoad() {
+
+	},
+	methods: {
+
 	}
+}
 </script>
 
 <style>

@@ -1,5 +1,6 @@
 <template>
   <view>
+		aaaa
     <view class="companyv4_index" v-if="isLoaded && companyData">
       <CompanyBasic :companyData="companyData" />
 			<!-- #ifdef WEB -->
@@ -31,22 +32,13 @@
 
 <script>
 // import '@/mock/index.js';
-import VConsole from 'vconsole';
 import QS from 'qs';
-import {
-  getSimpleCurrentUser2C,
-  getCompanyDetailV4,
-  wxClientSaveOperate,
-} from '@/api';
+import 'text-encoding'
+import { getSimpleCurrentUser2C, getCompanyDetailV4, wxClientSaveOperate } from '@/api';
 import { initBasicConfig } from '@/utils/index.js';
 import { initShareAction } from '@/utils/shareActions@1.1.0.js';
 import { oCheckUserInfoExists } from '@/utils/wxAuthorize@1.1.0.js';
-import {
-  URL_PARAM,
-  COMMON_PARAM,
-  WX_GUANJIA_MP_ID,
-} from '@/utils/variables.js';
-
+import { URL_PARAM, COMMON_PARAM, WX_GUANJIA_MP_ID } from '@/utils/variables.js';
 import CompanyBasic from './components/basic.vue';
 // #ifdef WEB
 import CompanyShareholder from './components/shareholder.vue';
@@ -57,7 +49,6 @@ import CompanyCourse from './components/course.vue';
 import CompanyCulture from './components/culture.vue';
 import CompanyHonor from './components/honor.vue';
 
-const vConsole = new VConsole();
 export default {
   components: {
     CompanyBasic,
@@ -87,7 +78,7 @@ export default {
       pageWrapperDom: document ? document.body : '',
     });
     await this.getCompanyDetailV4();
-    await this.getSimpleCurrentUser2C().catch(() => {});
+    // await this.getSimpleCurrentUser2C().catch(() => {});
     // this.fnWxClientSaveOperate();
   },
   methods: {

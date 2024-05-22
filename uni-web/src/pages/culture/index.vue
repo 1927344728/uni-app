@@ -16,25 +16,6 @@
 	</view>
 </template>
 
-<script>
-import VConsole from 'vconsole';
-const vConsole = new VConsole();
-export default {
-	data() {
-		console.log('aa')
-		return {
-			title: 'Hello, Lizhao!'
-		}
-	},
-	onLoad() {
-
-	},
-	methods: {
-
-	}
-}
-</script>
-
 <style>
 	.content {
 		padding: 30rpx;
