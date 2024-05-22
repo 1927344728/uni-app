@@ -13,6 +13,14 @@
 				"navigationBarTitleText" : "公司介绍",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/culture/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "中国文化",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {

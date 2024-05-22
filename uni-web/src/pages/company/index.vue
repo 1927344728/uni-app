@@ -1,6 +1,6 @@
 <template>
-  <view v-if="isLoaded">
-    <view class="companyv4_index" v-if="companyData">
+  <view>
+    <view class="companyv4_index" v-if="isLoaded && companyData">
       <CompanyBasic :companyData="companyData" />
 			<!-- #ifdef WEB -->
 				<CompanyShareholder v-if="companyData.logo" :company-logo="companyData.logo" />
@@ -31,6 +31,7 @@
 
 <script>
 // import '@/mock/index.js';
+import VConsole from 'vconsole';
 import QS from 'qs';
 import {
   getSimpleCurrentUser2C,
@@ -55,6 +56,8 @@ import CompanyRisk from './components/risk.vue';
 import CompanyCourse from './components/course.vue';
 import CompanyCulture from './components/culture.vue';
 import CompanyHonor from './components/honor.vue';
+
+const vConsole = new VConsole();
 export default {
   components: {
     CompanyBasic,
@@ -84,7 +87,7 @@ export default {
       pageWrapperDom: document ? document.body : '',
     });
     await this.getCompanyDetailV4();
-    await this.getSimpleCurrentUser2C();
+    await this.getSimpleCurrentUser2C().catch(() => {});
     // this.fnWxClientSaveOperate();
   },
   methods: {
@@ -109,7 +112,7 @@ export default {
         uuid: URL_PARAM.uuid,
       }).then(({ success, data }) => {
         if (!success || !data) {
-          return;
+          return Promise.reject();
         }
         const shareUrl =
           `${location.origin}${location.pathname}?` +
@@ -126,6 +129,7 @@ export default {
             title: '转发后您可在客户动态栏目了解客户动向。',
           },
         });
+				return Promise.resolve()
       });
     },
     fnWxClientSaveOperate() {

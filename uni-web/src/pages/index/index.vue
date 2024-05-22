@@ -3,7 +3,10 @@
 		<view>
 			<text class="title">{{title}}</text>
 			<navigator url="/pages/company/index?companyId=1" open-type="navigate">
-				<button type="default">跳转公司介绍</button>
+				<button type="default">公司介绍</button>
+			</navigator>
+			<navigator url="/pages/culture/index" open-type="navigate">
+				<button type="default">中国文化</button>
 			</navigator>
 		</view>
 	</view>
