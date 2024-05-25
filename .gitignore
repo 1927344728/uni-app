@@ -10,7 +10,7 @@ dump
 Thumbs.db
 **/.DS_Store
 **/.idea/
-**/.gradle
+#**/.gradle
 **/debug/
 **/build/
 **/release/
