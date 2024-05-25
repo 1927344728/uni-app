@@ -6,7 +6,7 @@
 			</view>
       <view
         v-for="(item, i) in list.filter((e, i) => isShowMore || i < 5)"
-        :key="JSON.stringify(item)"
+        :key="JSON.stringify(item) + i"
 				class="cv4i_honor_dd"
       >
 				<text>{{ item }}</text>

@@ -36,9 +36,9 @@ import QS from 'qs';
 import 'text-encoding'
 import { getSimpleCurrentUser2C, getCompanyDetailV4, wxClientSaveOperate } from '@/api';
 import { initBasicConfig } from '@/utils/index.js';
-import { initShareAction } from '@/utils/shareActions@1.1.0.js';
-import { oCheckUserInfoExists } from '@/utils/wxAuthorize@1.1.0.js';
-import { URL_PARAM, COMMON_PARAM, WX_GUANJIA_MP_ID } from '@/utils/variables.js';
+import { initShareAction } from '@/common/js/shareActions@1.1.0.js';
+import { oCheckUserInfoExists } from '@/common/js/wxAuthorize@1.1.0.js';
+import { APP_HOSTNAME, URL_PARAM, COMMON_PARAM, WX_GUANJIA_MP_ID } from '@/utils/variables.js';
 import CompanyBasic from './components/basic.vue';
 // #ifdef WEB
 import CompanyShareholder from './components/shareholder.vue';
@@ -77,6 +77,7 @@ export default {
       statSDKPageId: 'GSJS_V4_SY',
       pageWrapperDom: document ? document.body : '',
     });
+		
     await this.getCompanyDetailV4();
     // await this.getSimpleCurrentUser2C().catch(() => {});
     // this.fnWxClientSaveOperate();
@@ -85,15 +86,10 @@ export default {
     getCompanyDetailV4() {
       this.isLoaded = false;
       return getCompanyDetailV4(URL_PARAM.companyId)
-        .then(({ success, data }) => {
-          if (!success || !data) {
-            return;
-          }
+        .then((data) => {
           this.companyData = data;
+					this.isLoaded = true;
         })
-        .finally(() => {
-          this.isLoaded = true;
-        });
     },
     getSimpleCurrentUser2C() {
       if (URL_PARAM.fromWyjhs === '1') {
@@ -101,8 +97,8 @@ export default {
       }
       return getSimpleCurrentUser2C({
         uuid: URL_PARAM.uuid,
-      }).then(({ success, data }) => {
-        if (!success || !data) {
+      }).then((data) => {
+        if (!data) {
           return Promise.reject();
         }
         const shareUrl =

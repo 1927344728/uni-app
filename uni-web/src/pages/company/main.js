@@ -1,10 +1,7 @@
 import Vue from 'vue';
-import App from './app.vue';
-// import FastClick from 'fastclick';
-
+import App from './app.vue'; 
 import Mixin from '@/mixins/index.js';
 
-// FastClick.attach(document.body);
 Vue.config.productionTip = false;
 
 Vue.mixin(Mixin);
