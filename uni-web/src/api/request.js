@@ -11,18 +11,22 @@ const loading = bool => {
 	}
 };
 
-// uni.configMTLS({
-// 	certificates: [{
-// 		'host': 'app.winbaoxian.cn',
-// 		'client': '/ssl/client.cer',
-// 		'clientPassword': '123456',
-// 		'server': ['/ssl/server.cer'],
-// 	}],
-// 	success (res){
-// 		console.log(res.code)
-// 		debugger
-// 	}
-// });
+uni.configMTLS({
+	certificates: [{
+		'host': 'app.winbaoxian.cn',
+		'client': '/ssl/client.p12',
+		'clientPassword': '123456',
+		'server': ['/ssl/server.pem'],
+	}],
+	success (res){
+		console.log(res)
+		// uni.showModal({
+		// 	title: 'configMTLS: success',
+		// 	content: JSON.stringify(res)
+		// });
+	}
+});
+
 function request (options) {
 	const { url, method, data, params, withoutLoading } = options
 	if (loadingTimer) {
@@ -63,6 +67,10 @@ function request (options) {
 			clearTimeout(loadingTimer);
 		}
 		loading(false);
+		uni.showModal({
+			title: 'request: error',
+			content: JSON.stringify(error)
+		});
 		const { response } = error
 		if (response && response.status == 401) {
 			gotoLogin();
