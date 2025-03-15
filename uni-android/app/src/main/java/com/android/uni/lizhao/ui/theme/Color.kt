@@ -1,4 +1,4 @@
-package com.lizhao.uniandroid.ui.theme
+package com.android.uni.lizhao.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

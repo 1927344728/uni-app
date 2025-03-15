@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-  namespace 'lizhao.release.uni'
+  namespace 'com.android.uni.lizhao'
   compileSdk 34
 
   defaultConfig {
-    applicationId "lizhao.release.uni"
+    applicationId "com.android.uni.lizhao"
     minSdk 26
     targetSdk 34
     versionCode 100
@@ -20,11 +20,17 @@ android {
     }
   }
 
+  packagingOptions {
+    jniLibs {
+      useLegacyPackaging true
+    }
+  }
+
   signingConfigs {
     config {
-      keyAlias 'lizhao.keystore'
+      keyAlias 'uni'
       keyPassword '123456'
-      storeFile file('../uni.keystore')
+      storeFile file('../keystore/uni.keystore') // 路径为相对路径或绝对路径
       storePassword '123456'
       v1SigningEnabled true
       v2SigningEnabled true
@@ -49,7 +55,7 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
   kotlinOptions {
-      jvmTarget = '1.8'
+    jvmTarget = '1.8'
   }
   buildFeatures {
     compose true
@@ -57,16 +63,7 @@ android {
   composeOptions {
     kotlinCompilerExtensionVersion '1.5.1'
   }
-  packaging {
-    resources {
-      excludes += '/META-INF/{AL2.0,LGPL2.1}'
-    }
-  }
-  packagingOptions {
-    jniLibs {
-      useLegacyPackaging true
-    }
-  }
+
   aaptOptions {
     additionalParameters '--auto-add-overlay'
     ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
@@ -74,9 +71,11 @@ android {
 }
 
 dependencies {
+  // 资源引用
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation fileTree(include: ['*.aar'], dir: 'libs')
 
+  // AndroidX
   implementation 'androidx.appcompat:appcompat:1.0.0'
   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
   implementation 'androidx.recyclerview:recyclerview:1.0.0'
