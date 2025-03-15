@@ -1,7 +1,7 @@
 {
-    "name" : "uni-weapp",
-    "appid" : "__UNI__614EF21",
-    "description" : "",
+    "name" : "一兆方圆",
+    "appid" : "__UNI__EE11F0A",
+    "description" : "这是 lizhao 用于学习 uniapp 的一款应用。",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,

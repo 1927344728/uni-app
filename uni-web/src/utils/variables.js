@@ -8,6 +8,7 @@ export const IS_PRODUCT_ENV = _hostname.search(/pbf\.winbaoxian\.com/) !== -1
 export const IS_TEST_ENV = _hostname.search(/pbf\.winbaoxian\.cn/) !== -1
 export const IS_LOCALHOST_ENV = _hostname.search(/localhost|192\.168|127\.0\.0\.1/) !== -1
 
+export const API_HOSTNAME = IS_LOCALHOST_ENV ? '//localhost:8088' : `https://app.lizhao.${IS_PRODUCT_ENV ? 'com' : 'cn'}`
 export const APP_HOSTNAME = `https://app.winbaoxian.${IS_PRODUCT_ENV ? 'com' : 'cn'}`
 export const CONTENT_HOSTNAME = `https://content.winbaoxian.${IS_PRODUCT_ENV ? 'com' : 'cn'}`
 export const INTERACTION_HOSTNAME = `https://interaction-api.winbaoxian.${IS_PRODUCT_ENV ? 'com' : 'cn'}`

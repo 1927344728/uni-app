@@ -1,4 +1,4 @@
-import { APP_HOSTNAME, gotoLogin } from '@/utils/index.js';
+import { API_HOSTNAME, gotoLogin } from '@/utils/index.js';
 
 let loadingTimer = null;
 const loading = bool => {
@@ -11,21 +11,21 @@ const loading = bool => {
 	}
 };
 
-uni.configMTLS({
-	certificates: [{
-		'host': 'app.winbaoxian.cn',
-		'client': '/ssl/client.p12',
-		'clientPassword': '123456',
-		'server': ['/ssl/server.pem'],
-	}],
-	success (res){
-		console.log(res)
-		// uni.showModal({
-		// 	title: 'configMTLS: success',
-		// 	content: JSON.stringify(res)
-		// });
-	}
-});
+// uni.configMTLS({
+// 	certificates: [{
+// 		'host': 'app.winbaoxian.cn',
+// 		'client': '/ssl/client.p12',
+// 		'clientPassword': '123456',
+// 		'server': ['/ssl/server.pem'],
+// 	}],
+// 	success (res){
+// 		console.log(res)
+// 		// uni.showModal({
+// 		// 	title: 'configMTLS: success',
+// 		// 	content: JSON.stringify(res)
+// 		// });
+// 	}
+// });
 
 function request (options) {
 	const { url, method, data, params, withoutLoading } = options
@@ -38,7 +38,7 @@ function request (options) {
 		}
 	}, 300);
 	return uni.request({
-		url: `${APP_HOSTNAME}/${url}`,
+		url: `${API_HOSTNAME}/${url}`,
 		method: (method || 'GET').toLocaleUpperCase(),
 		timeout: 5000,
 		withCredentials: true,
@@ -51,10 +51,10 @@ function request (options) {
 		if (loadingTimer) {
 			clearTimeout(loadingTimer);
 		}
-		uni.showModal({
-			title: `${APP_HOSTNAME}`,
-			content: JSON.stringify(res)
-		});
+		// uni.showModal({
+		// 	title: `${API_HOSTNAME}`,
+		// 	content: JSON.stringify(res)
+		// });
 		loading(false);
 		const { code, status, data } = res.data
 		if (code === 401 || status === 401 || (data && data.data === -1)) {
@@ -67,10 +67,10 @@ function request (options) {
 			clearTimeout(loadingTimer);
 		}
 		loading(false);
-		uni.showModal({
-			title: 'request: error',
-			content: JSON.stringify(error)
-		});
+		// uni.showModal({
+		// 	title: 'request: error',
+		// 	content: JSON.stringify(error)
+		// });
 		const { response } = error
 		if (response && response.status == 401) {
 			gotoLogin();

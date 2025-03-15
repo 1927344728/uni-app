@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="culture_page">
 		<text class="title">怡红院，红香院？古人为什么这么爱给房子取名？</text>
 		<image mode="aspectFit" style="width: 100%;" src="https://inews.gtimg.com/om_bt/OvvHXXabTh_4EBm2Vc3zO5b-cW-pdaLxCMCLMHLxL7JWEAA/641"></image>
 		<text>
@@ -17,10 +17,10 @@
 </template>
 
 <style>
-	.content {
+	.culture_page {
 		padding: 30rpx;
 	}
-	.title {
+	.culture_page .title {
 		font-size: 36rpx;
 		font-weight: bold;
 		color: #333;

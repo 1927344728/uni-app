@@ -17,7 +17,7 @@ const config = {
     }),
 		require('postcss-apply')({}),
 		require('postcss-pxtorem')({
-			"rootValue": 100,
+			"rootValue": 16,
 			"propList": ['*'],
 			"exclude": /node_modules/i
 		}),

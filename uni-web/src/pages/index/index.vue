@@ -1,13 +1,23 @@
 <template>
-	<view class="content">
-		<view>
-			<text class="title">{{title}}</text>
-			<navigator url="/pages/company/index?companyId=1" open-type="navigate">
-				<button type="default">公司介绍</button>
-			</navigator>
-			<navigator url="/pages/culture/index" open-type="navigate">
-				<button type="default">中国文化</button>
-			</navigator>
+	<view class="home_page">
+		<view class="home_banner">
+			<image class="home_banner_image" mode="aspectFill" :src="bannerImage"></image>
+		</view>
+		<view class="home_nav">
+			<view class="home_nav_main">
+				<navigator class="nav"  url="/pages/culture/index" open-type="navigate">
+					中国文化
+				</navigator>
+				<navigator class="nav"  url="" open-type="navigate">
+					书籍
+				</navigator>
+				<navigator class="nav"  url="" open-type="navigate">
+					家
+				</navigator>
+				<navigator class="nav" url="/pages/me/index" open-type="navigate">
+					我
+				</navigator>
+			</view>
 		</view>
 	</view>
 </template>
@@ -21,7 +31,7 @@ export default {
 		}
 	},
 	onLoad() {
-
+		this.bannerImage = 'https://app-1259410276.cos.ap-shanghai.myqcloud.com/uni/images/uni_20250313204613.jpg'
 	},
 	methods: {
 
@@ -29,27 +39,44 @@ export default {
 }
 </script>
 
-<style>
-	.content {
+<style>\
+	* {
+		padding: 0;
+		box-sizing: border-box;
+	}
+	.home_page {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin: 200rpx auto 50rpx auto;
+	.home_banner {
+		width: 100%;
 	}
-
-	.text-area {
+	.home_banner .home_banner_image {
+		display: block;
+		width: 100%;
+		height: 200px;
+	}
+	.home_nav {
+		width: 100%;
+		padding: 9px;
+		box-sizing: border-box;
+	}
+	.home_nav .home_nav_main {
+		width: 100%;
 		display: flex;
-		justify-content: center;
 	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+	.home_nav .home_nav_main .nav {
+		flex: 25%;
+		padding: 4px 8px;
+		color: white;
+		text-align: center;
+		border: 1px solid #0dd;
+		border-radius: 12px;
+		background: #0dd;
+	}
+	.home_nav .home_nav_main .nav:not(:last-child) {
+		margin-right: 9px;
 	}
 </style>
