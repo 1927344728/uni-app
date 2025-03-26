@@ -3,6 +3,7 @@
     <view class="me_page" v-if="isLoaded">
 			{{message}}
     </view>
+		<FooterBar />
   </view>
 </template>
 
@@ -12,7 +13,7 @@ import 'text-encoding'
 import { getSimpleMessage } from '@/api';
 import { initBasicConfig } from '@/utils/index.js';
 import { APP_HOSTNAME, URL_PARAM, COMMON_PARAM, WX_GUANJIA_MP_ID } from '@/utils/variables.js';
-
+import FooterBar from '@/components/footer_bar/index.vue'
 // #ifdef WEB
 console.log('WEB')
 // #endif
@@ -20,6 +21,7 @@ console.log('WEB')
 
 export default {
   components: {
+		FooterBar
   },
   data() {
     return {
@@ -40,6 +42,8 @@ export default {
       this.isLoaded = false;
 			return getSimpleMessage().then((data) => {
 				this.message = data
+			}).catch(error => {
+				console.log(error)
 			}).finally(() => {
 				this.isLoaded = true
 			})
@@ -48,6 +52,6 @@ export default {
 };
 </script>
 
-<style>
-@import './index.css';
+<style lang="less">
+@import './index.less';
 </style>
