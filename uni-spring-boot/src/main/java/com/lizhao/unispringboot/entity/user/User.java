@@ -1,0 +1,210 @@
+package com.lizhao.unispringboot.entity.user;
+
+import jakarta.persistence.*;
+
+@Entity
+public class User {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false, unique = true, length = 36)
+  private String uuid;
+
+  @Column(name = "phone_number", nullable = false, unique = true, length = 11)
+  private String phoneNumber;
+
+  @Column(nullable = true, length = 255)
+  private String name;
+
+  @Column(name = "user_type", nullable = false)
+  private Integer userType;
+
+  @Column(name = "verification_code", nullable = true, length = 4)
+  private String verificationCode;
+
+  @Column(nullable = true, length = 255)
+  private String token;
+
+  @Column(nullable = true, length = 255)
+  private String email;
+
+  @Column(nullable = true)
+  private Byte gender; // 性别：1-男 2-女
+
+  @Column(nullable = true)
+  private Long birthday; // 生日时间戳
+
+  @Column(nullable = true)
+  private Byte education; // 学历：1-30
+
+  @Column(name = "father_id", nullable = true)
+  private Integer fatherId; // 父亲id
+
+  @Column(name = "mother_id", nullable = true)
+  private Integer motherId; // 母亲id
+
+  @Column(name = "sibling_ids", nullable = true, columnDefinition = "TEXT")
+  private String siblingIds; // 兄弟姐妹id
+
+  @Column(name = "spouse_id", nullable = true)
+  private Integer spouseId; // 配偶id
+
+  @Column(name = "children_ids", nullable = true, columnDefinition = "TEXT")
+  private String childrenIds; // 子女id
+
+  // Getters and Setters
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getUserType() {
+    return userType;
+  }
+
+  public void setUserType(Integer userType) {
+    this.userType = userType;
+  }
+
+  public String getVerificationCode() {
+    return verificationCode;
+  }
+
+  public void setVerificationCode(String verificationCode) {
+    this.verificationCode = verificationCode;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public Byte getGender() {
+    return gender;
+  }
+
+  public void setGender(Byte gender) {
+    this.gender = gender;
+  }
+
+  public Long getBirthday() {
+    return birthday;
+  }
+
+  public void setBirthday(Long birthday) {
+    this.birthday = birthday;
+  }
+
+  public Byte getEducation() {
+    return education;
+  }
+
+  public void setEducation(Byte education) {
+    this.education = education;
+  }
+
+  public Integer getFatherId() {
+    return fatherId;
+  }
+
+  public void setFatherId(Integer fatherId) {
+    this.fatherId = fatherId;
+  }
+
+  public Integer getMotherId() {
+    return motherId;
+  }
+
+  public void setMotherId(Integer motherId) {
+    this.motherId = motherId;
+  }
+
+  public String getSiblingIds() {
+    return siblingIds;
+  }
+
+  public void setSiblingIds(String siblingIds) {
+    this.siblingIds = siblingIds;
+  }
+
+  public Integer getSpouseId() {
+    return spouseId;
+  }
+
+  public void setSpouseId(Integer spouseId) {
+    this.spouseId = spouseId;
+  }
+
+  public String getChildrenIds() {
+    return childrenIds;
+  }
+
+  public void setChildrenIds(String childrenIds) {
+    this.childrenIds = childrenIds;
+  }
+
+  public User setInfo(UserInfo userInfo) {
+    this.id = userInfo.getId();
+    this.uuid = userInfo.getUuid();
+    this.phoneNumber = userInfo.getPhoneNumber();
+    this.name = userInfo.getName();
+    this.userType = userInfo.getUserType();
+    this.verificationCode = userInfo.getVerificationCode();
+    this.token = userInfo.getToken();
+    this.email = userInfo.getEmail();
+    return this;
+  }
+
+  public User setDetail(UserDetail userDetail) {
+    this.id = userDetail.getId();
+    this.gender = userDetail.getGender();
+    this.birthday = userDetail.getBirthday();
+    this.education = userDetail.getEducation();
+    this.fatherId = userDetail.getFatherId();
+    this.motherId = userDetail.getMotherId();
+    this.siblingIds = userDetail.getSiblingIds();
+    this.spouseId = userDetail.getSpouseId();
+    this.childrenIds = userDetail.getChildrenIds();
+    return this;
+  }
+}
