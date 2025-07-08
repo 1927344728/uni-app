@@ -1,9 +1,11 @@
-package com.lizhao.unispringboot.entity.user;
+package com.lizhao.unispringboot.user;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-public class User {
+public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,9 @@ public class User {
 
   @Column(nullable = true, length = 255)
   private String token;
+
+  @Column(name = "token_expiry")
+  private LocalDateTime tokenExpiry;
 
   @Column(nullable = true, length = 255)
   private String email;
@@ -111,6 +116,14 @@ public class User {
     this.token = token;
   }
 
+  public LocalDateTime getTokenExpiry() {
+    return tokenExpiry;
+  }
+
+  public void setTokenExpiry(LocalDateTime tokenExpiry) {
+    this.tokenExpiry = tokenExpiry;
+  }
+
   public String getEmail() {
     return email;
   }
@@ -183,7 +196,7 @@ public class User {
     this.childrenIds = childrenIds;
   }
 
-  public User setInfo(UserInfo userInfo) {
+  public UserEntity setInfo(UserInfoEntity userInfo) {
     this.id = userInfo.getId();
     this.uuid = userInfo.getUuid();
     this.phoneNumber = userInfo.getPhoneNumber();
@@ -191,11 +204,12 @@ public class User {
     this.userType = userInfo.getUserType();
     this.verificationCode = userInfo.getVerificationCode();
     this.token = userInfo.getToken();
+    this.tokenExpiry = userInfo.getTokenExpiry();
     this.email = userInfo.getEmail();
     return this;
   }
 
-  public User setDetail(UserDetail userDetail) {
+  public UserEntity setDetail(UserDetailEntity userDetail) {
     this.id = userDetail.getId();
     this.gender = userDetail.getGender();
     this.birthday = userDetail.getBirthday();

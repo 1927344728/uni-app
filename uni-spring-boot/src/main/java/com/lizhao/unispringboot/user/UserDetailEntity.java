@@ -1,10 +1,10 @@
-package com.lizhao.unispringboot.entity.user;
+package com.lizhao.unispringboot.user;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_detail")
-public class UserDetail {
+public class UserDetailEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

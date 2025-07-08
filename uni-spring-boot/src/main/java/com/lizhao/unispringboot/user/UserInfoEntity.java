@@ -1,12 +1,12 @@
-package com.lizhao.unispringboot.entity.user;
+package com.lizhao.unispringboot.user;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_info")
-public class UserInfo {
-
+public class UserInfoEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -28,6 +28,11 @@ public class UserInfo {
 
   @Column(nullable = true, length = 255)
   private String token;
+
+  @Column(name = "token_expiry")
+  private LocalDateTime tokenExpiry;
+
+  public UserInfoEntity() {}
 
   @Column(name = "created_at", nullable = false, updatable = false)
   private Timestamp createdAt;
@@ -128,5 +133,13 @@ public class UserInfo {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public LocalDateTime getTokenExpiry() {
+    return tokenExpiry;
+  }
+
+  public void setTokenExpiry(LocalDateTime tokenExpiry) {
+    this.tokenExpiry = tokenExpiry;
   }
 }

@@ -1,10 +1,6 @@
-package com.lizhao.unispringboot.controller.user;
+package com.lizhao.unispringboot.user;
 
-import com.lizhao.unispringboot.entity.user.User;
-import com.lizhao.unispringboot.entity.user.UserInfo;
-import com.lizhao.unispringboot.entity.user.UserDetail;
-import com.lizhao.unispringboot.repository.user.UserInfoRepository;
-import com.lizhao.unispringboot.repository.user.UserDetailRepository;
+import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/user")
@@ -27,17 +24,17 @@ public class UserController {
   }
 
   @GetMapping("/getList")
-  public List<UserInfo> list() {
+  public List<UserInfoEntity> list() {
     return userInfoRepository.findAll();
   }
 
   @GetMapping("/findUserById")
   @ResponseBody
-  public User user(@RequestParam Long id) {
-    Optional<UserInfo> userInfo = userInfoRepository.findById(id);
-    Optional<UserDetail> userDetail = detailRepository.findById(id);
+  public UserEntity user(@RequestParam Long id) {
+    Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
+    Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
 
-    User user = new User();
+    UserEntity user = new UserEntity();
     userInfo.ifPresent(user::setInfo);
     userDetail.ifPresent(user::setDetail);
 
@@ -46,24 +43,25 @@ public class UserController {
 
   @GetMapping("/findUserInfoById")
   @ResponseBody
-  public UserInfo getUserInfo(@RequestParam Long id) {
-    Optional<UserInfo> userInfo = userInfoRepository.findById(id);
+  public UserInfoEntity getUserInfo(@RequestParam Long id) {
+    Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
     return userInfo.orElse(null);
   }
 
-  @GetMapping("/findUserInfoByPhoneNumber")
-  @ResponseBody
-  public UserInfo getUserInfoByPhoneNumber(@RequestParam String phoneNumber) {
+  public void updateToken(Long id, String token) {
     System.out.print("Searching user info for phone number: {}");
-    Optional<UserInfo> userInfo = userInfoRepository.findByPhoneNumber(phoneNumber);
-    System.out.print("Found user info: {}");
-    return userInfo.orElse(null);
+    userInfoRepository.updateTokenById(id, token);
+  }
+
+  public void updateTokenExpiry(Long id, LocalDateTime tokenExpiry) {
+    System.out.print("Searching user info for phone number: {}");
+    userInfoRepository.updateTokenExpiryById(id, tokenExpiry);
   }
 
   @GetMapping("/findUserDetailById")
   @ResponseBody
-  public UserDetail getUserDetail(@RequestParam Long id) {
-    Optional<UserDetail> userDetail = detailRepository.findById(id);
+  public UserDetailEntity getUserDetail(@RequestParam Long id) {
+    Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
     return userDetail.orElse(null);
   }
 }
