@@ -14,8 +14,8 @@ public class UserEntity {
   @Column(nullable = false, unique = true, length = 36)
   private String uuid;
 
-  @Column(name = "phone_number", nullable = false, unique = true, length = 11)
-  private String phoneNumber;
+  @Column(name = "phone", nullable = false, unique = true, length = 11)
+  private String phone;
 
   @Column(nullable = true, length = 255)
   private String name;
@@ -23,14 +23,11 @@ public class UserEntity {
   @Column(name = "user_type", nullable = false)
   private Integer userType;
 
-  @Column(name = "verification_code", nullable = true, length = 4)
-  private String verificationCode;
+  @Column(name = "captcha", nullable = true, length = 4)
+  private String captcha;
 
   @Column(nullable = true, length = 255)
   private String token;
-
-  @Column(name = "token_expiry")
-  private LocalDateTime tokenExpiry;
 
   @Column(nullable = true, length = 255)
   private String email;
@@ -76,12 +73,11 @@ public class UserEntity {
     this.uuid = uuid;
   }
 
-  public String getPhoneNumber() {
-    return phoneNumber;
+  public String getPhone() {
+    return phone;
   }
-
-  public void setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
   public String getName() {
@@ -100,12 +96,12 @@ public class UserEntity {
     this.userType = userType;
   }
 
-  public String getVerificationCode() {
-    return verificationCode;
+  public String getCaptcha() {
+    return captcha;
   }
 
-  public void setVerificationCode(String verificationCode) {
-    this.verificationCode = verificationCode;
+  public void setCaptcha(String captcha) {
+    this.captcha = captcha;
   }
 
   public String getToken() {
@@ -114,14 +110,6 @@ public class UserEntity {
 
   public void setToken(String token) {
     this.token = token;
-  }
-
-  public LocalDateTime getTokenExpiry() {
-    return tokenExpiry;
-  }
-
-  public void setTokenExpiry(LocalDateTime tokenExpiry) {
-    this.tokenExpiry = tokenExpiry;
   }
 
   public String getEmail() {
@@ -199,12 +187,11 @@ public class UserEntity {
   public UserEntity setInfo(UserInfoEntity userInfo) {
     this.id = userInfo.getId();
     this.uuid = userInfo.getUuid();
-    this.phoneNumber = userInfo.getPhoneNumber();
+    this.phone = userInfo.getPhone();
     this.name = userInfo.getName();
     this.userType = userInfo.getUserType();
-    this.verificationCode = userInfo.getVerificationCode();
+    this.captcha = userInfo.getCaptcha();
     this.token = userInfo.getToken();
-    this.tokenExpiry = userInfo.getTokenExpiry();
     this.email = userInfo.getEmail();
     return this;
   }

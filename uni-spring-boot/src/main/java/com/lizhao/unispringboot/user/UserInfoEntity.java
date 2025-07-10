@@ -14,23 +14,29 @@ public class UserInfoEntity {
   @Column(nullable = false, unique = true, length = 36)
   private String uuid;
 
-  @Column(name = "phone_number", nullable = false, unique = true, length = 11)
-  private String phoneNumber;
+  @Column(name = "phone", nullable = false, unique = true, length = 11)
+  private String phone;
 
-  @Column(nullable = true, length = 255)
+  @Column(name = "name", nullable = true, length = 255)
   private String name;
+
+  @Column(name = "user_name", nullable = true, length = 255)
+  private String userName;
+
+  @Column(name = "nickname", nullable = false, length = 255)
+  private String nickname;
 
   @Column(name = "user_type", nullable = false)
   private Integer userType;
 
-  @Column(name = "verification_code", nullable = true, length = 6)
-  private String verificationCode;
+  @Column(name = "captcha", nullable = true, length = 6)
+  private String captcha;
+
+  @Column(name = "password", nullable = true, length = 36)
+  private String password;
 
   @Column(nullable = true, length = 255)
   private String token;
-
-  @Column(name = "token_expiry")
-  private LocalDateTime tokenExpiry;
 
   public UserInfoEntity() {}
 
@@ -50,7 +56,6 @@ public class UserInfoEntity {
   public Long getId() {
     return id;
   }
-
   public void setId(Long id) {
     this.id = id;
   }
@@ -58,41 +63,58 @@ public class UserInfoEntity {
   public String getUuid() {
     return uuid;
   }
-
   public void setUuid(String uuid) {
     this.uuid = uuid;
   }
 
-  public String getPhoneNumber() {
-    return phoneNumber;
+  public String getPhone() {
+    return phone;
   }
-
-  public void setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
   public String getName() {
     return name;
   }
-
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
   }
 
   public Integer getUserType() {
     return userType;
   }
-
   public void setUserType(Integer userType) {
     this.userType = userType;
   }
 
-  public String getVerificationCode() {
-    return verificationCode;
+  public String getPassword () {
+    return password;
+  }
+  public void setPassword(String password) {
+    this.password = password;
   }
 
-  public void setVerificationCode(String verificationCode) {
-    this.verificationCode = verificationCode;
+  public String getCaptcha() {
+    return captcha;
+  }
+
+  public void setCaptcha(String captcha) {
+    this.captcha = captcha;
   }
 
   public String getToken() {
@@ -133,13 +155,5 @@ public class UserInfoEntity {
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public LocalDateTime getTokenExpiry() {
-    return tokenExpiry;
-  }
-
-  public void setTokenExpiry(LocalDateTime tokenExpiry) {
-    this.tokenExpiry = tokenExpiry;
   }
 }

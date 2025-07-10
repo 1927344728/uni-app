@@ -48,16 +48,6 @@ public class UserController {
     return userInfo.orElse(null);
   }
 
-  public void updateToken(Long id, String token) {
-    System.out.print("Searching user info for phone number: {}");
-    userInfoRepository.updateTokenById(id, token);
-  }
-
-  public void updateTokenExpiry(Long id, LocalDateTime tokenExpiry) {
-    System.out.print("Searching user info for phone number: {}");
-    userInfoRepository.updateTokenExpiryById(id, tokenExpiry);
-  }
-
   @GetMapping("/findUserDetailById")
   @ResponseBody
   public UserDetailEntity getUserDetail(@RequestParam Long id) {
