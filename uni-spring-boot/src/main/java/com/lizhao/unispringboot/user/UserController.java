@@ -1,6 +1,6 @@
 package com.lizhao.unispringboot.user;
 
-import jakarta.persistence.*;
+import com.lizhao.unispringboot.common.ResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,13 +23,14 @@ public class UserController {
   }
 
   @GetMapping("/getList")
-  public List<UserInfoEntity> list() {
-    return userInfoRepository.findAll();
+  public ResponseResult<List<UserInfoEntity>> list() {
+    List<UserInfoEntity> userList = userInfoRepository.findAll();
+    return ResponseResult.success(userList);
   }
 
   @GetMapping("/findUserById")
   @ResponseBody
-  public UserEntity user(@RequestParam Long id) {
+  public ResponseResult<UserEntity> user(@RequestParam Long id) {
     Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
     Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
 
@@ -38,20 +38,20 @@ public class UserController {
     userInfo.ifPresent(user::setInfo);
     userDetail.ifPresent(user::setDetail);
 
-    return user;
+    return ResponseResult.success(user);
   }
 
   @GetMapping("/findUserInfoById")
   @ResponseBody
-  public UserInfoEntity getUserInfo(@RequestParam Long id) {
+  public ResponseResult<UserInfoEntity> getUserInfo(@RequestParam Long id) {
     Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
-    return userInfo.orElse(null);
+    return ResponseResult.success(userInfo.orElse(null));
   }
 
   @GetMapping("/findUserDetailById")
   @ResponseBody
-  public UserDetailEntity getUserDetail(@RequestParam Long id) {
+  public ResponseResult<UserDetailEntity> getUserDetail(@RequestParam Long id) {
     Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
-    return userDetail.orElse(null);
+    return ResponseResult.success(userDetail.orElse(null));
   }
 }

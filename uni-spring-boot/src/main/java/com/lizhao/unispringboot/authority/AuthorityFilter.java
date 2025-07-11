@@ -1,5 +1,6 @@
 package com.lizhao.unispringboot.authority;
 
+import com.lizhao.unispringboot.common.ResponseResult;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class AuthorityFilter extends OncePerRequestFilter {
@@ -31,6 +33,8 @@ public class AuthorityFilter extends OncePerRequestFilter {
   @Autowired
   private AuthorityConfigProperties securityConfig;
 
+  private final ObjectMapper objectMapper = new ObjectMapper();
+
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     try {
@@ -39,19 +43,23 @@ public class AuthorityFilter extends OncePerRequestFilter {
       if (!isPublicPath && (token == null || !jwtUtil.validateToken(token))) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"message\":\"请登录\"}");
+        ResponseResult<Void> result = ResponseResult.fail(HttpServletResponse.SC_UNAUTHORIZED, "请登录");
+        response.getWriter().write(objectMapper.writeValueAsString(result));
         return;
       }
       Claims claims = jwtUtil.parseToken(token);
       String username = claims.getSubject();
       UserDetails userDetails = userDetailsService.loadUserByUsername(username);
       UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-          userDetails, null, userDetails.getAuthorities());
+        userDetails,
+        null,
+        userDetails.getAuthorities()
+      );
       authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } catch (Exception e) {
-      logger.error("用户授权失败: {}", e.getMessage());
+        logger.error("用户登录失败: {}", e.getMessage());
     }
 
     filterChain.doFilter(request, response);
@@ -66,7 +74,6 @@ public class AuthorityFilter extends OncePerRequestFilter {
         }
       }
     }
-
     return null;
   }
 }
