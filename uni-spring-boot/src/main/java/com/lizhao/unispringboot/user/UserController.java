@@ -30,28 +30,29 @@ public class UserController {
 
   @GetMapping("/findUserById")
   @ResponseBody
-  public ResponseResult<UserEntity> user(@RequestParam Long id) {
+  public ResponseResult<com.lizhao.unispringboot.common.User> user(@RequestParam Long id) {
     Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
     Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
 
-    UserEntity user = new UserEntity();
-    userInfo.ifPresent(user::setInfo);
-    userDetail.ifPresent(user::setDetail);
+    com.lizhao.unispringboot.common.User user = new com.lizhao.unispringboot.common.User();
+    userInfo.ifPresent(user::setUser);
+    userDetail.ifPresent(user::setUser);
 
     return ResponseResult.success(user);
   }
 
-  @GetMapping("/findUserInfoById")
+  @GetMapping("/findUserInfoByUuid")
   @ResponseBody
-  public ResponseResult<UserInfoEntity> getUserInfo(@RequestParam Long id) {
-    Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
+  public ResponseResult<UserInfoEntity> getUserInfo(@RequestParam String uuid) {
+    Optional<UserInfoEntity> userInfo = userInfoRepository.findByUuid(uuid);
     return ResponseResult.success(userInfo.orElse(null));
   }
 
-  @GetMapping("/findUserDetailById")
+  @GetMapping("/findUserDetailByUuid")
   @ResponseBody
-  public ResponseResult<UserDetailEntity> getUserDetail(@RequestParam Long id) {
-    Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
+  public ResponseResult<UserDetailEntity> getUserDetail(@RequestParam String uuid) {
+    Optional<UserInfoEntity> userInfo = userInfoRepository.findByUuid(uuid);
+    Optional<UserDetailEntity> userDetail = userInfo.flatMap(info -> detailRepository.findById(info.getId()));
     return ResponseResult.success(userDetail.orElse(null));
   }
 }

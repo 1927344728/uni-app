@@ -26,8 +26,8 @@ public class UserInfoEntity {
   @Column(name = "nickname", nullable = false, length = 255)
   private String nickname;
 
-  @Column(name = "user_type", nullable = false)
-  private Integer userType;
+  @Column(name = "role", nullable = false)
+  private Integer role;
 
   @Column(name = "captcha", nullable = true, length = 6)
   private String captcha;
@@ -95,11 +95,11 @@ public class UserInfoEntity {
     this.nickname = nickname;
   }
 
-  public Integer getUserType() {
-    return userType;
+  public Integer getRole() {
+    return role;
   }
-  public void setUserType(Integer userType) {
-    this.userType = userType;
+  public void setRole(Integer role) {
+    this.role = role;
   }
 
   public String getPassword () {

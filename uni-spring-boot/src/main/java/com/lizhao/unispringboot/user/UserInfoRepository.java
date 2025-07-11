@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserInfoRepository extends JpaRepository<UserInfoEntity, Long> {
+  Optional<UserInfoEntity> findByUuid(String uuid);
   Optional<UserInfoEntity> findByUserName(String userName);
   Optional<UserInfoEntity> findByPhone(String phone);
 

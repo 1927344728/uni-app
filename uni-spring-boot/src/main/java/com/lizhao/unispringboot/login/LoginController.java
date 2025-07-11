@@ -28,7 +28,7 @@ public class LoginController {
   @GetMapping("/login")
   public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password, HttpServletResponse response) {
     try {
-      UserInfoEntity userInfo = userInfoRepository.findByPhone(phone).get();
+      UserInfoEntity userInfo = userInfoRepository.findByPhone(phone).or(() -> userInfoRepository.findByUserName(phone)).get();
 
       if (userInfo == null) {
         return ResponseEntity
