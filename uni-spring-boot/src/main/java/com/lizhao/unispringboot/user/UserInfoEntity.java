@@ -3,6 +3,7 @@ package com.lizhao.unispringboot.user;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "user_info")
@@ -41,9 +42,11 @@ public class UserInfoEntity {
   public UserInfoEntity() {}
 
   @Column(name = "created_at", nullable = false, updatable = false)
+  @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Timestamp createdAt;
 
   @Column(name = "updated_at", nullable = false)
+  @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Timestamp updatedAt;
 
   @Column(name = "is_deleted", nullable = false)

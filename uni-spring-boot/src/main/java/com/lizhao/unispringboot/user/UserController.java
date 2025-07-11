@@ -1,6 +1,7 @@
 package com.lizhao.unispringboot.user;
 
 import com.lizhao.unispringboot.common.ResponseResult;
+import com.lizhao.unispringboot.common.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,13 +29,13 @@ public class UserController {
     return ResponseResult.success(userList);
   }
 
-  @GetMapping("/findUserById")
+  @GetMapping("/findUserByUuid")
   @ResponseBody
-  public ResponseResult<com.lizhao.unispringboot.common.User> user(@RequestParam Long id) {
-    Optional<UserInfoEntity> userInfo = userInfoRepository.findById(id);
-    Optional<UserDetailEntity> userDetail = detailRepository.findById(id);
+  public ResponseResult<User> user(@RequestParam String uuid) {
+    Optional<UserInfoEntity> userInfo = userInfoRepository.findByUuid(uuid);
+    Optional<UserDetailEntity> userDetail = userInfo.flatMap(info -> detailRepository.findById(info.getId()));
 
-    com.lizhao.unispringboot.common.User user = new com.lizhao.unispringboot.common.User();
+    User user = new User();
     userInfo.ifPresent(user::setUser);
     userDetail.ifPresent(user::setUser);
 
@@ -45,6 +46,9 @@ public class UserController {
   @ResponseBody
   public ResponseResult<UserInfoEntity> getUserInfo(@RequestParam String uuid) {
     Optional<UserInfoEntity> userInfo = userInfoRepository.findByUuid(uuid);
+    userInfo.ifPresent(info -> {
+      info.setPassword(null);
+    });
     return ResponseResult.success(userInfo.orElse(null));
   }
 
