@@ -20,8 +20,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Transactional
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     UserInfoEntity userInfo = userInfoRepository.findByUserName(username)
-    .or(() -> userInfoRepository.findByPhone(username))
-    .orElseThrow(() -> new UsernameNotFoundException("找不到用户: " + username));
+      .or(() -> userInfoRepository.findByPhone(username))
+      .orElseThrow(() -> new UsernameNotFoundException("找不到用户: " + username));
 
     return UserDetailsImpl.build(userInfo);
   }

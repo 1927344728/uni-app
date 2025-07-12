@@ -22,7 +22,6 @@ public class User {
   public Integer spouseId; // 配偶id
   public String childrenIds; // 子女id
 
-  // setUser 方法，传参是 UserInfoEntity 实例
   public void setUser(UserInfoEntity userInfo) {
     this.id = userInfo.getId();
     this.uuid = userInfo.getUuid();
@@ -32,7 +31,6 @@ public class User {
     this.email = userInfo.getEmail();
   }
 
-  // setUser 方法，传参是 UserDetailEntity 实例
   public void setUser(UserDetailEntity userDetail) {
     this.id = userDetail.getId();
     this.gender = userDetail.getGender();
@@ -45,7 +43,6 @@ public class User {
     this.childrenIds = userDetail.getChildrenIds();
   }
 
-  // 一个修改任意变量的方法
   public <T> void updateField(String fieldName, T value) {
     try {
       java.lang.reflect.Field field = this.getClass().getField(fieldName);

@@ -25,14 +25,6 @@ public class AuthorityConfigProperties {
   }
 
   public boolean isPublicPath(String requestPath) {
-//    boolean isPublic = false;
-//    for (String path : publicPaths) {
-//      if (requestPath.startsWith(path.replace("/**", ""))) {
-//        isPublic = true;
-//        break;
-//      }
-//    }
-//    return isPublic;
     return publicPaths.stream().anyMatch(path -> requestPath.startsWith(path.replace("/**", "")));
   }
 }
