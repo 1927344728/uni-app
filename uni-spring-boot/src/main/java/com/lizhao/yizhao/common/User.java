@@ -1,7 +1,7 @@
-package com.lizhao.unispringboot.common;
+package com.lizhao.yizhao.common;
 
-import com.lizhao.unispringboot.user.UserDetailEntity;
-import com.lizhao.unispringboot.user.UserInfoEntity;
+import com.lizhao.yizhao.user.UserDetailEntity;
+import com.lizhao.yizhao.user.UserInfoEntity;
 
 // 移除 jakarta.persistence 相关导入
 // import jakarta.persistence.*;

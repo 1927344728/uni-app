@@ -1,8 +1,8 @@
-package com.lizhao.unispringboot.user;
+package com.lizhao.yizhao.user;
 
-import com.lizhao.unispringboot.common.ResponseResult;
-import com.lizhao.unispringboot.common.User;
-import com.lizhao.unispringboot.service.UserService;
+import com.lizhao.yizhao.common.ResponseResult;
+import com.lizhao.yizhao.common.User;
+import com.lizhao.yizhao.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Cookie;
 
 import java.util.List;
 import java.util.Optional;

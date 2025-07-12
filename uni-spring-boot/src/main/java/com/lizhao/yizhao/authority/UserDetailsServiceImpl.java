@@ -1,7 +1,7 @@
-package com.lizhao.unispringboot.authority;
+package com.lizhao.yizhao.authority;
 
-import com.lizhao.unispringboot.user.UserInfoRepository;
-import com.lizhao.unispringboot.user.UserInfoEntity;
+import com.lizhao.yizhao.user.UserInfoRepository;
+import com.lizhao.yizhao.user.UserInfoEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

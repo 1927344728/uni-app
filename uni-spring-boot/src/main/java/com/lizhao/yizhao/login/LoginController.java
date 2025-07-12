@@ -1,8 +1,8 @@
-package com.lizhao.unispringboot.login;
+package com.lizhao.yizhao.login;
 
-import com.lizhao.unispringboot.user.UserInfoEntity;
-import com.lizhao.unispringboot.user.UserInfoRepository;
-import com.lizhao.unispringboot.authority.JwtUtil;
+import com.lizhao.yizhao.user.UserInfoEntity;
+import com.lizhao.yizhao.user.UserInfoRepository;
+import com.lizhao.yizhao.authority.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

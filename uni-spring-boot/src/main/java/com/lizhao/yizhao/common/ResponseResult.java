@@ -1,4 +1,4 @@
-package com.lizhao.unispringboot.common;
+package com.lizhao.yizhao.common;
 
 public class ResponseResult<T> {
   private int code;

@@ -1,10 +1,12 @@
-package com.lizhao.unispringboot.service;
+package com.lizhao.yizhao.service;
 
-import com.lizhao.unispringboot.common.ResponseResult;
-import com.lizhao.unispringboot.common.User;
-import com.lizhao.unispringboot.user.*;
-import com.lizhao.unispringboot.user.UserInfoRepository;
-import com.lizhao.unispringboot.user.UserDetailRepository;
+import com.lizhao.yizhao.common.ResponseResult;
+import com.lizhao.yizhao.common.User;
+import com.lizhao.yizhao.user.*;
+import com.lizhao.yizhao.user.UserDetailEntity;
+import com.lizhao.yizhao.user.UserInfoEntity;
+import com.lizhao.yizhao.user.UserInfoRepository;
+import com.lizhao.yizhao.user.UserDetailRepository;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.Cookie;

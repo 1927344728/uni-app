@@ -1,4 +1,4 @@
-package com.lizhao.unispringboot.user;
+package com.lizhao.yizhao.user;
 
 import jakarta.persistence.*;
 

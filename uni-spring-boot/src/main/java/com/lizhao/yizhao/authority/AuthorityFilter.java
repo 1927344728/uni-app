@@ -1,6 +1,6 @@
-package com.lizhao.unispringboot.authority;
+package com.lizhao.yizhao.authority;
 
-import com.lizhao.unispringboot.common.ResponseResult;
+import com.lizhao.yizhao.common.ResponseResult;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

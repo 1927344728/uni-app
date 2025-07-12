@@ -1,4 +1,4 @@
-package com.lizhao.unispringboot.authority;
+package com.lizhao.yizhao.authority;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

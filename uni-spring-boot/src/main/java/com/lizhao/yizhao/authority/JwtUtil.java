@@ -1,4 +1,4 @@
-package com.lizhao.unispringboot.authority;
+package com.lizhao.yizhao.authority;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

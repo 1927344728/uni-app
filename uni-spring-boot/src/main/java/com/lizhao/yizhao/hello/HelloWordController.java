@@ -1,6 +1,6 @@
-package com.lizhao.unispringboot.hello;
+package com.lizhao.yizhao.hello;
 
-import com.lizhao.unispringboot.common.ResponseResult;
+import com.lizhao.yizhao.common.ResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

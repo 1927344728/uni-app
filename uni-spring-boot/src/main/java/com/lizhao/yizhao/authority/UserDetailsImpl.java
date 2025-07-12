@@ -1,6 +1,6 @@
-package com.lizhao.unispringboot.authority;
+package com.lizhao.yizhao.authority;
 
-import com.lizhao.unispringboot.user.UserInfoEntity;
+import com.lizhao.yizhao.user.UserInfoEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

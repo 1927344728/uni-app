@@ -1,6 +1,6 @@
-package com.lizhao.unispringboot.exception;
+package com.lizhao.yizhao.exception;
 
-import com.lizhao.unispringboot.common.ResponseResult;
+import com.lizhao.yizhao.common.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
