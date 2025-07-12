@@ -2,11 +2,15 @@ package com.lizhao.unispringboot.user;
 
 import com.lizhao.unispringboot.common.ResponseResult;
 import com.lizhao.unispringboot.common.User;
+import com.lizhao.unispringboot.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +21,24 @@ public class UserController {
 
   private final UserInfoRepository userInfoRepository;
   private final UserDetailRepository detailRepository;
+  private final UserService userService;
 
-  public UserController(UserInfoRepository userInfoRepository, UserDetailRepository detailRepository) {
+  public UserController(UserInfoRepository userInfoRepository, UserDetailRepository detailRepository, UserService userService) {
     this.userInfoRepository = userInfoRepository;
     this.detailRepository = detailRepository;
+    this.userService = userService;
   }
 
   @GetMapping("/getList")
   public ResponseResult<List<UserInfoEntity>> list() {
     List<UserInfoEntity> userList = userInfoRepository.findAll();
     return ResponseResult.success(userList);
+  }
+
+  @GetMapping("/getUser")
+  @ResponseBody
+  public ResponseResult<User> getUser(HttpServletRequest request) {
+    return userService.getUserByCookieToken(request);
   }
 
   @GetMapping("/findUserByUuid")
