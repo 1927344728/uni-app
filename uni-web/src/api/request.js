@@ -1,4 +1,4 @@
-import { API_HOSTNAME, gotoLogin } from '@/utils/index.js';
+import { APP_HOSTNAME, gotoLogin } from '@/utils/index.js';
 
 let loadingTimer = null;
 const loading = bool => {
@@ -38,23 +38,20 @@ function request (options) {
 		}
 	}, 300);
 	return uni.request({
-		url: `${API_HOSTNAME}/${url}`,
+		url: `${APP_HOSTNAME}/${url}`,
 		method: (method || 'GET').toLocaleUpperCase(),
 		timeout: 5000,
 		withCredentials: true,
 		sslVerify: false,
 		data: data || params,
 		header: {
-			'X-Requested-With': 'XMLHttpRequest'
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json',
 		}
 	}).then(res => {
 		if (loadingTimer) {
 			clearTimeout(loadingTimer);
 		}
-		// uni.showModal({
-		// 	title: `${API_HOSTNAME}`,
-		// 	content: JSON.stringify(res)
-		// });
 		loading(false);
 		const { code, status, data } = res.data
 		if (code === 401 || status === 401 || (data && data.data === -1)) {
@@ -67,10 +64,6 @@ function request (options) {
 			clearTimeout(loadingTimer);
 		}
 		loading(false);
-		// uni.showModal({
-		// 	title: 'request: error',
-		// 	content: JSON.stringify(error)
-		// });
 		const { response } = error
 		if (response && response.status == 401) {
 			gotoLogin();

@@ -9,8 +9,13 @@ public class AuthorityCorsConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-        .allowedOrigins("*")
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        .allowedHeaders("*");
+      // 替换为你的前端实际域名，不要用"*"
+      .allowedOrigins("https://app.yizhao.com", "http://localhost:9000")
+      .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+      .allowedHeaders("*")
+      // 允许携带凭证（cookies等）
+      .allowCredentials(true)
+      // 预检请求缓存时间（单位：秒）
+      .maxAge(60 * 60 * 24);
   }
 }

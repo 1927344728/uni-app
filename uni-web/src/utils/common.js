@@ -118,29 +118,7 @@ export function WeiyiStatSDKInit({
 }
 
 export function gotoLogin() {
-  if (window && window.appBridge && window.appBridge.checkAppFeature('APP_VIEW')) {
-    window.appBridge.gotoAppView('login')
-    return
-  }
-	const _WeCom = window && window.WeCom
-  if (['WXWORK', 'WXQYH'].includes(APP_CHANNEL)) {
-    _WeCom && _WeCom.gotoLogin()
-    return
-  }
-  if (_WeCom && _WeCom.isMiniBankInsurance()) {
-    _WeCom.gotoLogin()
-    return
-  }
-  if (['WXMP'].includes(APP_CHANNEL)) {
-    window.wx && window.wx.miniProgram.navigateTo({ url: '/pages/index/index' })
-    return
-  }
-  if (_WeCom && _WeCom.gotoLogin && _WeCom.WEIYI_APPID) {
-    _WeCom.gotoLogin()
-    return
-  }
-	const _href = location ? location.href : ''
-  window.location.href = `https://app.winbaoxian.${IS_PRODUCT_ENV ? 'com' : 'cn'}/user/login?requestUrl=${encodeURIComponent(_href)}`
+  window.location.href = `${location.origin}/#/pages/login/index?requestUrl=${encodeURIComponent(location ? location.href : '')}`
 }
 
 export function parseTime(time, cFormat) {

@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -34,14 +36,16 @@ public class AuthorityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(securityConfig.getPublicPaths().toArray(new String[0])).permitAll()
-            .anyRequest().authenticated()
-        )
-         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-         .authenticationProvider(authenticationProvider())
-        .addFilterBefore(authorityFilter, UsernamePasswordAuthenticationFilter.class);
+      .csrf(AbstractHttpConfigurer::disable)
+      .authorizeHttpRequests(auth -> auth
+        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+        .requestMatchers(securityConfig.getPublicPaths().toArray(new String[0])).permitAll()
+        .anyRequest().authenticated()
+      )
+       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+       .authenticationProvider(authenticationProvider())
+      .addFilterBefore(authorityFilter, UsernamePasswordAuthenticationFilter.class)
+      .cors(withDefaults());
 
     return http.build();
   }

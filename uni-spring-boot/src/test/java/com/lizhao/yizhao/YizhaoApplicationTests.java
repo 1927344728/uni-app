@@ -1,4 +1,4 @@
-package com.lizhao.yizao;
+package com.lizhao.yizhao;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

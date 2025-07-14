@@ -43,6 +43,12 @@
 				"navigationBarTitleText" : "我",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+			  "navigationBarTitleText": "登录"
+			}
 		}
 	],
 	"globalStyle": {

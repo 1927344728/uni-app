@@ -1,9 +1,13 @@
 package com.lizhao.yizhao.login;
 
+import com.lizhao.yizhao.common.ResponseResult;
+import com.lizhao.yizhao.common.User;
+import com.lizhao.yizhao.service.UserService;
 import com.lizhao.yizhao.user.UserInfoEntity;
 import com.lizhao.yizhao.user.UserInfoRepository;
 import com.lizhao.yizhao.authority.JwtUtil;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,25 +24,20 @@ import java.util.Date;
 @RequestMapping("/api")
 public class LoginController {
   private final UserInfoRepository userInfoRepository;
+  private final UserService userService;
 
-  public LoginController(UserInfoRepository userInfoRepository) {
+  public LoginController(UserInfoRepository userInfoRepository, UserService userService) {
     this.userInfoRepository = userInfoRepository;
+    this.userService = userService;
   }
 
   @GetMapping("/login")
-  public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password, HttpServletResponse response) {
+  public ResponseResult<String> login(@RequestParam String phone, @RequestParam String password, HttpServletResponse response) {
     try {
       UserInfoEntity userInfo = userInfoRepository.findByPhone(phone).or(() -> userInfoRepository.findByUserName(phone)).get();
 
-      if (userInfo == null) {
-        return ResponseEntity
-          .status(HttpStatus.NOT_FOUND)
-          .body("手机号或密码错误!");
-      }
       if (!userInfo.getPassword().equals(password)) {
-        return ResponseEntity
-          .status(HttpStatus.UNAUTHORIZED)
-          .body("手机号或密码错误!");
+        return ResponseResult.fail(HttpStatus.FORBIDDEN.value(), "手机号或密码错误!");
       }
 
       JwtUtil jwtUtil = new JwtUtil();
@@ -56,12 +55,30 @@ public class LoginController {
       cookie.setHttpOnly(true);
       response.addCookie(cookie);
 
-      return ResponseEntity.ok().body("登录成功");
+      return ResponseResult.success("登录成功");
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      return ResponseEntity
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("服务器错误!");
+      return ResponseResult.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误!");
+    }
+  }
+
+  @GetMapping("/logout")
+  public ResponseResult<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    try {
+      ResponseResult <User> userInfo = userService.getUserByCookieToken(request);
+      Long id = userInfo.getData().id;
+      userInfoRepository.updateTokenById(id, null);
+
+      Cookie cookie = new Cookie("token", null);
+      cookie.setMaxAge(0);
+      cookie.setPath("/");
+      cookie.setHttpOnly(true);
+      response.addCookie(cookie);
+
+      return ResponseResult.success("登出成功");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return ResponseResult.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误!");
     }
   }
 }
