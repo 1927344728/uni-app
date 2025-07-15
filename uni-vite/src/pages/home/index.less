@@ -1,0 +1,149 @@
+@import '@/common/css/color.less';
+page {
+  height: 100%;
+}
+.home-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #ffffff;
+
+  .nav-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0 32rpx;
+    height: 88rpx;
+    z-index: 1000;
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+
+      .nav-icons {
+        display: flex;
+        gap: 32rpx;
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    padding-bottom: 120rpx;
+  }
+
+  .banner-img {
+    width: 100%;
+    height: 360rpx;
+  }
+
+  .grid-section {
+    margin-top: 48rpx;
+    padding: 0 32rpx;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32rpx;
+  }
+
+  .grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .grid-icon-wrapper {
+    width: 112rpx;
+    height: 112rpx;
+    border-radius: 56rpx;
+    overflow: hidden;
+  }
+
+  .grid-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  .grid-text {
+    margin-top: 16rpx;
+    font-size: 24rpx;
+    color: #666666;
+    white-space: nowrap;
+  }
+
+  .recommend-section {
+    margin-top: 48rpx;
+    padding: 0 32rpx;
+  }
+
+  .recommend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32rpx;
+  }
+
+  .recommend-title {
+    font-size: 36rpx;
+    font-weight: 500;
+  }
+
+  .recommend-more {
+    font-size: 28rpx;
+    color: rgb(20,200,165);
+  }
+
+  .recommend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32rpx;
+  }
+
+  .recommend-item {
+    display: flex;
+    padding: 24rpx;
+    background: #ffffff;
+    border-radius: 16rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  }
+
+  .recommend-image {
+    width: 160rpx;
+    height: 160rpx;
+    border-radius: 16rpx;
+  }
+
+  .recommend-content {
+    flex: 1;
+    margin-left: 24rpx;
+  }
+
+  .recommend-item-title {
+    font-size: 32rpx;
+    font-weight: 500;
+  }
+
+  .recommend-desc {
+    font-size: 28rpx;
+    color: #999999;
+    margin-top: 8rpx;
+  }
+
+  .recommend-stats {
+    display: flex;
+    align-items: center;
+    margin-top: 16rpx;
+  }
+
+  .stats-text {
+    font-size: 24rpx;
+    color: #999999;
+  }
+
+  .stats-dot {
+    margin: 0 16rpx;
+    color: #999999;
+  }
+}

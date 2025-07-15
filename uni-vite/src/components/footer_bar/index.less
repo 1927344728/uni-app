@@ -1,0 +1,69 @@
+@import '@/common/css/color.less';
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 2rpx solid @border-minor-color;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 8rpx 16rpx;
+
+  .tab-item {
+    display: flex;
+    height: 92rpx;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24rpx;
+    color: @text-patch1-color;
+    .uni-icons {
+      line-height: 1;
+      color: @text-patch1-color!important;
+    }
+  }
+  .tab-item.primary {
+    & .main-tab-wrapper {
+      position: relative;
+      width: 112rpx;
+      height: 112rpx;
+      margin-top: -16px;
+      background: white;
+      border-radius: 56rpx;
+      box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+      text-align: center;
+      & .bg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 112rpx;
+        height: 112rpx;
+        background: -webkit-radial-gradient(@text-patch1-color, white);
+        border-radius: 56rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid white;
+        opacity: 0.3;
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3)
+      }	
+      & .icon {
+        position: relative;
+        margin-top: 16rpx;
+        z-index: 2;
+      }
+      & .name {
+        position: relative;
+        z-index: 2;
+      }
+    }
+  }
+  .tab-item.active {
+    color: @primary-color;
+    & .uni-icons {
+      color: @primary-color!important;
+    }
+  }
+}
