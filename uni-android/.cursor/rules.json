@@ -1,0 +1,8 @@
+{
+  "projectDescription": "这是一个 Android Studio 创建的，基于 HBuilder 生成的本地打包 app 资源，来构建安卓应用的项目。",
+  "chatPrompts": [
+    "这是一个 Android Studio 创建的，用 HBuilder 生成的本地打包 app 资源，构建安卓应用的项目。",
+    "HBuilderX 4.15 版本生成 app 资源，运行的基座 sdk 也是4.15。",
+    "请始终用中文回答"
+  ]
+}
