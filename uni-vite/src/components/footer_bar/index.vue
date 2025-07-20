@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       tabList: [
-        { key: 'home', name: '首页', icon: 'home', url: `${WEB_DOMAIN}home/index` },
+        { key: 'home', name: '首页', icon: 'home', url: `${WEB_DOMAIN}index/index` },
         { key: 'task', name: '任务', icon: 'wallet', url: `${WEB_DOMAIN}task/index` },
         { key: 'study', name: '学习', icon: 'color', url: `${WEB_DOMAIN}study/index`, type: 'primary' },
         { key: 'life ', name: '生活', icon: 'gift', url: `${WEB_DOMAIN}life/index` },

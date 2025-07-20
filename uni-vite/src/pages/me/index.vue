@@ -65,7 +65,7 @@ export default {
         })
       }).then(() => {
         uni.redirectTo({
-          url: '/pages/home/index'
+          url: '/pages/index/index'
         });
       })
       .catch(error => {

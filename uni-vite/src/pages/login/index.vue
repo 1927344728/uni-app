@@ -60,7 +60,7 @@
               icon: 'success'
             });
             uni.redirectTo({
-              url: requestUrl || '/pages/home/index'
+              url: requestUrl || '/pages/index/index'
             });
           })
         }

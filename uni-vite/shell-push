@@ -1,0 +1,13 @@
+#!/bin/sh
+# 将 unpackage/resources 下所有内容复制到目标目录
+SRC_DIR="$(pwd)/unpackage/resources"
+DEST_DIR="/d/MyCode/uni-app/uni-android/app/src/main/assets/apps"
+
+# 创建目标目录（如果不存在）
+mkdir -p "$DEST_DIR"
+
+# 清空目标目录下所有内容
+rm -rf "$DEST_DIR"/*
+
+# 复制所有内容（包括隐藏文件和目录）
+cp -rf "$SRC_DIR"/* "$DEST_DIR"/ 

@@ -6,7 +6,10 @@ export const IS_PRODUCT_ENV = _hostname.search(/yizhao\.cn/) !== -1
 export const IS_TEST_ENV = _hostname.search(/yizhao\.cn/) !== -1
 export const IS_LOCALHOST_ENV = _hostname.search(/localhost|192\.168|127\.0\.0\.1|dev\.yizhao\.cn/) !== -1
 
-export const APP_HOSTNAME = IS_LOCALHOST_ENV ? 'http://localhost:8080' : `https://app.yizhao.cn`
+// export const APP_HOSTNAME = IS_LOCALHOST_ENV ? 'http://localhost' : `https://app.yizhao.cn`
+export const APP_HOSTNAME = import.meta.env.VITE_SERVE_HOST
+// export const APP_HOSTNAME = 'http://[::1]'
+console.log(import.meta.env.VITE_SERVE_HOST)
 
 export const COS_ASSET_PATH = 'https://app-1259410276.cos.ap-shanghai.myqcloud.com/uni/'
 export const WEB_DOMAIN = '/pages/'

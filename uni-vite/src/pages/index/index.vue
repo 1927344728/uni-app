@@ -76,6 +76,10 @@
           </view>
         </view>
       </view>
+			<view class="version">
+				<view>{{ helloWord }}</view>
+				<view>v1.0.0-07201721</view>
+			</view>			
     </view>
 
 		<FooterBar />
@@ -83,8 +87,9 @@
 </template>
 
 <script>
-import { COS_ASSET_PATH } from '@/utils/variables'
+import { initBasicConfig, COS_ASSET_PATH } from '@/utils'
 import { LOGO_WHITE_IMAGE } from '@/config/index.js'
+import { helloWord } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
 	components: {
@@ -92,11 +97,16 @@ export default {
 	},
 	data () {
 		return {
+			helloWord: '',
 			bannerImage: `${COS_ASSET_PATH}images/uni_20250313204613.jpg`
 		}
 	},
 	created () {
 		this.logoWhiteImage = LOGO_WHITE_IMAGE
+		initBasicConfig()
+		helloWord().then((data) => {
+			this.helloWord = data
+		})
 	}
 }
 </script>
