@@ -85,11 +85,9 @@ export function numberToChinese(number) {
 }
 
 export function gotoLogin() {
-  const pages = getCurrentPages() || []
-  const page = pages[pages.length - 1]
-  const route = _get(page, '$page.fullPath') || ''
-  debugger
-  window.location.href = `${location.origin}/#/pages/login/index?requestUrl=${encodeURIComponent(route)}`
+	uni.redirectTo({
+		url: '/pages/login/index'
+	});
 }
 
 export function parseTime(time, cFormat) {

@@ -78,18 +78,20 @@
       </view>
 			<view class="version">
 				<view>{{ helloWord }}</view>
-				<view>v1.0.0-07201721</view>
+				<view>{{ serverApiDomain }}</view>
+				<view>v1.0.0-07212238</view>
 			</view>			
     </view>
 
-		<FooterBar />
+		<FooterBar :activeTabKey="activeTabKey" />
   </view>
 </template>
 
 <script>
-import { initBasicConfig, COS_ASSET_PATH } from '@/utils'
+import { SERVER_API_DOMAIN, initBasicConfig, COS_ASSET_PATH } from '@/utils'
 import { LOGO_WHITE_IMAGE } from '@/config/index.js'
 import { helloWord } from '@/api'
+import store from '@/store/index'
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
 	components: {
@@ -98,14 +100,25 @@ export default {
 	data () {
 		return {
 			helloWord: '',
-			bannerImage: `${COS_ASSET_PATH}images/uni_20250313204613.jpg`
+			logoWhiteImage: LOGO_WHITE_IMAGE,
+			bannerImage: `${COS_ASSET_PATH}images/uni_20250313204613.jpg`,
+			serverApiDomain: SERVER_API_DOMAIN
+		}
+	},
+	computed: {
+		activeTabKey () {
+			return store.state.activeTabKey
 		}
 	},
 	created () {
-		this.logoWhiteImage = LOGO_WHITE_IMAGE
+		store.commit('setActiveTabKey', 'index')
 		initBasicConfig()
 		helloWord().then((data) => {
 			this.helloWord = data
+		}).catch((err) => {
+			uni.showToast({
+				title: '请求异常'
+			})
 		})
 	}
 }

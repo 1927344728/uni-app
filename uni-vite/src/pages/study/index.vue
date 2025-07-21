@@ -13,14 +13,23 @@
 				<br/>
 				“这些名称、词语通常与历史、诗歌或思想观念相关，它们将个人、社会和道德价值观及等级制度实体化，体现在物理空间中。在我看来，这样的文字可以使花园或建筑群中的每一个特定位置都具有明确的特征，唤起并体现出独特的精神或微妙的特质。”
 		</text>
-		<FooterBar />
+		<FooterBar :activeTabKey="activeTabKey" />
 	</view>
 </template>
 <script>
+import store from '@/store/index'
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
 	components: {
 		FooterBar
+	},
+	computed: {
+		activeTabKey () {
+			return store.state.activeTabKey
+		}
+	},
+	created () {
+		store.commit('setActiveTabKey', 'study')
 	}
 }
 </script>

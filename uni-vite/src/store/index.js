@@ -2,11 +2,11 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    activeTabBar: 'index'
+    activeTabKey: 'index'
   },
   mutations: {
-    setActiveTabBar(state, str) {
-      state.activeTabBar = str
+    setActiveTabKey(state, str) {
+      state.activeTabKey = str
     }
   }
 })

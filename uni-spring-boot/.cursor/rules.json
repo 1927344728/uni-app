@@ -1,7 +1,8 @@
 {
-  "projectDescription": "一个 spring boot 创建的 web 应用项目。",
+  "projectDescription": "这是一个 spring boot 创建的项目。",
   "chatPrompts": [
-    "一个 spring boot 创建的 web 应用项目。",
-    "请始终用中文回答"
+    "uniapp + spring boot + Android Studio 本地打包，开发一款安卓端应用程序。",
+    "这是其中的 spring boot 创建的项目，用于向客户端提供接口请求。 ",
+    "请始终用中文回答。"
   ]
 }

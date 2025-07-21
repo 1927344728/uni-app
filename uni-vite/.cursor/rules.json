@@ -1,7 +1,9 @@
 {
   "projectDescription": "这是一个 uni-app + vite + vue3 的项目。",
   "chatPrompts": [
-    "这是一个 uniapp + vite + vue3 的项目。",
-    "请始终用中文回答"
+    "uniapp + spring boot + Android Studio 本地打包，生成一款安卓端应用程序。",
+		"这是其中的 uni-app 项目，是 vite + vue3 的前端项目。",
+		"HBuilder x 版本是 4.75，用于生成本地打包 App 资源。",
+    "请始终用中文回答。"
   ]
 }

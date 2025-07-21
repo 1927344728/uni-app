@@ -2,14 +2,18 @@
 @import '@/common/css/color.less';
 
 .me_page {
-  height: calc(100vh - 44px);
-  padding: 15px 15px 76px;
+  min-height: calc(100vh - 44px);
+  padding: 0 0 76px;
   background: @bg-minor-color;
   color: @text-primary-color;
   box-sizing: border-box;
   & .user_info_box {
     display: flex;
+		padding: 16px;
     align-items: center;
+		background:
+		  radial-gradient(ellipse at top, #e6f9f4, transparent),
+		  radial-gradient(ellipse at bottom, #eee, transparent);
     & .avatar {
       width: 80px;
       height: 80px;
@@ -42,6 +46,10 @@
       }
     }
   }
+	& .login_button {
+		margin-top: 32px;
+		padding: 0 16px;
+	}
   & .logout_button {
     margin-top: 64px;
     text-align: center;
