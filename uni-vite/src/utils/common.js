@@ -1,5 +1,5 @@
 import { get as _get } from 'lodash'
-import VConsole from 'vconsole';
+// import VConsole from 'vconsole';
 import { isAfterIphoneX } from '@/common/js/env'
 
 
@@ -231,7 +231,6 @@ export function initBasicConfig(options = {}) {
   setHTMLFontSize()
   setThinnerBorder()
   patchIOSViewportOffset()
-	// new VConsole()
   if (options.documentTitle) {
     setDocumentAndViewportTitle(options.documentTitle)
   }
