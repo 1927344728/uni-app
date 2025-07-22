@@ -6,6 +6,7 @@ export const IS_PRODUCT_ENV = _hostname.includes('app.yizhao.com')
 export const IS_LOCALHOST_ENV = ['localhost', '192.168', '172.0.0.1', 'dev.lizhao.com'].some(s => _hostname.includes(s))
 
 export const SERVER_API_DOMAIN = import.meta.env.VITE_SERVE_HOST
+// export const SERVER_API_DOMAIN = 'https://[2409:8a28:8c4:2e52::5a4]'
 export const COS_ASSET_PATH = 'https://app-1259410276.cos.ap-shanghai.myqcloud.com/uni/'
 export const WEB_DOMAIN = '/pages/'
 

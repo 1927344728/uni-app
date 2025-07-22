@@ -1,7 +1,7 @@
 <network-security-config>
   <domain-config>
     <domain includeSubdomains="true">yizhao.com</domain>
-    <domain includeSubdomains="true">2409:8a28:8c4:2e52::6ae</domain>
+    <domain includeSubdomains="true">2409:8a28:8c4:2e52::5a4</domain>
     <domain includeSubdomains="true">::1</domain>
     <trust-anchors>
       <certificates src="@raw/ca"/>

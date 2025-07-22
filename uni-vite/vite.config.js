@@ -1,11 +1,19 @@
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    uni(),
-  ],
-  server: {
-    port: 9000 // 这里改成你想要的端口号
-  },
+
+export default defineConfig(async () => {
+  const selfsigned = (await import('selfsigned')).default
+  const attrs = [{ name: 'commonName', value: 'localhost' }]
+  const pems = selfsigned.generate(attrs, { days: 365 })
+
+  return {
+    plugins: [uni()],
+    server: {
+      port: 9000,
+      https: {
+        key: pems.private,
+        cert: pems.cert,
+      },
+    },
+  }
 })
