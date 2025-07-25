@@ -53,7 +53,9 @@ public class LoginController {
       cookie.setMaxAge(expiration / 1000);
       cookie.setPath("/");
       cookie.setHttpOnly(true);
+
       response.addCookie(cookie);
+      response.setHeader("Set-Cookie", String.format("token=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=None; Secure", token, expiration / 1000));
 
       return ResponseResult.success("登录成功");
     } catch (Exception e) {
