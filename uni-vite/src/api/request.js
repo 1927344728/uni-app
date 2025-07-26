@@ -28,7 +28,7 @@ export default function (options) {
     return uni.request({
       url: `${SERVER_API_DOMAIN}/${url}`,
       method: (method || 'GET').toLocaleUpperCase(),
-      timeout: 8000,
+      timeout: 1500,
       withCredentials: true,
       sslVerify: false,
       data: data || params,
@@ -55,7 +55,7 @@ export default function (options) {
       },
       fail (err) {
         uni.showToast({
-          title: '请求异常',
+          title: err ? err.errMsg : '请求异常',
           icon: 'error'
         });
         return reject(err);

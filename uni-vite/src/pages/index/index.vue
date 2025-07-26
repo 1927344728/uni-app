@@ -117,7 +117,7 @@ export default {
 			this.helloWord = data
 		}).catch((err) => {
 			uni.showToast({
-				title: '请求异常'
+				title: err ? err.errMsg : '请求异常'
 			})
 		})
 	}
