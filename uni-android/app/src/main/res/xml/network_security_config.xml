@@ -1,7 +1,7 @@
 <network-security-config>
   <domain-config cleartextTrafficPermitted="true">
     <domain includeSubdomains="true">yizhao.com</domain>
-    <domain includeSubdomains="true">4b82fc031c76.ngrok-free.app</domain>
+    <domain includeSubdomains="true">09a461eda91e.ngrok-free.app</domain>
     <domain includeSubdomains="true">::1</domain>
     <domain includeSubdomains="true">192.168.31.146</domain>
     <trust-anchors>

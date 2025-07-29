@@ -11,12 +11,12 @@ public class AuthorityCorsConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
       // 替换为你的前端实际域名，不要用"*"
       .allowedOrigins(
-        "http://app.yizhao.com",
-        "https://app.yizhao.com",
+        "http://app.lizhao.com",
+        "https://app.lizhao.com",
         "http://localhost:9000",
         "https://localhost:9000",
-        "http://4b82fc031c76.ngrok-free.app",
-        "https://4b82fc031c76.ngrok-free.app"
+        "http://09a461eda91e.ngrok-free.app",
+        "https://09a461eda91e.ngrok-free.app"
       )
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
       .allowedHeaders("*")
