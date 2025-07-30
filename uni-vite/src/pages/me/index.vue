@@ -5,23 +5,26 @@
         <image class="avatar" :src="defaultAvatar" mode="aspectFill" />
         <view class="user_detail">
           <view class="user_name">
-            {{ userInfo ? userInfo.name : '' }}
-            <text class="role_tag">
+						<text class="name">
+							{{ userInfo ? userInfo.name : '未知用户' }}
+						</text>
+            <text class="role">
               {{ userInfo ? getRoleLabel(userInfo.role) : '' }}
             </text>
-          </view>
-          <view v-if="userInfo" class="user_phone">
-            <uni-icons type="phone" size="18" color="#14C8A5" />
-            <a v-if="userInfo" :href="'tel:' + userInfo.phone_number">{{ userInfo.phone_number }}</a>
+						<a v-if="userInfo" class="phone" :href="'tel:' + userInfo.phone_number">
+							<uni-icons type="phone" size="18" />
+						</a>
           </view>
         </view>
       </view>
+			<view class="me_main">
+				<view class="me_main_content">					
+					<view class="me_main_item">我的书单</view>
+					<view class="me_main_item">我的成绩</view>
+				</view>
+			</view>
 			<view v-if="!userInfo" class="login_button">
-			  <button
-					type="primary"
-					style="color: white; backgroundColor: #14C8A5;"
-					@click="gotoLogin()"
-				>
+			  <button type="primary" @click="gotoLogin()">
 					登录
 				</button>
 			</view>

@@ -1,57 +1,82 @@
-@import '@/common/css/app.css';
+@import '@/common/css/reset.css';
+@import '@/common/css/common.css';
 @import '@/common/css/color.less';
+@import '@/common/css/apply.css';
 
 .me_page {
-  min-height: calc(100vh - 44px);
-  padding: 0 0 76px;
+  min-height: calc(100vh - 88rpx);
+  padding: 0 0 152rpx;
   background: @bg-minor-color;
   color: @text-primary-color;
   box-sizing: border-box;
   & .user_info_box {
     display: flex;
-		padding: 16px;
+		padding: 24rpx;
     align-items: center;
 		background:
-		  radial-gradient(ellipse at top, #e6f9f4, transparent),
-		  radial-gradient(ellipse at bottom, #eee, transparent);
+		  radial-gradient(ellipse at top left, @bg-primary-color, transparent),
+		  radial-gradient(ellipse at center right, white, transparent);
     & .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+      width: 144rpx;
+      height: 144rpx;
+      border-radius: 124rpx;
       background: #eee;
-      margin-right: 24px;
+      margin-right: 24rpx;
     }
     & .user_detail {
       flex: 1;
       & .user_name {
-        margin-bottom: 8px;
-        & .role_tag {
+        margin-bottom: 16rpx;
+				& .name {
+					vertical-align: middle;
+				}
+        & .role {
           display: inline-block;
-          margin-left: 8px;
-          background: #e6f9f4;
-          color: #14C8A5;
-          border-radius: 12px;
-          padding: 2px 8px;
-          font-size: 12px;
+          margin-left: 16rpx;
+          background: white;
+          color: @primary-color;
+					border: 1px solid @primary-color;
+          border-radius: 12rpx;
+          padding: 4rpx 16rpx;
+          font-size: 24rpx;
+					vertical-align: middle;
         }
-      }
-      & .user_phone {
-        display: flex;
-        align-items: center;
-        margin-bottom: 8px;
-        color: #14C8A5;
-      }
-      & .user_phone uni-icons {
-        margin-right: 6px;
+				& .phone {
+					margin-left: 16rpx;
+					vertical-align: middle;
+					& .uni-icons {
+						color: @primary-color!important;
+					}
+				}
       }
     }
   }
+	& .me_main {
+		padding: 24rpx;
+		& .me_main_content {
+			padding: 16rpx 0 16rpx 24rpx;
+			background: white;
+			border-radius: 24rpx;
+			& .me_main_item {
+				padding: 16rpx 24rpx 16rpx 0;
+			}
+			& .me_main_item:not(:last-child) {
+				border-bottom: 1rpx solid @border-primary-color;
+			}
+		}
+	}
+	
 	& .login_button {
-		margin-top: 32px;
-		padding: 0 16px;
+		margin-top: 64rpx;
+		padding: 0 32rpx;
+    & uni-button {
+			font-size: 32rpx;
+      color: white;
+      background: @primary-color;
+    }
 	}
   & .logout_button {
-    margin-top: 64px;
+    margin-top: 128rpx;
     text-align: center;
     color: @text-patch1-color;
   }

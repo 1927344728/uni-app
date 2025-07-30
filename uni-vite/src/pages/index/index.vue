@@ -1,17 +1,5 @@
 <template>
   <view class="home-page">
-    <view class="nav-header">
-      <view class="nav-content">
-        <view class="logo">
-					<image :src="logoWhiteImage" mode="heightFix" style="display: block; height: 60rpx;"></image>
-				</view>
-        <view class="nav-icons">
-          <uni-icons type="search" size="24" color="#ffffff" />
-          <uni-icons type="notification" size="24" color="#ffffff" />
-        </view>
-      </view>
-    </view>
-
     <view class="content">
       <view class="banner-wrapper">
         <image class="banner-img" :src="bannerImage" mode="aspectFill"></image>
