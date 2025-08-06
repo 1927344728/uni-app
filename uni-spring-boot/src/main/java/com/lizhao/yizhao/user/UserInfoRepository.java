@@ -18,4 +18,9 @@ public interface UserInfoRepository extends JpaRepository<UserInfoEntity, Long> 
   @Transactional
   @Query("UPDATE UserInfoEntity u SET u.token = :token WHERE u.id = :id")
   void updateTokenById(@Param("id") Long id, @Param("token") String token);
+
+  @Modifying
+  @Transactional
+  @Query("UPDATE UserInfoEntity u SET u.password = :password WHERE u.id = :id")
+  void updatePasswordById(@Param("id") Long id, @Param("password") String password);
 }

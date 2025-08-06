@@ -17,7 +17,6 @@ public class ResponseResult<T> {
   public static <T> ResponseResult<T> success(T data) {
     return new ResponseResult<>(200, data, true, "请求成功");
   }
-
   public static <T> ResponseResult<T> fail(int code, String message) {
     return new ResponseResult<>(code, null, false, message);
   }

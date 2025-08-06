@@ -3,6 +3,7 @@ package com.lizhao.yizhao.login;
 import com.lizhao.yizhao.common.ResponseResult;
 import com.lizhao.yizhao.common.User;
 import com.lizhao.yizhao.service.UserService;
+import com.lizhao.yizhao.user.UserDetailEntity;
 import com.lizhao.yizhao.user.UserInfoEntity;
 import com.lizhao.yizhao.user.UserInfoRepository;
 import com.lizhao.yizhao.authority.JwtUtil;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Date;
+import java.util.Optional;
 
 
 @RestController
@@ -78,6 +80,32 @@ public class LoginController {
       response.addCookie(cookie);
 
       return ResponseResult.success("登出成功");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return ResponseResult.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误!");
+    }
+  }
+
+  @GetMapping("/updatePassword")
+  public ResponseResult<String> updatePassword(@RequestParam String password, @RequestParam String newPassword, HttpServletRequest request) {
+    try {
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+        for (Cookie cookie : cookies) {
+          if ("token".equals(cookie.getName())) {
+            String token = cookie.getValue();
+            Optional<UserInfoEntity> userInfo = userInfoRepository.findByToken(token);
+            String userPassword = userInfo.get().getPassword();
+            Long id = userInfo.get().getId();
+            if (!password.equals(userPassword)) {
+              return ResponseResult.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), "原密码错误!");
+            }
+            userInfoRepository.updatePasswordById(id, newPassword);
+          }
+        }
+      }
+
+      return ResponseResult.success("");
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return ResponseResult.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误!");

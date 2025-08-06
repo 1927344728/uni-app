@@ -45,6 +45,12 @@
       "style": {
         "navigationBarTitleText": "登录"
       }
+    },
+    {
+      "path": "pages/login/password",
+      "style": {
+        "navigationBarTitleText": "修改密码"
+      }
     }
   ],
   "globalStyle": {

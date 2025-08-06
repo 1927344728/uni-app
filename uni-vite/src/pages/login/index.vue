@@ -2,8 +2,8 @@
    <view class="login_page">
      <image class="logo" :src="logoImage" mode="aspectFit" />
      <view class="form">
-       <input class="input" type="text" v-model="account" maxlength="11" placeholder="手机号或账号" />
-       <input class="input" type="text" v-model="password" maxlength="6" placeholder="6位数字密码" />
+       <uni-easyinput type="text" v-model="account" maxlength="11" placeholder="手机号或账号" />
+       <uni-easyinput type="password" v-model="password" maxlength="6" placeholder="6位数字密码" />
        <view class="agreement_wrapper"> 				
         <checkbox-group @change="onCheckboxChange">
           <label>

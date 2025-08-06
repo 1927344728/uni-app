@@ -8,7 +8,7 @@
 						<text class="name">
 							{{ userInfo ? userInfo.name : '未知用户' }}
 						</text>
-            <text class="role">
+            <text v-if="userInfo" class="role">
               {{ userInfo ? getRoleLabel(userInfo.role) : '' }}
             </text>
 						<a v-if="userInfo" class="phone" :href="'tel:' + userInfo.phone_number">
@@ -28,8 +28,10 @@
 					登录
 				</button>
 			</view>
-      <view v-if="userInfo" class="logout_button" @click="onLogout">
-        退出登录
+      <view v-if="userInfo" class="logout_button">
+				<Text class="text" @click="onChangePassword">修改密码</Text>
+				|
+        <Text class="text" @click="onLogout">退出登录</Text>
       </view>
     </view>
     <FooterBar :activeTabKey="activeTabKey" />
@@ -81,6 +83,11 @@ export default {
       const map = { 1: '超级管理员', 2: '家长', 3: '学生' };
       return map[role] || '未知角色';
     },
+		onChangePassword () {
+			uni.reLaunch({
+			  url: '/pages/login/password'
+			})
+		},
     onLogout() {
       return logout().then(() => {
         uni.reLaunch({

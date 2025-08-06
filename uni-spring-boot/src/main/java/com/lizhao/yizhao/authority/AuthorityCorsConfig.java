@@ -15,8 +15,8 @@ public class AuthorityCorsConfig implements WebMvcConfigurer {
         "https://app.lizhao.com",
         "http://localhost:9000",
         "https://localhost:9000",
-        "http://427514b88bfd.ngrok-free.app",
-        "https://427514b88bfd.ngrok-free.app"
+        "http://bd90d32a5194.ngrok-free.app",
+        "https://bd90d32a5194.ngrok-free.app"
       )
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
       .allowedHeaders("*")

@@ -13,3 +13,11 @@ export function logout() {
   });
 }
 
+
+export function updatePassword(params) {
+  return request({
+    url: 'api/updatePassword',
+		params
+  });
+}
+
