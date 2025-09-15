@@ -51,7 +51,13 @@
       "style": {
         "navigationBarTitleText": "修改密码"
       }
-    }
+    },
+		{
+		  "path": "pages/recommend/hanyupinyin",
+		  "style": {
+		    "navigationBarTitleText": "汉语拼音发音学习"
+		  }
+		}
   ],
   "globalStyle": {
     "navigationStyle": "default",

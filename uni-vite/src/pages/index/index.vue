@@ -1,70 +1,42 @@
 <template>
   <view class="home-page">
-    <view class="content">
-      <view class="banner-wrapper">
+    <view class="home-content">
+      <view class="home-banner">
         <image class="banner-img" :src="bannerImage" mode="aspectFill"></image>
       </view>
 
-      <view class="grid-section">
-        <view class="grid-item">
-          <view class="grid-icon-wrapper">
-            <image class="grid-icon" src="https://ai-public.mastergo.com/ai/img_res/d502c279bba37f3dfe78158803cfff37.jpg" mode="aspectFill"></image>
-          </view>
-          <text class="grid-text">任务中心</text>
-        </view>
-        <view class="grid-item">
-          <view class="grid-icon-wrapper">
-            <image class="grid-icon" src="https://ai-public.mastergo.com/ai/img_res/d4f59adc3c18b9289aef1f340a93357e.jpg" mode="aspectFill"></image>
-          </view>
-          <text class="grid-text">我的书单</text>
-        </view>
-        <view class="grid-item">
-          <view class="grid-icon-wrapper">
-            <image class="grid-icon" src="https://ai-public.mastergo.com/ai/img_res/d055efbe683f9117949d5fa4088f0d55.jpg" mode="aspectFill"></image>
-          </view>
-          <text class="grid-text">音乐收藏</text>
-        </view>
-        <view class="grid-item">
-          <view class="grid-icon-wrapper">
-            <image class="grid-icon" src="https://ai-public.mastergo.com/ai/img_res/147d5438ef903fcbbac27fc51b5627c8.jpg" mode="aspectFill"></image>
-          </view>
-          <text class="grid-text">视频订阅</text>
-        </view>
+      <view class="home-feature">
+				<view class="wrapper">
+					<view v-for="f in featureIcons" :key="f.key" class="item" @click="gotoPage(f)">
+						<view class="icon-wrapper">
+							<image class="icon" :src="f.image" mode="aspectFill"></image>
+						</view>
+						<text class="text">{{ f.name }}</text>
+					</view>
+				</view>
       </view>
 
-      <view class="recommend-section">
-        <view class="recommend-header">
-          <text class="recommend-title">推荐内容</text>
-          <text class="recommend-more">查看更多</text>
+      <view class="home-recommend">
+        <view class="header">
+          <text class="title">推荐内容</text>
+          <text class="more">查看更多</text>
         </view>
-        <view class="recommend-list">
-          <view class="recommend-item">
-            <image class="recommend-image" src="https://ai-public.mastergo.com/ai/img_res/7e963e9932be6f9b684f7bb0e7c374e4.jpg" mode="aspectFill"></image>
-            <view class="recommend-content">
-              <text class="recommend-item-title">高效学习技巧分享</text>
-              <text class="recommend-desc">10 个实用的学习方法，助你事半功倍</text>
-              <view class="recommend-stats">
-                <text class="stats-text">2.1k 阅读</text>
+        <view class="list">
+          <view v-for="a in recommendArticles" :key="a.id" class="item" @click="gotoPage(a)">
+            <image class="image" :src="a.image" mode="aspectFill"></image>
+            <view class="content">
+              <view class="item-title">{{ a.title }}</view>
+              <view class="desc">{{ a.desc }}</view>
+              <view class="stats">
+                <text class="stats-text">{{ a.readCount }} 阅读</text>
                 <text class="stats-dot">·</text>
-                <text class="stats-text">185 收藏</text>
-              </view>
-            </view>
-          </view>
-          <view class="recommend-item">
-            <image class="recommend-image" src="https://ai-public.mastergo.com/ai/img_res/1dc7228cba03f2eb84dd9a53ecf84d12.jpg" mode="aspectFill"></image>
-            <view class="recommend-content">
-              <text class="recommend-item-title">周末户外摄影指南</text>
-              <text class="recommend-desc">专业摄影师教你拍出完美自然风光</text>
-              <view class="recommend-stats">
-                <text class="stats-text">1.8k 阅读</text>
-                <text class="stats-dot">·</text>
-                <text class="stats-text">142 收藏</text>
+                <text class="stats-text">{{ a.collectCount }} 收藏</text>
               </view>
             </view>
           </view>
         </view>
       </view>
-			<view class="version">
+			<view class="home-version">
 				<view>{{ helloWord }}</view>
 				<view>{{ serverApiDomain }}</view>
 				<view>v1.0.0-07212238</view>
@@ -77,9 +49,11 @@
 
 <script>
 import { SERVER_API_DOMAIN, initBasicConfig, COS_ASSET_PATH } from '@/utils'
-import { LOGO_WHITE_IMAGE } from '@/config/index.js'
+import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE } from '@/config/index.js'
 import { helloWord } from '@/api'
 import store from '@/store/index'
+import { FEATURE_ICON_ENUM, RECOMMEND_ARTICLES } from './constant.js'
+
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
 	components: {
@@ -89,8 +63,10 @@ export default {
 		return {
 			helloWord: '',
 			logoWhiteImage: LOGO_WHITE_IMAGE,
-			bannerImage: `${COS_ASSET_PATH}images/uni_20250313204613.jpg`,
-			serverApiDomain: SERVER_API_DOMAIN
+			bannerImage: HOME_BANNER_IMAGE,
+			serverApiDomain: SERVER_API_DOMAIN,
+			featureIcons: FEATURE_ICON_ENUM,
+			recommendArticles: RECOMMEND_ARTICLES
 		}
 	},
 	computed: {
@@ -108,6 +84,15 @@ export default {
 				title: err ? err.errMsg : '请求异常'
 			})
 		})
+	},
+	methods: {
+		gotoPage (item) {
+			if (item.url) {
+				uni.navigateTo({
+					url: item.url
+				});
+			}
+		}
 	}
 }
 </script>

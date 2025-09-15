@@ -3,10 +3,27 @@
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
 .study-page {
-	padding: 30rpx;
+	position: relative;
 	color: @text-primary-color;
-	.title {
-		font-size: 36rpx;
-		font-weight: bold;
+	.study-nav {
+		position: sticky;
+		top: 0;
+		font-size: 30rpx;
+		padding: 8rpx;
+		overflow-x: auto;
+		border-bottom: 1px solid @border-primary-color;
+		& .item {
+			display: inline-block;
+			padding: 0 16rpx;
+			line-height: 36rpx;
+			text-align: center;
+			vertical-align: middle;
+			text-shadow: -1rpx -1rpx 10rpx rgba(0, 0, 0, 0.3);
+		}
+		& .item.active {
+			font-weight: bold;
+			font-size: 32rpx;
+			color: @primary-color;
+		}
 	}
 }

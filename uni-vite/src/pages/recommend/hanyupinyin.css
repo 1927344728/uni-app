@@ -1,0 +1,228 @@
+@import '@/common/css/reset.css';
+@import '@/common/css/common.css';
+@import '@/common/css/color.less';
+@import '@/common/css/apply.css';
+
+.pingyin_page {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 9px;
+	color: #605b52;
+	background: linear-gradient(135deg, #3494e6, #ec6ead);
+}
+
+.pingyin_page header {
+	text-align: center;
+	margin-bottom: 24px;
+	color: white;
+}
+
+.pingyin_page header h1 {
+	margin-bottom: 12px;
+	font-size: 40px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.pingyin_page header .description {
+	font-size: 1.2rem;
+	max-width: 800px;
+	margin: 0 auto;
+	opacity: 0.9;
+}
+
+.pingyin_page .pingyin_card {
+	background: white;
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+	padding: 16px;
+}
+
+.pingyin_page .pingyin_card .pingyin_category {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	font-size: 18px;
+	color: #605b52;
+	text-align: center;
+	font-weight: bold;
+}
+
+.pingyin_page .pingyin_card .pingyin_category .button {
+	flex: 1;
+	padding: 12px 6px;
+	line-height: 16px;
+	background: #f0f0f0;
+	border: none;
+	border-radius: 24px;
+	cursor: pointer;
+	transition: all 0.3s;
+	white-space: nowrap;
+}
+
+.pingyin_page .pingyin_card .pingyin_category .button.active {
+	background: #3494e6;
+	color: white;
+}
+
+.pingyin_page .pingyin_card .pingyin_category .button:hover {
+	background: #ddd;
+}
+
+.pingyin_page .pingyin_card .pingyin_category .button.active:hover {
+	background: #2980b9;
+}
+
+.pingyin_page .pingyin_card .pingyin_search {
+	display: flex;
+	margin-top: 16px;
+}
+
+.pingyin_page .pingyin_card .pingyin_search input {
+	flex: 1;
+	height: 32px;
+	padding: 0 12px;
+	line-height: 32px;
+	border: 1px solid #ddd;
+	border-radius: 8px 0 0 8px;
+	font-size: 16px;
+	transition: border-color 0.3s;
+}
+
+.pingyin_page .pingyin_card .pingyin_search input:focus {
+	outline: none;
+	border-color: #3494e6;
+}
+
+.pingyin_page .pingyin_card .pingyin_search .search_button {
+	width: 60px;
+	height: 36px;
+	font-size: 16px;
+	line-height: 36px;
+	color: white;
+	border-radius: 0 8px 8px 0;
+	background:  #3494e6;
+	text-align: center;
+}
+
+.pingyin_page .pinyin_container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+	gap: 15px;
+	margin-top: 16px;
+}
+
+.pingyin_page .pinyin_container .item {
+	background: #f8f9ff;
+	padding: 30px 15px;
+	border-radius: 12px;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	position: relative;
+	overflow: hidden;
+}
+
+.pingyin_page .pinyin_container .item .pinyin {
+	font-size: 28px;
+	font-weight: bold;
+	color: #3494e6;
+	margin-bottom: 8px;
+}
+
+.pingyin_page .pinyin_container .item .pronunciation {
+	font-size: 14px;
+	color: #666;
+	margin-bottom: 5px;
+}
+
+.pingyin_page .pinyin_container .item .character {
+	font-size: 22px;
+	font-weight: 500;
+}
+
+.pingyin_page .pinyin_container .item:hover {
+	background: #e0e7ff;
+	transform: translateY(-5px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.pingyin_page .pinyin_container .item.active {
+	background: linear-gradient(135deg, #3494e6, #ec6ead);
+}
+
+.pingyin_page .pinyin_container .item.active .pinyin {
+	color: white;
+}
+
+.pingyin_page .pinyin_container .item.active .pronunciation {
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.pingyin_page .pinyin_container .item.active .character {
+	color: white;
+}
+
+.pingyin_page .pinyin_controls {
+	display: flex;
+	justify-content: center;
+	margin-top: 16px;
+}
+
+.pingyin_page .pinyin_controls .button {
+	flex: 2;
+	background: #3494e6;
+	border: none;
+	margin-right: 15px;
+	padding: 15px 20px;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 500;
+	color: white;
+	cursor: pointer;
+	transition: background 0.3s;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.pingyin_page .pinyin_controls .button:last-child {
+	margin-right: 0;
+}
+
+.pingyin_page .pinyin_controls .button:hover {
+	background: #2980b9;
+}
+
+.pingyin_page .pinyin_controls .button i {
+	margin-right: 8px;
+}
+
+.pingyin_page .pinyin_controls .button.control_stop {
+	flex: 1;
+	background: #e74c3c;
+}
+
+.pingyin_page .pinyin_controls .button.control_stop:hover {
+	background: #c0392b;
+}
+
+.pingyin_page .pinyin_controls .button.control_all {
+	background: #9b59b6;
+}
+
+.pingyin_page .pinyin_controls .button.control_all:hover {
+	background: #8e44ad;
+}
+
+.pingyin_page .pinyin_tips {
+	padding: 4px 16px;
+	margin-top: 48px;
+	color: #999;
+	text-align: center;
+}
+
+.pingyin_page .audio_player {
+	display: none;
+}
