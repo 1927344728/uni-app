@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { SERVER_API_DOMAIN, initBasicConfig, COS_ASSET_PATH } from '@/utils'
+import { SERVER_API_DOMAIN, initBasicConfig, openExternalUrl } from '@/utils'
 import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE } from '@/config/index.js'
 import { helloWord } from '@/api'
 import store from '@/store/index'
@@ -88,9 +88,13 @@ export default {
 	methods: {
 		gotoPage (item) {
 			if (item.url) {
-				uni.navigateTo({
-					url: item.url
-				});
+				if (item.urlOrigin === 'local') {
+					uni.navigateTo({
+						url: item.url
+					});
+				} else {
+					openExternalUrl(item.url)
+				}
 			}
 		}
 	}

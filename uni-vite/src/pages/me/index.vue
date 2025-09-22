@@ -40,7 +40,6 @@
 
 <script>
 import { getCurrentUser, logout } from '@/api'
-import { gotoLogin } from '@/utils/common.js'
 import store from '@/store/index'
 import FooterBar from '@/components/footer_bar/index.vue'
 import { LOGO_COLOR_IMAGE } from '@/config/index.js'
@@ -68,7 +67,6 @@ export default {
     this.fetchData();
   },
   methods: {
-		gotoLogin,
     fetchData() {
 			return getCurrentUser(null, {
 				login: 0,
@@ -83,6 +81,11 @@ export default {
       const map = { 1: '超级管理员', 2: '家长', 3: '学生' };
       return map[role] || '未知角色';
     },
+		gotoLogin () {
+			uni.redirectTo({
+				url: '../login/index'
+			});
+		},
 		onChangePassword () {
 			uni.reLaunch({
 			  url: '/pages/login/password'

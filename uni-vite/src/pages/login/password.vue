@@ -24,7 +24,7 @@
 					/>
         </uni-forms-item>
         <view class="form-submit">
-          <uni-button class="button" type="primary" @click="handleSubmit">提交</uni-button>
+          <button class="button" type="primary" @click="handleSubmit">提交</button>
         </view>
       </uni-forms>
     </view>

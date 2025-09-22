@@ -31,19 +31,21 @@ export const RECOMMEND_ARTICLES = [
 	{
 		id: 1,
 		title: '汉语拼音发音学习',
-		desc: '听取标准发音，学习汉语拼音的正确读法。',
+		desc: '点击任意拼音即可播放发音',
 		image: `${COS_ASSET_PATH}images/20250909222712_5_2.jpg?imageMogr2/thumbnail/160`,
 		url: '/pages/recommend/hanyupinyin',
 		readCount: 1200,
-		collectCount: 200
+		collectCount: 200,
+		urlOrigin: 'local'
 	},
 	{
 		id: 2,
 		title: '周末户外摄影指南',
 		desc: '专业摄影师教你拍出完美自然风光',
 		image: `${COS_ASSET_PATH}images/tBzDxA-yeF6XfLSfgXrQlQ.jpg`,
-		url: '',
+		url: 'https://www.baidu.com',
 		readCount: 1800,
-		collectCount: 142
+		collectCount: 142,
+		urlOrigin: 'web'
 	},
 ]

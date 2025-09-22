@@ -239,6 +239,22 @@ export function initBasicConfig(options = {}) {
   }
 }
 
+export function openExternalUrl(url) {
+	// #ifdef H5
+	window.location.href = url
+	// #endif
+	
+	// #ifdef APP-PLUS
+	plus.runtime.openURL(url);
+	// #endif
+	
+	// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
+	uni.navigateTo({
+			url: `/pages/webview/webview?url=${encodeURIComponent(url)}`
+	});
+	// #endif
+}
+
 export default {
   getTimeStr,
   numberToChinese,
