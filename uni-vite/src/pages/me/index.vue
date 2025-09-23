@@ -63,7 +63,8 @@ export default {
 			return store.state.activeTabKey
 		}
 	},
-  async created() {
+  created() {
+		store.commit('setActiveTabKey', 'me')
     this.fetchData();
   },
   methods: {
@@ -82,18 +83,25 @@ export default {
       return map[role] || '未知角色';
     },
 		gotoLogin () {
-			uni.redirectTo({
-				url: '../login/index'
+			uni.navigateTo({
+				url: '/pages/login/index',
+				fail (error) {
+					uni.showModal({
+						title: '请求异常',
+					  content: error.errMsg,
+						showCancel: false
+					});
+				}
 			});
 		},
 		onChangePassword () {
-			uni.reLaunch({
+			uni.navigateTo({
 			  url: '/pages/login/password'
 			})
 		},
     onLogout() {
       return logout().then(() => {
-        uni.reLaunch({
+        uni.navigateTo({
           url: '/pages/index/index'
         })
       })

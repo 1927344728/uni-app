@@ -33,7 +33,7 @@
     data() {
       return {
         logoImage: LOGO_COLOR_IMAGE,
-        account: localStorage.getItem('YIZHAO_USER_PHONE') || '',
+        account: uni.getStorageSync('YIZHAO_USER_PHONE') || '',
         password: '',
         checked: ''
       }
@@ -54,7 +54,7 @@
             phone: account,
             password
           }).then((data) => {
-            localStorage.setItem('YIZHAO_USER_PHONE', account)
+            uni.setStorageSync('YIZHAO_USER_PHONE', account)
             uni.showToast({
               title: data,
               icon: 'success'

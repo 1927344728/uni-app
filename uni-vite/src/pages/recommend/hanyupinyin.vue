@@ -128,6 +128,7 @@
 				if (this.audioContext) {
 					this.audioContext.pause()
 					this.audioContext.destroy()
+					this.audioContext = null
 				}
 				this.isStop = true
 			},
