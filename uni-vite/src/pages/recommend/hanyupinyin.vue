@@ -84,6 +84,9 @@
 				return this.pinyinCharacters.length
 			}
 		},
+		onUnload () {
+			this.stop()
+		},
 		methods: {
 			onClickPinyinType (o) {
 				this.pinyinType = o.value
@@ -129,17 +132,18 @@
 				this.isStop = true
 			},
 			async playAll () {
-				const { pinyinCharacters, isStop } = this
-				this.stop()
-				this.isStop = false
+				const self = this
+				const { pinyinCharacters } = self
+				self.stop()
+				self.isStop = false
 				for (const pinyin of pinyinCharacters) {
-				  if (isStop) {
+				  if (self.isStop) {
 				    return
 				  }
-				  this.pinyinValue = pinyin.value
-				  this.play(pinyin);
+				  self.pinyinValue = pinyin.value
+				  self.play(pinyin);
 				  await new Promise(resolve => {
-				    this.audioContext.onEnded(resolve)
+				    self.audioContext.onEnded(resolve)
 				  })
 				  await new Promise(resolve => setTimeout(resolve, 500));
 				}

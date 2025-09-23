@@ -1,10 +1,5 @@
 import { get as _get } from 'lodash'
-// import VConsole from 'vconsole';
-import { isAfterIphoneX } from '@/common/js/env'
 
-
-const _SAFE_AREA_INSET_BOTTOM = isAfterIphoneX() ? 34 : 0
-export const SAFE_AREA_INSET_BOTTOM = _SAFE_AREA_INSET_BOTTOM
 export function getTimeStr(time) {
   const second = Math.round((new Date() - time) / 1000)
   if (second < 60) {
@@ -101,9 +96,6 @@ export function parseTime(time, cFormat) {
   } else if (typeof time === 'object') {
     date = time;
   } else {
-    if (('' + time).length === 10) {
-      time = parseInt(time) * 1000;
-    }
     date = new Date(time);
   }
   const formatObj = {
@@ -128,117 +120,6 @@ export function parseTime(time, cFormat) {
   return timeStr;
 }
 
-// 函数：根据生日算年龄
-// 参数：birth为时间字符串或时间翟；cDate为指定时间，不传默认为当前时间
-export function getAgeFromBirth(birth, cDate) {
-  var nowDate = cDate ? (new Date(cDate)) : (new Date())
-  var bDate = new Date(birth)
-  var age = nowDate.getFullYear() - bDate.getFullYear()
-  if (nowDate.getMonth() - bDate.getMonth() < 0 || (nowDate.getMonth() - bDate.getMonth() === 0 && nowDate.getDate() - bDate.getDate() < 0)) {
-    age--
-  }
-  return age
-}
-
-export function getUrlParam(name, url) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(url ? url : location.search);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
-let positionTop = 0
-export function stopBodyScroll(isFixed) {
-  var _body = document && document.body
-  var _documentElement = document && document.documentElement
-  if (window && _body && _documentElement) {
-    if (isFixed) {
-      positionTop = window.scrollY
-
-      _body.style.position = 'fixed'
-      _body.style.top = - positionTop + 'px'
-      _documentElement.style.height = (window.innerHeight + _SAFE_AREA_INSET_BOTTOM) + 'px'
-    } else {
-      _body.style.position = ''
-      _body.style.top = ''
-      _documentElement.style.height = ''
-      window.scrollTo(0, positionTop) // 回到原先的top
-    }
-  }
-}
-
-export function convertNumberToWan(value) {
-  return value >= 10000 && !(value % 10000) ? value / 10000 + '万' : value
-}
-
-export function setDocumentAndViewportTitle(title) {
-  document.title = title
-  if (window && window.appBridge && appBridge.checkAppFeature('CHANGE_WEBVIEW_TITLE')) {
-    window.appBridge.changeWebviewTitle(document.title);
-  }
-}
-
-export function setHTMLFontSize() {
-	const _documentElement = document && document.documentElement
-	if (!_documentElement) {
-		return
-	}
-  const baseFontSize = 16
-  const realFontSize = Math.min(baseFontSize * _documentElement.clientWidth / 375, baseFontSize * 1.75)
-  _documentElement.style.fontSize = `${realFontSize}px`
-  window.onresize = () => {
-    _documentElement.style.fontSize = `${realFontSize}px`
-  }
-}
-
-export function setThinnerBorder() {
-	if (!document) {
-		return
-	}
-  if (window.devicePixelRatio && devicePixelRatio >= 2) { // 高分辨率上1px问题
-    var divElem = document.createElement('div');
-    divElem.style.border = '.5px solid transparent';
-    document.body.appendChild(divElem);
-    if (divElem.offsetHeight == 1) {
-      document.querySelector('html').classList.add('hairlines');
-    }
-    document.body.removeChild(divElem);
-  }
-}
-
-export function patchIOSViewportOffset() { // IOS 12以上，(app4.6.0或者 app.4.8及以上版本)或者(微信)中元素错位问题
-	const _userAgent = navigator ? navigator.userAgent : '';
-  var iosVersion = _userAgent.toLowerCase().match(/cpu iphone os ((\d*)_(.*)?) like mac os/)
-  if (!(iosVersion && iosVersion[2] && iosVersion[2] >= 12)) {
-    return
-  }
-	const _body = document ? document.body : null
-	const _documentElement = document ? document.documentElement : null
-	if (!(window && _body && _documentElement) ) {
-		return
-	}
-  _body.addEventListener('blur', function (e) {
-    if (["TEXTAREA", "INPUT", "SELECT"].indexOf(e.target.tagName) === -1) {
-      return
-    }
-    setTimeout(function () {
-      window.scrollTo(0, _documentElement.scrollTop || _body.scrollTop);
-    }, 100)
-  }, true)
-}
-
-export function initBasicConfig(options = {}) {
-  setHTMLFontSize()
-  setThinnerBorder()
-  patchIOSViewportOffset()
-  if (options.documentTitle) {
-    setDocumentAndViewportTitle(options.documentTitle)
-  }
-  if (options.pageWrapperDom) {
-    options.pageWrapperDom.style.minHeight = window.innerHeight + SAFE_AREA_INSET_BOTTOM + 'px'
-  }
-}
-
 export function openExternalUrl(url) {
 	// #ifdef H5
 	window.location.href = url
@@ -253,19 +134,4 @@ export function openExternalUrl(url) {
 			url: `/pages/webview/webview?url=${encodeURIComponent(url)}`
 	});
 	// #endif
-}
-
-export default {
-  getTimeStr,
-  numberToChinese,
-  gotoLogin,
-  parseTime,
-  getUrlParam,
-  stopBodyScroll,
-  convertNumberToWan,
-  setHTMLFontSize,
-  setThinnerBorder,
-  patchIOSViewportOffset,
-  setDocumentAndViewportTitle,
-  initBasicConfig
 }

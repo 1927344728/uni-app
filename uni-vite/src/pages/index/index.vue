@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { SERVER_API_DOMAIN, initBasicConfig, openExternalUrl } from '@/utils'
+import { SERVER_API_DOMAIN, openExternalUrl } from '@/utils'
 import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE } from '@/config/index.js'
 import { helloWord } from '@/api'
 import store from '@/store/index'
@@ -76,7 +76,6 @@ export default {
 	},
 	created () {
 		store.commit('setActiveTabKey', 'index')
-		initBasicConfig()
 		helloWord().then((data) => {
 			this.helloWord = data
 		}).catch((err) => {
