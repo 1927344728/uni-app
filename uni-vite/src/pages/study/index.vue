@@ -22,9 +22,9 @@ import FooterBar from '@/components/footer_bar/index.vue'
 
 const items = [
 	{ id: 1, name: '课程' },
+	{ id: 2, name: '图书馆' },
 	{ id: 3, name: '成绩' },
 	{ id: 4, name: '阅读' },
-	{ id: 2, name: '图书馆' },
 	
 ]
 export default {
@@ -33,7 +33,7 @@ export default {
 	},
 	data () {
 		return {
-			currentId: 1,
+			currentId: 2,
 			items
 		}
 	},

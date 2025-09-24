@@ -48,4 +48,14 @@ export const RECOMMEND_ARTICLES = [
 		collectCount: 142,
 		urlOrigin: 'web'
 	},
+	{
+		id: 3,
+		title: '周末户外摄影指南',
+		desc: '专业摄影师教你拍出完美自然风光',
+		image: `${COS_ASSET_PATH}images/tBzDxA-yeF6XfLSfgXrQlQ.jpg`,
+		url: 'https://www.baidu.com',
+		readCount: 1800,
+		collectCount: 142,
+		urlOrigin: 'web'
+	},
 ]

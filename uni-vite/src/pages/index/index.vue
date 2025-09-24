@@ -39,7 +39,7 @@
 			<view class="home-version">
 				<view>{{ helloWord }}</view>
 				<view>{{ serverApiDomain }}</view>
-				<view>v1.0.0-07212238</view>
+				<view>v1.0.0-09242222</view>
 			</view>			
     </view>
 
