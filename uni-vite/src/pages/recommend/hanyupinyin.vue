@@ -21,20 +21,27 @@
 			</view>
 			
 			<view class="pingyin_search">
-				<uni-easyinput v-model="searchKey" type="text" class="search_key" placeholder="搜索拼音..." clearable></uni-easyinput>
+				<uni-easyinput
+					v-model="searchKey"
+					type="text"
+					class="search_key"
+					placeholder="搜索拼音..."
+					clearable
+					@clear="clearSearchKey"
+				></uni-easyinput>
 				<text class="search_button" @click="onClickSearch">
 					搜索
 				</text>
 			</view>
 	
 	    <view class="pinyin_controls">
-				<button class="button control_play" @click="playCurrent">
+				<button class="button control_play" :class="[pinyinValue ? '' : 'disabled']" @click="currentPlay()">
 					播放选中
 				</button>
-				<button class="button control_stop" @click="stop">
+				<button class="button control_stop" :class="[pinyinValue ? '' : 'disabled']" @click="stop">
 					停止
 				</button>
-				<button class="button control_all" @click="playAll">
+				<button class="button control_all" :class="[pinyinCharacters && pinyinCharacters.length ? '' : 'disabled']"  @click="recursionPlay(pinyinValue)">
 					播放全部
 				</button>
 			</view>
@@ -64,6 +71,9 @@
 <script>
 	import { COS_ASSET_PATH } from '@/utils/variables'
 	import { PINYIN_TYPE_OPTIONS, PINYIN_CHARACTERS } from './hanyupinyin.js'
+	import { cloneDeep } from 'lodash'
+	
+	let playTimer = null
 	export default {
 		data () {
 			return {
@@ -72,8 +82,7 @@
 				searchKey: '',
 				pinyinTypeOptions: PINYIN_TYPE_OPTIONS,
 				pinyinCharacters: PINYIN_CHARACTERS,
-				audioContext: null,
-				isStop: false
+				audioContext: null
 			}
 		},
 		computed: {
@@ -89,64 +98,86 @@
 		},
 		methods: {
 			onClickPinyinType (o) {
+				this.stop()
 				this.pinyinType = o.value
 				this.searchKey = ''
 				this.pinyinCharacters = o.value === 'all' ? PINYIN_CHARACTERS : PINYIN_CHARACTERS.filter(c => c.type === this.pinyinType)
+				this.pinyinValue = this.pinyinCharacters[0].value
 			},
 			onClickSearch () {
 				const { searchKey } = this
 				this.pinyinCharacters = searchKey ? PINYIN_CHARACTERS.filter(c => c.value === searchKey) : PINYIN_CHARACTERS
+				this.stop()
+				if (this.pinyinCharacters[0]) {
+					this.pinyinValue = this.pinyinCharacters[0].value
+				}
+			},
+			clearSearchKey () {
+				this.pinyinCharacters = PINYIN_CHARACTERS
+				this.pinyinValue = PINYIN_CHARACTERS[0].value
 			},
 			onClickPinyin (item) {
 				this.pinyinValue = item.value
 				this.searchKey = ''
-				this.play(item)
+				this.play(item.value)
 			},
-			play (item) {
-				if (this.audioContext) {
-					this.audioContext.pause()
-					this.audioContext.destroy()
-				}
-				this.audioContext = uni.createInnerAudioContext();
-				this.audioContext.autoplay = true;
-				this.audioContext.src = `${COS_ASSET_PATH}/audio/hanyupinyin/${item.audio || item.value}.mp3`;;
-				this.audioContext.onPlay(() => {
-				  console.log('开始播放');
-				});
-				this.audioContext.onError((res) => {
-				  console.log(res.errMsg);
-				  console.log(res.errCode);
-				});
-			},
-			playCurrent () {
-				const item = PINYIN_CHARACTERS.find(c => c.value === this.pinyinValue)
+			play (value) {
+				const self = this
+				const item = PINYIN_CHARACTERS.find(c => c.value === value)
 				if (item) {
-					this.play(item)
+					return new Promise((resolve, reject) => {
+						self.clear()
+						self.audioContext = uni.createInnerAudioContext();
+						self.audioContext.autoplay = true;
+						self.audioContext.src = `${COS_ASSET_PATH}/audio/hanyupinyin/${item.audio || item.value}.mp3`;;
+						self.audioContext.onEnded(() => {
+							resolve()
+						})
+						self.audioContext.onError((res) => {
+							reject(res)
+						});
+					})
 				}
+				return Promise.reject()
 			},
-			stop () {
+			clear () {
 				if (this.audioContext) {
 					this.audioContext.pause()
 					this.audioContext.destroy()
 					this.audioContext = null
 				}
-				this.isStop = true
 			},
-			async playAll () {
+			stop () {
+				this.clear()
+				this.pinyinValue = null
+				clearTimeout(playTimer)
+			},
+			currentPlay () {
+				if (!this.pinyinValue) {
+					uni.showToast({
+						title: '请选择拼音',
+						icon: 'none',
+						duration: 2000
+					});
+					return
+				}
+				this.play(this.pinyinValue)
+			},
+			async recursionPlay (value) {
 				const self = this
 				const { pinyinCharacters } = self
-				self.stop()
-				self.isStop = false
-				for (const pinyin of pinyinCharacters) {
-				  if (self.isStop) {
-				    return
-				  }
-				  self.pinyinValue = pinyin.value
-				  self.play(pinyin);
-				  await new Promise(resolve => {
-				    self.audioContext.onEnded(resolve)
-				  })
-				  await new Promise(resolve => setTimeout(resolve, 500));
+				const currentPinyin = pinyinCharacters.find(c => c.value === value) || pinyinCharacters[0]
+				if (currentPinyin) {
+					const currentIndex = pinyinCharacters.findIndex(c => c.value === currentPinyin.value)
+					self.pinyinValue = currentPinyin.value
+					await self.play(currentPinyin.value).catch(() => {})
+					const nextPinyin = currentIndex + 1 >= 0 && pinyinCharacters[currentIndex + 1]
+					if (nextPinyin) {
+						self.pinyinValue = nextPinyin.value
+						playTimer = setTimeout(() => {
+							self.recursionPlay(self.pinyinValue)
+						}, 500)
+					}
 				}
 			}
 		}

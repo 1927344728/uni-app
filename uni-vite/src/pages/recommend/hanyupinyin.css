@@ -216,6 +216,13 @@
 	background: #8e44ad;
 }
 
+.pingyin_page .pinyin_controls .button.disabled,
+.pingyin_page .pinyin_controls .button.disabled:hover {
+	color: white;
+	background: #ccc;
+}
+
+
 .pingyin_page .pinyin_tips {
 	padding: 4px 16px;
 	margin-top: 48px;
