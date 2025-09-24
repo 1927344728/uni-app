@@ -7,15 +7,17 @@ page {
   min-height: 100%;
 }
 .home-page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  min-height: 100%;
   background: @bg-minor-color;
 
   & .home-content {
     flex: 1;
-    padding-bottom: 128rpx;
   }
+	& .home-content::after {
+		display: block;
+	  height: 128rpx;
+		content: '';
+	}
 
 	& .home-banner {
 		padding: 24rpx;
