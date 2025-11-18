@@ -32,30 +32,31 @@ export const RECOMMEND_ARTICLES = [
 		id: 1,
 		title: '汉语拼音发音学习',
 		desc: '点击任意拼音即可播放发音',
-		image: `${COS_ASSET_PATH}images/20250909222712_5_2.jpg?imageMogr2/thumbnail/160`,
-		url: '/pages/recommend/hanyupinyin',
+		image: `${COS_ASSET_PATH}images/微信图片_20251117234041_35_2.jpg?imageMogr2/thumbnail/160`,
+		// url: 'https://1927344728.github.io/web-page/hanyupinyin.html',
+		url: '/static/hanyupinyin.html',
 		readCount: 1200,
 		collectCount: 200,
-		urlOrigin: 'local'
+		jumpTo: 'webview'
 	},
 	{
 		id: 2,
-		title: '周末户外摄影指南',
-		desc: '专业摄影师教你拍出完美自然风光',
+		title: '摄影笔记深度解析',
+		desc: '从原理到实践的摄影入门指南——深入解读宁思潇潇的经典之作',
 		image: `${COS_ASSET_PATH}images/tBzDxA-yeF6XfLSfgXrQlQ.jpg`,
-		url: 'https://www.baidu.com',
+		url: '/static/photography.html',
 		readCount: 1800,
 		collectCount: 142,
-		urlOrigin: 'web'
+		jumpTo: 'webview'
 	},
 	{
 		id: 3,
-		title: '周末户外摄影指南',
-		desc: '专业摄影师教你拍出完美自然风光',
-		image: `${COS_ASSET_PATH}images/tBzDxA-yeF6XfLSfgXrQlQ.jpg`,
-		url: 'https://www.baidu.com',
+		title: '中国地方特色水果图鉴',
+		desc: '每一方水土，都有其独特的甜蜜献礼。探索中国大地上风味各异的地方名果。',
+		image: `${COS_ASSET_PATH}images/9aa1951aeb5a45e186eeef1d6e39296d463b6f2911c6ff-SlTBw5_fw1200webp.webp`,
+		url: '/static/fruit.html',
 		readCount: 1800,
 		collectCount: 142,
-		urlOrigin: 'web'
+		jumpTo: 'webview'
 	},
 ]

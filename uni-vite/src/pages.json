@@ -57,6 +57,12 @@
 		  "style": {
 		    "navigationBarTitleText": "汉语拼音发音学习"
 		  }
+		},
+		{
+		  "path": "pages/webview/index",
+		  "style": {
+		    "navigationBarTitleText": "webview"
+		  }
 		}
   ],
   "globalStyle": {

@@ -1,13 +1,27 @@
 <template>
   <view class="home-page">
     <view class="home-content">
-      <view class="home-banner">
-        <image class="banner-img" :src="bannerImage" mode="aspectFill"></image>
-      </view>
+			<uni-swiper-dot
+				class="home-banner"
+				:info="bannerList"
+				:current="currentBanner"
+				field="content"
+				:dotsStyles="{
+					bottom: 15
+				}"
+			>
+				<swiper class="swiper-box" @change="e => (currentBanner = e.detail.current)">
+					<swiper-item v-for="item in bannerList" :key="item.id">
+						<view class="swiper-item">
+							<image class="banner-img" :src="item.image" mode="aspectFill" @click="openUrl(item)"></image>
+						</view>
+					</swiper-item>
+				</swiper>
+			</uni-swiper-dot>
 
       <view class="home-feature">
 				<view class="wrapper">
-					<view v-for="f in featureIcons" :key="f.key" class="item" @click="gotoPage(f)">
+					<view v-for="f in featureIcons" :key="f.key" class="item" @click="openUrl(f)">
 						<view class="icon-wrapper">
 							<image class="icon" :src="f.image" mode="aspectFill"></image>
 						</view>
@@ -19,10 +33,10 @@
       <view class="home-recommend">
         <view class="header">
           <text class="title">推荐内容</text>
-          <text class="more">查看更多</text>
+          <!-- <text class="more">查看更多</text> -->
         </view>
         <view class="list">
-          <view v-for="a in recommendArticles" :key="a.id" class="item" @click="gotoPage(a)">
+          <view v-for="a in recommendArticles" :key="a.id" class="item" @click="openUrl(a)">
             <image class="image" :src="a.image" mode="aspectFill"></image>
             <view class="content">
               <view class="item-title">{{ a.title }}</view>
@@ -37,9 +51,7 @@
         </view>
       </view>
 			<view class="home-version">
-				<view>{{ helloWord }}</view>
-				<view>{{ serverApiDomain }}</view>
-				<view>v1.0.0-09242258</view>
+				<view>一兆含窗@1.0.1</view>
 			</view>			
     </view>
 
@@ -48,8 +60,8 @@
 </template>
 
 <script>
-import { SERVER_API_DOMAIN, openExternalUrl } from '@/utils'
-import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE } from '@/config/index.js'
+import { SERVER_API_DOMAIN, openUrl } from '@/utils'
+import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE, BANNER_LIST } from '@/config/index.js'
 import { helloWord } from '@/api'
 import store from '@/store/index'
 import { FEATURE_ICON_ENUM, RECOMMEND_ARTICLES } from './constant.js'
@@ -63,6 +75,8 @@ export default {
 		return {
 			helloWord: '',
 			logoWhiteImage: LOGO_WHITE_IMAGE,
+			currentBanner: 0,
+			bannerList: BANNER_LIST,
 			bannerImage: HOME_BANNER_IMAGE,
 			serverApiDomain: SERVER_API_DOMAIN,
 			featureIcons: FEATURE_ICON_ENUM,
@@ -85,17 +99,7 @@ export default {
 		})
 	},
 	methods: {
-		gotoPage (item) {
-			if (item.url) {
-				if (item.urlOrigin === 'local') {
-					uni.navigateTo({
-						url: item.url
-					});
-				} else {
-					openExternalUrl(item.url)
-				}
-			}
-		}
+		openUrl
 	}
 }
 </script>

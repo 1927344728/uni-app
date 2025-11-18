@@ -120,18 +120,34 @@ export function parseTime(time, cFormat) {
   return timeStr;
 }
 
-export function openExternalUrl(url) {
-	// #ifdef H5
-	window.location.href = url
-	// #endif
-	
-	// #ifdef APP-PLUS
-	plus.runtime.openURL(url);
-	// #endif
-	
-	// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
-	uni.navigateTo({
-			url: `/pages/webview/webview?url=${encodeURIComponent(url)}`
-	});
-	// #endif
+export function openUrl(item) {
+	if (item && item.url) {
+		if (item.jumpTo === 'navigate') {
+			uni.navigateTo({
+				url: item.url
+			});
+		}
+		if (item.jumpTo === 'webview') {
+			uni.navigateTo({
+				url: `/pages/webview/index?url=${encodeURIComponent(item.url)}`
+			});
+		}
+		if (item.jumpTo === 'web') {
+			// #ifdef H5
+			window.location.href = item.url
+			// #endif
+			
+			// #ifdef APP-PLUS
+			plus.runtime.openURL(item.url);
+			// #endif
+			
+			// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
+			uni.navigateTo({
+					url: `/pages/webview/index?url=${encodeURIComponent(item.url)}`
+			});
+			// #endif
+		}
+	}
 }
+	
+	

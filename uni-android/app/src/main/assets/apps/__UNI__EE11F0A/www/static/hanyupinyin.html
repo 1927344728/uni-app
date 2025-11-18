@@ -1,12 +1,93 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" />
-  <title>汉语拼音发音学习工具</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>汉语拼音发音学习</title>
   <style>
-    html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    /* 重置样式 */
+    html,
+    body,
+    div,
+    span,
+    applet,
+    object,
+    iframe,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote,
+    pre,
+    a,
+    abbr,
+    acronym,
+    address,
+    big,
+    cite,
+    code,
+    del,
+    dfn,
+    em,
+    img,
+    ins,
+    kbd,
+    q,
+    s,
+    samp,
+    small,
+    strike,
+    strong,
+    sub,
+    sup,
+    tt,
+    var,
+    b,
+    u,
+    i,
+    center,
+    dl,
+    dt,
+    dd,
+    ol,
+    ul,
+    li,
+    fieldset,
+    form,
+    label,
+    legend,
+    table,
+    caption,
+    tbody,
+    tfoot,
+    thead,
+    tr,
+    th,
+    td,
+    article,
+    aside,
+    canvas,
+    details,
+    embed,
+    figure,
+    figcaption,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    output,
+    ruby,
+    section,
+    summary,
+    time,
+    mark,
+    audio,
+    video {
       margin: 0;
       padding: 0;
       border: 0;
@@ -14,56 +95,91 @@
       font-size: 100%;
       vertical-align: baseline;
     }
-    article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+
+    /* HTML5 display-role reset for older browsers */
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
       display: block;
     }
-    ol, ul {
+
+    ol,
+    ul {
       list-style: none;
     }
-    blockquote, q {
+
+    blockquote,
+    q {
       quotes: none;
     }
-    blockquote::before, blockquote::after, q::before, q::after {
+
+    blockquote::before,
+    blockquote::after,
+    q::before,
+    q::after {
       content: '';
       content: none;
     }
+
     table {
       border-collapse: collapse;
       border-spacing: 0;
     }
+
     html {
       font-family: sans-serif;
       -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
       box-sizing: border-box;
     }
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
       box-sizing: inherit;
     }
+
     body {
-      font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Helvetica Neue', Helvetica, 'microsoft yahei', STHeiTi, sans-serif;
     }
+
     textarea {
       overflow: auto;
       vertical-align: top;
       resize: none;
     }
+
     :focus {
       outline: none;
     }
-    :link, :visited {
+
+    :link,
+    :visited {
       text-decoration: none;
     }
+
     a {
       -webkit-tap-highlight-color: transparent;
     }
+
     a:focus {
       outline: thin dotted;
     }
-    a:active, a:hover {
+
+    a:active,
+    a:hover {
       outline: 0;
     }
 
+    /* 应用样式 */
     .pingyin_page {
       max-width: 1200px;
       margin: 0 auto;
@@ -91,7 +207,7 @@
       margin: 0 auto;
       opacity: 0.9;
     }
-    
+
     .pingyin_page .pingyin_card {
       background: white;
       border-radius: 16px;
@@ -133,17 +249,19 @@
     .pingyin_page .pingyin_card .pingyin_category .button.active:hover {
       background: #2980b9;
     }
-    
+
     .pingyin_page .pingyin_card .pingyin_search {
       display: flex;
+      align-items: center;
       margin-top: 16px;
+      height: 36px;
     }
 
     .pingyin_page .pingyin_card .pingyin_search input {
       flex: 1;
-      height: 32px;
+      height: 34px;
       padding: 0 12px;
-      line-height: 32px;
+      line-height: 34px;
       border: 1px solid #ddd;
       border-radius: 8px 0 0 8px;
       font-size: 16px;
@@ -157,15 +275,16 @@
 
     .pingyin_page .pingyin_card .pingyin_search .search_button {
       width: 60px;
-      height: 32px;
+      height: 36px;
       font-size: 16px;
-      line-height: 32px;
+      line-height: 36px;
       color: white;
       border-radius: 0 8px 8px 0;
-      background:  #3494e6;
+      background: #3494e6;
       text-align: center;
+      cursor: pointer;
     }
-    
+
     .pingyin_page .pinyin_container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
@@ -192,12 +311,6 @@
       margin-bottom: 8px;
     }
 
-    .pingyin_page .pinyin_container .item .pronunciation {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 5px;
-    }
-
     .pingyin_page .pinyin_container .item .character {
       font-size: 22px;
       font-weight: 500;
@@ -217,14 +330,10 @@
       color: white;
     }
 
-    .pingyin_page .pinyin_container .item.active .pronunciation {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
     .pingyin_page .pinyin_container .item.active .character {
       color: white;
     }
-    
+
     .pingyin_page .pinyin_controls {
       display: flex;
       justify-content: center;
@@ -251,30 +360,33 @@
     .pingyin_page .pinyin_controls .button:last-child {
       margin-right: 0;
     }
-    
+
     .pingyin_page .pinyin_controls .button:hover {
       background: #2980b9;
     }
-    
-    .pingyin_page .pinyin_controls .button i {
-      margin-right: 8px;
-    }
-    
+
     .pingyin_page .pinyin_controls .button.control_stop {
       flex: 1;
       background: #e74c3c;
     }
-    
+
     .pingyin_page .pinyin_controls .button.control_stop:hover {
       background: #c0392b;
     }
-    
+
     .pingyin_page .pinyin_controls .button.control_all {
       background: #9b59b6;
     }
-    
+
     .pingyin_page .pinyin_controls .button.control_all:hover {
       background: #8e44ad;
+    }
+
+    .pingyin_page .pinyin_controls .button.disabled,
+    .pingyin_page .pinyin_controls .button.disabled:hover {
+      color: white;
+      background: #ccc;
+      cursor: not-allowed;
     }
 
     .pingyin_page .pinyin_tips {
@@ -284,59 +396,64 @@
       text-align: center;
     }
 
-    .audio_player {
+    .pingyin_page .audio_player {
       display: none;
     }
   </style>
 </head>
+
 <body>
-	<div class="pingyin_page">
-		<header>
-			<h1>汉语拼音发音学习</h1>
-			<p class="description">点击任意拼音即可播放发音</p>
-		</header>
-		
-		<div class="pingyin_card">
-			<div class="pingyin_category"></div>
-			
-			<div class="pingyin_search">
-				<input name="searchKey" type="text" class="search_key" placeholder="搜索拼音..."></input>
-				<span class="search_button">
-					搜索
-				</span>
-			</div>
+  <div class="pingyin_page">
+    <header>
+      <h1>汉语拼音发音学习</h1>
+      <div class="description">点击任意拼音即可播放发音</div>
+    </header>
+
+    <div class="pingyin_card">
+      <div class="pingyin_category" id="pinyinCategory">
+        <!-- 拼音分类按钮将通过JS动态生成 -->
+      </div>
+
+      <div class="pingyin_search">
+        <input type="text" id="searchKey" class="search_key" placeholder="搜索拼音...">
+        <div class="search_button" id="searchButton">
+          搜索
+        </div>
+      </div>
 
       <div class="pinyin_controls">
-				<button class="button control_play" @click="play">
-					播放选中
-				</button>
-				<button class="button control_stop" @click="stop">
-					停止
-				</button>
-				<button class="button control_all" @click="playAll">
-					播放全部
-				</button>
-			</div>
-			
-			<div class="pinyin_container"></div>
-			
-      <div class="pinyin_tips"></div>
+        <button class="button control_play" id="playButton">
+          播放选中
+        </button>
+        <button class="button control_stop" id="stopButton">
+          停止
+        </button>
+        <button class="button control_all" id="playAllButton">
+          播放全部
+        </button>
+      </div>
 
-      <audio class="audio_player" id="audioPlayer" preload="none"></audio>
-		</div>
-	</div>
+      <div class="pinyin_container" id="pinyinContainer">
+        <!-- 拼音项目将通过JS动态生成 -->
+      </div>
+
+      <div class="pinyin_tips" id="pinyinTips">
+        <!-- 拼音统计信息将通过JS动态生成 -->
+      </div>
+    </div>
+  </div>
 
   <script>
-    var assetPath = 'https://app-1259410276.cos.ap-shanghai.myqcloud.com/uni/audio/hanyupinyin'
-
-    var PINYIN_TYPE_OPTIONS = [
+    // 拼音数据
+    const COS_ASSET_PATH = 'https://app-1259410276.cos.ap-shanghai.myqcloud.com/uni';
+    const PINYIN_TYPE_OPTIONS = [
       { value: 'all', name: '全部（63）' },
       { value: 'shengmu', name: '声母（23）' },
       { value: 'yunmu', name: '韵母（24）' },
       { value: 'whole', name: '整体认读（16）' },
-    ]
+    ];
 
-    var PINYIN_CHARACTERS = [
+    const PINYIN_CHARACTERS = [
       { value: 'b', name: '播', type: 'shengmu' },
       { value: 'p', name: '坡', type: 'shengmu' },
       { value: 'm', name: '摸', type: 'shengmu' },
@@ -360,7 +477,7 @@
       { value: 's', name: '思', type: 'shengmu' },
       { value: 'y', name: '衣', type: 'shengmu' },
       { value: 'w', name: '乌', type: 'shengmu' },
-      
+
       { value: 'a', name: '啊', type: 'yunmu' },
       { value: 'o', name: '哦', type: 'yunmu' },
       { value: 'e', name: '额', type: 'yunmu' },
@@ -385,7 +502,7 @@
       { value: 'eng', name: '嗯', type: 'yunmu' },
       { value: 'ing', name: '英', type: 'yunmu' },
       { value: 'ong', name: '钟', type: 'yunmu' },
-      
+
       { value: 'zhi', name: '蜘', type: 'whole' },
       { value: 'chi', name: '吃', type: 'whole' },
       { value: 'shi', name: '狮', type: 'whole' },
@@ -402,111 +519,263 @@
       { value: 'yin', name: '印', type: 'whole' },
       { value: 'yun', name: '云', type: 'whole' },
       { value: 'ying', name: '鹰', type: 'whole' },
-    ]
+    ];
 
-    var searchKey = ''
-    var pinyinType = 'all'
-    var pinyinValue = 'b'
-    var pinyinTypeOptions = PINYIN_TYPE_OPTIONS
-    var pinyinCharacters = PINYIN_CHARACTERS
-    var isStop = false
+    // 应用状态
+    let state = {
+      pinyinType: 'all',
+      pinyinValue: 'b',
+      searchKey: '',
+      pinyinCharacters: [...PINYIN_CHARACTERS],
+      audioContext: null,
+      playTimer: null
+    };
 
-    function renderCategoryNodes (options) {
-      var categoryEle = document.getElementsByClassName('pingyin_category')[0]
-      categoryEle.innerHTML = ''
-      options.forEach(o => {
-        var itemNode = document.createElement('div')
-        itemNode.className = `button ${pinyinType === o.value ? 'active' : ''}`
-        itemNode.innerHTML = o.name
-        var searchKeyNode = document.getElementsByClassName('search_key')[0]
-        itemNode.addEventListener('click', function () {
-          pinyinType = o.value
-          pinyinCharacters = PINYIN_CHARACTERS.filter(c => pinyinType === 'all' || c.type === pinyinType)
-          searchKeyNode.value = ''
-          stop()
-          renderCategoryNodes(options)
-          renderPinyinNodes(pinyinCharacters)
-        }, false)
-        categoryEle.appendChild(itemNode)
-      })
+    // DOM元素
+    const elements = {
+      pinyinCategory: document.getElementById('pinyinCategory'),
+      searchKey: document.getElementById('searchKey'),
+      searchButton: document.getElementById('searchButton'),
+      playButton: document.getElementById('playButton'),
+      stopButton: document.getElementById('stopButton'),
+      playAllButton: document.getElementById('playAllButton'),
+      pinyinContainer: document.getElementById('pinyinContainer'),
+      pinyinTips: document.getElementById('pinyinTips')
+    };
+
+    // 初始化应用
+    function initApp() {
+      renderPinyinCategory();
+      renderPinyinItems();
+      updatePinyinTips();
+      setupEventListeners();
     }
 
-    function renderPinyinNodes (characters) {
-      var containerEle = document.getElementsByClassName('pinyin_container')[0]
-      var tipsEle = document.getElementsByClassName('pinyin_tips')[0]
-      containerEle.innerHTML = ''
-      characters.forEach(c => {
-        var itemNode = document.createElement('div')
-        itemNode.className = `item ${pinyinValue === c.value ? 'active' : ''}`
-        itemNode.innerHTML = `
-          <div class="pinyin">${c.value}</div>
-          <div class="character">${c.name}</div>
-        `
-        itemNode.addEventListener('click', function () {
-          pinyinValue = c.value
-          renderPinyinNodes(pinyinCharacters)
-          stop()
-          play(c)
-        }, false)
-        containerEle.appendChild(itemNode)
-      })
-      tipsEle.innerHTML = `共 ${PINYIN_CHARACTERS.length} 个拼音，当前显示 ${characters.length} 个`
+    // 渲染拼音分类
+    function renderPinyinCategory() {
+      elements.pinyinCategory.innerHTML = '';
+
+      PINYIN_TYPE_OPTIONS.forEach(option => {
+        const button = document.createElement('div');
+        button.className = `button ${option.value === state.pinyinType ? 'active' : ''}`;
+        button.textContent = option.name;
+        button.dataset.value = option.value;
+
+        button.addEventListener('click', () => {
+          onClickPinyinType(option);
+        });
+
+        elements.pinyinCategory.appendChild(button);
+      });
     }
 
-    function play (item) {
-      audioPlayer.src = `${assetPath}/${item.audio || item.value}.mp3`;
-      audioPlayer.play();
+    // 渲染拼音项目
+    function renderPinyinItems() {
+      elements.pinyinContainer.innerHTML = '';
+
+      state.pinyinCharacters.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = `item ${item.value === state.pinyinValue ? 'active' : ''}`;
+        itemElement.dataset.value = item.value;
+
+        const pinyinElement = document.createElement('div');
+        pinyinElement.className = 'pinyin';
+        pinyinElement.textContent = item.value;
+
+        const characterElement = document.createElement('div');
+        characterElement.className = 'character';
+        characterElement.textContent = item.name;
+
+        itemElement.appendChild(pinyinElement);
+        itemElement.appendChild(characterElement);
+
+        itemElement.addEventListener('click', () => {
+          onClickPinyin(item);
+        });
+
+        elements.pinyinContainer.appendChild(itemElement);
+      });
+
+      updateControlButtons();
     }
 
-    function stop () {
-      audioPlayer.pause();
-      audioPlayer.src = '';
-      isStop = true
+    // 更新控制按钮状态
+    function updateControlButtons() {
+      const hasPinyinValue = !!state.pinyinValue;
+      const hasPinyinCharacters = state.pinyinCharacters && state.pinyinCharacters.length;
+
+      elements.playButton.className = `button control_play ${hasPinyinValue ? '' : 'disabled'}`;
+      elements.stopButton.className = `button control_stop ${hasPinyinValue ? '' : 'disabled'}`;
+      elements.playAllButton.className = `button control_all ${hasPinyinCharacters ? '' : 'disabled'}`;
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      var searchKeyNode = document.getElementsByClassName('search_key')[0]
-      var searchButtonNode = document.getElementsByClassName('search_button')[0]
-      var audioPlayerNode = document.getElementById('audioPlayer');
-      var controlPlay = document.getElementsByClassName('control_play')[0]
-      var controlStop = document.getElementsByClassName('control_stop')[0]
-      var controlAll = document.getElementsByClassName('control_all')[0]
-      renderCategoryNodes(pinyinTypeOptions)
-      renderPinyinNodes(pinyinCharacters)
-      searchButtonNode.addEventListener('click', function () {
-        if (searchKeyNode.value) {
-          searchKey = searchKeyNode.value
-          pinyinCharacters = PINYIN_CHARACTERS.filter(c => c.value === searchKey)
+    // 更新拼音统计信息
+    function updatePinyinTips() {
+      const allPinyinCount = PINYIN_CHARACTERS.length;
+      const pinyinCount = state.pinyinCharacters.length;
+
+      elements.pinyinTips.textContent = `共 ${allPinyinCount} 个拼音，当前显示 ${pinyinCount} 个`;
+    }
+
+    // 设置事件监听器
+    function setupEventListeners() {
+      // 搜索按钮点击事件
+      elements.searchButton.addEventListener('click', onClickSearch);
+
+      // 搜索输入框回车事件
+      elements.searchKey.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+          onClickSearch();
+        }
+      });
+
+      // 搜索输入框清除事件
+      elements.searchKey.addEventListener('input', () => {
+        if (!elements.searchKey.value) {
+          clearSearchKey();
+        }
+      });
+
+      // 播放按钮点击事件
+      elements.playButton.addEventListener('click', currentPlay);
+
+      // 停止按钮点击事件
+      elements.stopButton.addEventListener('click', stop);
+
+      // 播放全部按钮点击事件
+      elements.playAllButton.addEventListener('click', () => {
+        recursionPlay(state.pinyinValue);
+      });
+    }
+
+    // 拼音分类点击处理
+    function onClickPinyinType(o) {
+      stop();
+      state.pinyinType = o.value;
+      state.searchKey = '';
+      elements.searchKey.value = '';
+      state.pinyinCharacters = o.value === 'all' ? [...PINYIN_CHARACTERS] : PINYIN_CHARACTERS.filter(c => c.type === state.pinyinType);
+      state.pinyinValue = state.pinyinCharacters[0] ? state.pinyinCharacters[0].value : null;
+
+      renderPinyinCategory();
+      renderPinyinItems();
+      updatePinyinTips();
+    }
+
+    // 搜索处理
+    function onClickSearch() {
+      const searchKey = elements.searchKey.value;
+      state.searchKey = searchKey;
+      state.pinyinCharacters = searchKey ? PINYIN_CHARACTERS.filter(c => c.value === searchKey) : [...PINYIN_CHARACTERS];
+      stop();
+
+      if (state.pinyinCharacters[0]) {
+        state.pinyinValue = state.pinyinCharacters[0].value;
+      }
+
+      renderPinyinItems();
+      updatePinyinTips();
+    }
+
+    // 清除搜索关键词
+    function clearSearchKey() {
+      state.pinyinCharacters = [...PINYIN_CHARACTERS];
+      state.pinyinValue = PINYIN_CHARACTERS[0].value;
+
+      renderPinyinItems();
+      updatePinyinTips();
+    }
+
+    // 拼音点击处理
+    function onClickPinyin(item) {
+      state.pinyinValue = item.value;
+      state.searchKey = '';
+      elements.searchKey.value = '';
+
+      renderPinyinItems();
+      play(item.value);
+    }
+
+    // 播放拼音
+    function play(value) {
+      return new Promise((resolve, reject) => {
+        clear();
+
+        const item = PINYIN_CHARACTERS.find(c => c.value === value);
+        if (item) {
+          const audio = new Audio();
+          audio.src = `${COS_ASSET_PATH}/audio/hanyupinyin/${item.audio || item.value}.mp3`;
+          audio.onended = () => {
+            resolve();
+          };
+          audio.onerror = () => {
+            reject();
+          };
+          audio.play();
+
+          state.audioContext = audio;
         } else {
-          pinyinCharacters = PINYIN_CHARACTERS
+          reject();
         }
-        pinyinType = 'all'
-        stop()
-        renderCategoryNodes(PINYIN_TYPE_OPTIONS)
-        renderPinyinNodes(pinyinCharacters)
-      }, false)
-      controlPlay.addEventListener('click', function () {
-        const charItem = PINYIN_CHARACTERS.find(c => c.value === pinyinValue)
-        play(charItem)
-      }, false)
-      controlStop.addEventListener('click', stop, false)
-      controlAll.addEventListener('click', async function () {
-        stop()
-        isStop = false
-        for (const pinyin of pinyinCharacters) {
-          if (isStop) {
-            return
-          }
-          pinyinValue = pinyin.value
-          renderPinyinNodes(pinyinCharacters)
-          await play(pinyin);
-          await new Promise(resolve => {
-            audioPlayer.onended = resolve;
-          })
-          await new Promise(resolve => setTimeout(resolve, 500));
+      });
+    }
+
+    // 清除音频
+    function clear() {
+      if (state.audioContext) {
+        state.audioContext.pause();
+        state.audioContext = null;
+      }
+    }
+
+    // 停止播放
+    function stop() {
+      clear();
+      state.pinyinValue = null;
+      clearTimeout(state.playTimer);
+
+      renderPinyinItems();
+    }
+
+    // 播放当前选中的拼音
+    function currentPlay() {
+      if (!state.pinyinValue) {
+        alert('请选择拼音');
+        return;
+      }
+      play(state.pinyinValue);
+    }
+
+    // 递归播放所有拼音
+    async function recursionPlay(value) {
+      const { pinyinCharacters } = state;
+      const currentPinyin = pinyinCharacters.find(c => c.value === value) || pinyinCharacters[0];
+
+      if (currentPinyin) {
+        const currentIndex = pinyinCharacters.findIndex(c => c.value === currentPinyin.value);
+        state.pinyinValue = currentPinyin.value;
+
+        renderPinyinItems();
+
+        try {
+          await play(currentPinyin.value);
+        } catch (error) {
+          console.error('播放失败:', error);
         }
-      }, false)
-    });
+
+        const nextPinyin = currentIndex + 1 >= 0 && pinyinCharacters[currentIndex + 1];
+        if (nextPinyin) {
+          state.pinyinValue = nextPinyin.value;
+          state.playTimer = setTimeout(() => {
+            recursionPlay(state.pinyinValue);
+          }, 500);
+        }
+      }
+    }
+
+    // 页面加载完成后初始化应用
+    document.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
+
 </html>
