@@ -1,27 +1,107 @@
 <template>
   <view class="study-book-page">
-    <text class="title">怡红院，红香院？古人为什么这么爱给房子取名？</text>
-      <image mode="aspectFit" style="width: 100%;" src="https://inews.gtimg.com/om_bt/OvvHXXabTh_4EBm2Vc3zO5b-cW-pdaLxCMCLMHLxL7JWEAA/641"></image>
-      <text>
-        穿过一层竹篱花障编就的月洞门，俄见粉墙环护。贾政与众人进去，一入门，两边都是游廊相接。院中点衬几块山石，一边种着数本芭蕉；那一边乃是一颗西府海棠，其势若伞，丝垂翠缕，葩吐丹砂。”
-        <br/>
-        这样的院落，题什么字好呢？
-        <br/>
-        贾宝玉说，“红香绿玉”四字，方全其妙，贾政听了摇头，后元妃省亲，改“红香绿玉”作“怡红快绿”，从而有了“怡红院”，大观园的经典一景。如果真叫“红香院”，不免显得平俗，令人想象不出其如何神韵。
-        <br/>
-        《如何打开中国艺术》告诉我们，“怡红院”“潇湘馆”“蘅芜苑”“紫菱洲”“藕香榭”这些名字，都切切实实是大观园的一部分，正交织在大观园的物理空间中，没有这些动人的词语，大观园将难复其雅致：
-        <br/>
-        “这些名称、词语通常与历史、诗歌或思想观念相关，它们将个人、社会和道德价值观及等级制度实体化，体现在物理空间中。在我看来，这样的文字可以使花园或建筑群中的每一个特定位置都具有明确的特征，唤起并体现出独特的精神或微妙的特质。”
-    </text>
+    <view class="page-header">
+      <view>
+        <text class="page-title">一兆精选 · 图书馆</text>
+        <text class="page-subtitle">沉浸阅读 · 私藏好书随时借阅</text>
+      </view>
+    </view>
+
+    <scroll-view class="book-list" scroll-y>
+      <view class="book-card" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
+        <image class="book-cover" mode="aspectFill" :src="book.cover" />
+        <view class="book-content">
+          <view class="book-title-row">
+            <text class="book-title">{{ book.title }}</text>
+            <view class="score-wrapper">
+              <text class="book-score">{{ book.score }}</text>
+              <text class="score-suffix">分</text>
+            </view>
+          </view>
+
+          <view class="meta-row">
+            <text class="meta-item">作者：{{ book.author }}</text>
+						<text class="meta-dot">·</text>
+					  <text class="meta-item">书主：{{ book.owner }}</text>
+          </view>
+
+          <text class="book-desc">
+            {{ book.description }}
+          </text>
+
+          <view class="tag-row">
+            <text class="book-tag" v-for="tag in book.tags" :key="tag">{{ tag }}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
     <FooterBar :activeTabKey="activeTabKey" />
   </view>
 </template>
 <script>
 import store from '@/store/index'
 import FooterBar from '@/components/footer_bar/index.vue'
+
 export default {
   components: {
     FooterBar
+  },
+  data () {
+    return {
+      bookList: [
+        {
+          id: 1,
+          title: '红楼梦（全二册）',
+          author: '曹雪芹',
+          owner: '木心藏书阁',
+          score: 9.7,
+          cover: 'https://img2.doubanio.com/view/subject/l/public/s1070222.jpg',
+          description: '百科全书式的家族兴衰传奇，宝黛爱情与人间真情的终极写照。',
+          tags: ['必读', '经典推荐', '一兆珍藏']
+        },
+        {
+          id: 2,
+          title: '时间简史（插图本）',
+          author: '史蒂芬·霍金',
+          owner: '星际读书会',
+          score: 9.4,
+          cover: 'https://img2.doubanio.com/view/subject/l/public/s1775746.jpg',
+          description: '以极简语言讲述宇宙起源与命运，跨越时间的物理学入门。',
+          tags: ['科普', '上新', '必读']
+        },
+        {
+          id: 3,
+          title: '小王子',
+          author: '圣埃克苏佩里',
+          owner: '橙子童书屋',
+          score: 9.6,
+          cover: 'https://img2.doubanio.com/view/subject/l/public/s1103152.jpg',
+          description: '献给长大成人的孩子，温柔讲述孤独、爱与责任。',
+          tags: ['治愈', '闲置可借', '亲子']
+        },
+        {
+          id: 4,
+          title: '自私的基因',
+          author: '理查德·道金斯',
+          owner: 'Darwin Club',
+          score: 9.1,
+          cover: 'https://img2.doubanio.com/view/subject/l/public/s1314474.jpg',
+          description: '用基因视角重新理解生命与进化，是现代生物学思维的起点。',
+          tags: ['思考', '推荐', '进化论']
+        },
+        {
+          id: 5,
+          title: '百年孤独',
+          author: '加西亚·马尔克斯',
+          owner: 'REAL魔幻社',
+          score: 9.5,
+          cover: 'https://img2.doubanio.com/view/subject/l/public/s6384944.jpg',
+          description: '布恩迪亚家族七代人的孤独与宿命，魔幻现实主义巅峰。',
+          tags: ['诺奖', '故事感', '必读']
+        }
+      ]
+    }
   },
   computed: {
     activeTabKey () {
@@ -30,7 +110,16 @@ export default {
   },
   created () {
     store.commit('setActiveTabKey', 'study')
-  }
+  },
+	methods: {
+		onClickCard (item) {
+			if (item) {
+				uni.navigateTo({
+					url: `/pages/study/book/detail?id=${encodeURIComponent(item.id)}`
+				});
+			}
+		}
+	}
 }
 </script>
 <style lang="less">

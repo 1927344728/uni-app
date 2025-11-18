@@ -63,6 +63,12 @@
 		  "style": {
 		    "navigationBarTitleText": "webview"
 		  }
+		},
+		{
+		  "path": "pages/study/book/detail",
+		  "style": {
+		    "navigationBarTitleText": "书籍简介"
+		  }
 		}
   ],
   "globalStyle": {
