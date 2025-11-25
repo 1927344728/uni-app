@@ -17,34 +17,34 @@
 
 <script>
 import store from '@/store/index'
-import { WEB_DOMAIN } from '@/utils/variables'
+import { FOOTER_BUTTON_LIST } from '@/config/index.js'
 export default {
 	props: {
 		activeTabKey: String
 	},
   data () {
     return {
-      tabList: [
-        { key: 'index', name: '首页', icon: 'home', url: `${WEB_DOMAIN}index/index` },
-        { key: 'task', name: '任务', icon: 'wallet', url: `${WEB_DOMAIN}task/index` },
-        { key: 'study', name: '学习', icon: 'color', url: `${WEB_DOMAIN}study/index` },
-        { key: 'life', name: '生活', icon: 'gift', url: `${WEB_DOMAIN}life/index` },
-        { key: 'me', name: '我的', icon: 'person', url: `${WEB_DOMAIN}me/index` },
-      ]
+      tabList: FOOTER_BUTTON_LIST
     }
   },
   methods: {
     onClickTab (item) {
-      uni.redirectTo({
-        url: item.url,
-				fail (error) {
-					uni.showModal({
-						title: '请求异常',
-					  content: error.errMsg,
-						showCancel: false
-					});
-				}
-      });
+			if (item && item.url) {
+				uni.redirectTo({
+				  url: item.url,
+					fail (error) {
+						uni.showModal({
+							title: '请求异常',
+						  content: error.errMsg,
+							showCancel: false
+						});
+					}
+				});
+				return
+			}
+			uni.showToast({
+			  title: '敬请期待...'
+			})
     }
   }
 }

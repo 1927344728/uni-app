@@ -2,3 +2,27 @@
 @import '@/common/css/common.css';
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
+.life-page {
+	position: relative;
+	color: @text-primary-color;
+	.life-nav {
+		position: sticky;
+		top: 0;
+		font-size: 30rpx;
+		padding: 8rpx;
+		overflow-x: auto;
+		border-bottom: 1px solid @border-primary-color;
+		& .item {
+			display: inline-block;
+			padding: 0 16rpx;
+			line-height: 36rpx;
+			text-align: center;
+			vertical-align: middle;
+		}
+		& .item.active {
+			font-weight: bold;
+			font-size: 32rpx;
+			color: @primary-color;
+		}
+	}
+}

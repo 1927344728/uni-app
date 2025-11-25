@@ -149,5 +149,103 @@ export function openUrl(item) {
 		}
 	}
 }
+
+export function decodeLyricBuffer (buffer) {
+  if (!buffer) return ''
+  
+  // 检测是否包含乱码字符
+  const hasGarbledText = (text) => {
+    // 检测常见的乱码字符模式
+    return /[^\x00-\x7F\u4E00-\u9FA5\u3000-\u303F\uFF00-\uFFEF\s\[\]:\d\.\-]/.test(text) || 
+           //.test(text) ||
+           (text.length > 0 && text.match(/[^\x00-\x7F]/g) && text.match(/[^\x00-\x7F]/g).length / text.length > 0.3)
+  }
+  
+  // 先尝试 UTF-8 解码
+  let utf8Text = ''
+  try {
+    if (typeof TextDecoder !== 'undefined') {
+      const decoder = new TextDecoder('utf-8')
+      utf8Text = decoder.decode(buffer)
+      // 如果没有乱码，直接返回
+      if (!hasGarbledText(utf8Text)) {
+        return utf8Text
+      }
+    }
+  } catch (err) {
+    console.warn('UTF-8 decode failed', err)
+  }
+  
+  // 如果 UTF-8 解码有乱码，尝试 GBK 解码
+  try {
+    if (typeof TextDecoder !== 'undefined') {
+      // 尝试 gbk 编码
+      try {
+        const gbkDecoder = new TextDecoder('gbk')
+        const gbkText = gbkDecoder.decode(buffer)
+        if (!hasGarbledText(gbkText)) {
+          return gbkText
+        }
+      } catch (e) {
+        // gbk 不支持，尝试 gb2312
+        try {
+          const gb2312Decoder = new TextDecoder('gb2312')
+          const gb2312Text = gb2312Decoder.decode(buffer)
+          if (!hasGarbledText(gb2312Text)) {
+            return gb2312Text
+          }
+        } catch (e2) {
+          console.warn('GBK/GB2312 decode not supported')
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('GBK decode failed', err)
+  }
+  
+  // 如果 TextDecoder 不支持 GBK，使用手动转换
+  try {
+    const gbkText = convertGBKToUTF8(buffer)
+    if (gbkText && !hasGarbledText(gbkText)) {
+      return gbkText
+    }
+  } catch (err) {
+    console.warn('Manual GBK conversion failed', err)
+  }
+  
+  // 如果都失败了，返回 UTF-8 的结果（即使有乱码）
+  return utf8Text || ''
+}
+
+// 简单的 GBK 到 UTF-8 转换（使用 uni-app 的 API）
+export function convertGBKToUTF8 (buffer) {
+  try {
+    // 在 uni-app 中，可以使用 plus 对象进行编码转换
+    if (typeof plus !== 'undefined' && plus.io) {
+      // 将 ArrayBuffer 转换为 Base64
+      const bytes = new Uint8Array(buffer)
+      let binary = ''
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i])
+      }
+      // 使用 plus 的编码转换
+      return decodeURIComponent(escape(binary))
+    }
+    
+    // 如果没有 plus，尝试使用 Blob 和 FileReader
+    if (typeof Blob !== 'undefined' && typeof FileReader !== 'undefined') {
+      return new Promise((resolve) => {
+        const blob = new Blob([buffer], { type: 'text/plain;charset=gbk' })
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = () => resolve('')
+        reader.readAsText(blob, 'gbk')
+      })
+    }
+  } catch (err) {
+    console.error('convertGBKToUTF8 error', err)
+  }
+  return ''
+}
 	
 	

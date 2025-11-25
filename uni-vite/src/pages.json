@@ -64,10 +64,28 @@
 		    "navigationBarTitleText": "webview"
 		  }
 		},
+    {
+		  "path": "pages/study/book/index",
+		  "style": {
+		    "navigationBarTitleText": "书籍列表"
+		  }
+		},
 		{
 		  "path": "pages/study/book/detail",
 		  "style": {
 		    "navigationBarTitleText": "书籍简介"
+		  }
+		},
+		{
+		  "path": "pages/music/index",
+		  "style": {
+		    "navigationBarTitleText": "音乐"
+		  }
+		},
+		{
+		  "path": "pages/music/play",
+		  "style": {
+		    "navigationBarTitleText": "音乐播放器"
 		  }
 		}
   ],
