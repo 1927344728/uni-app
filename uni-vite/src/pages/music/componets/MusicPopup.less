@@ -1,0 +1,47 @@
+@import '@/common/css/color.less';
+@font-face {
+  font-family: 'iconfont';  /* Project id 5075020 */
+  src: url('//at.alicdn.com/t/c/font_5075020_dvsb5eed4rh.woff2?t=1764604111574') format('woff2'),
+       url('//at.alicdn.com/t/c/font_5075020_dvsb5eed4rh.woff?t=1764604111574') format('woff'),
+       url('//at.alicdn.com/t/c/font_5075020_dvsb5eed4rh.ttf?t=1764604111574') format('truetype');
+}
+
+.music_play_popup {
+  width: 100vw;
+  height: calc(100vh - var(--window-top));
+  overflow: hidden;
+}
+
+.music_play_popup__overlay {
+  position: fixed;
+  inset: 0 0 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.music_play_popup__content {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - var(--window-top));
+  max-height: 100vh;
+  background: #fff;
+  border-radius: 0; /* full screen */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.music_play_popup__close {
+  font-family: iconfont;
+  position: absolute;
+  top: 28rpx;
+  right: 32rpx;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: normal;
+  color: @text-patch2-color;
+}

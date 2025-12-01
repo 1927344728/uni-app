@@ -85,7 +85,7 @@
 		{
 		  "path": "pages/music/play",
 		  "style": {
-		    "navigationBarTitleText": "音乐播放器"
+		    "navigationBarTitleText": "音乐"
 		  }
 		}
   ],
