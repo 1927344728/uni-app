@@ -54,6 +54,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-4070520250711001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4070520250711001",
     "@dcloudio/uni-ui": "^1.5.8",
+    "html-to-text": "^9.0.5",
     "lodash": "^4.17.21",
     "text-encoding": "^0.7.0",
     "vue": "^3.4.21",

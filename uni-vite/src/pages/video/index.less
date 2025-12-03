@@ -1,0 +1,172 @@
+@import '@/common/css/reset.css';
+@import '@/common/css/common.css';
+@import '@/common/css/color.less';
+@import '@/common/css/apply.css';
+
+.life_video_page {
+  background: linear-gradient(180deg, #fefefe 0%, #faf7f5 45%, #fff 100%);
+  height: calc(100vh - 144rpx);
+  box-sizing: border-box;
+
+  .video_banners {
+    padding: 24rpx;
+
+    .banner_swiper {
+      width: 100%;
+      height: 160px;
+      border-radius: 8px;
+      overflow: hidden;
+
+      .banner_image {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      & .banner_title {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 12rpx 120rpx 12rpx 24rpx;
+        font-size: 28rpx;
+        font-weight: bold;
+        color: white;
+        box-sizing: border-box;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      & ::v-deep .uni-swiper-dots {
+        left: auto;
+        right: 0;
+        & .uni-swiper-dot {
+          background: rgba(255, 255, 255, 0.3);
+        }
+        & .uni-swiper-dot-active {
+          background: white;
+        }
+      }
+    }
+  }
+
+  .recommend_section {
+    padding: 0 24rpx 24rpx;
+    & .recommend_section_wrapper {
+      display: flex;
+      flex-direction: row;
+      & .recommend_card {
+        position: relative;
+        flex: 0 0 34%;
+        margin-right: 10px;
+        border-radius: 18rpx;
+        overflow: hidden;
+
+        .rec_cover {
+          width: 100%;
+          height: 336rpx;
+          display: block;
+        }
+        .rec_text {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          display: block;
+          padding: 4px 6px;
+          font-size: 13px;
+          color: #333;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.8);
+          box-sizing: border-box;
+          & .rec_title {
+            font-weight: 600;
+          }
+          & .rec_desc {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+
+  .video_filter_row {
+    position: sticky;
+    top: 60rpx;
+    padding: 12rpx 16rpx;
+    z-index: 1;
+    white-space: nowrap;
+    overflow: auto;
+    background-color: #faf7f5;
+
+    .chip {
+      display: inline-block;
+      margin-right: 16rpx;
+      padding: 12rpx 20rpx;
+      min-width: 3em;
+      font-size: 24rpx;
+      line-height: normal;
+      text-align: center;
+      color: @text-minor-color;
+      background: @border-primary-color;
+      border-radius: 100rpx;
+    }
+    .chip.active {
+      font-weight: bold;
+      color: @primary-color;
+      background: rgba(212, 170, 142, 0.15);
+    }
+  }
+
+  .video_playlist_list {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    gap: 24rpx;
+    align-items: start;
+    padding: 24rpx;
+    overflow: hidden;
+    & .movie_card {
+      & .movie_cover {
+        display: block;
+        width: 100%;
+        height: 180rpx;
+        object-fit: cover;
+        border-radius: 18rpx;
+        overflow: hidden;
+      }
+
+      .movie_meta {
+        display: flex;
+        flex-direction: column;
+        margin-top: 8rpx;
+        gap: 6rpx;
+
+        .movie_title {
+          font-size: 28rpx;
+          color: @text-primary-color;
+          font-weight: 600;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        .movie_sub {
+          font-size: 22rpx;
+          max-height: 3em;
+          color: @text-patch1-color;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+}
+.life_video_page.with_padding_top {
+  height: calc(100vh - 64rpx - 144rpx);
+}

@@ -120,6 +120,13 @@ export function parseTime(time, cFormat) {
   return timeStr;
 }
 
+export function textEllipsis(text, maxLength) {
+  text = String(text);
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
+}
+
 export function openUrl(item) {
 	if (item && item.url) {
 		if (item.jumpTo === 'navigate') {

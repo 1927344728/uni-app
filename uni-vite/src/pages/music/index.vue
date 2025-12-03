@@ -1,5 +1,5 @@
 <template>
-  <view class="life-music-page">
+  <scroll-view class="life-music-page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
     <view class="music-section">
       <view class="music-quick-grid">
         <view
@@ -36,7 +36,7 @@
         </view>
       </view>
     </view>
-  </view>
+  </scroll-view>
 </template>
 <script>
 import qs from 'qs'
@@ -62,9 +62,9 @@ export default {
       })
     },
     onClickMusic (item) {
-      if (item && item.url) {
+      if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/music/play?mode=auto&song=${encodeURIComponent(qs.stringify(item))}`
+          url: `/pages/music/play?mode=auto&id=${item.id}`
         })
         return
       }
@@ -72,6 +72,9 @@ export default {
         title: '暂无播放地址',
         icon: 'none'
       })
+    },
+    onScrollToLower () {
+      console.log('滚动到底部了，可以加载更多数据')
     }
   }
 }

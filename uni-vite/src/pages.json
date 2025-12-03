@@ -9,7 +9,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "一兆知窗"
       }
     },
     {
@@ -87,14 +87,29 @@
 		  "style": {
 		    "navigationBarTitleText": "音乐"
 		  }
-		}
+		},
+    {
+      "path": "pages/video/index",
+      "style": {
+        "navigationBarTitleText": "视频"
+      }
+    },
+    {
+      "path": "pages/video/play",
+      "style": {
+        "navigationBarTitleText": "视频播放"
+      }
+    }
   ],
   "globalStyle": {
     "navigationStyle": "default",
     "navigationBarTextStyle": "#666",
-    "navigationBarTitleText": "一兆含窗",
+    "navigationBarTitleText": "一兆知窗",
     "navigationBarBackgroundColor": "white",
     "backgroundColor": "#f2f2f2",
-    "transparentTitle": "auto"
+    "transparentTitle": "auto",
+		"h5": {
+			"titleNView": false 
+		}
   }
 }

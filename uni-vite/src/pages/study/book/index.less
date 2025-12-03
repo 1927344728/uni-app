@@ -3,11 +3,9 @@
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
 .study-book-page {
-	height: calc(100% - 44px -64rpx - 140rpx - env(safe-area-inset-top));
-  padding: 24rpx;
-  padding-bottom: 140rpx;
+	height: calc(100vh - 144rpx);
+  padding: 24rpx 24rpx 12rpx;
   background: linear-gradient(180deg, #fefefe 0%, #f7f4ff 60%, #fdf5f2 100%);
-  box-sizing: border-box;
   color: @text-primary-color;
 
   .page-header {
@@ -19,7 +17,7 @@
     .page-title {
       font-size: 40rpx;
       font-weight: 600;
-      color: #2d1f4f;r
+      color: #2d1f4f;
       display: block;
     }
 
@@ -40,11 +38,6 @@
     }
   }
 
-  .book-list {
-    max-height: calc(100vh - 450rpx);
-		overflow: hidden;
-  }
-
   .book-card {
     display: flex;
     background: rgba(255, 255, 255, 0.9);
@@ -55,6 +48,7 @@
   }
 	
 	.book-card:last-child {
+    margin-bottom: 0;
 	  box-shadow: none;
 	}
 
@@ -139,4 +133,7 @@
     background: rgba(143, 109, 236, 0.12);
     color: #7a5be1;
   }
+}
+.study-book-page.with_padding_top {
+  height: calc(100vh - 64rpx - 144rpx);
 }

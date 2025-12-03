@@ -1,5 +1,5 @@
 <template>
-  <view class="study-book-page">
+  <scroll-view class="study-book-page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
     <view class="page-header">
       <view>
         <text class="page-title">一兆精选 · 图书馆</text>
@@ -7,7 +7,7 @@
       </view>
     </view>
 
-    <scroll-view class="book-list" scroll-y>
+    <view class="book-list">
       <view class="book-card" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
         <image class="book-cover" mode="aspectFill" :src="book.cover" />
         <view class="book-content">
@@ -30,14 +30,16 @@
           </text>
 
           <view class="tag-row">
-            <text class="book-tag" v-for="tag in book.tags" :key="tag">{{ tag }}</text>
+            <text class="book-tag" v-for="tag in book.tags" :key="tag">
+              {{ tag }}
+            </text>
           </view>
         </view>
       </view>
-    </scroll-view>
+    </view>
 
     <FooterBar :activeTabKey="activeTabKey" />
-  </view>
+  </scroll-view>
 </template>
 <script>
 import store from '@/store/index'
@@ -118,7 +120,10 @@ export default {
 					url: `/pages/study/book/detail?id=${encodeURIComponent(item.id)}`
 				});
 			}
-		}
+		},
+    onScrollToLower () {
+      console.log('滚动到底部加载更多')
+    }
 	}
 }
 </script>

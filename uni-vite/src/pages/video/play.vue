@@ -1,29 +1,29 @@
 <template>
-  <view class="music_play_page">
-    <MusicPlayer
+  <view class="video_play_page">
+    <VideoPlayer
       :mode="mode"
       :id="id"
       :menuId="menuId"
-      :song="song"
+      :video="video"
     />
   </view>
 </template>
 
 <script>
 import qs from 'qs';
-import { MUSIC_LIST } from './constant.js';
-import MusicPlayer from './componets/MusicPlayer.vue';
+import { VIDEO_LIST } from './constant.js';
+import VideoPlayer from './componets/VideoPlayer.vue';
 
 export default {
   components: {
-    MusicPlayer
+    VideoPlayer
   },
   data () {
     return {
       mode: 'auto',
       id: null,
       menuId: null,
-      song: null
+      video: null
     };
   },
   onLoad (options) {
@@ -34,9 +34,9 @@ export default {
       this.mode = options.mode || 'auto';
       this.id = options.id ? options.id : null;
       this.menuId = options.menuId ? Number(options.menuId) : null;
-      this.song = options.song ? qs.parse(decodeURIComponent(options.song)) : null
+      this.video = options.video ? qs.parse(decodeURIComponent(options.video)) : null
       if (this.id) {
-        this.song = MUSIC_LIST.find(item => item.id === this.id) || null; 
+        this.video = VIDEO_LIST.find(item => item.id === this.id) || null;
       }
     }
   }

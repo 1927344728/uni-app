@@ -3,26 +3,37 @@
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
 .study-page {
-	position: relative;
-	color: @text-primary-color;
-	.study-nav {
-		position: sticky;
-		top: 0;
-		font-size: 30rpx;
-		padding: 8rpx;
-		overflow-x: auto;
-		border-bottom: 1px solid @border-primary-color;
-		& .item {
-			display: inline-block;
-			padding: 0 16rpx;
-			line-height: 36rpx;
-			text-align: center;
-			vertical-align: middle;
-		}
-		& .item.active {
-			font-weight: bold;
-			font-size: 32rpx;
-			color: @primary-color;
-		}
-	}
+  position: relative;
+  padding: 0 0 144rpx;
+  color: @text-primary-color;
+  box-sizing: content-box;
+  background: #fdf5f2;
+  .study-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 30rpx;
+    padding: 0 8rpx;
+    line-height: 64rpx;
+    overflow-x: auto;
+    border-bottom: 1px solid @border-primary-color;
+    background: white;
+    z-index: 10;
+    & .item {
+      display: inline-block;
+      padding: 0 16rpx;
+      line-height: 36rpx;
+      text-align: center;
+      vertical-align: middle;
+    }
+    & .item.active {
+      font-weight: bold;
+      font-size: 32rpx;
+      color: @primary-color;
+    }
+  }
+}
+.study-page.with_padding_top {
+  padding-top: 64rpx;
 }

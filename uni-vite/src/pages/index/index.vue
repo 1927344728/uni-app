@@ -51,7 +51,7 @@
         </view>
       </view>
       <view class="home-version">
-        <view>一兆含窗@1.0.1</view>
+        <view>一兆知窗@1.0.1</view>
       </view>			
     </view>
 
