@@ -60,7 +60,6 @@ export default {
       default: null
     },
     song: {
-      // url or id to indicate initial song
       type: [String, Number, Object],
       default: null
     },

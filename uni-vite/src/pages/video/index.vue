@@ -64,18 +64,15 @@
 </template>
 <script>
 import { convert as convertHtmlToText } from 'html-to-text'
-import { VIDEO_MENU_LIST, VIDEO_LIST } from './constant.js'
+import { getVideoMenuList, getVideoPageList } from '@/api'
 
 export default {
   data () {
     return {
       videoMenuId: null,
-      bannerList: VIDEO_LIST.slice(0, 3).map(e => ({ id: e.id, image: e.cover, desc: e.desc })),
-      recommendedList: VIDEO_LIST.slice(0, 10),
-      videoMenuList: [{
-        id: null,
-        title: '全部'
-      }].concat(VIDEO_MENU_LIST),
+      bannerList: [],
+      recommendedList: [],
+      videoMenuList: [],
       videoList: [],
 
       pageNum: 0,
@@ -85,17 +82,29 @@ export default {
     }
   },
   created () {
-    this.getVideoPageList()
+    getVideoMenuList().then(data => {
+      this.videoMenuList =[{
+        id: null,
+        title: '全部'
+      }].concat(data || [])
+    })
+    getVideoPageList().then(data => {
+      this.bannerList = (data || []).slice(0, 3).map(e => ({ id: e.id, image: e.cover, desc: e.desc })),
+      this.recommendedList = (data || []).slice(0, 10),
+      this.videoList = this.videoList.concat(data || [])
+    })
   },
   methods: {
     convertHtmlToText,
     getVideoPageList () {
-      this.videoList = VIDEO_LIST
+      return getVideoPageList().then(data => {
+        this.videoList = this.videoList.concat(data || [])
+      })
     },
     onClickBanner (item) {
       if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/video/play?mode=banner&id=${item.id}`
+          url: `/pages/video/play?mode=single&id=${item.id}`
         })
         return
       }
@@ -126,7 +135,6 @@ export default {
       })
     },
     onScrollToLower () {
-      console.log('scroll to lower')
       this.getVideoPageList()
     }
   }

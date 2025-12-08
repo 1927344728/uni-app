@@ -8,7 +8,7 @@
       vertical
       @change="handleSwiperPageChange"
     >
-      <swiper-item v-for="page in swiperPages" :key="page.key + page.id" >
+      <swiper-item v-for="(page, i) in swiperPages" :key="`${page.key}_${page.id}_${i}`" >
         <view
           class="music_play_swiper_item"
           :class="[`music_play_swiper_item--${page.key}`, `music_play_switch--${page.key}`]"
@@ -119,7 +119,8 @@
 
 <script>
 import { get as _get } from 'lodash';
-import { getMusicListByMenuId, pickRandomMusic, parseLyric, formatTime } from './MusicPlayer.js';
+import { getMusicListByMenuId, getMusicByRandom } from '@/api/music.js';
+import { parseLyric, formatTime } from './MusicPlayer.js';
 
 export default {
   name: 'MusicPlayer',
@@ -130,11 +131,11 @@ export default {
       default: 'auto'
     },
     id: {
-      type: Number,
+      type: [String, Number],
       default: null
     },
     menuId: {
-      type: Number,
+      type: [String, Number],
       default: null
     },
     song: {
@@ -189,8 +190,8 @@ export default {
       return !!this.nextSong;
     }
   },
-  mounted () {
-    this.init();
+  async mounted () {
+    await this.init();
   },
   unmounted () {
     if (this.audioCtx) {
@@ -200,10 +201,10 @@ export default {
   },
   methods: {
     formatTime,
-    init () {
+    async init () {
       const { mode, id, menuId, song } = this;
       if (mode === 'menu') {
-        this.allMusicList = getMusicListByMenuId(menuId);
+        this.allMusicList = await getMusicListByMenuId({menuId}).catch(() => []);
         this.currentSong = id ? this.allMusicList.find(s => s.id === id) : this.allMusicList[0];
       } else {
         this.allMusicList.push(song);
@@ -226,7 +227,7 @@ export default {
       const cover = _get(song, 'cover');
       return cover ? { '--music_play_bg': `url(${cover})` } : {};
     },
-    updatePrevAndNextSong () {
+    async updatePrevAndNextSong () {
       const { mode, allMusicList, playedMusicIds, currentSong } = this;
       this.prevSong = null;
       this.nextSong = null;
@@ -241,8 +242,11 @@ export default {
         }
       }
       if (['auto'].includes(mode)) {
-        this.nextSong = pickRandomMusic(currentSongId, playedMusicIds);
-        allMusicList.push(this.nextSong);
+        const responseData = await getMusicByRandom(currentSongId, playedMusicIds).catch(() => null);
+        if (responseData) {
+          this.nextSong = responseData;
+          allMusicList.push(responseData);
+        }
       }
       if (['menu'].includes(mode) && allMusicLength > 1) {
         const currentIndex = allMusicList.findIndex(song => song.id === currentSongId);

@@ -7,6 +7,10 @@
   background: linear-gradient(180deg, #fefefe 0%, #faf7f5 45%, #fff 100%);
   height: calc(100vh - 144rpx);
   box-sizing: border-box;
+  & ::v-deep.uni-scroll-view-content {
+    width: auto;
+    height: auto;
+  }
 
   .video_banners {
     padding: 24rpx;
@@ -97,7 +101,7 @@
 
   .video_filter_row {
     position: sticky;
-    top: 60rpx;
+    top: 0;
     padding: 12rpx 16rpx;
     z-index: 1;
     white-space: nowrap;

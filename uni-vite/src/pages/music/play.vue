@@ -1,6 +1,7 @@
 <template>
   <view class="music_play_page">
     <MusicPlayer
+      v-if="isLoaded"
       :mode="mode"
       :id="id"
       :menuId="menuId"
@@ -11,7 +12,7 @@
 
 <script>
 import qs from 'qs';
-import { MUSIC_LIST } from './constant.js';
+import { getMusicById } from '@/api/music.js';
 import MusicPlayer from './componets/MusicPlayer.vue';
 
 export default {
@@ -20,24 +21,30 @@ export default {
   },
   data () {
     return {
+      isLoaded: false,
       mode: 'auto',
       id: null,
       menuId: null,
       song: null
     };
   },
-  onLoad (options) {
-    this.init(options);
+  async onLoad (options) {
+    await this.init(options);
   },
   methods: {
-    init (options = {}) {
+    async init (options = {}) {
+      this.isLoaded = false;
       this.mode = options.mode || 'auto';
       this.id = options.id ? options.id : null;
       this.menuId = options.menuId ? Number(options.menuId) : null;
       this.song = options.song ? qs.parse(decodeURIComponent(options.song)) : null
       if (this.id) {
-        this.song = MUSIC_LIST.find(item => item.id === this.id) || null; 
+        const responseData = await getMusicById({ id: this.id }).catch(() => null);
+        if (responseData) {
+          this.song = responseData;
+        }
       }
+      this.isLoaded = true;
     }
   }
 };

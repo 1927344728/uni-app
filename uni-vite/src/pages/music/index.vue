@@ -39,16 +39,26 @@
   </scroll-view>
 </template>
 <script>
-import qs from 'qs'
-import { MUSIC_MENU_LIST, MUSIC_LIST } from './constant.js'
+import { getMusicMenuList, getMusicPageList } from '@/api'
 export default {
   data () {
     return {
-      musicMenuList: MUSIC_MENU_LIST,
-      musicList: MUSIC_LIST
+      musicMenuList: [],
+      musicList: []
     }
   },
+  created () {
+    getMusicMenuList().then((data) => {
+      this.musicMenuList = data || []
+    })
+    this.getMusicPageList()
+  },
   methods: {
+    getMusicPageList () {
+      return getMusicPageList().then((data) => {
+        this.musicList = this.musicList.concat(data || [])
+      })
+    },
     onClickCard (item) {
       if (item && item.id) {
         uni.navigateTo({
@@ -74,7 +84,7 @@ export default {
       })
     },
     onScrollToLower () {
-      console.log('滚动到底部了，可以加载更多数据')
+      this.getMusicPageList()
     }
   }
 }

@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    isUseMock: true,
     activeTabKey: 'index'
   },
   mutations: {

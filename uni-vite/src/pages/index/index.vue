@@ -51,7 +51,8 @@
         </view>
       </view>
       <view class="home-version">
-        <view>一兆知窗@1.0.1</view>
+        <view>你好{{helloWord ? '，' + helloWord :''}}</view>
+        <view>一兆知窗@1.0.0</view>
       </view>			
     </view>
 

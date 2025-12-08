@@ -89,8 +89,8 @@
 
 <script>
 import { get as _get } from 'lodash';
+import { getVideoListByMenuId, getVideoByRandom } from '@/api'
 import { textEllipsis } from '@/utils/common.js';
-import { getVideoListByMenuId, pickRandomVideo } from './VideoPlayer.js';
 
 export default {
   name: 'VideoPlayer',
@@ -152,8 +152,8 @@ export default {
       return !!this.nextVideo;
     }
   },
-  mounted () {
-    this.init();
+  async mounted () {
+    await this.init();
     this.videoCtx = uni.createVideoContext('playerVideo', this);
   },
   unmounted () {
@@ -161,21 +161,14 @@ export default {
   },
   methods: {
     textEllipsis,
-    init () {
+    async init () {
       const { mode, id, menuId, video } = this;
       if (mode === 'menu') {
-        this.allVideoList = getVideoListByMenuId(menuId);
+        this.allVideoList = await getVideoListByMenuId({menuId}).catch(() => []);
         this.currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
       } else {
-        this.allVideoList = [];
-        if (video && Object.keys(video).length) {
-          this.allVideoList.push(video);
-          this.currentVideo = video;
-        } else {
-          // fallback to first of full list
-          this.allVideoList = getVideoListByMenuId(menuId);
-          this.currentVideo = this.allVideoList[0] || {};
-        }
+        this.allVideoList.push(video);
+        this.currentVideo = video;
       }
       if (!this.currentVideo || !this.currentVideo.url) {
         uni.showToast({ title: '未找到播放视频', icon: 'none' });
@@ -190,7 +183,7 @@ export default {
       const bg = _get(video, 'bg');
       return bg ? { '--video_play_bg': `url(${bg})` } : {};
     },
-    updatePrevAndNextVideo () {
+    async updatePrevAndNextVideo () {
       const { mode, allVideoList, playedVideoIds, currentVideo } = this;
       this.prevVideo = null;
       this.nextVideo = null;
@@ -206,7 +199,7 @@ export default {
         }
       }
       if (['auto'].includes(mode)) {
-        this.nextVideo = pickRandomVideo(currentVideoId, playedVideoIds);
+        this.nextVideo = await getVideoByRandom({currentVideoId, playedVideoIds}).catch(() => null);
         if (this.nextVideo) allVideoList.push(this.nextVideo);
       }
       if (['menu'].includes(mode) && allVideoLength > 1) {
