@@ -35,6 +35,7 @@
           </view>
         </view>
       </view>
+      <div v-if="!pagination.isLast" class="nomore_load_tips">~没有更多了~</div>
     </view>
   </scroll-view>
 </template>
@@ -44,7 +45,12 @@ export default {
   data () {
     return {
       musicMenuList: [],
-      musicList: []
+      musicList: [],
+      pagination: {
+        pageNum: 1,
+        pageSize: 2,
+        isLast: false
+      }
     }
   },
   created () {
@@ -55,7 +61,11 @@ export default {
   },
   methods: {
     getMusicPageList () {
-      return getMusicPageList().then((data) => {
+      const { pagination } = this
+      return getMusicPageList({
+        pageNum: pagination.pageNum,
+        pageSize: pagination.pageSize
+      }).then((data) => {
         this.musicList = this.musicList.concat(data || [])
       })
     },
@@ -84,6 +94,7 @@ export default {
       })
     },
     onScrollToLower () {
+      this.pagination.pageNum ++
       this.getMusicPageList()
     }
   }

@@ -10,8 +10,9 @@ const getVideoMenuList = () => {
 }
 
 const getVideoPageList = (params) => {
+  const { pageNum, pageSize } = params
   const data = cloneDeep(basicTemplate)
-  data.data = cloneDeep(VIDEO_LIST)
+  data.data = cloneDeep(VIDEO_LIST).splice(pageNum * pageSize, pageSize)
   return Mock.mock(data);
 }
 

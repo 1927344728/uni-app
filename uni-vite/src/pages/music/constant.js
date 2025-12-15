@@ -32,7 +32,7 @@ export const MUSIC_MENU_LIST = [
 
 export const MUSIC_LIST = [
     {
-      id: '1-1',
+      id: 'audioT01NO1',
       menuId: 1,
       title: '浮光',
       artist: '周深',
@@ -42,7 +42,7 @@ export const MUSIC_LIST = [
       lyric: ''
     },
     {
-      id: '1-2',
+      id: 'audioT01NO2',
       menuId: 1,
       title: '风知道我的倾诉 (女声版)',
       artist: '暄妍野野',
@@ -52,7 +52,7 @@ export const MUSIC_LIST = [
       lyric: `${musicBasePath}%E6%9A%84%E5%A6%8D%E9%87%8E%E9%87%8E-%E9%A3%8E%E7%9F%A5%E9%81%93%E6%88%91%E7%9A%84%E5%80%BE%E8%AF%89%20%28%E5%A5%B3%E5%A3%B0%E7%89%88%29.lrc`
     },
     {
-      id: '2-1',
+      id: 'audioT02NO1',
       menuId: 2,
       title: '百万个吻（可爱女声） (cover： 陈明真).mp3',
       artist: '甜醉儿',
@@ -62,7 +62,7 @@ export const MUSIC_LIST = [
       lyric: `${musicBasePath}%E7%94%9C%E9%86%89%E5%84%BF-%E7%99%BE%E4%B8%87%E4%B8%AA%E5%90%BB%EF%BC%88%E5%8F%AF%E7%88%B1%E5%A5%B3%E5%A3%B0%EF%BC%89%20%28cover%EF%BC%9A%20%E9%99%88%E6%98%8E%E7%9C%9F%29.lrc`
     },
     {
-      id: '0-1',
+      id: 'audioT00NO1',
       menuId: null,
       title: '午夜复古 Disco',
       artist: '',

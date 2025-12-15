@@ -8,7 +8,7 @@
     <view class="video_banners">
       <swiper class="banner_swiper" indicator-dots="true">
         <swiper-item v-for="b in bannerList" :key="`banner-${b.id}`" @click="onClickBanner(b)">
-          <image class="banner_image" :src="b.image" mode="aspectFill" />
+          <image class="banner_image" :src="b.cover" mode="aspectFill" />
           <view class="banner_title">{{ convertHtmlToText(b.desc) }}</view>
         </swiper-item>
       </swiper>
@@ -59,6 +59,7 @@
           </view>
         </view>
       </view>
+      <div v-if="pagination.isLast" class="nomore_load_tips">~没有更多了~</div>
     </view>
   </scroll-view>
 </template>
@@ -74,31 +75,41 @@ export default {
       recommendedList: [],
       videoMenuList: [],
       videoList: [],
-
-      pageNum: 0,
-      pageSize: 10,
-      loadingMore: false,
-      isLast: false
+      pagination: {
+        pageNum: 0,
+        pageSize: 6,
+        isLast: false
+      }
     }
   },
   created () {
+    const { pagination } = this
     getVideoMenuList().then(data => {
       this.videoMenuList =[{
         id: null,
         title: '全部'
       }].concat(data || [])
     })
-    getVideoPageList().then(data => {
-      this.bannerList = (data || []).slice(0, 3).map(e => ({ id: e.id, image: e.cover, desc: e.desc })),
-      this.recommendedList = (data || []).slice(0, 10),
+    getVideoPageList({
+      pageNum: pagination.pageNum,
+      pageSize: pagination.pageSize
+    }).then(data => {
+      this.bannerList = (data || []).slice(0, 3)
+      this.recommendedList = (data || []).slice(0, 10)
       this.videoList = this.videoList.concat(data || [])
     })
   },
   methods: {
     convertHtmlToText,
+
     getVideoPageList () {
-      return getVideoPageList().then(data => {
+      const { pagination } = this
+      return getVideoPageList({
+        pageNum: pagination.pageNum,
+        pageSize: pagination.pageSize
+      }).then(data => {
         this.videoList = this.videoList.concat(data || [])
+        pagination.isLast = (data || []).length < pagination.pageSize
       })
     },
     onClickBanner (item) {
@@ -135,6 +146,7 @@ export default {
       })
     },
     onScrollToLower () {
+      this.pagination.pageNum ++
       this.getVideoPageList()
     }
   }
