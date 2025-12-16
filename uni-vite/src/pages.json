@@ -99,6 +99,12 @@
       "style": {
         "navigationBarTitleText": "视频播放"
       }
+    },
+    {
+      "path": "pages/article/detail",
+      "style": {
+        "navigationBarTitleText": "文章详情"
+      }
     }
   ],
   "globalStyle": {

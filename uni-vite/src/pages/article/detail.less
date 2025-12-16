@@ -1,0 +1,69 @@
+@import '@/common/css/reset.css';
+@import '@/common/css/common.css';
+@import '@/common/css/color.less';
+@import '@/common/css/apply.css';
+
+.article_detail_page {
+  padding: 24rpx;
+  line-height: 1.6;
+  color: @text-primary-color;
+  background: white;
+
+  & .article_detail_header {
+    font-size: 36rpx;
+    padding-bottom: 12px;
+    text-align: center;
+
+    & .title {
+      display: block;
+      font-weight: bold;
+    }
+
+    & .author {
+      display: block;
+      margin-top: 24rpx;
+      font-size: 28rpx;
+      color: @text-patch1-color;
+    }
+  }
+
+  & .article_detail_content {
+    & .article_detail_item {
+      margin-bottom: 32rpx;
+    }
+    & .article_detail_item.text,
+    & .article_detail_item.richText {
+      text-align: justify;
+    }
+    & .article_detail_item.image {
+      margin-bottom: 12rpx;
+      & .image {
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+      }
+      & .desc {
+        margin-bottom: 32rpx;
+        font-size: 28rpx;
+        text-align: center;
+        color: @text-patch1-color;
+      }
+    }
+    & .article_detail_item.video {
+      margin-bottom: 12rpx;
+      & .video {
+        width: 100%;
+        border-radius: 6px;
+      }
+      & .desc {
+        margin-bottom: 32rpx;
+        font-size: 28rpx;
+        text-align: center;
+        color: @text-patch1-color;
+      }
+    }
+    & .article_detail_item:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

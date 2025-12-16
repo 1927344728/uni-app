@@ -52,7 +52,7 @@
       </view>
       <view class="home-version">
         <view>你好{{helloWord ? '，' + helloWord :''}}</view>
-        <view>一兆知窗@1.0.0</view>
+        <view>一兆知窗@1.0.0 {{ isUseMock ? '[mock]' : '' }}</view>
       </view>			
     </view>
 
@@ -64,7 +64,7 @@
 import { SERVER_API_DOMAIN, openUrl } from '@/utils'
 import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE, BANNER_LIST } from '@/config/index.js'
 import { helloWord } from '@/api'
-import store from '@/store/index'
+import store from '@/store/index.js'
 import { FEATURE_ICON_ENUM, RECOMMEND_ARTICLES } from './constant.js'
 
 import FooterBar from '@/components/footer_bar/index.vue'
@@ -81,7 +81,8 @@ export default {
       bannerImage: HOME_BANNER_IMAGE,
       serverApiDomain: SERVER_API_DOMAIN,
       featureIcons: FEATURE_ICON_ENUM,
-      recommendArticles: RECOMMEND_ARTICLES
+      recommendArticles: RECOMMEND_ARTICLES,
+      isUseMock: store.state.isUseMock
     }
   },
   computed: {

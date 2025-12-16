@@ -25,7 +25,6 @@ export default function (options) {
     console.log(`[Mock]: ${url}`)
     return new Promise((resolve) => {
       const mockResponse = Mock.mock(mockData[url](params))
-      console.log(mockResponse.data)
       resolve(mockResponse.data)
     })
   }

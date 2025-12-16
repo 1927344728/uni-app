@@ -4,3 +4,4 @@ export * from './user.js';
 export * from './me.js';
 export * from './music.js';
 export * from './video.js'
+export * from './article.js'

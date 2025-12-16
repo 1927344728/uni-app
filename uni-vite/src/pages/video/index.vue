@@ -37,13 +37,13 @@
         :key="`menu-${m.id}-${idx}`"
         class="chip"
         :class="{ active: videoMenuId === m.id }"
-        @click="videoMenuId = m.id"
+        @click="onClickMenu(m)"
       >
         <text>{{ m.title }}</text>
       </view>
     </scroll-view>
 
-    <view class="video_section">
+    <view v-if="videoList.length" class="video_section">
       <view class="video_playlist_list">
         <view
           v-for="item in videoList"
@@ -64,9 +64,15 @@
   </scroll-view>
 </template>
 <script>
+import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { getVideoMenuList, getVideoPageList } from '@/api'
 
+const initPagination = () => ({
+  pageNum: 0,
+  pageSize: 6,
+  isLast: false
+})
 export default {
   data () {
     return {
@@ -75,14 +81,17 @@ export default {
       recommendedList: [],
       videoMenuList: [],
       videoList: [],
-      pagination: {
-        pageNum: 0,
-        pageSize: 6,
-        isLast: false
-      }
+      pagination: initPagination()
     }
   },
-  created () {
+  onLoad (options) {
+    const menuId = _get(options, 'menuId')
+    if (Number(menuId)) {
+      this.videoMenuId = Number(menuId)
+    }
+    this.refresh()
+  },
+  async created () {
     const { pagination } = this
     getVideoMenuList().then(data => {
       this.videoMenuList =[{
@@ -96,21 +105,27 @@ export default {
     }).then(data => {
       this.bannerList = (data || []).slice(0, 3)
       this.recommendedList = (data || []).slice(0, 10)
-      this.videoList = this.videoList.concat(data || [])
     })
+    await this.getVideoPageList()
   },
   methods: {
     convertHtmlToText,
 
     getVideoPageList () {
-      const { pagination } = this
+      const { videoMenuId, videoList, pagination } = this
       return getVideoPageList({
+        menuId: videoMenuId,
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then(data => {
-        this.videoList = this.videoList.concat(data || [])
+        this.videoList = videoList.concat(data || [])
         pagination.isLast = (data || []).length < pagination.pageSize
       })
+    },
+    refresh () {
+      this.videoList = []
+      this.pagination = initPagination()
+      this.getVideoPageList()
     },
     onClickBanner (item) {
       if (item && item.id) {
@@ -132,6 +147,10 @@ export default {
         title: '暂无播放列表',
         icon: 'none'
       })
+    },
+    onClickMenu (item) {
+      this.videoMenuId = item.id
+      this.refresh()
     },
     onClickVideo (item) {
       if (item && item.id) {

@@ -12,8 +12,8 @@ export const BANNER_LIST = [
 		title: '天空青草',
 		type: 'image',
 		image: `${COS_ASSET_PATH}images/微信图片_20251117231227_34_2.jpg`,
-		url: '',
-		jumpTo: 'webview'
+		url: `${WEB_DOMAIN}article/detail?id=article_00001`,
+		jumpTo: 'navigate'
 	},
 	{
 		id: 3,
