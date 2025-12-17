@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
 import Mock from "mockjs"
-import { MUSIC_MENU_LIST, MUSIC_LIST } from "@/pages/music/constant"
+import { MUSIC_MENU_LIST, MUSIC_LIST } from "/database/music.js"
 import { basicTemplate } from './common'
 
 const getMusicMenuList = () => {

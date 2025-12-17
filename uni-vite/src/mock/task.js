@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
 import Mock from "mockjs"
-import { TASK_LIST } from "@/pages/task/constant"
+import { TASK_LIST } from "/database/task.js"
 import { basicTemplate } from './common'
 
 const getTaskPageList = (params) => {

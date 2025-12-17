@@ -52,6 +52,13 @@
         "navigationBarTitleText": "修改密码"
       }
     },
+    {
+      "path": "pages/task/detail",
+      "style":  {
+        "navigationBarTitleText" : "任务详情",
+        "enablePullDownRefresh" : false
+      }
+    },
 		{
 		  "path": "pages/recommend/hanyupinyin",
 		  "style": {
@@ -98,6 +105,12 @@
       "path": "pages/video/play",
       "style": {
         "navigationBarTitleText": "视频播放"
+      }
+    },
+    {
+      "path": "pages/article/index",
+      "style": {
+        "navigationBarTitleText": "文章列表"
       }
     },
     {

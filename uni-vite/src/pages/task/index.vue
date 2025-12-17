@@ -29,20 +29,20 @@
 		</view>
 
 		<scroll-view v-if="taskList.length" class="task_list" scroll-y :lower-threshold="50" @scrolltolower="scrolltolower">
-			<view v-for="item in taskList" :key="item.id" class="task_item">
+			<view v-for="item in taskList" :key="item.id" class="task_item" @click="gotoDetail(item)">
 				<view class="task_item_header">
-					<view class="title">{{ item.title }}</view>
+					<view class="title">{{ textEllipsis(item.title, 14) }}</view>
 					<view class="status_tag" :class="[`status_${item.status}`]">
             {{ statusMap[item.status] }}
           </view>
 				</view>
 
-				<view class="task_item_meta">
-					发布人：{{ item.publisher }}
-				</view>
         <view class="task_item_meta">
           任务人：{{ item.targeter }}
         </view>
+				<view class="task_item_meta">
+					发布人：{{ item.publisher }}
+				</view>
 				<view class="content">
           {{ item.content }}
         </view>
@@ -65,7 +65,8 @@
 
 <script>
 import store from '@/store/index'
-import { getTaskTargeterList, getTaskPageList, getArticleById } from '@/api'
+import { getTaskTargeterList, getTaskPageList } from '@/api'
+import { textEllipsis } from '@/utils'
 import { TASK_STATUS_ENUM } from './constant.js'
 import FooterBar from '@/components/footer_bar/index.vue'
 
@@ -111,6 +112,7 @@ export default {
 		this.getTaskPageList()
 	},
 	methods: {
+    textEllipsis,
     getTaskTargeterList () {
       return getTaskTargeterList().then((data) => {
         this.targeterList = [{ value: '', text: '全部' }].concat((data || []).map(name => ({
@@ -146,7 +148,12 @@ export default {
         this.pagination.pageNum ++
         this.getTaskPageList()
       }
-		}
+		},
+    gotoDetail (item) {
+      uni.navigateTo({
+        url: `/pages/task/detail?id=${item.id}`
+      })
+    }
 	},
 }
 </script>

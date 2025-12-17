@@ -1,6 +1,6 @@
-import { get as _get, cloneDeep } from "lodash"
-import Mock from "mockjs"
-import { VIDEO_MENU_LIST, VIDEO_LIST } from "@/pages/video/constant"
+import { get as _get, cloneDeep } from 'lodash'
+import Mock from 'mockjs'
+import { VIDEO_MENU_LIST, VIDEO_LIST } from '/database/video.js'
 import { basicTemplate } from './common'
 
 const getVideoMenuList = () => {
