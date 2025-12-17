@@ -42,6 +42,11 @@ export const ARTICLE_LIST = [
         ],
         description: '小鱼儿'
       },
+      {
+        type: 'image',
+        image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251217212150_131_2.jpg',
+        description: '冬至'
+      },
       // {
       //   type: 'video',
       //   video: [

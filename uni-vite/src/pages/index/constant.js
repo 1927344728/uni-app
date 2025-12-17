@@ -5,8 +5,7 @@ export const FEATURE_ICON_ENUM = [
     key: 'task',
     name: '任务中心',
     image: `${COS_ASSET_PATH}images/d502c279bba37f3dfe78158803cfff37.jpg`,
-    // url: '/pages/task/index',
-    url: '',
+    url: '/pages/task/index',
     jumpTo: 'navigate'
   },
   {

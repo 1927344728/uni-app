@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import store from '@/store/index'
 import { FOOTER_BUTTON_LIST } from '@/config/index.js'
 export default {
 	props: {

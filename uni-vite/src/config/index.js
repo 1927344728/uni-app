@@ -44,8 +44,7 @@ export const FOOTER_BUTTON_LIST = [
 		key: 'task',
 		name: '任务',
 		icon: 'wallet',
-		// url: `${WEB_DOMAIN}task/index`
-		url: ''
+		url: `${WEB_DOMAIN}task/index`,
 	},
 	{
 		key: 'study',

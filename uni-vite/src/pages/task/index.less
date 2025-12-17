@@ -2,3 +2,143 @@
 @import '@/common/css/common.css';
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
+
+.task_page {
+  padding-top: 112rpx;
+  font-size: 28rpx;
+  color: #333;
+	background: #f5f7fa;
+	min-height: 100vh;
+
+	& .task_page_toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+		display: flex;
+		gap: 8px;
+    padding: 0 24rpx;
+    background: white;
+    z-index: 1;
+
+		& .uni-stat__select {
+			flex: 1;
+      ::v-deep .uni-select {
+        border-radius: 100rpx;
+      }
+      ::v-deep .uni-select__input-box {
+        padding-right: 20rpx;
+      }
+		}
+
+		& .uni-searchbar {
+      flex: 2;
+      padding-left: 0;
+      padding-right: 0;
+		}
+	}
+
+	& .task_list {
+		height: calc(100vh - 112rpx - 108rpx);
+    padding: 24rpx;
+    & .task_item {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  
+      & .task_item_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16rpx;
+        & .title {
+          font-size: 32rpx;
+          font-weight: 600;
+          color: #222;
+        }
+    
+        & .status_tag {
+          padding: 4px 24rpx;
+          font-size: 24rpx;
+          line-height: normal;
+          color: #1687e6;
+          border-radius: 12px;
+          background: white;
+        }
+        & .status_tag.status_1 {
+          color: white;
+          background: red;
+        }
+        & .status_tag.status_2 {
+          color: white;
+          background: #1687e6;
+        }
+        & .status_tag.status_3 {
+          color: white;
+          background: #1dd41d;
+        }
+        & .status_tag.status_4 {
+          color: white;
+          background: gray;
+        }
+      }
+  
+  
+      & .task_item_meta {
+        margin-bottom: 12rpx;
+        color: #999;
+      }
+  
+      .content {
+        font-size: 30rpx;
+        margin-bottom: 10px;
+      }
+  
+      .progress_wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+  
+        .progress_bar {
+          flex: 1;
+          height: 8px;
+          background: #f0f2f5;
+          border-radius: 6px;
+          overflow: hidden;
+  
+          .progress_inner {
+            height: 100%;
+            background: linear-gradient(90deg,#4facfe,#00f2fe);
+          }
+        }
+  
+        .progress_text {
+          min-width: 40px;
+          text-align: right;
+          font-size: 12px;
+          color: #666;
+        }
+      }
+  
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        color: #888;
+        font-size: 12px;
+      }
+    }
+	}
+
+
+	.loading,
+  .no_more,
+  .empty {
+		padding: 24rpx;
+    font-size: 28rpx;
+		text-align: center;
+		color: #999;
+	}
+}
