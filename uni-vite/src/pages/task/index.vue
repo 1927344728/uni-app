@@ -56,7 +56,7 @@
           </view>
 				</view>
 			</view>
-			<view v-if="pagination.isLast" class="no_more">没有更多了</view>
+			<view v-if="pagination.isLast" class="nomore_load_tips">~没有更多了~</view>
 		</scroll-view>
 
 		<FooterBar :activeTabKey="activeTabKey" />

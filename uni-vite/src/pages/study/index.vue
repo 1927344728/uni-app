@@ -56,6 +56,7 @@ export default {
     },
     classObject () {
       return {
+        [this.currentId]: true,
         'with_padding_top': this.filteredItems.length > 1
       }
     }

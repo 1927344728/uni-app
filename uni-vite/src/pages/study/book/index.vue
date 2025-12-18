@@ -1,50 +1,57 @@
 <template>
-  <scroll-view class="study-book-page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
-    <view class="page-header">
+  <scroll-view class="book_page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
+    <view class="book_header">
       <view>
-        <text class="page-title">一兆精选 · 图书馆</text>
-        <text class="page-subtitle">沉浸阅读 · 私藏好书随时借阅</text>
+        <text class="title">一兆精选 · 图书馆</text>
+        <text class="subtitle">沉浸阅读 · 私藏好书随时借阅</text>
       </view>
     </view>
 
-    <view class="book-list">
-      <view class="book-card" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
-        <image class="book-cover" mode="aspectFill" :src="book.cover" />
-        <view class="book-content">
-          <view class="book-title-row">
-            <text class="book-title">{{ book.title }}</text>
-            <view class="score-wrapper">
-              <text class="book-score">{{ book.score }}</text>
-              <text class="score-suffix">分</text>
+    <view v-if="isLoad" class="book_list">
+      <view class="book_item" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
+        <image class="book_cover" mode="aspectFill" :src="book.cover" />
+        <view class="book_content">
+          <view class="book_header">
+            <text class="book_title">{{ book.title }}</text>
+            <view class="book_score">
+              <text class="score">{{ book.score }}</text>
+              <text class="suffix">分</text>
             </view>
           </view>
 
-          <view class="meta-row">
-            <text class="meta-item">作者：{{ book.author }}</text>
-						<text class="meta-dot">·</text>
-					  <text class="meta-item">书主：{{ book.owner }}</text>
+          <view class="book_meta">
+            <text>作者：{{ book.author }}</text>
+						<text class="dot">·</text>
+					  <text>书主：{{ book.owner }}</text>
           </view>
 
-          <text class="book-desc">
+          <text class="book_desc">
             {{ book.description }}
           </text>
 
-          <view class="tag-row">
-            <text class="book-tag" v-for="tag in book.tags" :key="tag">
+          <view class="book_tag">
+            <text class="tag" v-for="tag in book.tags" :key="tag">
               {{ tag }}
             </text>
           </view>
         </view>
       </view>
+      <view v-if="pagination.isLast" class="nomore_load_tips">~没有更多书籍了~</view>
     </view>
 
     <FooterBar :activeTabKey="activeTabKey" />
   </scroll-view>
 </template>
 <script>
-import { BOOK_LIST } from '/database/book.js'
+import { getBookPageList } from '@/api/book.js'
 import store from '@/store/index'
 import FooterBar from '@/components/footer_bar/index.vue'
+
+const initPagination = () => ({
+  pageNum: 0,
+  pageSize: 5,
+  isLast: false
+})
 
 export default {
   components: {
@@ -52,7 +59,9 @@ export default {
   },
   data () {
     return {
-      bookList: BOOK_LIST
+      isLoad: false,
+			bookList: [],
+      pagination: initPagination()
     }
   },
   computed: {
@@ -62,8 +71,26 @@ export default {
   },
   created () {
     store.commit('setActiveTabKey', 'study')
+    this.getBookPageList()
   },
 	methods: {
+    getBookPageList () {
+      const { pageNum, pageSize } = this.pagination
+      this.isLoad = false
+      return getBookPageList({
+        pageNum,
+        pageSize
+      })
+        .then(data => {
+          this.bookList = this.bookList.concat(data || [])
+          if ((data || []).length < pageSize) {
+            this.pagination.isLast = true
+          }
+        })
+        .finally(() => {
+          this.isLoad = true
+        })
+    },
 		onClickCard (item) {
 			if (item) {
 				uni.navigateTo({
@@ -72,7 +99,12 @@ export default {
 			}
 		},
     onScrollToLower () {
-      console.log('滚动到底部加载更多')
+      const { pagination } = this
+      console.log('onScrollToLower')
+      if (!pagination.isLast) {
+        pagination.pageNum ++
+        this.getBookPageList()
+      }
     }
 	}
 }

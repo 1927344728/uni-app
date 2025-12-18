@@ -6,3 +6,4 @@ export * from './music.js';
 export * from './video.js'
 export * from './article.js'
 export * from './task.js';
+export * from './book.js';
