@@ -24,7 +24,7 @@
  </template>
 
  <script>
-  import { LOGO_COLOR_IMAGE } from '@/config/index.js'
+  import { LOGO_IMAGE } from '@/config/index.js'
   import { login } from '@/api';
   import { getUrlParams } from '@/utils/variables.js'
 
@@ -32,7 +32,7 @@
   export default {
     data() {
       return {
-        logoImage: LOGO_COLOR_IMAGE,
+        logoImage: LOGO_IMAGE,
         account: uni.getStorageSync('YIZHAO_USER_PHONE') || '',
         password: '',
         checked: ''

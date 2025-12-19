@@ -61,8 +61,7 @@
 </template>
 
 <script>
-import { ARTICLE_LIST } from '/database/article.js'
-import { HOME_BANNER_IMAGE, LOGO_WHITE_IMAGE, BANNER_LIST, FEATURE_ICON_ENUM } from '@/config/index.js'
+import { BANNER_LIST, FEATURE_ICON_ENUM } from '@/config/index.js'
 import { SERVER_API_DOMAIN, openUrl } from '@/utils'
 import { helloWord, getArticlePageList } from '@/api'
 import store from '@/store/index.js'
@@ -75,10 +74,8 @@ export default {
   data () {
     return {
       helloWord: '',
-      logoWhiteImage: LOGO_WHITE_IMAGE,
       currentBanner: 0,
       bannerList: BANNER_LIST,
-      bannerImage: HOME_BANNER_IMAGE,
       serverApiDomain: SERVER_API_DOMAIN,
       featureIcons: FEATURE_ICON_ENUM,
       recommendArticles: null,
