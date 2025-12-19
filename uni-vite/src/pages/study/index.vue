@@ -13,6 +13,8 @@
         {{ o.name }}
       </view>
     </view>
+    <ReadList v-if="currentId === 'read'" :class="classObject"/>
+    <CourseList v-if="currentId === 'course'" :class="classObject"/>
     <BookList v-if="currentId === 'book'" :class="classObject"/>
     <ScoreList v-if="currentId === 'score'" :class="classObject"/>
     <FooterBar :activeTabKey="activeTabKey" />
@@ -20,25 +22,29 @@
 </template>
 <script>
 import store from '@/store/index'
+import ReadList from './read/index.vue'
+import CourseList from './course/index.vue'
 import BookList from './book/index.vue'
 import ScoreList from './score/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
 
 const items = [
-  { id: 1, name: '课程', component: '' },
-  { id: 'book', name: '图书馆', component: 'BookList' },
+  { id: 'course', name: '课程', component: 'CourseList' },
+  { id: 'read', name: '阅读', component: 'ReadList' },
   { id: 'score', name: '成绩', component: 'ScoreList' },
-  { id: 4, name: '阅读', component: '' },
+  { id: 'book', name: '图书馆', component: 'BookList' },
 ]
 export default {
   components: {
+    ReadList,
+    CourseList,
     BookList,
     ScoreList,
     FooterBar
   },
   data () {
     return {
-      currentId: 'book',
+      currentId: 'course',
       items
     }
   },

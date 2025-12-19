@@ -1,5 +1,5 @@
 <template>
-  <ScrollList class="score_page" :request="getArticlePageList" :pageSize="5" />
+  <ScrollList class="read_page" :request="getArticlePageList" :pageSize="5" />
 </template>
 
 <script>
@@ -12,14 +12,14 @@ export default {
     getArticlePageList (options = {}) {
       return getArticlePageList({
         ...options,
-        type: 3
+        type: 1
       })
     }
   },
 }
 </script>
 <style lang="less" scoped>
-  .score_page {
+  .read_page {
     height: calc(100vh - 64rpx - constant(safe-area-inset-bottom));
     height: calc(100vh - 64rpx - env(safe-area-inset-bottom));
   }

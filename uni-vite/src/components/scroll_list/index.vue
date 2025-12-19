@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="common_list_module" scroll-y :lower-threshold="50" @scrolltolower="scrolltolower">
-    <uni-list v-if="list.length">
+    <uni-list v-if="isLoad && list.length">
       <uni-list-item
         v-for="item in list"
         :key="item.id"
@@ -12,8 +12,11 @@
         @click="openUrl(item)"
       />
     </uni-list>
-    <view v-if="pagination.isLast" class="nomore_load_tips">
+    <view v-if="list.length && pagination.isLast" class="nomore_load_tips">
       ~没有更多了~
+    </view>
+    <view v-if="isLoad && !list.length" class="nomore_load_tips">
+      ~什么都没有哦~
     </view>
   </scroll-view>
 </template>
@@ -51,6 +54,7 @@ export default {
     },
 		getList () {
       const { pagination, list } = this
+      this.isLoad = false
 			return this.request({
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize,

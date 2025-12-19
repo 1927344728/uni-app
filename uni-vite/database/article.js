@@ -1,13 +1,16 @@
 export const ARTICLE_TYPE_ENUM = {
-  1: '推荐阅读',
-  2: '成绩',
+  1: '课程',
+  2: '阅读',
+  3: '成绩',
+  4: '旅游',
+  5: '文章',
   99: '其他'
 }
 
 export const ARTICLE_LIST= [
   {
     id: 'u00001',
-    type: '1',
+    type: '2',
     title: '汉语拼音发音学习',
     note: '点击任意拼音即可播放发音',
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg?imageMogr2/thumbnail/160',
@@ -19,7 +22,7 @@ export const ARTICLE_LIST= [
   },
   {
     id: 'u00002',
-    type: '1',
+    type: '5',
     title: '李若小画家绘画作品展',
     note: '你的每一幅画，都是送给这个世界的一份独特礼物！',
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251216003939_120_2.jpg?imageMogr2/thumbnail/750x',
@@ -30,7 +33,7 @@ export const ARTICLE_LIST= [
   },
   {
     id: 'u00003',
-    type: '1',
+    type: '5',
     title: '中国地方特色水果图鉴',
     note: '每一方水土，都有其独特的甜蜜献礼。探索中国大地上风味各异的地方名果。',
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/9aa1951aeb5a45e186eeef1d6e39296d463b6f2911c6ff-SlTBw5_fw1200webp.webp',
@@ -41,7 +44,7 @@ export const ARTICLE_LIST= [
   },
   {
     id: 'u00004',
-    type: '',
+    type: '5',
     title: '摄影笔记深度解析',
     note: '从原理到实践的摄影入门指南——深入解读宁思潇潇的经典之作',
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/tBzDxA-yeF6XfLSfgXrQlQ.jpg',
@@ -52,7 +55,7 @@ export const ARTICLE_LIST= [
   },
   {
     id: 'u00005',
-    type: '2',
+    type: '3',
     title: '李兮一年级上学期期中考试成绩单',
     note: '爸爸为你的努力感到骄傲，继续加油哦！',
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251217212113_130_2.jpg?imageMogr2/thumbnail/750x',

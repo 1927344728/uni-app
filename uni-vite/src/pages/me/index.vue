@@ -19,6 +19,9 @@
       </view>
       <view class="me_main">
         <view class="me_main_content">					
+          <view class="me_main_item">我的音乐</view>
+          <view class="me_main_item">我的视频</view>
+          <view class="me_main_item">我的文章</view>
           <view class="me_main_item">我的书单</view>
           <view class="me_main_item">我的成绩</view>
         </view>
@@ -43,10 +46,6 @@ import { getCurrentUser, logout } from '@/api'
 import store from '@/store/index'
 import FooterBar from '@/components/footer_bar/index.vue'
 import { DEFAULT_AVATAR_IMAGE } from '@/config/index.js'
-
-// #ifdef WEB
-console.log('WEB')
-// #endif
 
 export default {
   components: {
@@ -79,7 +78,11 @@ export default {
       })
     },
     getRoleLabel(role) {
-      const map = { 1: '超级管理员', 2: '家长', 3: '学生' };
+      const map = {
+        1: '超级管理员',
+        2: '家长',
+        3: '学生'
+      };
       return map[role] || '未知角色';
     },
     gotoLogin () {

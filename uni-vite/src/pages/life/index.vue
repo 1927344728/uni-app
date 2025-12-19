@@ -15,6 +15,7 @@
     </view>
     <MusicList v-if="currentId === 'music'" :class="classObject" />
     <VideoList v-if="currentId === 'video'" :class="classObject" />
+    <TravelList v-if="currentId === 'travel'" :class="classObject" />
     <FooterBar :activeTabKey="activeTabKey" />
   </view>
 </template>
@@ -22,18 +23,19 @@
 import store from '@/store/index'
 import MusicList from '../music/index.vue'
 import VideoList from '../video/index.vue'
+import TravelList from './travel/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
 
 const items = [
   { id: 'music', name: '音乐', component: 'MusicList' },
   { id: 'video', name: '视频', component: 'VideoList' },
-  { id: 'dance', name: '舞蹈', component: '' },
-  { id: 'travel', name: '旅游', component: '' },
+  { id: 'travel', name: '旅游', component: 'TravelList' },
 ]
 export default {
   components: {
     MusicList,
     VideoList,
+    TravelList,
     FooterBar
   },
   data () {
