@@ -52,7 +52,7 @@
       </view>
       <view class="home-version">
         <view>你好{{helloWord ? '，' + helloWord :''}}</view>
-        <view>一兆知窗@1.0.0 {{ isUseMock ? '[mock]' : '' }}</view>
+        <view>一兆窗含@1.0.0 {{ isUseMock ? '[mock]' : '' }}</view>
       </view>			
     </view>
 
