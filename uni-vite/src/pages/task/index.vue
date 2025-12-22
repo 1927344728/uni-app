@@ -1,31 +1,26 @@
 <template>
 	<view class="task_page">
-		<view class="task_page_toolbar">
-      <uni-data-select
-        v-model="queryParam.targeter"
-        :localdata="targeterList"
-        :clear="false"
-        align="center"
-        @change="refresh"
-      ></uni-data-select>
-      <uni-data-select
-        v-model="queryParam.status"
-        :localdata="statusList"
-        :clear="false"
-        align="center"
-        placeholder="全部"
-        @change="refresh"
-      ></uni-data-select>
+		<view class="task_toolbar">
+      <view class="task_toolbar_select">
+        <uni-data-select
+          v-model="queryParam.targeter"
+          :localdata="targeterList"
+          :clear="!!queryParam.targeter"
+          @clear="queryParam.targeter = null"
+        />
+        <uni-data-select
+          v-model="queryParam.status"
+          :localdata="statusList"
+          :clear="!!queryParam.status"
+          @clear="queryParam.status = null"
+        />
+      </view>
       <uni-search-bar
-        v-model.trim="queryParam.title"
+        v-model.trim="queryParam.keyword"
         placeholder="请输入任务名称"
         :radius="100"
-        cancelButton="none"
-        @input="() => $nextTick(() => refresh())"
-        @confirm="refresh"
-        @clear="queryParam.title = '', refresh()"
-      >
-			</uni-search-bar>
+        @clear="queryParam.keyword = ''"
+      />
 		</view>
 
 		<scroll-view v-if="taskList.length" class="task_list" scroll-y :lower-threshold="50" @scrolltolower="scrolltolower">
@@ -71,9 +66,9 @@ import { TASK_STATUS_ENUM } from './constant.js'
 import FooterBar from '@/components/footer_bar/index.vue'
 
 const initQueryParam = () => ({
-  title: '',
-  status: '',
-  targeter: ''
+  keyword: '',
+  status: null,
+  targeter: null
 })
 const initPagination = () => ({
   pageNum: 0,
@@ -99,13 +94,21 @@ export default {
     statusList () {
       return [{
         value: '',
-        text: '全部',
+        text: '所有状态',
       }].concat(Object.keys(TASK_STATUS_ENUM).map(key => ({
         value: Number(key),
         text: TASK_STATUS_ENUM[key],
       })))
     }
 	},
+  watch: {
+    queryParam: {
+      handler () {
+        this.refreshList()
+      },
+      deep: true
+    }
+  },
   created () {
 		store.commit('setActiveTabKey', 'task')
     this.getTaskTargeterList()
@@ -115,7 +118,7 @@ export default {
     textEllipsis,
     getTaskTargeterList () {
       return getTaskTargeterList().then((data) => {
-        this.targeterList = [{ value: '', text: '全部' }].concat((data || []).map(name => ({
+        this.targeterList = [{ value: '', text: '所有任务人' }].concat((data || []).map(name => ({
           value: name,
           text: name,
         })))
@@ -124,7 +127,7 @@ export default {
 		getTaskPageList () {
       const { queryParam, pagination, taskList } = this
 			return getTaskPageList({
-        title: queryParam.title,
+        title: queryParam.keyword,
         status: queryParam.status,
         targeter: queryParam.targeter,
         pageNum: pagination.pageNum,
@@ -137,7 +140,7 @@ export default {
         }
       })
 		},
-    refresh () {
+    refreshList () {
 			this.taskList = [],
       this.pagination = initPagination()
       this.getTaskPageList()

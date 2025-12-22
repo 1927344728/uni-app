@@ -4,39 +4,45 @@
 @import '@/common/css/apply.css';
 
 .task_page {
-  padding-top: 112rpx;
+  padding-top: 208rpx;
   font-size: 28rpx;
   color: #333;
 	background: #f5f7fa;
 	min-height: 100vh;
 
-	& .task_page_toolbar {
+  & .task_toolbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-		display: flex;
-		gap: 8px;
-    padding: 0 24rpx;
-    background: white;
-    z-index: 1;
-
-		& .uni-stat__select {
-			flex: 1;
-      ::v-deep .uni-select {
-        border-radius: 100rpx;
+    z-index: 10;
+    & .task_toolbar_select {
+      display: flex;
+      gap: 8px;
+      padding: 12rpx 24rpx;
+      background: white;
+      z-index: 1;
+  
+      & .uni-stat__select {
+        flex: 1;
+        & ::v-deep .uni-icons {
+          font-size: 42rpx!important;
+        }
+        & ::v-deep .uni-select {
+          padding-left: 24rpx;
+          border-radius: 100rpx;
+        }
+        & ::v-deep .uni-select__input-box {
+          padding-right: 20rpx;
+        }
       }
-      ::v-deep .uni-select__input-box {
-        padding-right: 20rpx;
-      }
-		}
-
-		& .uni-searchbar {
-      flex: 2;
-      padding-left: 0;
-      padding-right: 0;
-		}
-	}
+    }
+    & .uni-searchbar {
+      background: white;
+      border-top: 2rpx solid @border-primary-color;
+      border-bottom: 2rpx solid @border-primary-color;
+    }
+  }
 
 	& .task_list {
 		height: calc(100vh - 112rpx - 108rpx);

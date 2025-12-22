@@ -74,6 +74,12 @@ const initPagination = () => ({
   isLast: false
 })
 export default {
+  props: {
+    keyword: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       videoMenuId: null,
@@ -84,12 +90,17 @@ export default {
       pagination: initPagination()
     }
   },
+  watch: {
+    keyword () {
+      this.refreshList()
+    }
+  },
   onLoad (options) {
     const menuId = _get(options, 'menuId')
     if (Number(menuId)) {
       this.videoMenuId = Number(menuId)
     }
-    this.refresh()
+    this.refreshList()
   },
   async created () {
     const { pagination } = this
@@ -112,8 +123,9 @@ export default {
     convertHtmlToText,
 
     getVideoPageList () {
-      const { videoMenuId, videoList, pagination } = this
+      const { keyword, videoMenuId, videoList, pagination } = this
       return getVideoPageList({
+        keyword,
         menuId: videoMenuId,
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
@@ -122,7 +134,7 @@ export default {
         pagination.isLast = (data || []).length < pagination.pageSize
       })
     },
-    refresh () {
+    refreshList () {
       this.videoList = []
       this.pagination = initPagination()
       this.getVideoPageList()
@@ -150,7 +162,7 @@ export default {
     },
     onClickMenu (item) {
       this.videoMenuId = item.id
-      this.refresh()
+      this.refreshList()
     },
     onClickVideo (item) {
       if (item && item.id) {

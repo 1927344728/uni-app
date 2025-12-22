@@ -9,3 +9,10 @@ body {
   color: #999;
   text-align: center;
 }
+
+.nothing_tips {
+  padding: 40vh 24rpx;
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}

@@ -1,32 +1,49 @@
 <template>
-  <view class="study-page" :class="classObject">
-    <view v-if="filteredItems.length > 1" class="study-nav">
-      <view
-        v-for="o in filteredItems"
-        :key="o.id"
-        class="item"
-        :class="{
-          active: currentId === o.id
-        }"
-        @click="currentId = o.id"
-      >
-        {{ o.name }}
-      </view>
-    </view>
-    <ReadList v-if="currentId === 'read'" :class="classObject"/>
-    <CourseList v-if="currentId === 'course'" :class="classObject"/>
-    <BookList v-if="currentId === 'book'" :class="classObject"/>
-    <ScoreList v-if="currentId === 'score'" :class="classObject"/>
+  <view class="study_page" :class="classObject">
+    <HeaderBar
+      v-if="filteredItems.length > 1"
+      :value="currentTab"
+      :list="filteredItems"
+      @input="currentTab = $event"
+    />
+    <uni-search-bar
+      v-model.trim="queryParam.keyword"
+      placeholder="请输入搜索词"
+      :radius="100"
+      @clear="queryParam.keyword = ''"
+    />
+    <CourseList
+    v-if="currentTab === 'course'"
+    :class="classObject"
+    :keyword="queryParam.keyword"
+    />
+    <ReadList
+      v-if="currentTab === 'read'"
+      :class="classObject"
+      :keyword="queryParam.keyword"
+    />
+    <BookList
+      v-if="currentTab === 'book'"
+      :class="classObject"
+      :keyword="queryParam.keyword"
+    />
+    <ScoreList
+      v-if="currentTab === 'score'"
+      :class="classObject"
+      :keyword="queryParam.keyword"
+    />
     <FooterBar :activeTabKey="activeTabKey" />
   </view>
 </template>
 <script>
+import { cloneDeep } from 'lodash'
 import store from '@/store/index'
-import ReadList from './read/index.vue'
-import CourseList from './course/index.vue'
-import BookList from './book/index.vue'
-import ScoreList from './score/index.vue'
+import HeaderBar from '@/components/header_bar/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
+import CourseList from './course/index.vue'
+import ReadList from './read/index.vue'
+import ScoreList from './score/index.vue'
+import BookList from './book/index.vue'
 
 const items = [
   { id: 'course', name: '课程', component: 'CourseList' },
@@ -36,21 +53,24 @@ const items = [
 ]
 export default {
   components: {
+    HeaderBar,
+    FooterBar,
     ReadList,
     CourseList,
     BookList,
     ScoreList,
-    FooterBar
   },
   data () {
     return {
-      currentId: 'course',
-      items
+      currentTab: 'course',
+      queryParam: {
+        keyword: ''
+      }
     }
   },
   onLoad (options) {
     if (options.tab) {
-      this.currentId = options.tab
+      this.currentTab = options.tab
     } 
   },
   computed: {
@@ -58,22 +78,20 @@ export default {
       return store.state.activeTabKey
     },
     filteredItems () {
-      return this.items.filter(o => o.component)
+      return cloneDeep(items).filter(o => o.component)
     },
     classObject () {
       return {
-        [this.currentId]: true,
-        'with_padding_top': this.filteredItems.length > 1
+        [this.currentTab]: true,
+        with_header_bar: this.filteredItems.length > 1,
+        with_sub_module: true,
+        with_search_bar: true,
+        with_footer_bar: true
       }
     }
   },
   created () {
     store.commit('setActiveTabKey', 'study')
-  },
-  methods: {
-    onClickItem (item) {
-      
-    }
   }
 }
 </script>

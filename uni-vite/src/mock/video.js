@@ -10,9 +10,15 @@ const getVideoMenuList = () => {
 }
 
 const getVideoPageList = (params) => {
-  const { menuId, pageNum, pageSize } = params
+  const { keyword, menuId, pageNum, pageSize } = params
+  let list = cloneDeep(VIDEO_LIST)
+  if (keyword) {
+    list = list.filter(item => item.title.includes(keyword) || item.desc.includes(keyword))
+  }
+  list = list.filter(item => !menuId || item.menuId.split(',').includes(String(menuId)))
+  list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
-  data.data = cloneDeep(VIDEO_LIST).filter(item => !menuId || item.menuId.split(',').includes(String(menuId))).splice(pageNum * pageSize, pageSize)
+  data.data = list
   return Mock.mock(data);
 }
 

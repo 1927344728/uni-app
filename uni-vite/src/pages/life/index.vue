@@ -1,30 +1,42 @@
 <template>
-  <view class="life-page" :class="classObject">
-    <view v-if="filteredItems.length > 1" class="life-nav">
-      <view
-        v-for="o in filteredItems"
-        :key="o.id"
-        class="item"
-        :class="{
-          active: currentId === o.id
-        }"
-        @click="currentId = o.id"
-      >
-        {{ o.name }}
-      </view>
-    </view>
-    <MusicList v-if="currentId === 'music'" :class="classObject" />
-    <VideoList v-if="currentId === 'video'" :class="classObject" />
-    <TravelList v-if="currentId === 'travel'" :class="classObject" />
+  <view class="life_page" :class="classObject">
+    <HeaderBar
+      v-if="filteredItems.length > 1"
+      :value="currentTab"
+      :list="filteredItems"
+      @input="currentTab = $event"
+    />
+    <uni-search-bar
+      v-model.trim="queryParam.keyword"
+      placeholder="请输入搜索词"
+      :radius="100"
+      @clear="queryParam.keyword = ''"
+    />
+    <MusicList
+      v-if="currentTab === 'music'"
+      :class="classObject"
+      :keyword="queryParam.keyword"
+    />
+    <VideoList
+      v-if="currentTab === 'video'"
+      :class="classObject"
+      :keyword="queryParam.keyword"
+    />
+    <TravelList
+      v-if="currentTab === 'travel'"
+      :class="classObject"
+      :keyword="queryParam.keyword"
+    />
     <FooterBar :activeTabKey="activeTabKey" />
   </view>
 </template>
 <script>
 import store from '@/store/index'
+import HeaderBar from '@/components/header_bar/index.vue'
+import FooterBar from '@/components/footer_bar/index.vue'
 import MusicList from '../music/index.vue'
 import VideoList from '../video/index.vue'
 import TravelList from './travel/index.vue'
-import FooterBar from '@/components/footer_bar/index.vue'
 
 const items = [
   { id: 'music', name: '音乐', component: 'MusicList' },
@@ -33,21 +45,25 @@ const items = [
 ]
 export default {
   components: {
+    HeaderBar,
+    FooterBar,
     MusicList,
     VideoList,
-    TravelList,
-    FooterBar
+    TravelList
   },
   data () {
     return {
-      currentId: 'music'
+      currentTab: 'music',
+      queryParam: {
+        keyword: ''
+      }
     }
   },
   onLoad (options = {}) {
     if (options.tab) {
       const tabItem = items.find(o => o.id === options.tab)
       if (tabItem) {
-        this.currentId = tabItem.id
+        this.currentTab = tabItem.id
       }
     }
   },
@@ -60,17 +76,16 @@ export default {
     },
     classObject () {
       return {
-        'with_padding_top': this.filteredItems.length > 1
+        [this.currentTab]: true,
+        with_header_bar: this.filteredItems.length > 1,
+        with_sub_module: true,
+        with_search_bar: true,
+        with_footer_bar: true
       }
     }
   },
   created () {
     store.commit('setActiveTabKey', 'life')
-  },
-  methods: {
-    onClickItem (item) {
-      
-    }
   }
 }
 </script>

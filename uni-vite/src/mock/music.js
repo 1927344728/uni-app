@@ -10,9 +10,14 @@ const getMusicMenuList = () => {
 }
 
 const getMusicPageList = (params) => {
-  const { pageNum, pageSize } = params
+  const { keyword, pageNum, pageSize } = params
+  let list = cloneDeep(MUSIC_LIST)
+  if (keyword) {
+    list = list.filter(item => item.title.includes(keyword))
+  }
+  list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
-  data.data = cloneDeep(MUSIC_LIST).splice(pageNum * pageSize, pageSize)
+  data.data = list
   return Mock.mock(data);
 }
 

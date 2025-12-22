@@ -38,14 +38,10 @@
       </view>
       <view v-if="pagination.isLast" class="nomore_load_tips">~没有更多书籍了~</view>
     </view>
-
-    <FooterBar :activeTabKey="activeTabKey" />
   </scroll-view>
 </template>
 <script>
 import { getBookPageList } from '@/api/book.js'
-import store from '@/store/index'
-import FooterBar from '@/components/footer_bar/index.vue'
 
 const initPagination = () => ({
   pageNum: 0,
@@ -54,8 +50,11 @@ const initPagination = () => ({
 })
 
 export default {
-  components: {
-    FooterBar
+  props: {
+    keyword: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {
@@ -64,32 +63,40 @@ export default {
       pagination: initPagination()
     }
   },
-  computed: {
-    activeTabKey () {
-      return store.state.activeTabKey
+  watch: {
+    keyword: {
+      handler () {
+        this.refreshList()
+      }
     }
   },
   created () {
-    store.commit('setActiveTabKey', 'study')
     this.getBookPageList()
   },
 	methods: {
     getBookPageList () {
-      const { pageNum, pageSize } = this.pagination
+      const { keyword, pagination } = this
+      const { pageNum, pageSize } = pagination
       this.isLoad = false
       return getBookPageList({
+        keyword,
         pageNum,
         pageSize
       })
         .then(data => {
           this.bookList = this.bookList.concat(data || [])
           if ((data || []).length < pageSize) {
-            this.pagination.isLast = true
+            pagination.isLast = true
           }
         })
         .finally(() => {
           this.isLoad = true
         })
+    },
+    refreshList () {
+      this.bookList = []
+      this.pagination = initPagination()
+      this.getBookPageList()
     },
 		onClickCard (item) {
 			if (item) {

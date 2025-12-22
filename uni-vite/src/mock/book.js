@@ -4,8 +4,11 @@ import { BOOK_LIST } from "/database/book.js"
 import { basicTemplate } from './common'
 
 const getBookPageList = (params) => {
-  const { type, pageNum, pageSize } = params
+  const { keyword, type, pageNum, pageSize } = params
   let list = cloneDeep(BOOK_LIST)
+  if (keyword) {
+    list = list.filter(item => item.title.includes(keyword) || item.owner.includes(keyword))
+  }
   if (type) {
     list = list.filter(item => (item.type || '').split(',').includes(String(type)))
   }

@@ -2,40 +2,40 @@
 @import '@/common/css/common.css';
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
-.study-page {
+.study_page {
   position: relative;
   height: 100vh;
   padding: 0 0 144rpx;
   color: @text-primary-color;
-  .study-nav {
+  & .uni-searchbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    font-size: 30rpx;
-    padding: 0 8rpx;
-    line-height: 64rpx;
-    overflow-x: auto;
-    border-bottom: 1px solid @border-primary-color;
+    z-index: 20;
     background: white;
-    z-index: 10;
-    & .item {
-      display: inline-block;
-      padding: 0 16rpx;
-      line-height: 36rpx;
-      text-align: center;
-      vertical-align: middle;
-    }
-    & .item.active {
-      font-weight: bold;
-      font-size: 32rpx;
-      color: @primary-color;
-    }
+    border-top: 2rpx solid @border-primary-color;
+    border-bottom: 2rpx solid @border-primary-color;
+  }
+  & .with_sub_module {
+    height: calc(100vh - 200rpx - constant(safe-area-inset-bottom));
+    height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
   }
 }
-.study-page.book {
+.study_page.book {
   background: linear-gradient(180deg, #fefefe 0%, #f7f4ff 60%, #fdf5f2 100%);
 }
-.study-page.with_padding_top {
-  padding-top: 64rpx;
+.study_page.with_header_bar {
+  padding-top: 88rpx;
+  & .uni-searchbar {
+    top: 88rpx;
+  }
+}
+.study_page.with_header_bar.with_search_bar {
+  padding-top: 200rpx;
+}
+.study_page.with_footer_bar {
+  & .with_sub_module {
+    padding-bottom: 136rpx;
+  }
 }

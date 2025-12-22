@@ -2,35 +2,35 @@
 @import '@/common/css/common.css';
 @import '@/common/css/color.less';
 @import '@/common/css/apply.css';
-.life-page {
+.life_page {
   position: relative;
   color: @text-primary-color;
-  .life-nav {
+  & .uni-searchbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 64rpx;
-    font-size: 30rpx;
-    line-height: 62rpx;
+    z-index: 20;
     background: white;
+    border-top: 2rpx solid @border-primary-color;
     border-bottom: 2rpx solid @border-primary-color;
-    overflow-x: auto;
-    z-index: 10;
-    & .item {
-      display: inline-block;
-      padding: 0 16rpx;
-      line-height: 36rpx;
-      text-align: center;
-      vertical-align: middle;
-    }
-    & .item.active {
-      font-weight: bold;
-      font-size: 32rpx;
-      color: @primary-color;
-    }
+  }
+  & .with_sub_module {
+    height: calc(100vh - 200rpx - constant(safe-area-inset-bottom));
+    height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
   }
 }
-.life-page.with_padding_top {
-  padding-top: 64rpx;
+.life_page.with_header_bar {
+  padding-top: 88rpx;
+  & .uni-searchbar {
+    top: 88rpx;
+  }
+}
+.life_page.with_header_bar.with_search_bar {
+  padding-top: 200rpx;
+}
+.life_page.with_footer_bar {
+  & .with_sub_module {
+    padding-bottom: 136rpx;
+  }
 }

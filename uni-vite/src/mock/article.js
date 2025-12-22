@@ -4,8 +4,13 @@ import { ARTICLE_LIST, ARTICLE_DETAIL_LIST } from "/database/article.js"
 import { basicTemplate } from './common'
 
 const getArticlePageList = (params) => {
-  const { type, pageNum, pageSize } = params
+  const { keyword, type, pageNum, pageSize } = params
   let list = cloneDeep(ARTICLE_LIST)
+  if (keyword) {
+    list = list.filter(item => {
+      return _get(item, 'title', '').includes(keyword)
+    })
+  }
   if (type) {
     list = list.filter(item => (item.type || '').split(',').includes(String(type)))
   }

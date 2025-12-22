@@ -1,5 +1,10 @@
 <template>
-  <ScrollList class="course_page" :request="getArticlePageList" :pageSize="5" />
+  <ScrollList
+    ref="ScrollList"
+    class="course_page"
+    :request="getArticlePageList"
+    :pageSize="5"
+  />
 </template>
 
 <script>
@@ -8,19 +13,28 @@ import ScrollList from '@/components/scroll_list/index.vue'
 
 export default {
   components: { ScrollList },
+  props: {
+    keyword: {
+      type: String,
+      default: ''
+    }
+  },
+  watch: {
+    keyword: {
+      handler () {
+        this.$refs.ScrollList.refreshList()
+      }
+    }
+  },
   methods: {
     getArticlePageList (options = {}) {
+      const { keyword } = this
       return getArticlePageList({
         ...options,
-        type: 2
+        keyword,
+        type: 2,
       })
     }
   },
 }
 </script>
-<style lang="less" scoped>
-  .course_page {
-    height: calc(100vh - 64rpx - constant(safe-area-inset-bottom));
-    height: calc(100vh - 64rpx - env(safe-area-inset-bottom));
-  }
-</style>

@@ -15,7 +15,7 @@
     <view v-if="list.length && pagination.isLast" class="nomore_load_tips">
       ~没有更多了~
     </view>
-    <view v-if="isLoad && !list.length" class="nomore_load_tips">
+    <view v-if="isLoad && !list.length" class="nothing_tips">
       ~什么都没有哦~
     </view>
   </scroll-view>
@@ -92,5 +92,8 @@ export default {
 .common_list_module {
   height: calc(100vh - constant(safe-area-inset-bottom));
   height: calc(100vh - env(safe-area-inset-bottom));
+  & ::v-deep .uni-icons {
+    display: none;
+  }
 }
 </style>

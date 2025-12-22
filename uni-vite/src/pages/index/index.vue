@@ -96,7 +96,7 @@ export default {
         title: err ? err.errMsg : '请求异常'
       })
     })
-    getArticlePageList({type: 1, pageNum: 0, pageSize: 3}).then((data) => {
+    getArticlePageList({type: 2, pageNum: 0, pageSize: 3}).then((data) => {
       this.recommendArticles = data || []
     }).catch(() => {})
   },

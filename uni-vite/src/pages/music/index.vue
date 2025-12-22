@@ -42,32 +42,51 @@
 <script>
 import { getMusicMenuList, getMusicPageList } from '@/api'
 export default {
+  props: {
+    keyword: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       musicMenuList: [],
       musicList: [],
       pagination: {
-        pageNum: 1,
-        pageSize: 2,
+        pageNum: 0,
+        pageSize: 3,
         isLast: false
       }
+    }
+  },
+  watch: {
+    keyword: {
+      handler () {
+        this.refershList()
+      },
+      immediate: true
     }
   },
   created () {
     getMusicMenuList().then((data) => {
       this.musicMenuList = data || []
     })
-    this.getMusicPageList()
   },
   methods: {
     getMusicPageList () {
-      const { pagination } = this
+      const { keyword, pagination } = this
       return getMusicPageList({
+        keyword,
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then((data) => {
         this.musicList = this.musicList.concat(data || [])
       })
+    },
+    refershList () {
+      this.musicList = []
+      this.pagination.pageNum = 0
+      this.getMusicPageList()
     },
     onClickCard (item) {
       if (item && item.id) {
