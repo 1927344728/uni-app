@@ -32,7 +32,7 @@ export default {
       return getArticlePageList({
         ...options,
         keyword,
-        type: 1
+        type: 3
       })
     }
   },

@@ -8,7 +8,7 @@ export const BANNER_LIST = [
     title: '天空青草',
     type: 'image',
     image: `${COS_ASSET_PATH}images/微信图片_20251117231227_34_2.jpg`,
-    url: `${WEB_DOMAIN}article/detail?id=u00001`,
+    url: `${WEB_DOMAIN}article/detail?id=u000011`,
     jumpTo: 'navigate'
   },
   {

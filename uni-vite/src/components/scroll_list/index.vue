@@ -6,7 +6,8 @@
         :key="item.id"
         :title="item.title"
         :note="item.note"
-        :thumb="item.image"
+        :thumb="item.image || defaultAvatarImage"
+        :showExtraIcon="true"
         thumbSize="lg"
         link
         @click="openUrl(item)"
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+import { DEFAULT_AVATAR_IMAGE } from '@/config'
 import { openUrl } from '@/utils'
 
 export default {
@@ -38,6 +40,7 @@ export default {
       isLoad: false,
 			list: [],
       pagination: this.initPagination(),
+      defaultAvatarImage: DEFAULT_AVATAR_IMAGE
 		}
 	},
   created () {

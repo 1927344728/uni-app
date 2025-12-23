@@ -20,7 +20,7 @@ import { SERVER_API_DOMAIN, gotoLogin } from '@/utils/index.js';
 // });
 
 export default function (options) {
-  const { url, method, data, params, showLoading, login } = options
+  const { baseURL, url, method, data, params, timeout, showLoading, login } = options
   if (store.state.isUseMock && mockData[url]) {
     console.log(`[Mock]: ${url}`)
     return new Promise((resolve) => {
@@ -36,9 +36,9 @@ export default function (options) {
   }
   return new Promise((resolve, reject) => {
     return uni.request({
-      url: `${SERVER_API_DOMAIN}/${url}`,
+      url: `${baseURL || SERVER_API_DOMAIN}/${url}`,
       method: (method || 'GET').toLocaleUpperCase(),
-      timeout: 1500,
+      timeout: timeout || 15000,
       withCredentials: true,
       sslVerify: false,
       data: data || params,

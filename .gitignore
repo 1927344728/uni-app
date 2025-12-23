@@ -21,3 +21,6 @@ Thumbs.db
 #node
 **/node_modules/
 **/dist
+
+# Android Studio
+uni-android/app/src/main/assets/apps/

@@ -7,6 +7,7 @@ export function fetchFileTextByUrl (url = '') {
       url,
       method: 'GET',
       responseType: 'arraybuffer',
+      withCredentials: true,
       header: {
         'Content-Type': 'text/plain;charset=utf-8',
         Accept: 'text/plain'

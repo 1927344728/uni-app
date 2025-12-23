@@ -1,13 +1,6 @@
 <template>
   <view v-if="articleDetail" class="article_detail_page">
-    <view class="article_detail_header">
-      <text class="title">{{ articleDetail.title }}</text>
-      <text class="author">{{ articleDetail.author }}</text>
-    </view>
-
-    <view class="article_detail_content">
-      <ArticleDetail :articleData="articleDetail.content" />
-    </view>
+    <ArticleDetail :articleData="articleDetail.content" :class="[articleDetail.className]" />
   </view>
 </template>
 
@@ -46,6 +39,15 @@ export default {
 </script>
 
 <style lang="less">
-@import './detail.less';
+@import '@/common/css/reset.css';
+@import '@/common/css/common.css';
+@import '@/common/css/color.less';
+@import '@/common/css/apply.css';
+
+.article_detail_page {
+  line-height: 1.6;
+  color: @text-primary-color;
+  background: white;
+}
 </style>
 
