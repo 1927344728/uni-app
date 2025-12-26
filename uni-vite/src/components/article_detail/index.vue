@@ -23,7 +23,7 @@
       >
         <view class="detail_module_wrapper">
           <view v-for="(rtx, i) in [item.content].flat()" :key="rtx + i" v-html="rtx" />
-          <view v-if="speakingIndex === idx" class="iconfont voice">&#xe612;</view>
+          <view v-if="!isPaused && speakingIndex === idx" class="iconfont voice">&#xe612;</view>
           <view v-else class="iconfont mute">&#xe60f;</view>
         </view>
       </view>
@@ -78,9 +78,7 @@
 
 <script>
 import { convert as convertHtmlToText } from 'html-to-text'
-import TTSManager from '@/common/js/TTSManager.js'
-
-const ttsService = new TTSManager()
+import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
 
 export default {
   props: {
@@ -91,7 +89,14 @@ export default {
   },
   data () {
     return {
+      // ttsService: new H5TTSService(),
+      ttsService: new XfTTSService(),
       speakingIndex: null
+    }
+  },
+  computed: {
+    isPaused () {
+      return this.ttsService.isPaused
     }
   },
   mounted () {
@@ -100,36 +105,34 @@ export default {
     // #endif
   },
   beforeUnmount() {
-    // #ifdef H5
     this.stop()
+    // #ifdef H5
     window.removeEventListener('beforeunload', this.stop)
     // #endif
   },
   methods: {
     onClickReadText (item, i) {
-      const { speakingIndex } = this
-      if (speakingIndex === null && ttsService.isPausing) {
-        ttsService.resume()
-        this.speakingIndex = i
-        return
-      }
+      const { ttsService, speakingIndex } = this
       if (speakingIndex === i) {
-        if (ttsService.isSpeaking) {
-          this.speakingIndex = null
+        if (ttsService.isPaused) {
+          ttsService.resume()
+        } else {
           ttsService.pause()
-          return
         }
+        return
       }
       this.speakingIndex = i
       const text = (item.content || []).map(e => e).join('')
       ttsService.speak(convertHtmlToText(text), {
-        rate: item.rate
+        vcn: 'aisjinger',
+        rate: item.rate,
+        onEnded: () => {
+          this.speakingIndex = null
+        }
       })
     },
     stop () {
-      // #ifdef H5
-      ttsService.stop()
-      // #endif
+      this.ttsService.stop()
     },
     previewImage(current, urls) {
       if (typeof uni !== 'undefined' && uni.previewImage) {

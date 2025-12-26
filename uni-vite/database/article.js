@@ -32,7 +32,7 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
           '若若，你画画时的样子就像一个小小的魔法师——眼睛亮晶晶的，小手稳稳的，能把白纸变成五彩斑斓的奇妙世界。<b style="color: rgba(243,98,43);">你的耐心比彩虹还要美丽，你的想象力比星星还要闪亮。</b>',
           '<br/>你知道吗？当别的孩子已经画完时，你还在认真地为小花朵添上露珠，为小恐龙画上微笑的翅膀，这种专注是最珍贵的魔法。你笔下的太阳会唱歌，云朵长着翅膀，大海里游着彩虹鱼……这些都不是随便谁都能想出来的，<b style="color: rgba(243,98,43);">这是独属于你的闪闪发光的创造力。</b>'
@@ -152,7 +152,7 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
           '<div class="title">咏鹅</div>',
           '<div class="author">[唐] 骆宾王</div>',
@@ -161,7 +161,7 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
           '<div class="title">江南</div>',
           '<div class="author">《汉乐府》</div>',
@@ -170,7 +170,7 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
           '<div class="title">画</div>',
           '<div class="author">[唐] 王维</div>',
@@ -179,16 +179,16 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
-          '<div class="title">悯农其二</div>',
+          '<div class="title">悯农 其二</div>',
           '<div class="author">[唐] 李绅</div>',
           '<div class="content">锄禾日当午，汗滴禾下土。<br/>谁知盘中餐，粒粒皆辛苦。</div>'
         ]
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
           '<div class="title">古朗月行</div>',
           '<div class="author">[唐] 李白</div>',
@@ -197,7 +197,7 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'readText',
-        rate: 0.6,
+        rate: 0.4,
         content: [
           '<div class="title">风</div>',
           '<div class="author">[唐] 李峤</div>',

@@ -54,6 +54,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-4070520250711001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4070520250711001",
     "@dcloudio/uni-ui": "^1.5.8",
+    "crypto-js": "^4.2.0",
     "html-to-text": "^9.0.5",
     "lodash": "^4.17.21",
     "mockjs": "^1.1.0",

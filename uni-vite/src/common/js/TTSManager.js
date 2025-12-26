@@ -1,16 +1,16 @@
-export default class TTSManager {
-  constructor() {
+
+import XFTTS from './XfTTS.js';
+export class H5TTSService {
+  constructor(config = {}) {
     this.config = {
       voice: '',
       rate: 1.0,
       volume: 1.0,
-      pitch: 1.0
+      pitch: 1.0,
+      ...config
     }
     this.isSpeaking = false
-    this.isPausing = false
-  }
-  setConfig(config) {
-    this.config = { ...this.config, ...config }
+    this.isPaused = false
   }
 
   async speak(text, options = {}) {
@@ -19,48 +19,21 @@ export default class TTSManager {
     }
     
     try {
-      // #ifdef APP-PLUS
-      return await this.speakInApp(text, options)
-      // #endif
-      
       // #ifdef H5
-      return await this.speakInH5(text, options)
+      return await this.play(text, options)
       // #endif
-      
+      uni.showToast({
+        title: '平台不支持',
+        icon: 'error'
+      });
       return Promise.reject('平台不支持')
-      
     } catch (error) {
       console.error('TTS播放失败:', error)
       throw error
     }
   }
 
-  speakInApp(text, options) {
-    const config = { ...this.config, ...options }
-    return new Promise((resolve, reject) => {
-      // #ifdef APP-PLUS
-      if (plus.speech) {
-        plus.speech.stop()
-        plus.speech.speak(text, {
-          volume: config.volume || 1.0,
-          rate: config.rate || 1.0,
-          voice: config.voice || 1, // 0-系统默认，1-中文，2-英文
-        }, () => {
-          this.stop()
-          resolve()
-        }, (error) => {
-          this.stop()
-          reject(error)
-        })
-        this.isSpeaking = true
-      } else {
-        reject('当前设备不支持语音合成')
-      }
-      // #endif
-    })
-  }
-
-  async speakInH5(text, options = {}) {
+  async play(text, options = {}) {
     return new Promise((resolve, reject) => {
       if (!window.speechSynthesis) {
         reject('浏览器不支持Web Speech API')
@@ -86,34 +59,37 @@ export default class TTSManager {
       }
 
       utterance.onend = () => {
-        this.clean()
-        resolve()
+        this.stop()
+        if (options.onEnded) {
+          options.onEnded();
+        }
       }
 
       utterance.onerror = (event) => {
-        this.clean()
-        reject(`语音合成失败: ${event.error}`)
+        this.destroy()
+        if (options.onError){
+          options.onError(event.error);
+        }
       }
 
-      window.speechSynthesis.speak(utterance)
-      this.isSpeaking = true
+      if (this.isSpeaking) {
+        setTimeout(() => {
+          window.speechSynthesis.speak(utterance)
+          this.isSpeaking = true
+        }, 300)
+      } else {
+        window.speechSynthesis.speak(utterance)
+        this.isSpeaking = true
+      }
     })
   }
 
   stop() {
-    // #ifdef APP-PLUS
-    if (plus.speech) {
-      plus.speech.stop()
-    }
-    // #endif
-
     // #ifdef H5
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel()
     }
     // #endif
-
-    this.clean()
   }
 
   pause() {
@@ -121,7 +97,7 @@ export default class TTSManager {
     if (window.speechSynthesis) {
       window.speechSynthesis.pause()
       this.isSpeaking = false
-      this.isPausing = true
+      this.isPaused = true
     }
     // #endif
   }
@@ -131,13 +107,133 @@ export default class TTSManager {
     if (window.speechSynthesis) {
       window.speechSynthesis.resume()
       this.isSpeaking = true
-      this.isPausing = false
+      this.isPaused = false
     }
     // #endif
   }
 
-  clean () {
+  destroy () {
+    this.stop()
     this.isSpeaking = false
-    this.isPausing = false
+    this.isPaused = false
+  }
+}
+
+export class XfTTSService  {
+  constructor(config) {
+    this.xfTTSInstance = new XFTTS(config);
+    this.innerAudioContext = null;
+    this.currentAudioUrl = null;
+    this.isSpeaking = false;
+    this.isPaused = false;
+  }
+  
+  async speak(text, options = {}) {
+    try {
+      const ttsOptions = {}
+      if (ttsOptions.vcn) {
+        ttsOptions.vcn = options.vcn;
+      }
+      if (options.rate) {
+        ttsOptions.speed = options.rate * 100;
+      }
+      if (ttsOptions.volume) {
+        ttsOptions.volume = options.volume;
+      }
+      const audioUrl = await this.xfTTSInstance.textToAudioUrl(text, ttsOptions)
+      await this.play(audioUrl, options || {});
+      return audioUrl;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  play(audioUrl, options = {}) {
+    return new Promise((resolve, reject) => {
+      this.destroy();
+      
+      this.innerAudioContext = uni.createInnerAudioContext();
+      this.innerAudioContext.src = audioUrl;
+      this.currentAudioUrl = audioUrl;
+      
+      if (options.autoplay !== false) {
+        this.innerAudioContext.autoplay = true;
+      }
+      
+      if (options.volume !== undefined) {
+        this.innerAudioContext.volume = options.volume;
+      }
+      
+      this.innerAudioContext.onPlay(() => {
+        console.log('音频开始播放');
+        if (options.onPlay) {
+          options.onPlay();
+        }
+      });
+      
+      this.innerAudioContext.onEnded(() => {
+        console.log('音频播放结束');
+        if (options.onEnded) {
+          options.onEnded()
+        };
+        resolve();
+      });
+      
+      this.innerAudioContext.onError((error) => {
+        console.error('音频播放错误:', error);
+        console.error('音频源路径:', audioUrl);
+        console.error('错误详情:', JSON.stringify(error));
+        if (options.onError){
+          options.onError(error);
+        }
+        reject(error);
+      });
+      
+      this.isSpeaking = true;
+      this.innerAudioContext.play();
+    });
+  }
+
+  stop() {
+    if (this.innerAudioContext) {
+      this.isSpeaking = false
+      this.innerAudioContext.stop();
+      this.innerAudioContext.destroy();
+      this.innerAudioContext = null;
+    }
+  }
+
+  pause() {
+    if (this.innerAudioContext && !this.innerAudioContext.paused) {
+      this.isPaused = true
+      this.innerAudioContext.pause();
+    }
+  }
+
+  resume() {
+    if (this.innerAudioContext && this.innerAudioContext.paused) {
+      this.isPaused = false
+      this.innerAudioContext.play();
+    }
+  }
+
+  destroy() {
+    this.stop();
+    this.revokeAudioUrl(this.currentAudioUrl);
+    this.currentAudioUrl = null;
+    this.isSpeaking = false
+    this.isPaused = false
+  }
+
+  revokeAudioUrl(audioUrl) {
+    // #ifdef H5
+    if (audioUrl && audioUrl.startsWith('blob:')) {
+      try {
+        URL.revokeObjectURL(audioUrl);
+      } catch (error) {
+        console.warn('清理 blob URL 失败:', error);
+      }
+    }
+    // #endif
   }
 }

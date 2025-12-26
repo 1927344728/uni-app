@@ -1,9 +1,19 @@
 <network-security-config>
-  <domain-config cleartextTrafficPermitted="true">
+  <!-- 基础配置：确保所有 HTTPS/WSS 连接默认信任系统证书 -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system"/>
+      <certificates src="user"/>
+    </trust-anchors>
+  </base-config>
+  
+  <!-- 特定域名的配置 -->
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">izhao.com.cn</domain>
     <domain includeSubdomains="true">yizhao.com</domain>
-    <domain includeSubdomains="true">d894401acb3a.ngrok-free.app</domain>
+    <domain includeSubdomains="true">tts-api.xfyun.cn</domain>
+    <domain includeSubdomains="true">yizhao-1259410276.cos.ap-shanghai.myqcloud.com</domain>
     <domain includeSubdomains="true">::1</domain>
-    <domain includeSubdomains="true">192.168.31.146</domain>
     <trust-anchors>
       <certificates src="system"/>
       <certificates src="user"/>

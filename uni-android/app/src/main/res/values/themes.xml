@@ -2,4 +2,10 @@
 <resources>
 
   <style name="Theme.Uniandroid" parent="android:Theme.Material.Light.NoActionBar" />
+  
+  <!-- DCloud 半透明主题 -->
+  <style name="TranslucentTheme" parent="android:Theme.Translucent.NoTitleBar" />
+  
+  <!-- DCloud 主题 -->
+  <style name="DCloudTheme" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
