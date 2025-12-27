@@ -5,6 +5,7 @@
       :current="swiperCurrent"
       :duration="swiperDuration"
       :circular="false"
+      :rebound="false"
       vertical
       @change="handleSwiperPageChange"
     >
@@ -242,7 +243,10 @@ export default {
         }
       }
       if (['auto'].includes(mode)) {
-        const responseData = await getMusicByRandom(currentSongId, playedMusicIds).catch(() => null);
+        const responseData = await getMusicByRandom(currentSongId, playedMusicIds)
+          .catch((error) => {
+            console.error(error)
+          });
         if (responseData) {
           this.nextSong = responseData;
           allMusicList.push(responseData);
@@ -263,7 +267,11 @@ export default {
         this.audioCtx.destroy();
       }
       const ctx = uni.createInnerAudioContext();
-      ctx.obeyMuteSwitch = false;
+      try {
+        ctx.obeyMuteSwitch = false;
+      } catch (e) {
+        // obeyMuteSwitch 在某些版本中可能是只读属性，忽略设置错误
+      }
       ctx.autoplay = false;
       ctx.onCanplay(() => {
         setTimeout(() => {
@@ -284,6 +292,7 @@ export default {
       });
       ctx.onEnded(() => {
         this.$emit('ended', this.currentSong);
+        console.log('ended')
         this.goNextSong();
       });
       ctx.onError(err => {
@@ -291,6 +300,7 @@ export default {
           title: err?.errMsg || '播放失败',
           icon: 'none'
         });
+        console.error(err)
         this.$emit('error', err);
       });
       ctx.onTimeUpdate(() => {
@@ -317,7 +327,9 @@ export default {
       uni.setNavigationBarTitle({
         title: title || '音乐'
       })
-      this.lyricLines = await parseLyric(lyric).catch(() => []);
+      this.lyricLines = await parseLyric(lyric).catch((error) => {
+        console.error(error)
+      });
     },
     updateLyricByTime (time) {
       const { lyricLines, activeLyricIndex } = this;
