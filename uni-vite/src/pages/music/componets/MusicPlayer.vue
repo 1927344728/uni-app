@@ -1,7 +1,6 @@
 <template>
   <view class="music_play_module">
     <swiper
-      :key="swiperPages.map(e => e.id).join('')"
       class="music_play_swiper"
       :current="currentIndex"
       :duration="swiperDuration"
@@ -10,7 +9,7 @@
       vertical
       @change="handleSwiperPageChange"
     >
-      <swiper-item v-for="(page, i) in swiperPages" :key="`${page.key}_${page.id}_${i}`" >
+      <swiper-item v-for="(page, i) in swiperPages" :key="page.id" >
         <view
           class="music_play_swiper_item"
           :class="[`music_play_swiper_item--${page.key}`, `music_play_switch--${page.key}`]"
@@ -182,6 +181,7 @@ export default {
           key: 'next',
         }));
       }
+      console.log(pages.map(e => e.title))
       return pages;
     },
     currentIndex () {
@@ -194,6 +194,14 @@ export default {
       return !!this.nextSong;
     }
   },
+  // watch: {
+  //   allMusicList: {
+  //     deep: true,
+  //     handler (list) {
+  //       console.log(list.map(e => e.title))
+  //     }
+  //   }
+  // },
   async mounted () {
     await this.init();
   },
@@ -233,37 +241,38 @@ export default {
     },
     async updatePrevAndNextSong () {
       const { mode, allMusicList, playedMusicIds, currentSong, swiperPages } = this;
-      this.prevSong = null;
-      this.nextSong = null;
-      const currentSongId = _get(currentSong, 'id');
+      const currentId = _get(currentSong, 'id');
       const allMusicLength = _get(allMusicList, 'length') || 0;
       if (['auto', 'menu'].includes(mode)) {
+        let prevSong = null;
         if (playedMusicIds.length > 0) {
           const prevId = playedMusicIds[playedMusicIds.length - 1];
-          this.prevSong = allMusicList.find(song => song.id === prevId) || null;
+          prevSong = allMusicList.find(song => song.id === prevId) || null;
         }
+        this.prevSong = prevSong
       }
-      if (['auto'].includes(mode)) {
-        const responseData = await getMusicByRandom({
-          playingMusicIds: swiperPages.map(e => e.id),
-          playedMusicIds
-        })
-          .catch((error) => {
-            console.error(error)
-          });
-        if (responseData) {
-          this.nextSong = responseData;
-          allMusicList.push(responseData);
-        }
-      }
-      if (['menu'].includes(mode) && allMusicLength > 1) {
-        const index = allMusicList.findIndex(song => song.id === currentSongId);
-        if (index !== -1) {
-          const nextIndex = (index + 1) % allMusicLength;
-          if (nextIndex !== index) {
-            this.nextSong = allMusicList[nextIndex];
+      if (!this.nextSong) {
+        let nextSong = null
+        if (['auto'].includes(mode)) {
+          nextSong = await getMusicByRandom({
+            playingMusicIds: swiperPages.map(e => e.id),
+            playedMusicIds
+          })
+            .catch(() => null);
+          if (nextSong) {
+            allMusicList.push(nextSong);
           }
         }
+        if (['menu'].includes(mode) && allMusicLength > 1) {
+          const index = allMusicList.findIndex(song => song.id === currentId);
+          if (index !== -1) {
+            const nextIndex = (index + 1) % allMusicLength;
+            if (nextIndex !== index) {
+              nextSong = allMusicList[nextIndex];
+            }
+          }
+        }
+        this.nextSong = nextSong
       }
     },
     createAudio () {
@@ -376,31 +385,30 @@ export default {
     },
 
     handlePrev () {
-      const { currentSong, canGoPrev } = this;
-      if (canGoPrev) {
+      if (this.canGoPrev) {
         this.goPrevSong();
-        this.$emit('prev', currentSong);
+        this.$emit('prev', this.currentSong);
       }
     },
     handleNext () {
-      const { currentSong, canGoNext } = this;
-      if (canGoNext) {
+      if (this.canGoNext) {
         this.goNextSong();
-        this.$emit('next', currentSong);
+        this.$emit('next', this.currentSong);
       }
     },
     goNextSong () {
-      const { audioCtx, nextSong } = this;
+      const { audioCtx, currentSong, nextSong } = this;
       if (!audioCtx) {
         return
       };
       if (!nextSong) {
         return;
       }
-      const currentSongId = _get(this, 'currentSong.id');
+      const currentId = _get(currentSong, 'id');
       this.currentSong = nextSong;
-      this.playedMusicIds.push(currentSongId);
+      this.playedMusicIds.push(currentId);
       this.loadCurrentSong();
+      this.nextSong = null
       this.updatePrevAndNextSong();
       this.$emit('next', this.currentSong);
     },

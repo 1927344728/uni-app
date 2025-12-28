@@ -2,18 +2,18 @@
   <view class="video_play_module">
     <swiper
       class="video_play_swiper"
-      :current="swiperCurrent"
+      :current="currentIndex"
       :duration="swiperDuration"
       :circular="false"
       vertical
-      @change="handleSwiperPageChange"
+      @change="onChange"
     >
-      <swiper-item v-for="page in swiperPages" :key="page.key + page.id" >
+      <swiper-item v-for="page in swiperPages" :key="page.id" >
         <view
           class="video_play_swiper_item"
           :class="[`video_play_swiper_item--${page.key}`, `video_play_switch--${page.key}`]"
           :style="getPageBgStyle(page)"
-          @click="handleTogglePlay"
+          @click="togglePlay"
         >
           <image
             v-if="page && page.bg"
@@ -37,13 +37,14 @@
             <block v-if="page.key === 'current'">
               <view class="video_player_area">
                 <video
+                  v-if="currentVideo && currentVideo.url"
                   id="playerVideo"
                   ref="playerVideo"
                   class="video_element"
-                  :src="currentVideo && currentVideo.url"
+                  :src="currentVideo.url"
                   :show-progress="false"
                   :controls="false"
-                  :autoplay="false"
+                  :autoplay="true"
                   :show-center-play-btn="false"
                   :object-fit="currentVideo.objectFit || 'cover'"
                   @timeupdate="onTimeUpdate"
@@ -117,13 +118,12 @@ export default {
     return {
       allVideoList: [],
       playedVideoIds: [],
-      currentVideo: {},
+      currentVideo: null,
       prevVideo: null,
       nextVideo: null,
       videoCtx: null,
       isPlaying: false,
       isSeeking: false,
-      swiperCurrent: 0,
       swiperDuration: 320,
       duration: 0,
       currentTime: 0,
@@ -143,13 +143,24 @@ export default {
       if (nextVideo) {
         pages.push(Object.assign(nextVideo, { key: 'next' }));
       }
+      console.log(pages.map(e => e.title))
       return pages;
     },
-    canGoPrev () {
-      return !!this.prevVideo;
-    },
-    canGoNext () {
-      return !!this.nextVideo;
+    currentIndex () {
+      return this.swiperPages.findIndex(e => e.id === _get(this, 'currentVideo.id')) || 0
+    }
+  },
+  watch: {
+    // allVideoList: {
+    //   deep: true,
+    //   handler (list) {
+    //     console.log(list.map(e => e.title))
+    //   }
+    // },
+    currentVideo (o) {
+      if (o) {
+        uni.setNavigationBarTitle({ title: o.title || '视频' });
+      }
     }
   },
   async mounted () {
@@ -163,57 +174,64 @@ export default {
     textEllipsis,
     async init () {
       const { mode, id, menuId, video } = this;
+      let currentVideo = null
       if (mode === 'menu') {
         this.allVideoList = await getVideoListByMenuId({menuId}).catch(() => []);
-        this.currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
+        currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
       } else {
-        this.allVideoList.push(video);
-        this.currentVideo = video;
+        currentVideo = video;
+        this.allVideoList.push(currentVideo);
       }
-      if (!this.currentVideo || !this.currentVideo.url) {
+      if (!(currentVideo && currentVideo.url)) {
         uni.showToast({ title: '未找到播放视频', icon: 'none' });
         return;
       }
       this.playedVideoIds = [];
       this.prevVideo = null;
-      this.nextVideo = null;
-      this.updatePrevAndNextVideo();
+      this.currentVideo = currentVideo
+      this.nextVideo = await this.getNextVideo();
     },
     getPageBgStyle (video) {
       const bg = _get(video, 'bg');
       return bg ? { '--video_play_bg': `url(${bg})` } : {};
     },
-    async updatePrevAndNextVideo () {
-      const { mode, allVideoList, playedVideoIds, currentVideo } = this;
-      this.prevVideo = null;
-      this.nextVideo = null;
+    getPrevVideo () {
+      const { mode, allVideoList, playedVideoIds } = this;
       this.isShowMoreDesc = false;
-      this.swiperCurrent = 0;
-      const currentVideoId = _get(currentVideo, 'id');
-      const allVideoLength = _get(allVideoList, 'length', 0);
+      let prevVideo = null
       if (['auto', 'menu'].includes(mode)) {
         if (playedVideoIds.length > 0) {
           const prevId = playedVideoIds[playedVideoIds.length - 1];
-          this.prevVideo = allVideoList.find(v => v.id === prevId) || null;
-          this.swiperCurrent = this.prevVideo ? 1 : 0;
+          prevVideo = allVideoList.find(v => v.id === prevId) || null;
         }
       }
+      return prevVideo
+    },
+    async getNextVideo () {
+      const { mode, allVideoList, playedVideoIds, currentVideo, swiperPages } = this;
+      this.isShowMoreDesc = false;
+      const currentVideoId = _get(currentVideo, 'id');
+      const allVideoLength = _get(allVideoList, 'length', 0);
+      let nextVideo = null
       if (['auto'].includes(mode)) {
-        this.nextVideo = await getVideoByRandom({currentVideoId, playedVideoIds}).catch(() => null);
-        if (this.nextVideo) allVideoList.push(this.nextVideo);
+        nextVideo = await getVideoByRandom({
+          playingVideoIds: swiperPages.map(e => e.id),
+          playedVideoIds
+        }).catch(() => null);
+        if (nextVideo) {
+          allVideoList.push(nextVideo);
+        }
       }
       if (['menu'].includes(mode) && allVideoLength > 1) {
         const currentIndex = allVideoList.findIndex(v => v.id === currentVideoId);
         if (currentIndex !== -1) {
           const nextIndex = (currentIndex + 1) % allVideoList.length;
           if (nextIndex !== currentIndex) {
-            this.nextVideo = allVideoList[nextIndex];
+            nextVideo = allVideoList[nextIndex];
           }
         }
       }
-      if (currentVideo) {
-        uni.setNavigationBarTitle({ title: currentVideo.title || '视频' });
-      }
+      return nextVideo
     },
     onLoadedMeta (e) {
       const dur = e?.detail?.duration || 0;
@@ -240,11 +258,13 @@ export default {
       this.$emit('error', err);
     },
     togglePlay () {
-      if (!this.videoCtx) return;
-      if (this.isPlaying) {
-        this.videoCtx.pause();
-      } else {
-        this.videoCtx.play();
+      const { videoCtx, isPlaying } = this
+      if (videoCtx) {
+        if (isPlaying) {
+          videoCtx.pause();
+        } else {
+          videoCtx.play();
+        }
       }
     },
     handleSliderChanging (e) {
@@ -252,74 +272,55 @@ export default {
       this.currentTime = e.detail.value;
     },
     handleSliderChange (e) {
-      if (!this.videoCtx) return;
-      const value = e.detail.value;
-      this.videoCtx.seek(value);
-      if (!this.isPlaying) {
-        this.videoCtx.play();
+      const { videoCtx, isPlaying } = this
+      if (videoCtx) {
+        videoCtx.seek(e.detail.value);
+        if (!isPlaying) {
+          videoCtx.play();
+        }
       }
       this.isSeeking = false;
     },
-    handlePrev () {
-      const { canGoPrev, swiperCurrent } = this;
-      if (canGoPrev) {
-        this.goPrevVideo();
-        this.swiperCurrent = swiperCurrent > 0 ? swiperCurrent - 1 : swiperCurrent;
-        this.$emit('prev', this.currentVideo);
-      }
-    },
-    handleNext () {
-      const { canGoNext, swiperCurrent } = this;
-      if (canGoNext) {
-        this.goNextVideo();
-        this.swiperCurrent = swiperCurrent < 2 ? swiperCurrent + 1 : swiperCurrent;
-        this.$emit('next', this.currentVideo);
-      }
-    },
-    goNextVideo () {
-      const { nextVideo } = this;
-      if (!nextVideo) return;
-      const currentId = _get(this, 'currentVideo.id');
-      this.currentVideo = nextVideo;
-      if (currentId) this.playedVideoIds.push(currentId);
-      this.currentTime = 0;
-      this.duration = 0;
-      this.swiperCurrent = 0;
-      this.updatePrevAndNextVideo();
-      this.$nextTick(() => {
-        if (this.videoCtx) this.videoCtx.play();
-      });
-      this.$emit('next', this.currentVideo);
-    },
     goPrevVideo () {
-      const { prevVideo } = this;
-      if (!prevVideo) return;
-      this.currentVideo = prevVideo;
-      this.playedVideoIds.pop();
-      this.currentTime = 0;
-      this.duration = 0;
-      this.swiperCurrent = 0;
-      this.updatePrevAndNextVideo();
-      this.$nextTick(() => {
-        if (this.videoCtx) this.videoCtx.play();
-      });
+      const { videoCtx, prevVideo, currentVideo } = this;
+      if (prevVideo) {
+        this.playedVideoIds.pop();
+        this.currentVideo = prevVideo;
+        this.prevVideo = this.getPrevVideo();
+        this.nextVideo = currentVideo
+        this.currentTime = 0;
+        this.duration = 0;
+        if (videoCtx) {
+          videoCtx.play();
+        }
+      }
       this.$emit('prev', this.currentVideo);
     },
-    handleSwiperPageChange (event) {
-      const { swiperCurrent, nextVideo, prevVideo } = this;
-      const nextIndex = event.detail.current;
-      const prevIndex = swiperCurrent;
-      this.swiperCurrent = nextIndex;
-      if (nextIndex > prevIndex && nextVideo) {
+    async goNextVideo () {
+      const { videoCtx, currentVideo, nextVideo } = this;
+      if (nextVideo) {
+        const currentId = _get(currentVideo, 'id');
+        this.playedVideoIds.push(currentId)
+        this.prevVideo = currentVideo;
+        this.currentVideo = nextVideo;
+        this.nextVideo = null
+        this.nextVideo = await this.getNextVideo()
+        this.currentTime = 0;
+        this.duration = 0;
+        if (videoCtx) {
+          videoCtx.play();
+        }
+      }
+      this.$emit('next', this.currentVideo);
+    },
+    onChange (event) {
+      const { currentIndex, nextVideo, prevVideo } = this;
+      if (event.detail.current > currentIndex && nextVideo) {
         this.goNextVideo();
       }
-      if (nextIndex < prevIndex && prevVideo) {
+      if (event.detail.current < currentIndex && prevVideo) {
         this.goPrevVideo();
       }
-    }
-    ,
-    handleTogglePlay () {
-      this.togglePlay();
     }
   }
 };

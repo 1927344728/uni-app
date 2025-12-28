@@ -30,11 +30,11 @@ const getVideoById = (params) => {
 }
 
 const getVideoByRandom = (params) => {
-  const currentId = _get(params, 'currentId')
-  const historyIds = _get(params, 'historyIds') || []
+  const playingVideoIds = _get(params, 'playingVideoIds') || []
+  const playedVideoIds = _get(params, 'playedVideoIds') || []
   
-  const allIds = VIDEO_LIST.map(e => e.id).filter(id => id !== currentId)
-  let unplayedIds = allIds.filter(id => !historyIds.includes(id))
+  const allIds = VIDEO_LIST.map(e => e.id).filter(id => !playingVideoIds.includes(id))
+  let unplayedIds = allIds.filter(id => !playedVideoIds.includes(id))
   if (!unplayedIds.length) {
     unplayedIds = allIds
   }
