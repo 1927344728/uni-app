@@ -1,4 +1,4 @@
-import { decodeLyricBuffer } from '@/utils/common';
+import { ArrayBufferToGBK } from '@/utils/platform.js';
 
 export function fetchFileTextByUrl (url = '') {
   if (!url) return '';
@@ -18,7 +18,7 @@ export function fetchFileTextByUrl (url = '') {
           return;
         }
         if (res?.data instanceof ArrayBuffer) {
-          resolve(decodeLyricBuffer(res.data));
+          resolve(ArrayBufferToGBK(res.data));
           return;
         }
         resolve('');
