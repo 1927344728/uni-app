@@ -1,8 +1,9 @@
 <template>
   <view class="music_play_module">
     <swiper
+      :key="swiperPages.map(e => e.id).join('')"
       class="music_play_swiper"
-      :current="swiperCurrent"
+      :current="currentIndex"
       :duration="swiperDuration"
       :circular="false"
       :rebound="false"
@@ -38,7 +39,7 @@
                 {{ (page && page.title) || '音乐' }}
               </text>
               <text class="music_play_artist">
-                {{ (page && page.artist) || '未知歌手' }}
+                {{ (page && page.singer) || '未知歌手' }}
               </text>
             </view>
 
@@ -82,7 +83,7 @@
         <slider
           class="music_play_slider"
           min="0"
-          :max="Math.floor(duration)"
+          :max="Math.floor(duration) || 1"
           :value="Math.floor(currentTime)"
           step="1"
           block-size="16"
@@ -148,13 +149,12 @@ export default {
     return {
       allMusicList: [],
       playedMusicIds: [],
-      currentSong: {},
+      currentSong: null,
       prevSong: null,
       nextSong: null,
       audioCtx: null,
       isPlaying: false,
       isSeeking: false,
-      swiperCurrent: 0,
       swiperDuration: 320,
       duration: 0,
       currentTime: 0,
@@ -183,6 +183,9 @@ export default {
         }));
       }
       return pages;
+    },
+    currentIndex () {
+      return this.swiperPages.findIndex(o => o.id === _get(this, 'currentSong.id')) || 0
     },
     canGoPrev () {
       return !!this.prevSong;;
@@ -229,21 +232,22 @@ export default {
       return cover ? { '--music_play_bg': `url(${cover})` } : {};
     },
     async updatePrevAndNextSong () {
-      const { mode, allMusicList, playedMusicIds, currentSong } = this;
+      const { mode, allMusicList, playedMusicIds, currentSong, swiperPages } = this;
       this.prevSong = null;
       this.nextSong = null;
-      this.swiperCurrent = 0;
       const currentSongId = _get(currentSong, 'id');
-      const allMusicLength = _get(allMusicList, 'length', 0);
+      const allMusicLength = _get(allMusicList, 'length') || 0;
       if (['auto', 'menu'].includes(mode)) {
         if (playedMusicIds.length > 0) {
           const prevId = playedMusicIds[playedMusicIds.length - 1];
           this.prevSong = allMusicList.find(song => song.id === prevId) || null;
-          this.swiperCurrent = this.prevSong ? 1 : 0;
         }
       }
       if (['auto'].includes(mode)) {
-        const responseData = await getMusicByRandom(currentSongId, playedMusicIds)
+        const responseData = await getMusicByRandom({
+          playingMusicIds: swiperPages.map(e => e.id),
+          playedMusicIds
+        })
           .catch((error) => {
             console.error(error)
           });
@@ -253,10 +257,10 @@ export default {
         }
       }
       if (['menu'].includes(mode) && allMusicLength > 1) {
-        const currentIndex = allMusicList.findIndex(song => song.id === currentSongId);
-        if (currentIndex !== -1) {
-          const nextIndex = (currentIndex + 1) % allMusicList.length;
-          if (nextIndex !== currentIndex) {
+        const index = allMusicList.findIndex(song => song.id === currentSongId);
+        if (index !== -1) {
+          const nextIndex = (index + 1) % allMusicLength;
+          if (nextIndex !== index) {
             this.nextSong = allMusicList[nextIndex];
           }
         }
@@ -372,18 +376,16 @@ export default {
     },
 
     handlePrev () {
-      const { currentSong, canGoPrev, swiperCurrent } = this;
+      const { currentSong, canGoPrev } = this;
       if (canGoPrev) {
         this.goPrevSong();
-        this.swiperCurrent = swiperCurrent > 0 ? swiperCurrent - 1 : swiperCurrent;
         this.$emit('prev', currentSong);
       }
     },
     handleNext () {
-      const { currentSong, canGoNext, swiperCurrent } = this;
+      const { currentSong, canGoNext } = this;
       if (canGoNext) {
         this.goNextSong();
-        this.swiperCurrent = swiperCurrent < 2 ? swiperCurrent + 1 : swiperCurrent;
         this.$emit('next', currentSong);
       }
     },
@@ -417,14 +419,11 @@ export default {
       this.$emit('prev', this.currentSong);
     },
     handleSwiperPageChange (event) {
-      const { swiperCurrent, nextSong, prevSong } = this;
-      const nextIndex = event.detail.current;
-      const prevIndex = swiperCurrent;
-      this.swiperCurrent = nextIndex;
-      if (nextIndex > prevIndex && nextSong) {
+      const { currentIndex, nextSong, prevSong } = this;
+      if (event.detail.current > currentIndex && nextSong) {
         this.goNextSong();
       }
-      if (nextIndex < prevIndex && prevSong) {
+      if (event.detail.current < currentIndex && prevSong) {
         this.goPrevSong();
       }
     }

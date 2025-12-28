@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS `music` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `title` VARCHAR(255) NOT NULL COMMENT '歌曲名称',
-    `artist` VARCHAR(255) NOT NULL COMMENT '艺术家',
+    `singer` VARCHAR(255) NOT NULL COMMENT '艺术家',
     `album` VARCHAR(255) DEFAULT NULL COMMENT '专辑名称',
     `release_date` TIMESTAMP NULL COMMENT '发行日期',
     `genre` VARCHAR(50) DEFAULT NULL COMMENT '流派',
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `music` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     INDEX `idx_title` (`title`),
-    INDEX `idx_artist` (`artist`),
+    INDEX `idx_artist` (`singer`),
     INDEX `idx_album` (`album`),
     INDEX `idx_release_date` (`release_date`),
     INDEX `idx_status` (`status`)

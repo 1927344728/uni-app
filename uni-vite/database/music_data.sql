@@ -1,5 +1,5 @@
 -- 插入示例数据
-INSERT INTO `music` (`title`, `artist`, `album`, `release_date`, `genre`, `duration`, `language`, `copyright`, `file_format`, `file_size`, `play_count`, `rating`, `cover_image`, `lyrics`, `status`) VALUES
+INSERT INTO `music` (`title`, `singer`, `album`, `release_date`, `genre`, `duration`, `language`, `copyright`, `file_format`, `file_size`, `play_count`, `rating`, `cover_image`, `lyrics`, `status`) VALUES
 -- 周杰伦经典歌曲
 ('七里香', '周杰伦', '七里香', FROM_UNIXTIME(1091462400), '流行', 300, '中文', '杰威尔音乐', 'MP3', 8.5, 10000000, 4.9, 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17', '窗外的麻雀 在电线杆上多嘴\n你说这一句 很有夏天的感觉...', 1),
 ('晴天', '周杰伦', '叶惠美', FROM_UNIXTIME(1059580800), '流行', 269, '中文', '杰威尔音乐', 'MP3', 7.8, 9500000, 4.8, 'https://images.unsplash.com/photo-1470115636492-6d2b56f9146d', '故事的小黄花 从出生那年就飘着\n童年的荡秋千 随记忆一直晃到现在...', 1),

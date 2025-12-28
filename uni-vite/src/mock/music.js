@@ -29,11 +29,11 @@ const getMusicById = (params) => {
 }
 
 const getMusicByRandom = (params) => {
-  const currentId = _get(params, 'currentId')
-  const historyIds = _get(params, 'historyIds') || []
+  const playingMusicIds = _get(params, 'playingMusicIds') || []
+  const playedMusicIds = _get(params, 'playedMusicIds') || []
   
-  const allIds = MUSIC_LIST.map(e => e.id).filter(id => id !== currentId)
-  let unplayedIds = allIds.filter(id => !historyIds.includes(id))
+  const allIds = MUSIC_LIST.map(e => e.id).filter(id => !playingMusicIds.includes(id))
+  let unplayedIds = allIds.filter(id => !playedMusicIds.includes(id))
   if (!unplayedIds.length) {
     unplayedIds = allIds
   }
