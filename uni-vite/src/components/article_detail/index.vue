@@ -18,7 +18,12 @@
 
       <view
         v-if="item.type === 'readText'"
-        :class="['detail_module', item.type, item.className]"
+        :class="{
+          detail_module: true,
+          [item.type]: true,
+          [item.className || '']: true,
+          loading: speakingIndex === idx && isLoading,
+        }"
         @click="onClickReadText(item, idx)"
       >
         <view class="detail_module_wrapper">
@@ -95,6 +100,9 @@ export default {
     }
   },
   computed: {
+    isLoading () {
+      return this.ttsService.isLoading
+    },
     isPaused () {
       return this.ttsService.isPaused
     }
@@ -113,6 +121,7 @@ export default {
   methods: {
     onClickReadText (item, i) {
       const { ttsService, speakingIndex } = this
+      ttsService.stop()
       if (speakingIndex === i) {
         if (ttsService.isPaused) {
           ttsService.resume()

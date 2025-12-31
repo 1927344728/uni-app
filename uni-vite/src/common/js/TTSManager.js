@@ -1,5 +1,6 @@
 
 import XFTTS from './XfTTS.js';
+
 export class H5TTSService {
   constructor(config = {}) {
     this.config = {
@@ -124,6 +125,7 @@ export class XfTTSService  {
     this.xfTTSInstance = new XFTTS(config);
     this.innerAudioContext = null;
     this.currentAudioUrl = null;
+    this.isLoading = false
     this.isSpeaking = false;
     this.isPaused = false;
   }
@@ -140,7 +142,8 @@ export class XfTTSService  {
       if (ttsOptions.volume) {
         ttsOptions.volume = options.volume;
       }
-      const audioUrl = await this.xfTTSInstance.textToAudioUrl(text, ttsOptions)
+      this.isLoading = true
+      const audioUrl = await this.xfTTSInstance.createAudioUrl(text, ttsOptions)
       await this.play(audioUrl, options || {});
       return audioUrl;
     } catch (error) {
@@ -166,6 +169,7 @@ export class XfTTSService  {
       
       this.innerAudioContext.onPlay(() => {
         console.log('音频开始播放');
+        this.isLoading = false
         if (options.onPlay) {
           options.onPlay();
         }
@@ -182,7 +186,6 @@ export class XfTTSService  {
       this.innerAudioContext.onError((error) => {
         console.error('音频播放错误:', error);
         console.error('音频源路径:', audioUrl);
-        console.error('错误详情:', JSON.stringify(error));
         if (options.onError){
           options.onError(error);
         }
@@ -196,6 +199,7 @@ export class XfTTSService  {
 
   stop() {
     if (this.innerAudioContext) {
+      this.isLoading = false
       this.isSpeaking = false
       this.innerAudioContext.stop();
       this.innerAudioContext.destroy();

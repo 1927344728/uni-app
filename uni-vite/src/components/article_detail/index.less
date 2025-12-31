@@ -60,13 +60,20 @@
         top: 8rpx;
         right: 18rpx;
         color: @text-patch1-color;
-        font-size: 32rpx;
+        font-size: 36rpx;
       }
       & .iconfont.voice {
         color: @primary-color;
       }
       & .iconfont.mute {
         color: @text-patch2-color;
+      }
+    }
+  }
+  & .detail_module.readText.loading {
+    & .detail_module_wrapper {
+      & .iconfont {
+        animation: 1s ease-in 0s infinite animation_blink;
       }
     }
   }
@@ -143,4 +150,16 @@
   height: constant(safe-area-inset-bottom);
   height: env(safe-area-inset-bottom);
   content: '';
+}
+
+ @keyframes animation_blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
