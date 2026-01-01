@@ -1,10 +1,12 @@
-@import '@/common/css/reset.css';
-@import '@/common/css/common.css';
+@import '@/common/css/reset.less';
+@import '@/common/css/common.less';
 @import '@/common/css/color.less';
-@import '@/common/css/apply.css';
+@import '@/common/css/apply.less';
 
 .task_page {
+  .safe-area-inset-bottom;
   padding-top: 208rpx;
+  padding-bottom: 120rpx;
   font-size: 28rpx;
   color: #333;
 	background: #f5f7fa;
@@ -26,7 +28,7 @@
       & .uni-stat__select {
         flex: 1;
         & ::v-deep .uni-icons {
-          font-size: 42rpx!important;
+          font-size: 36rpx!important;
         }
         & ::v-deep .uni-select {
           padding-left: 24rpx;
@@ -45,11 +47,10 @@
   }
 
 	& .task_list {
-		height: calc(100vh - 112rpx - 108rpx);
     padding: 24rpx;
     & .task_item {
       background: #fff;
-      padding: 12px;
+      padding: 12px 12px 2px;
       border-radius: 8px;
       margin-bottom: 10px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
@@ -57,8 +58,9 @@
       & .task_item_header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         margin-bottom: 16rpx;
+        gap: 12rpx;
         & .title {
           font-size: 32rpx;
           font-weight: 600;
@@ -66,74 +68,69 @@
         }
     
         & .status_tag {
-          padding: 4px 24rpx;
-          font-size: 24rpx;
-          line-height: normal;
-          color: #1687e6;
-          border-radius: 12px;
-          background: white;
-        }
-        & .status_tag.status_1 {
-          color: white;
-          background: red;
-        }
-        & .status_tag.status_2 {
-          color: white;
-          background: #1687e6;
-        }
-        & .status_tag.status_3 {
-          color: white;
-          background: #1dd41d;
-        }
-        & .status_tag.status_4 {
-          color: white;
-          background: gray;
+          & .tag {
+            padding: 4px 24rpx;
+            font-size: 24rpx;
+            line-height: normal;
+            color: white;
+            background: #999;
+            border-radius: 12px;
+            white-space: nowrap;
+          }
+          & .tag.status_1 {
+            color: white;
+            background: red;
+          }
+          & .tag.status_2 {
+            color: white;
+            background: #1687e6;
+          }
+          & .tag.status_3 {
+            color: white;
+            background: #1dd41d;
+          }
+          & .tag.status_4 {
+            color: white;
+            background: gray;
+          }
         }
       }
-  
   
       & .task_item_meta {
         margin-bottom: 12rpx;
         color: #999;
       }
   
-      .content {
+      & .content {
         font-size: 30rpx;
         margin-bottom: 10px;
       }
   
-      .progress_wrap {
+      & .progress_wrap {
         display: flex;
+        margin-bottom: 10px;
         align-items: center;
         gap: 8px;
-        margin-bottom: 8px;
   
-        .progress_bar {
+        & .progress_bar {
           flex: 1;
           height: 8px;
           background: #f0f2f5;
           border-radius: 6px;
           overflow: hidden;
   
-          .progress_inner {
+          & .progress_inner {
             height: 100%;
             background: linear-gradient(90deg,#4facfe,#00f2fe);
           }
         }
   
-        .progress_text {
+        & .progress_text {
           min-width: 40px;
           text-align: right;
           font-size: 12px;
           color: #666;
         }
-      }
-  
-      .footer {
-        display: flex;
-        justify-content: space-between;
-        color: #888;
-        font-size: 12px;
       }
     }
 	}

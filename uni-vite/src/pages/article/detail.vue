@@ -39,10 +39,10 @@ export default {
 </script>
 
 <style lang="less">
-@import '@/common/css/reset.css';
-@import '@/common/css/common.css';
+@import '@/common/css/reset.less';
+@import '@/common/css/common.less';
 @import '@/common/css/color.less';
-@import '@/common/css/apply.css';
+@import '@/common/css/apply.less';
 
 .article_detail_page {
   line-height: 1.6;

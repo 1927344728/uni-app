@@ -1,140 +1,120 @@
-@import '@/common/css/reset.css';
-@import '@/common/css/common.css';
+@import '@/common/css/reset.less';
+@import '@/common/css/common.less';
 @import '@/common/css/color.less';
-@import '@/common/css/apply.css';
+@import '@/common/css/apply.less';
 
-page {
-  min-height: 100%;
-}
-.home-page {
+.home_page {
   min-height: 100%;
   background: @bg-minor-color;
 
-  & .home-content {
-    flex: 1;
+  & .home_banner {
+    padding: 24rpx;
+    & uni-swiper {
+      height: 360rpx;
+    }
+    & .swiper_box {
+      border-radius: 24rpx;
+      overflow: hidden;
+      & .banner_img {
+        display: block;
+        width: 100%;
+        height: 360rpx;
+      }
+    }
   }
-	& .home-content::after {
-		display: block;
-	  height: 128rpx;
-		content: '';
-	}
 
-	& .home-banner {
-		padding: 24rpx;
-		& uni-swiper {
-			height: 360rpx;
-		}
-		& .swiper-box {
-			border-radius: 24rpx;
-			overflow: hidden;
-			& .banner-img {
-				display: block;
-				width: 100%;
-				height: 360rpx;
-			}
-		}
-	}
-
-  & .home-feature {
+  & .home_feature {
     padding: 0 24rpx;
-		& .wrapper {
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			gap: 32rpx;
-			background: white;
-			border-radius: 24rpx;
-			& .item {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				& .icon-wrapper {
-					width: 112rpx;
-					height: 112rpx;
-					border-radius: 56rpx;
-					overflow: hidden;
-				}
-				& .icon {
-					width: 112rpx;
-					height: 112rpx;
-				}
-				& .text {
-					font-size: 24rpx;
-					line-height: 60rpx;
-					color: #666666;
-					white-space: nowrap;
-				}
-			}
-		}
+    & .wrapper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32rpx;
+      background: white;
+      border-radius: 24rpx;
+      & .item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 6px 0;
+        & .icon {
+          width: 112rpx;
+          height: 112rpx;
+          border-radius: 56rpx;
+          overflow: hidden;
+        }
+        & .text {
+          font-size: 24rpx;
+          line-height: 60rpx;
+          color: #666;
+          white-space: nowrap;
+        }
+      }
+    }
   }
 
-  .home-recommend {
+  & .home_recommend {
     margin-top: 48rpx;
     padding: 0 24rpx;
-		& .header {
-		  display: flex;
-		  justify-content: space-between;
-		  align-items: center;
-		  margin-bottom: 32rpx;
-			& .title {
-			  font-size: 36rpx;
-			  font-weight: 500;
-			}
-			& .more {
-			  font-size: 28rpx;
-			  color: rgb(20,200,165);
-			}
-		}
+    & .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24rpx;
+      & .title {
+        font-size: 36rpx;
+        font-weight: 500;
+      }
+      & .more {
+        font-size: 26rpx;
+        color: rgb(20,200,165);
+      }
+    }
 
-		& .list {
-		  display: flex;
-		  flex-direction: column;
-		  gap: 32rpx;
-			& .item {
-			  display: flex;
-			  padding: 24rpx;
-			  background: #ffffff;
-			  border-radius: 16rpx;
-			  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-				& .image {
-				  width: 160rpx;
-				  height: 160rpx;
-				  border-radius: 16rpx;
-				}
-				& .content {
-				  flex: 1;
-				  margin-left: 24rpx;
-					& .item-title {
-						font-size: 32rpx;
-						font-weight: 500;
-					}
-					& .desc {
-						font-size: 28rpx;
-						color: #999999;
-						margin-top: 8rpx;
-					}
-					& .stats {
-						display: flex;
-						align-items: center;
-						margin-top: 16rpx;
-						& .stats-text {
-							font-size: 24rpx;
-							color: #999999;
-						}
-						& .stats-dot {
-							margin: 0 16rpx;
-							color: #999999;
-						}
-					}
-				}
-			}
-		}
+    & .list {
+      display: flex;
+      flex-direction: column;
+      gap: 24rpx;
+      & .item {
+        display: flex;
+        align-items: center;
+        padding: 24rpx;
+        background: #ffffff;
+        border-radius: 16rpx;
+        box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+        & .image {
+          width: 132rpx;
+          height: 132rpx;
+          border-radius: 16rpx;
+        }
+        & .content {
+          flex: 1;
+          margin-left: 24rpx;
+          & .title {
+            font-size: 32rpx;
+            font-weight: 500;
+          }
+          & .desc {
+            font-size: 28rpx;
+            color: #999999;
+            margin-top: 8rpx;
+          }
+        }
+      }
+    }
   }
-	
-	.home-version {
-		margin: 24rpx 0;
-		color: #999;
-		font-size: 12px;
-		line-height: 1.8;
-		text-align: center;
-	}
+  
+  & .home_version {
+    margin: 24rpx 0;
+    color: #999;
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: center;
+  }
 }
+
+.home_page::after {
+  display: block;
+  height: 128rpx;
+  content: '';
+}
+

@@ -23,12 +23,14 @@
       />
 		</view>
 
-		<scroll-view v-if="taskList.length" class="task_list" scroll-y :lower-threshold="50" @scrolltolower="scrolltolower">
+		<view v-if="taskList.length" class="task_list">
 			<view v-for="item in taskList" :key="item.id" class="task_item" @click="gotoDetail(item)">
 				<view class="task_item_header">
-					<view class="title">{{ textEllipsis(item.title, 14) }}</view>
-					<view class="status_tag" :class="[`status_${item.status}`]">
-            {{ statusMap[item.status] }}
+					<view class="title">{{ item.title }}</view>
+					<view class="status_tag">
+            <view class="tag" :class="[`status_${item.status}`]">
+              {{ statusMap[item.status] }}
+            </view>
           </view>
 				</view>
 
@@ -42,7 +44,7 @@
           {{ item.content }}
         </view>
 
-				<view class="progress_wrap">
+				<view v-if="item.status === 2" class="progress_wrap">
 					<view class="progress_bar">
 						<view class="progress_inner" :style="{ width: item.progress + '%' }"></view>
 					</view>
@@ -52,16 +54,14 @@
 				</view>
 			</view>
 			<view v-if="pagination.isLast" class="nomore_load_tips">~没有更多了~</view>
-		</scroll-view>
+		</view>
 
-		<FooterBar :activeTabKey="activeTabKey" />
+		<FooterBar activeTabKey="task" />
 	</view>
 </template>
 
 <script>
-import store from '@/store/index'
 import { getTaskTargeterList, getTaskPageList } from '@/api'
-import { textEllipsis } from '@/utils'
 import { TASK_STATUS_ENUM } from './constant.js'
 import FooterBar from '@/components/footer_bar/index.vue'
 
@@ -88,9 +88,6 @@ export default {
 		}
 	},
 	computed: {
-		activeTabKey () {
-			return store.state.activeTabKey
-		},
     statusList () {
       return [{
         value: '',
@@ -110,12 +107,17 @@ export default {
     }
   },
   created () {
-		store.commit('setActiveTabKey', 'task')
     this.getTaskTargeterList()
 		this.getTaskPageList()
 	},
+  onReachBottom () {
+    if (!this.pagination.isLast)  {
+      console.log('onReachBottom')
+      this.pagination.pageNum ++
+      this.getTaskPageList()
+    }
+  },
 	methods: {
-    textEllipsis,
     getTaskTargeterList () {
       return getTaskTargeterList().then((data) => {
         this.targeterList = [{ value: '', text: '所有任务人' }].concat((data || []).map(name => ({
@@ -134,10 +136,11 @@ export default {
         pageSize: pagination.pageSize,
       }).then((data) => {
         this.taskList = taskList.concat(data || [])
-        this.isLoad = true
         if (!data || data.length < pagination.pageSize) {
           pagination.isLast = true
         }
+      }).finally(() => {
+        this.isLoad = true
       })
 		},
     refreshList () {
@@ -145,13 +148,6 @@ export default {
       this.pagination = initPagination()
       this.getTaskPageList()
     },
-		scrolltolower () {
-      console.log('scrolltolower')
-			if (!this.pagination.isLast)  {
-        this.pagination.pageNum ++
-        this.getTaskPageList()
-      }
-		},
     gotoDetail (item) {
       uni.navigateTo({
         url: `/pages/task/detail?id=${item.id}`

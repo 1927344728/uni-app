@@ -14,13 +14,14 @@ import ScrollList from '@/components/scroll_list/index.vue'
 export default {
   components: { ScrollList },
   props: {
-    keyword: {
-      type: String,
-      default: ''
+    queryParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   watch: {
-    keyword: {
+    queryParams: {
+      deep: true,
       handler () {
         this.$refs.ScrollList.refreshList()
       }
@@ -28,10 +29,10 @@ export default {
   },
   methods: {
     getArticlePageList (options = {}) {
-      const { keyword } = this
+      const { queryParams } = this
       return getArticlePageList({
         ...options,
-        keyword,
+        ...(queryParams || {}),
         type: 3
       })
     }

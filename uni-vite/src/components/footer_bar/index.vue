@@ -17,6 +17,8 @@
 
 <script>
 import { FOOTER_BUTTON_LIST } from '@/config/index.js'
+import store from '@/store/index.js'
+
 export default {
 	props: {
 		activeTabKey: String
@@ -25,6 +27,9 @@ export default {
     return {
       tabList: FOOTER_BUTTON_LIST
     }
+  },
+  created () {
+    store.commit('setActiveTabKey', 'index')
   },
   methods: {
     onClickTab (item) {

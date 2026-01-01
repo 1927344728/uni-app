@@ -88,15 +88,29 @@ export default {
 }
 </script>
 <style lang="less">
-@import '@/common/css/reset.css';
-@import '@/common/css/common.css';
+@import '@/common/css/reset.less';
+@import '@/common/css/common.less';
 @import '@/common/css/color.less';
-@import '@/common/css/apply.css';
+@import '@/common/css/apply.less';
 .common_list_module {
   height: calc(100vh - constant(safe-area-inset-bottom));
   height: calc(100vh - env(safe-area-inset-bottom));
-  & ::v-deep .uni-icons {
-    display: none;
+  & .uni-list {
+    color: red;
+    & ::v-deep .uni-list--border-top {
+      display: none;
+    }
+    & .uni-list-item {
+      & ::v-deep .uni-list--lg {
+        width: 60px;
+        height: 60px;
+        border-radius: 12rpx;
+        overflow: hidden;
+      }
+      & ::v-deep .uni-icons {
+        display: none;
+      }
+    }
   }
 }
 </style>

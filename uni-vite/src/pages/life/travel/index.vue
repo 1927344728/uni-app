@@ -14,31 +14,28 @@ import ScrollList from '@/components/scroll_list/index.vue'
 export default {
   components: { ScrollList },
   props: {
-    keyword: {
-      type: String,
-      default: ''
+    queryParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   watch: {
-    keyword () {
-      this.$refs.ScrollList.refreshList()
+    queryParams: {
+      deep: true,
+      handler () {
+        this.$refs.ScrollList.refreshList()
+      }
     }
   },
   methods: {
     getArticlePageList (options = {}) {
-      const { keyword } = this
+      const { queryParams } = this
       return getArticlePageList({
         ...options,
-        keyword,
+        ...(queryParams || {}),
         type: 4
       })
     }
   },
 }
 </script>
-<style lang="less" scoped>
-  .course_page {
-    height: calc(100vh - 64rpx - constant(safe-area-inset-bottom));
-    height: calc(100vh - 64rpx - env(safe-area-inset-bottom));
-  }
-</style>

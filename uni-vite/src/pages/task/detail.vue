@@ -1,14 +1,10 @@
 <template>
   <view v-if="task" class="task_detail">
-    <view class="task_detail_header">
+    <view class="task_detail_title">
       {{ task.title }}
     </view>
-
-    <view class="task_detail_item">
-      <view class="item_label">任务人</view>
-      <view class="item_value">
-        {{ task.targeter || '' }}
-      </view>
+    <view v-if="task.publisher" class="task_detail_author">
+      {{ task.publisher }}
     </view>
 
     <view class="task_detail_item">
@@ -62,21 +58,21 @@
       </view>
     </view>
 
-    <view v-if="task.awards && task.awards.length" class="task_detail_item">
+    <view v-if="task.awards && task.awards.length" class="task_detail_item block">
       <view class="item_label">奖励</view>
       <view class="item_value">
         <ArticleDetail :articleData="task.awards" />
       </view>
     </view>
 
-    <view v-if="task.attachments && task.attachments.length" class="task_detail_item">
+    <view v-if="task.attachments && task.attachments.length" class="task_detail_item block">
       <view class="item_label">附件</view>
       <view class="item_value">
         <ArticleDetail :articleData="task.attachments" />
       </view>
     </view>
 
-    <view v-if="task.works && task.works.length" class="task_detail_item">
+    <view v-if="task.works && task.works.length" class="task_detail_item block">
       <view class="item_label">作品</view>
       <view class="item_value">
         <ArticleDetail :articleData="task.works" />

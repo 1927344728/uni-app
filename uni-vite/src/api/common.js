@@ -6,3 +6,10 @@ export function helloWord() {
   });
 }
 
+
+export function getUserInfo() {
+  return request({
+    url: 'api/user/getUserInfo',
+  });
+}
+

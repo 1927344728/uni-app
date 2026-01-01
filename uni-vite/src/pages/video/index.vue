@@ -75,9 +75,9 @@ const initPagination = () => ({
 })
 export default {
   props: {
-    keyword: {
-      type: String,
-      default: ''
+    queryParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -91,8 +91,12 @@ export default {
     }
   },
   watch: {
-    keyword () {
-      this.refreshList()
+    queryParams: {
+      deep: true,
+      immediate: true,
+      handler () {
+        this.refreshList()
+      },
     }
   },
   onLoad (options) {
@@ -123,9 +127,9 @@ export default {
     convertHtmlToText,
 
     getVideoPageList () {
-      const { keyword, videoMenuId, videoList, pagination } = this
+      const { queryParams, videoMenuId, videoList, pagination } = this
       return getVideoPageList({
-        keyword,
+        ...(queryParams || {}),
         menuId: videoMenuId,
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize

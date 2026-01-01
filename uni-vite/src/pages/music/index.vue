@@ -43,9 +43,9 @@
 import { getMusicMenuList, getMusicPageList } from '@/api'
 export default {
   props: {
-    keyword: {
-      type: String,
-      default: ''
+    queryParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -60,11 +60,12 @@ export default {
     }
   },
   watch: {
-    keyword: {
+    queryParams: {
+      deep: true,
+      immediate: true,
       handler () {
-        this.refershList()
+        this.refreshList()
       },
-      immediate: true
     }
   },
   created () {
@@ -74,16 +75,16 @@ export default {
   },
   methods: {
     getMusicPageList () {
-      const { keyword, pagination } = this
+      const { queryParams, pagination } = this
       return getMusicPageList({
-        keyword,
+        ...(queryParams || {}),
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then((data) => {
         this.musicList = this.musicList.concat(data || [])
       })
     },
-    refershList () {
+    refreshList () {
       this.musicList = []
       this.pagination.pageNum = 0
       this.getMusicPageList()

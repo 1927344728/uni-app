@@ -25,13 +25,15 @@ export default {
 			default: () => []
 		}
 	},
+  emits: ['update:value'],
 	computed: {
 		currentTab: {
 			get () {
 				return this.value
 			},
 			set (tab) {
-				this.$emit('input', tab)
+				this.$emit('update:value', tab)
+        this.$emit('change', tab)
 			}
 		}
 	}

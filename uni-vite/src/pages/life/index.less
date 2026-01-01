@@ -1,36 +1,44 @@
-@import '@/common/css/reset.css';
-@import '@/common/css/common.css';
+@import '@/common/css/reset.less';
+@import '@/common/css/common.less';
 @import '@/common/css/color.less';
-@import '@/common/css/apply.css';
+@import '@/common/css/apply.less';
 .life_page {
   position: relative;
+  width: 100vw;
+  height: calc(100vh - constant(safe-area-inset-bottom));
+  height: calc(100vh - env(safe-area-inset-bottom));
+  padding: 0;
   color: @text-primary-color;
-  & .uni-searchbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 20;
-    background: white;
-    border-top: 2rpx solid @border-primary-color;
-    border-bottom: 2rpx solid @border-primary-color;
+  
+  & .with_tab_module {
+    height: calc(100vh - constant(safe-area-inset-bottom));
+    height: calc(100vh - env(safe-area-inset-bottom));
   }
-  & .with_sub_module {
-    height: calc(100vh - 200rpx - constant(safe-area-inset-bottom));
-    height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
+
+  & .swiper {
+    height: 100%;
   }
 }
 .life_page.with_header_bar {
   padding-top: 88rpx;
-  & .uni-searchbar {
+  & .search_bar_module {
     top: 88rpx;
+  }
+  & .with_tab_module {
+    height: calc(100vh - 88rpx - constant(safe-area-inset-bottom));
+    height: calc(100vh - 88rpx - env(safe-area-inset-bottom));
   }
 }
 .life_page.with_header_bar.with_search_bar {
   padding-top: 200rpx;
+  & .with_tab_module {
+    height: calc(100vh - 200rpx - constant(safe-area-inset-bottom));
+    height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
+  }
 }
 .life_page.with_footer_bar {
-  & .with_sub_module {
-    padding-bottom: 136rpx;
+  padding-bottom: 144rpx;
+  & .with_tab_module {
+    padding-bottom: 144rpx;
   }
 }

@@ -51,9 +51,9 @@ const initPagination = () => ({
 
 export default {
   props: {
-    keyword: {
-      type: String,
-      default: ''
+    queryParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -64,22 +64,24 @@ export default {
     }
   },
   watch: {
-    keyword: {
+    queryParams: {
+      deep: true,
+      immediate: true,
       handler () {
         this.refreshList()
       }
-    }
+    },
   },
   created () {
     this.getBookPageList()
   },
 	methods: {
     getBookPageList () {
-      const { keyword, pagination } = this
+      const { queryParams, pagination } = this
       const { pageNum, pageSize } = pagination
       this.isLoad = false
       return getBookPageList({
-        keyword,
+        ...(queryParams || {}),
         pageNum,
         pageSize
       })

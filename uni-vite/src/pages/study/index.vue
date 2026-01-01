@@ -2,43 +2,27 @@
   <view class="study_page" :class="classObject">
     <HeaderBar
       v-if="filteredItems.length > 1"
-      :value="currentTab"
+      v-model:value="currentTab"
       :list="filteredItems"
-      @input="currentTab = $event"
+      @change="onChangeTab"
     />
-    <uni-search-bar
-      v-model.trim="queryParam.keyword"
-      placeholder="请输入搜索词"
-      :radius="100"
-      @clear="queryParam.keyword = ''"
-    />
-    <CourseList
-    v-if="currentTab === 'course'"
-    :class="classObject"
-    :keyword="queryParam.keyword"
-    />
-    <ReadList
-      v-if="currentTab === 'read'"
-      :class="classObject"
-      :keyword="queryParam.keyword"
-    />
-    <BookList
-      v-if="currentTab === 'book'"
-      :class="classObject"
-      :keyword="queryParam.keyword"
-    />
-    <ScoreList
-      v-if="currentTab === 'score'"
-      :class="classObject"
-      :keyword="queryParam.keyword"
-    />
-    <FooterBar :activeTabKey="activeTabKey" />
+    <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
+    <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
+      <swiper-item v-for="item in filteredItems" :key="item.id">
+        <component
+          :is="item.component"
+          :class="classObject"
+          :queryParams="queryParams"
+        />
+      </swiper-item>
+    </swiper>
+    <FooterBar activeTabKey="study" />
   </view>
 </template>
 <script>
-import { cloneDeep } from 'lodash'
-import store from '@/store/index'
+import { get as _get, cloneDeep } from 'lodash'
 import HeaderBar from '@/components/header_bar/index.vue'
+import SearchBar from '@/components/search_bar/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
 import CourseList from './course/index.vue'
 import ReadList from './read/index.vue'
@@ -51,9 +35,26 @@ const items = [
   { id: 'score', name: '成绩', component: 'ScoreList' },
   { id: 'book', name: '图书馆', component: 'BookList' },
 ]
+const SUB_TYPE_OPTION_MAP = {
+  read: [
+    { value: '2-1', text: '亲子阅读' },
+    { value: '2-2', text: '诗词' }
+  ],
+  book: [
+    { value: '4-1', text: '诗词' },
+    { value: '4-2', text: '经典名著' },
+    { value: '4-3', text: '少儿读物' }
+  ]
+}
+const initQueryParam = () => ({
+  subType: null,
+  keyword: ''
+})
+
 export default {
   components: {
     HeaderBar,
+    SearchBar,
     FooterBar,
     ReadList,
     CourseList,
@@ -63,20 +64,19 @@ export default {
   data () {
     return {
       currentTab: 'course',
-      queryParam: {
-        keyword: ''
-      }
+      currentTabIndex: 0,
+      queryParams: initQueryParam(),
     }
   },
-  onLoad (options) {
-    if (options.tab) {
-      this.currentTab = options.tab
-    } 
+  onLoad (options = {}) {
+    const option = this.filteredItems.find(e => e.id === options.tab)
+    const index = this.filteredItems.findIndex(e => e.id === options.tab)
+    if (option) {
+      this.currentTab = option.id
+      this.currentTabIndex = index
+    }
   },
   computed: {
-    activeTabKey () {
-      return store.state.activeTabKey
-    },
     filteredItems () {
       return cloneDeep(items).filter(o => o.component)
     },
@@ -84,14 +84,27 @@ export default {
       return {
         [this.currentTab]: true,
         with_header_bar: this.filteredItems.length > 1,
-        with_sub_module: true,
+        with_tab_module: true,
         with_search_bar: true,
         with_footer_bar: true
       }
+    },
+    subTypeOptions () {
+      return cloneDeep(SUB_TYPE_OPTION_MAP)[this.currentTab] || []
     }
   },
-  created () {
-    store.commit('setActiveTabKey', 'study')
+  watch: {
+    currentTab () {
+      this.queryParams = initQueryParam()
+    }
+  },
+  methods: {
+    onChangeTab (tab) {
+      this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.id === tab), 0)
+    },
+    onChangeSwiper (data) {
+      this.currentTab = _get(this, `filteredItems[${data.detail.current}].id`) || ''
+    }
   }
 }
 </script>
