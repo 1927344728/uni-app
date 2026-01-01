@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="me_page">
-      <view class="user_info_box">
+      <view v-if="userInfo" class="user_info">
         <image class="avatar" :src="defaultAvatar" mode="aspectFill" />
         <view class="user_detail">
           <view class="user_name">
@@ -17,35 +17,71 @@
           </view>
         </view>
       </view>
-      <view class="me_main">
-        <view class="me_main_content">					
-          <view class="me_main_item">我的音乐</view>
-          <view class="me_main_item">我的视频</view>
-          <view class="me_main_item">我的文章</view>
-          <view class="me_main_item">我的书单</view>
-          <view class="me_main_item">我的成绩</view>
+      <view v-else class="login">
+        <view class="button" @click="gotoLogin">
+          登录
         </view>
       </view>
-      <view v-if="!userInfo" class="login_button">
-        <button type="primary" @click="gotoLogin()">
-          登录
-        </button>
+      <view class="main">
+        <view class="features">					
+          <view
+            v-for="item in featureOptions"
+            :key="item.name"
+            class="item"
+            @click="openUrl(item)"
+          >
+            {{ item.name }}
+          </view>
+        </view>
+        <view class="mock" :class="[isUseMock ? 'network' : 'local']" @click="onClickMock">
+          {{ isUseMock ? '连接数据库' : '使用本地数据' }}
+        </view>
       </view>
       <view v-if="userInfo" class="logout_button">
-        <Text class="text" @click="onChangePassword">修改密码</Text>
+        <text class="text" @click="onChangePassword">修改密码</text>
         |
-        <Text class="text" @click="onLogout">退出登录</Text>
+        <text class="text" @click="onLogout">退出登录</text>
       </view>
     </view>
-    <FooterBar :activeTabKey="activeTabKey" />
+    <FooterBar activeTabKey="me" />
   </view>
 </template>
 
 <script>
-import { getCurrentUser, logout } from '@/api'
+import { get as _get } from 'lodash'
+import { openUrl } from '@/utils'
 import store from '@/store/index'
+import { getCurrentUser, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 import { DEFAULT_AVATAR_IMAGE } from '@/config/index.js'
+
+const FEATURE_OPTIONS = [
+  {
+    name: '我的音乐',
+    url: '/pages/music/index',
+    jumpTo: 'navigate'
+  },
+  {
+    name: '我的视频',
+    url: '/pages/video/index?menuId=1',
+    jumpTo: 'navigate'
+  },
+  {
+    name: '我的文章',
+    url: '/pages/article/index',
+    jumpTo: 'navigate'
+  },
+  {
+    name: '我的书单',
+    url: '/pages/study/book/index',
+    jumpTo: 'navigate'
+  },
+  {
+    name: '我的成绩',
+    url: '/pages/article/index',
+    jumpTo: 'navigate'
+  }
+]
 
 export default {
   components: {
@@ -54,10 +90,14 @@ export default {
   data() {
     return {
       userInfo: null,
-      defaultAvatar: DEFAULT_AVATAR_IMAGE
+      defaultAvatar: DEFAULT_AVATAR_IMAGE,
+      featureOptions: FEATURE_OPTIONS
     };
   },
   computed: {
+    isUseMock () {
+      return store.state.isUseMock
+    },
     activeTabKey () {
       return store.state.activeTabKey
     }
@@ -67,6 +107,7 @@ export default {
     this.fetchData();
   },
   methods: {
+    openUrl,
     fetchData() {
       return getCurrentUser(null, {
         login: 0,
@@ -84,6 +125,16 @@ export default {
         3: '学生'
       };
       return map[role] || '未知角色';
+    },
+    onClickMock () {
+      const bool =  !this.isUseMock
+      store.commit('setIsUseMock', bool)
+      uni.showModal({
+        title: bool ? '仅有部分数据' : '全部数据',
+        content: bool ? '当前使用本地数据' : '已使用正常网络请求',
+        showCancel: false,
+        confirmText: '知道了'
+      })
     },
     gotoLogin () {
       uni.navigateTo({

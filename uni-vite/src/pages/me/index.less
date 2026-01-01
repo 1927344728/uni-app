@@ -9,13 +9,13 @@
   background: @bg-minor-color;
   color: @text-primary-color;
   box-sizing: border-box;
-  & .user_info_box {
+  & .user_info {
     display: flex;
-		padding: 24rpx;
+		padding: 24rpx 24rpx;
+    height: 500rpx;
     align-items: center;
-		background:
-		  radial-gradient(ellipse at top left, @bg-primary-color, transparent),
-		  radial-gradient(ellipse at center right, white, transparent);
+		background: url(https://images.pexels.com/photos/1004665/pexels-photo-1004665.jpeg) no-repeat center;
+    background-size: 100%;
     & .avatar {
       width: 144rpx;
       height: 144rpx;
@@ -51,36 +51,59 @@
       }
     }
   }
-	& .me_main {
-		padding: 24rpx;
-		& .me_main_content {
-			padding: 16rpx 0 16rpx 24rpx;
-			background: white;
-			border-radius: 24rpx;
-			& .me_main_item {
-				padding: 16rpx 24rpx 16rpx 0;
-			}
-			& .me_main_item:not(:last-child) {
-				border-bottom: 1rpx solid @border-primary-color;
-			}
-		}
-	}
-	
-	& .login_button {
-		margin-top: 64rpx;
-		padding: 0 32rpx;
-    & uni-button {
+	& .login {
+    position: relative;
+    margin-bottom: 120rpx;
+    height: 500rpx;
+		background: url(https://images.pexels.com/photos/1004665/pexels-photo-1004665.jpeg) no-repeat center;
+    background-size: 100%;
+    text-align: center;
+    & .button {
+      position: absolute;
+      left: 50%;
+      bottom: -80rpx;
+      transform: translateX(-50%);
+      width: 160rpx;
+      height: 160rpx;
+      line-height: 160rpx;
 			font-size: 32rpx;
       color: white;
+      border-radius: 160rpx;
       background: @primary-color;
     }
 	}
-  & .logout_button {
-		margin-top: 128rpx;
-    text-align: center;
-    color: @text-patch1-color;
-		& .text {
-			margin: 0 18rpx;
+	& .main {
+		padding: 24rpx;
+		& .features {
+      margin-bottom: 24rpx;
+			padding: 16rpx 0 16rpx 24rpx;
+			background: white;
+			border-radius: 24rpx;
+			& .item {
+				padding: 16rpx 24rpx 16rpx 0;
+			}
+      & .item.network {
+        color: @primary-color;
+        text-align: center;
+      }
+      & .item.local {
+        color: #999;
+        text-align: center;
+      }
+			& .item:not(:last-child) {
+				border-bottom: 1rpx solid @border-primary-color;
+			}
 		}
-  }
+    & .mock {
+			padding: 20rpx 24rpx;
+			background: white;
+			border-radius: 24rpx;
+      color: @primary-color;
+      text-align: center;
+    }
+    & .mock.local {
+      color: #999;
+      text-align: center;
+    }
+	}
 }

@@ -6,6 +6,9 @@ export default createStore({
     activeTabKey: 'index'
   },
   mutations: {
+    setIsUseMock (state, bool) {
+      state.isUseMock = bool
+    },
     setActiveTabKey(state, str) {
       state.activeTabKey = str
     }
