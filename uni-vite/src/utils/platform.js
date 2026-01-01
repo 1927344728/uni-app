@@ -66,7 +66,6 @@ export function ArrayBufferToGBK (arrayBuffer) {
     if (typeof plus !== 'undefined' && plus.io) {
       const buffer = Buffer.from(arrayBuffer);
       const gbkText = iconv.decode(buffer, 'gbk')
-      console.log('Buffer + iconv-lite，解码！')
       return gbkText
     }
   } catch (err) {

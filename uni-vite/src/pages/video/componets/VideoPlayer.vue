@@ -147,16 +147,12 @@ export default {
       return pages;
     },
     currentIndex () {
-      return this.swiperPages.findIndex(e => e.id === _get(this, 'currentVideo.id')) || 0
+      const index = this.swiperPages.findIndex(e => e.id === _get(this, 'currentVideo.id')) || 0
+      console.log(index)
+      return index
     }
   },
   watch: {
-    // allVideoList: {
-    //   deep: true,
-    //   handler (list) {
-    //     console.log(list.map(e => e.title))
-    //   }
-    // },
     currentVideo (o) {
       if (o) {
         uni.setNavigationBarTitle({ title: o.title || '视频' });
@@ -212,14 +208,15 @@ export default {
       this.isShowMoreDesc = false;
       const currentVideoId = _get(currentVideo, 'id');
       const allVideoLength = _get(allVideoList, 'length', 0);
-      let nextVideo = null
+      let newVideo = null
       if (['auto'].includes(mode)) {
-        nextVideo = await getVideoByRandom({
+        newVideo = await getVideoByRandom({
           playingVideoIds: swiperPages.map(e => e.id),
           playedVideoIds
         }).catch(() => null);
-        if (nextVideo) {
-          allVideoList.push(nextVideo);
+        if (newVideo) {
+          allVideoList.push(newVideo);
+          // console.log(allVideoList.map(e => e.title))
         }
       }
       if (['menu'].includes(mode) && allVideoLength > 1) {
@@ -227,11 +224,11 @@ export default {
         if (currentIndex !== -1) {
           const nextIndex = (currentIndex + 1) % allVideoList.length;
           if (nextIndex !== currentIndex) {
-            nextVideo = allVideoList[nextIndex];
+            newVideo = allVideoList[nextIndex];
           }
         }
       }
-      return nextVideo
+      return newVideo
     },
     onLoadedMeta (e) {
       const dur = e?.detail?.duration || 0;
@@ -315,6 +312,7 @@ export default {
     },
     onChange (event) {
       const { currentIndex, nextVideo, prevVideo } = this;
+      console.log('event.detail.current', event.detail.current)
       if (event.detail.current > currentIndex && nextVideo) {
         this.goNextVideo();
       }
