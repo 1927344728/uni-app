@@ -1,6 +1,12 @@
 <template>
-  <view class="home_page">
+  <view 
+    class="home_page"
+    :class="{
+      with_banner: !!(bannerList && bannerList.length)
+    }"
+  >
     <uni-swiper-dot
+      v-if="bannerList && bannerList.length"
       class="home_banner"
       :info="bannerList"
       :current="currentBanner"
@@ -56,10 +62,10 @@
 
 <script>
 import { get as _get } from 'lodash'
-import { BANNER_LIST, FEATURE_ICON_ENUM } from '@/config/index.js'
 import { openUrl } from '@/utils'
-import { getUserInfo, getArticlePageList } from '@/api'
+import { FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
+import { getUserInfo, getBannerList, getRecommendList } from '@/api'
 
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
@@ -68,16 +74,15 @@ export default {
   },
   data () {
     return {
-      userInfo: null,
       currentBanner: 0,
-      bannerList: BANNER_LIST,
+      bannerList: null,
       featureIcons: FEATURE_ICON_ENUM,
       recommendArticles: null,
     }
   },
   computed: {
     userName () {
-      return _get(this, 'userInfo.name')
+      return _get(store, 'state.userInfo.name') || '欢迎来到'
     },
     isUseMock () {
       return _get(store, 'state.isUseMock')
@@ -85,18 +90,14 @@ export default {
   },
   created () {
     getUserInfo().then((data) => {
-      if (data && !data.name) {
-        data.name = '欢迎来到'
-      }
-      this.userInfo = data
+      store.commit('setUserInfo', data)
     })
-    getArticlePageList({
-      type: '2',
-      pageNum: 0,
-      pageSize: 4
-    }).then((data) => {
+    getBannerList().then((data) => {
+      this.bannerList = data || []
+    })
+    getRecommendList().then((data) => {
       this.recommendArticles = data || []
-    }).catch(() => {})
+    })
   },
   onReachBottom () {
     console.log('onReachBottom')

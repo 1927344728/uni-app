@@ -8,8 +8,8 @@
     </view>
 
     <view class="task_detail_item">
-      <view class="item_label">发布人</view>
-      <view class="item_value">{{ task.publisher || '' }}</view>
+      <view class="item_label">任务人</view>
+      <view class="item_value">{{ task.targeter || '' }}</view>
     </view>
 
     <view v-if="task.publishTime || task.publishTime === 0" class="task_detail_item">

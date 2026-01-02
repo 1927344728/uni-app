@@ -15,6 +15,7 @@ export const ARTICLE_DETAIL_LIST = [
     title: '李若小画家绘画作品展',
     author: '李兆',
     note: '你的每一幅画，都是送给这个世界的一份独特礼物！',
+    seq: 0,
     time: 1766584009279,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251216003939_120_2.jpg?imageMogr2/thumbnail/750x',
     content: [
@@ -90,10 +91,11 @@ export const ARTICLE_DETAIL_LIST = [
   },
   {
     id: 'u000012',
-    type: '2,4',
+    type: '4',
     title: '李兮一年级上学期期中考试成绩单',
     author: '李兆',
     note: '爸爸为你的努力感到骄傲，继续加油哦！',
+    seq: 0,
     time: 1766584009279,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251217212113_130_2.jpg?imageMogr2/thumbnail/750x',
     content: [
@@ -134,6 +136,7 @@ export const ARTICLE_DETAIL_LIST = [
     title: '诗词大会必背古诗词（一年级上）',
     author: '',
     note: '2025诗词大会题库（小学组） ',
+    seq: 0,
     time: 1766584009279,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/b5cbefa047b9dcbb33c3b0a61d662046c2ed6ee3cc27d-chfNBU_fw1200webp.webp',
     content: [
@@ -208,10 +211,11 @@ export const ARTICLE_DETAIL_LIST = [
   },
 {
     id: 'u000014',
-    type: '2,3',
+    type: '3',
     title: '轻摘',
     author: '',
     note: '',
+    seq: 0,
     time: 1766584009279,
     image: '',
     content: [
@@ -232,6 +236,7 @@ export const ARTICLE_LIST= [
     type: '1,2,3',
     title: '汉语拼音发音学习',
     note: '点击任意拼音即可播放发音',
+    seq: 0,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg?imageMogr2/thumbnail/160',
     // url: 'https://1927344728.github.io/web-page/hanyupinyin.html',
     url: '/static/hanyupinyin.html',
@@ -244,6 +249,7 @@ export const ARTICLE_LIST= [
     type: '2,6',
     title: '中国地方特色水果图鉴',
     note: '每一方水土，都有其独特的甜蜜献礼。探索中国大地上风味各异的地方名果。',
+    seq: 0,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/9aa1951aeb5a45e186eeef1d6e39296d463b6f2911c6ff-SlTBw5_fw1200webp.webp',
     url: '/static/fruit.html',
     readCount: 1800,
@@ -255,20 +261,24 @@ export const ARTICLE_LIST= [
     type: '5',
     title: '摄影笔记深度解析',
     note: '从原理到实践的摄影入门指南——深入解读宁思潇潇的经典之作',
+    seq: 0,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/tBzDxA-yeF6XfLSfgXrQlQ.jpg',
     url: '/static/photography.html',
     readCount: 1800,
     collectCount: 142,
     jumpTo: 'webview'
   },
-].concat(ARTICLE_DETAIL_LIST.map(e => ({
-  id: e.id,
-  type: e.type,
-  title: e.title,
-  note: e.note,
-  image: e.image,
-  url: `/pages/article/detail?id=${e.id}`,
-  readCount: e.readCount || null,
-  collectCount: e.collectCount || null,
-  jumpTo: 'navigate'
-})))
+]
+  .concat(ARTICLE_DETAIL_LIST.map(e => ({
+    id: e.id,
+    type: e.type,
+    title: e.title,
+    note: e.note,
+    seq: e.seq,
+    image: e.image,
+    url: `/pages/article/detail?id=${e.id}`,
+    readCount: e.readCount || null,
+    collectCount: e.collectCount || null,
+    jumpTo: 'navigate'
+  })))
+  .sort((a, b) => b.seq - a.seq)

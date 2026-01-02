@@ -1,9 +1,7 @@
 import request from './request.js';
 
-export function getCurrentUser(params, options = {}) {
+export function getUserInfo() {
   return request({
-    url: 'api/user/getUser',
-    params,
-		...options
+    url: 'api/user/getUserInfo',
   });
 }

@@ -1,5 +1,4 @@
 import { get as _get, cloneDeep } from "lodash"
-import Mock from "mockjs"
 import { TASK_LIST } from "/database/task.js"
 import { basicTemplate } from './common'
 
@@ -13,14 +12,14 @@ const getTaskPageList = (params) => {
   })
   const data = cloneDeep(basicTemplate)
   data.data = list.splice(pageNum * pageSize, pageSize)
-  return Mock.mock(data);
+  return data
 }
 
 const getTaskById = (params) => {
   const { id } = params
   const data = cloneDeep(basicTemplate)
   data.data = TASK_LIST.find(e => e.id === id)
-  return Mock.mock(data);
+  return data
 }
 
 const getTaskTargeterList = () => {
@@ -35,7 +34,7 @@ const getTaskTargeterList = () => {
 
   const data = cloneDeep(basicTemplate)
   data.data = Array.from(set)
-  return Mock.mock(data);
+  return data
 }
 
 export default {

@@ -6,10 +6,14 @@ export function helloWord() {
   });
 }
 
-
-export function getUserInfo() {
+export function getBannerList() {
   return request({
-    url: 'api/user/getUserInfo',
+    url: 'api/common/getBannerList',
   });
 }
 
+export function getRecommendList() {
+  return request({
+    url: 'api/common/getRecommendList',
+  });
+}

@@ -1,12 +1,11 @@
 import { get as _get, cloneDeep } from "lodash"
-import Mock from "mockjs"
 import { MUSIC_MENU_LIST, MUSIC_LIST } from "/database/music.js"
 import { basicTemplate } from './common'
 
 const getMusicMenuList = () => {
   const data = cloneDeep(basicTemplate)
   data.data = cloneDeep(MUSIC_MENU_LIST)
-  return Mock.mock(data);
+  return data
 }
 
 const getMusicPageList = (params) => {
@@ -18,14 +17,14 @@ const getMusicPageList = (params) => {
   list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
   data.data = list
-  return Mock.mock(data);
+  return data
 }
 
 const getMusicById = (params) => {
   const id = _get(params, 'id')
   const data = cloneDeep(basicTemplate)
   data.data = MUSIC_LIST.find(item => item.id === String(id)) || null;
-  return Mock.mock(data);
+  return data
 }
 
 const getMusicByRandom = (params) => {
@@ -43,13 +42,13 @@ const getMusicByRandom = (params) => {
   const data = cloneDeep(basicTemplate)
   data.data = MUSIC_LIST.find(e => e.id === songId) || null;
 
-  return Mock.mock(data);
+  return data
 }
 
 const getMusicListByMenuId = (params) => {
   const data = cloneDeep(basicTemplate)
   data.data = MUSIC_LIST.filter(item => String(item.menuId) === String(_get(params, 'menuId'))) || null;
-  return Mock.mock(data);
+  return data
 }
 
 export default {

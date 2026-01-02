@@ -1,5 +1,4 @@
 import { get as _get, cloneDeep } from "lodash"
-import Mock from "mockjs"
 import { ARTICLE_LIST, ARTICLE_DETAIL_LIST } from "/database/article.js"
 import { basicTemplate } from './common'
 
@@ -17,14 +16,14 @@ const getArticlePageList = (params) => {
   list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
   data.data = list
-  return Mock.mock(data);
+  return data
 }
 
 const getArticleById = (params) => {
   const { id } = params
   const data = cloneDeep(basicTemplate)
   data.data = ARTICLE_DETAIL_LIST.find(e => e.id === id)
-  return Mock.mock(data);
+  return data
 }
 
 export default {

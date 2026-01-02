@@ -6,13 +6,15 @@
         <view class="user_detail">
           <view class="user_name">
             <text class="name">
-              {{ userInfo ? userInfo.name : '未知用户' }}
+              {{ userInfo.nickname || userInfo.name }}
             </text>
-            <text v-if="userInfo" class="role">
-              {{ userInfo ? getRoleLabel(userInfo.role) : '' }}
+            <text class="role">
+              {{ getRoleLabel(userInfo.role)}}
             </text>
-            <a v-if="userInfo" class="phone" :href="'tel:' + userInfo.phone_number">
-              <uni-icons type="phone" size="18" />
+          </view>
+          <view class="user_phone">
+            <a class="phone" :href="`tel:${userInfo.phone_number}`">
+              {{ userInfo.phone_number }}
             </a>
           </view>
         </view>
@@ -30,14 +32,15 @@
             class="item"
             @click="openUrl(item)"
           >
-            {{ item.name }}
+            <view>{{ item.name }}</view>
+            <uni-icons type="right" size="18" color="#ccc"></uni-icons>
           </view>
         </view>
         <view class="mock" :class="[isUseMock ? 'network' : 'local']" @click="onClickMock">
           {{ isUseMock ? '连接数据库' : '使用本地数据' }}
         </view>
       </view>
-      <view v-if="userInfo" class="logout_button">
+      <view v-if="userInfo" class="logout">
         <text class="text" @click="onChangePassword">修改密码</text>
         |
         <text class="text" @click="onLogout">退出登录</text>
@@ -51,7 +54,7 @@
 import { get as _get } from 'lodash'
 import { openUrl } from '@/utils'
 import store from '@/store/index'
-import { getCurrentUser, logout } from '@/api'
+import { getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 import { DEFAULT_AVATAR_IMAGE } from '@/config/index.js'
 
@@ -89,7 +92,6 @@ export default {
   },
   data() {
     return {
-      userInfo: null,
       defaultAvatar: DEFAULT_AVATAR_IMAGE,
       featureOptions: FEATURE_OPTIONS
     };
@@ -97,6 +99,9 @@ export default {
   computed: {
     isUseMock () {
       return store.state.isUseMock
+    },
+    userInfo () {
+      return _get(store, 'state.userInfo')
     },
     activeTabKey () {
       return store.state.activeTabKey
@@ -109,13 +114,8 @@ export default {
   methods: {
     openUrl,
     fetchData() {
-      return getCurrentUser(null, {
-        login: 0,
-        showLoading: 1
-      }).then((data) => {
-        this.userInfo = data
-      }).catch(error => {
-        console.log(error)
+      return getUserInfo().then((data) => {
+        store.commit('setUserInfo', data)
       })
     },
     getRoleLabel(role) {

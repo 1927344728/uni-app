@@ -9,8 +9,14 @@
       }"
       @click="onClickTab(item)"
     >
-			<uni-icons :type="item.icon" size="20" />
-			<text>{{ item.name }}</text>
+      <view class="icon">
+        <uni-icons
+          :class="[item.key]"
+          :type="`${item.icon}${item.key === activeTabKey ? '-filled' : ''}`"
+          :size="20"
+        />
+      </view>
+			<view>{{ item.name }}</view>
     </view>
   </view>
 </template>

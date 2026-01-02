@@ -39,7 +39,7 @@
             :src="img + ((img || '').includes('?') ? '&' : '?') + 'imageMogr2/thumbnail/750x'"
             mode="widthFix"
             class="uni_image"
-            @click="previewImage(i, [item.content].flat())"
+            @click="previewImage(img)"
           />
           <view v-if="item.description && i + 1 === [item.content].flat().length" class="desc">
             {{ item.description }}
@@ -143,12 +143,15 @@ export default {
     stop () {
       this.ttsService.stop()
     },
-    previewImage(current, urls) {
-      if (typeof uni !== 'undefined' && uni.previewImage) {
-        uni.previewImage({ current, urls });
-        return;
-      }
-      window.open(current, '_blank');
+    previewImage(url) {
+      const { articleData } = this
+      const imageItem = articleData.filter(e => e.type === 'image')
+      const images = imageItem.reduce((arr, e) => arr.concat([e.content].flat().filter(Boolean)), [])
+      const current = images.findIndex(e => e === url)
+      uni.previewImage({
+        current,
+        urls: images
+      });
     },
   }
 };

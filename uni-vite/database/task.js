@@ -6,6 +6,7 @@ export const TASK_LIST = [
     publisher: '李兆',
     targeter: '李兮',
     content: '完成每周两次的拉丁舞课程学习。',
+    seq: 0,
     progress: 60,
     finished: '完成一次舞蹈表演，获得家人的认可，并录制视频。',
     awards: [
@@ -34,6 +35,7 @@ export const TASK_LIST = [
     publisher: '李芳',
     targeter: '何烨笼',
     content: '每天记忆25个英语单词，确保在学期结束前掌握所有课程要求的单词量。',
+    seq: 0,
     progress: 20,
     finished: '以“默默背单词”检验记忆效果，掌握词汇不低于95%。',
     awards: [
@@ -56,6 +58,7 @@ export const TASK_LIST = [
     publisher: '李兆',
     targeter: '李若',
     content: '每周完成一幅绘画作品。',
+    seq: 0,
     progress: 100,
     finished: '累积完成5幅绘画作品，并在家庭聚会上进行展示。',
     awards: [
@@ -83,4 +86,4 @@ export const TASK_LIST = [
     startTime: 1756684800000,
     endTime: 1767139200000
   }
-]
+].sort((a, b) => b.seq - a.seq)

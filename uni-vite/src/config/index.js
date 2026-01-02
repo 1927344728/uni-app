@@ -2,32 +2,6 @@ import { WEB_DOMAIN, COS_ASSET_PATH } from '@/utils/variables'
 export const LOGO_IMAGE = `${COS_ASSET_PATH}images/logo.png`
 export const DEFAULT_AVATAR_IMAGE = `${COS_ASSET_PATH}images/default.png`
 
-export const BANNER_LIST = [
-  {
-    id: 2,
-    title: '天空青草',
-    type: 'image',
-    image: `${COS_ASSET_PATH}images/微信图片_20251117231227_34_2.jpg`,
-    url: `${WEB_DOMAIN}article/detail?id=u000011`,
-    jumpTo: 'navigate'
-  },
-  {
-    id: 3,
-    title: '阅读时刻',
-    type: 'image',
-    image: `${COS_ASSET_PATH}images/微信图片_20251117231226_32_2.jpg`,
-    url: '',
-    jumpTo: 'webview'
-  },
-  {
-    id: 1,
-    title: '优雅聆听',
-    type: 'image',
-    image: `${COS_ASSET_PATH}images/微信图片_20251117231226_33_2.jpg`,
-    url: '/static/hanyupinyin.html',
-    jumpTo: 'webview'
-  },
-]
 
 export const FEATURE_ICON_ENUM = [
   {
@@ -65,30 +39,30 @@ export const FOOTER_BUTTON_LIST = [
     key: 'index',
     name: '首页',
     icon: 'home',
-    url: `${WEB_DOMAIN}index/index`
+    url: '/pages/index/index'
   },
   {
     key: 'task',
     name: '任务',
     icon: 'wallet',
-    url: `${WEB_DOMAIN}task/index`,
+    url: '/pages/task/index'
   },
   {
     key: 'study',
     name: '学习',
-    icon: 'color',
-    url: `${WEB_DOMAIN}study/index`
+    icon: 'medal',
+    url: '/pages/study/index'
   },
   {
     key: 'life',
     name: '生活',
     icon: 'gift',
-    url: `${WEB_DOMAIN}life/index`
+    url: '/pages/life/index'
   },
   {
     key: 'me',
-    name: '我的',
+    name: '我',
     icon: 'person',
-    url: `${WEB_DOMAIN}me/index`
+    url: '/pages/me/index'
   },
 ]

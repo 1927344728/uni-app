@@ -1,69 +1,150 @@
  <template>
-   <view class="login_page">
-     <image class="logo" :src="logoImage" mode="aspectFit" />
-     <view class="form">
-       <uni-easyinput type="text" v-model="account" maxlength="11" placeholder="手机号或账号" />
-       <uni-easyinput type="password" v-model="password" maxlength="6" placeholder="6位数字密码" />
-       <view class="agreement_wrapper"> 				
-        <checkbox-group @change="onCheckboxChange">
-          <label>
-            <checkbox value="1" :checked="checked === '1'" />
-            <text>我已阅读并同意《用户协议》</text>
-          </label>
-      </checkbox-group>
-       </view>
-       <button
-        class="login_button"
-        :disabled="!canLogin"
-        @click="onLogin"
+  <view class="login_page">
+    <image
+      class="logo"
+      src="https://images.pexels.com/photos/1563355/pexels-photo-1563355.jpeg?imageMogr2/thumbnail/750x"
+      mode="widthFix"
+    />
+    <view class="form">
+      <uni-forms
+        ref="Form"
+        :modelValue="loginData"
+        :label-width="60"
+        :border="true"
+        :rules="rules"
+        validateTrigger="bind"
       >
+        <uni-forms-item label="账号" name="account" required>
+          <uni-easyinput
+            v-model="loginData.account"
+            type="text"
+            placeholder="请输入手机号"
+            :maxlength="11"
+            @blur="onChange"
+          />
+        </uni-forms-item>
+        <uni-forms-item label="密码" name="password" required>
+          <uni-easyinput
+            v-model="loginData.password"
+            type="password"
+            placeholder="请输入密码"
+            :maxlength="6"
+            @blur="onChange"
+          />
+        </uni-forms-item>
+        <uni-forms-item label=" " name="agree">
+          <uni-data-checkbox
+            v-model="loginData.agree"
+            :localdata="[{ value: true, text: '我已阅读并同意《用户协议》' }]"
+            multiple
+            @change="onChange"
+          />
+        </uni-forms-item>
+      </uni-forms>
+    </view>
+    <view class="login">
+      <view :class="['button', isDisabled ? 'disabled' : '']" @click="onLogin">
         登录
-      </button>
-     </view>
-   </view>
+      </view>
+    </view>
+  </view>
  </template>
 
  <script>
-  import { LOGO_IMAGE } from '@/config/index.js'
   import { login } from '@/api';
-  import { getUrlParams } from '@/utils/variables.js'
 
-  const { requestUrl } = getUrlParams()
   export default {
     data() {
       return {
-        logoImage: LOGO_IMAGE,
-        account: uni.getStorageSync('YIZHAO_USER_PHONE') || '',
-        password: '',
-        checked: ''
+        isDisabled: true,
+        requestUrl: '',
+        loginData: {
+          account: uni.getStorageSync('YIZHAO_USER_PHONE') || '',
+          password: '',
+          agree: []
+        },
+        rules: {
+          account: {
+            rules: [
+              {
+                required: true,
+                errorMessage: '请输入手机号',
+              },
+              {
+                pattern: '^\\d{11}$',
+                errorMessage: '请输入正确手机号',
+              },
+            ]
+          },
+          password: {
+            rules: [
+              {
+                required: true,
+                errorMessage: '请输入密码',
+              },
+              {
+                pattern: '^\\d{6}$',
+                errorMessage: '请输正确入密码',
+              },
+            ]
+          },
+          agree: {
+            rules: [
+              {
+                validateFunction: (rule, value, data, callback) => {
+                  if (!(value && value.length)) {
+                    callback(rule.errorMessage)
+                  }
+                  return true
+                },
+                errorMessage: '请阅读并同意《用户协议》',
+              }
+            ]
+          }
+        }
       }
     },
-    computed: {
-      canLogin() {
-        return this.account.length > 0 && this.password.length === 6 && this.checked;
-      }
+    onLoad (options = {}) {
+      this.requestUrl = options.requestUrl
     },
     methods: {
-      onCheckboxChange(e) {
-        this.checked = e.detail.value[0] || ''
+      onChange() {
+        setTimeout(() => {
+          this.$refs.Form.validate()
+            .then(() => {
+              this.isDisabled = false
+            })
+            .catch(() => {
+              this.isDisabled = true
+            })
+        }, 300)
       },
       onLogin() {
-        const { account, password, canLogin } = this
-        if (canLogin) {
+        const { $refs, requestUrl, loginData } = this
+        const { account, password } = loginData
+        $refs.Form.validate().then(res => {
           return login({
             phone: account,
             password
           }).then((data) => {
             uni.setStorageSync('YIZHAO_USER_PHONE', account)
             uni.showToast({
-              title: data,
+              title: '登录成功！',
               icon: 'success'
             });
-            uni.redirectTo({
-              url: requestUrl || '/pages/index/index'
-            });
+            debugger
+            setTimeout(() => {
+              uni.redirectTo({
+                url: requestUrl || '/pages/index/index'
+              });
+            }, 1000);
           })
-        }
+        }).catch(() => {
+          uni.showToast({
+            title: '请完善表单信息！',
+            icon: 'none'
+          })
+        })
       }
     }
   }
