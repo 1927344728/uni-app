@@ -117,7 +117,7 @@
 
 <script>
 import { get as _get } from 'lodash';
-import { getMusicListByMenuId, getMusicByRandom } from '@/api/music.js';
+import { getMusicListByType, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
 
 export default {
@@ -132,7 +132,7 @@ export default {
       type: [String, Number],
       default: null
     },
-    menuId: {
+    type: {
       type: [String, Number],
       default: null
     },
@@ -205,10 +205,10 @@ export default {
   methods: {
     formatTime,
     async init () {
-      const { mode, id, menuId, song } = this;
+      const { mode, id, type, song } = this;
       let currentSong = null
       if (mode === 'menu') {
-        this.allMusicList = await getMusicListByMenuId({menuId}).catch(() => []);
+        this.allMusicList = await getMusicListByType({type}).catch(() => []);
         currentSong = id ? this.allMusicList.find(s => s.id === id) : this.allMusicList[0];
       } else {
         this.allMusicList.push(song);

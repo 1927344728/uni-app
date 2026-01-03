@@ -65,7 +65,7 @@ import { get as _get } from 'lodash'
 import { openUrl } from '@/utils'
 import { FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
-import { getUserInfo, getBannerList, getRecommendList } from '@/api'
+import { getUserInfo, getBannerList, getArticlePageList } from '@/api'
 
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
@@ -95,7 +95,7 @@ export default {
     getBannerList().then((data) => {
       this.bannerList = data || []
     })
-    getRecommendList().then((data) => {
+    getArticlePageList({ type: '2' }).then((data) => {
       this.recommendArticles = data || []
     })
   },

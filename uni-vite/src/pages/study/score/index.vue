@@ -3,7 +3,6 @@
     ref="ScrollList"
     class="score_page"
     :request="getArticlePageList"
-    :pageSize="5"
   />
 </template>
 
@@ -33,7 +32,7 @@ export default {
       return getArticlePageList({
         ...options,
         ...(queryParams || {}),
-        type: 3
+        type: 4
       })
     }
   },

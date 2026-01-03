@@ -32,6 +32,10 @@ export default {
       type: Function,
       required: true,
     },
+    queryParams: {
+      type: Object,
+      default: () => {}
+    },
     pageNum: Number,
     pageSize: Number,
   },
@@ -56,9 +60,10 @@ export default {
       }
     },
 		getList () {
-      const { pagination, list } = this
+      const { queryParams, pagination, list } = this
       this.isLoad = false
 			return this.request({
+        ...(queryParams || {}),
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize,
       })

@@ -55,6 +55,9 @@
             controls
             :object-fit="item.objectFit || 'contain'"
             :poster="item.poster"
+            :style="{
+              height: getVideoHeight(v, item) + 'px'
+            }"
           ></video>
           <view v-if="item.description && i + 1 === [item.content].flat().length" class="desc">
             {{ item.description }}
@@ -83,6 +86,7 @@
 
 <script>
 import { convert as convertHtmlToText } from 'html-to-text'
+import { getUrlParams } from '@/utils/variables.js'
 import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
 
 export default {
@@ -153,6 +157,18 @@ export default {
         urls: images
       });
     },
+
+    getVideoHeight(url, item) {
+      const windowWidth = uni.getWindowInfo().windowWidth
+      const width = item.className === 'full_width' ? windowWidth : windowWidth - 32
+      console.log('getVideoHeight', width)
+      let height = 225
+      const { ratio } = getUrlParams(url || '') || {}
+      if (ratio && width) {
+        height = width * ratio
+      }
+      return height
+    }
   }
 };
 </script>

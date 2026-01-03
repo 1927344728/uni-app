@@ -92,7 +92,7 @@ export default {
     onClickCard (item) {
       if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/music/play?mode=menu&menuId=${item.id}`
+          url: `/pages/music/play?mode=menu&type=${item.id}`
         })
         return
       }

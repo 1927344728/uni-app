@@ -1,17 +1,62 @@
-export const ARTICLE_TYPE_ENUM = {
-  1: '课程',
-  2: '推荐',
-  3: '阅读',
-  4: '成绩',
-  5: '旅游',
-  6: '文章',
-  99: '其他'
-}
+export const ARTICLE_TYPE_ENUM = [
+  {
+    id: 1,
+    name: '课程',
+    children: [
+      { id: 1, name: '语文（一年级）' }
+    ]
+  },
+  {
+    id: 2,
+    name: '推荐',
+    children: []
+  },
+  {
+    id: 3,
+    name: '阅读',
+    children: [
+      { id: 1, name: '亲子阅读（一年级）' },
+      { id: 2, name: '少儿诗词' },
+    ]
+  },
+  {
+    id: 4,
+    name: '成绩',
+    children: []
+  },
+  {
+    id: 5,
+    name: '旅游',
+    children: []
+  },
+  {
+    id: 6,
+    name: '轻摘',
+    children: []
+  },
+  {
+    id: 7,
+    name: '文章',
+    children: []
+  },
+  {
+    id: 8,
+    name: '图书馆',
+    children: []
+  },
+  {
+    id: 99,
+    name: '其他',
+    children: []
+  }
+]
 
 export const ARTICLE_DETAIL_LIST = [
   {
-    id: 'u000011',
-    type: '2,3',
+    id: 1,
+    uuid: '',
+    type: '2,7',
+    subType: '',
     title: '李若小画家绘画作品展',
     author: '李兆',
     note: '你的每一幅画，都是送给这个世界的一份独特礼物！',
@@ -73,9 +118,9 @@ export const ARTICLE_DETAIL_LIST = [
       },
       {
         type: 'video',
-        className: 'full_width',
+        // className: 'full_width',
         content: [
-          'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/life/94805290ed6ad02dda8ec52773ddf2a7.mp4'
+          'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/life/94805290ed6ad02dda8ec52773ddf2a7.mp4?ratio=1.7778'
         ],
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/94805290ed6ad02dda8ec52773ddf2a7s.jpg',
         description: '手指歌'
@@ -90,8 +135,10 @@ export const ARTICLE_DETAIL_LIST = [
     ]
   },
   {
-    id: 'u000012',
+    id: 2,
+    uuid: '',
     type: '4',
+    subType: '',
     title: '李兮一年级上学期期中考试成绩单',
     author: '李兆',
     note: '爸爸为你的努力感到骄傲，继续加油哦！',
@@ -131,8 +178,10 @@ export const ARTICLE_DETAIL_LIST = [
     ]
   },
   {
-    id: 'u000013',
+    id: 3,
+    uuid: '',
     type: '2,3',
+    subType: '',
     title: '诗词大会必背古诗词（一年级上）',
     author: '',
     note: '2025诗词大会题库（小学组） ',
@@ -209,9 +258,11 @@ export const ARTICLE_DETAIL_LIST = [
       }
     ]
   },
-{
-    id: 'u000014',
-    type: '3',
+  {
+    id: 4,
+    uuid: '',
+    type: '6',
+    subType: '',
     title: '轻摘',
     author: '',
     note: '',
@@ -232,46 +283,48 @@ export const ARTICLE_DETAIL_LIST = [
 
 export const ARTICLE_LIST= [
   {
-    id: 'u00001',
-    type: '1,2,3',
+    id: 5,
+    uuid: '',
+    type: '1,2',
+    subType: '',
     title: '汉语拼音发音学习',
     note: '点击任意拼音即可播放发音',
     seq: 0,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg?imageMogr2/thumbnail/160',
     // url: 'https://1927344728.github.io/web-page/hanyupinyin.html',
     url: '/static/hanyupinyin.html',
-    readCount: 1200,
-    collectCount: 200,
     jumpTo: 'webview'
   },
   {
-    id: 'u00003',
-    type: '2,6',
+    id: 6,
+    uuid: '',
+    type: '2,7',
+    subType: '',
     title: '中国地方特色水果图鉴',
     note: '每一方水土，都有其独特的甜蜜献礼。探索中国大地上风味各异的地方名果。',
     seq: 0,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/9aa1951aeb5a45e186eeef1d6e39296d463b6f2911c6ff-SlTBw5_fw1200webp.webp',
     url: '/static/fruit.html',
-    readCount: 1800,
-    collectCount: 142,
     jumpTo: 'webview'
   },
   {
-    id: 'u00004',
-    type: '5',
+    id: 7,
+    uuid: '',
+    type: '7',
+    subType: '',
     title: '摄影笔记深度解析',
     note: '从原理到实践的摄影入门指南——深入解读宁思潇潇的经典之作',
     seq: 0,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/tBzDxA-yeF6XfLSfgXrQlQ.jpg',
     url: '/static/photography.html',
-    readCount: 1800,
-    collectCount: 142,
     jumpTo: 'webview'
   },
 ]
   .concat(ARTICLE_DETAIL_LIST.map(e => ({
     id: e.id,
+    uuid: e.uuid,
     type: e.type,
+    subType: e.type,
     title: e.title,
     note: e.note,
     seq: e.seq,

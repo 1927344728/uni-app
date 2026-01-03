@@ -5,13 +5,15 @@
         <uni-data-select
           v-model="queryParam.targeter"
           :localdata="targeterList"
-          :clear="!!queryParam.targeter"
+          :clear="true"
+          placeholder="请选择任务人"
           @clear="queryParam.targeter = null"
         />
         <uni-data-select
           v-model="queryParam.status"
           :localdata="statusList"
-          :clear="!!queryParam.status"
+          :clear="true"
+          placeholder="请选择发布者"
           @clear="queryParam.status = null"
         />
       </view>
@@ -38,7 +40,7 @@
           任务人：{{ item.targeter }}
         </view>
 				<view class="task_item_meta">
-					发布人：{{ item.publisher }}
+					发布者：{{ item.publisher }}
 				</view>
 				<view class="content">
           {{ item.content }}
@@ -89,13 +91,10 @@ export default {
 	},
 	computed: {
     statusList () {
-      return [{
-        value: '',
-        text: '所有状态',
-      }].concat(Object.keys(TASK_STATUS_ENUM).map(key => ({
+      return Object.keys(TASK_STATUS_ENUM).map(key => ({
         value: Number(key),
         text: TASK_STATUS_ENUM[key],
-      })))
+      }))
     }
 	},
   watch: {
@@ -120,10 +119,10 @@ export default {
 	methods: {
     getTaskTargeterList () {
       return getTaskTargeterList().then((data) => {
-        this.targeterList = [{ value: '', text: '所有任务人' }].concat((data || []).map(name => ({
+        this.targeterList = (data || []).map(name => ({
           value: name,
           text: name,
-        })))
+        }))
       })
     },
 		getTaskPageList () {

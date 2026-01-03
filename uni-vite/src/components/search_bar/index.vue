@@ -1,7 +1,7 @@
 <template>
   <view class="search_bar_module">
     <uni-data-select
-      v-if="subTypeOptions && subTypeOptions.length"
+      v-if="subTypeOptions && subTypeOptions.length > 1"
       v-model="queryParams.subType"
       :localdata="subTypeOptions"
     />
@@ -61,6 +61,12 @@ export default {
         background: rgb(248, 248, 248);
         border: 0;
         border-radius: 100rpx;
+        & .uni-select__selector {
+          width: 480rpx;
+          & uni-text {
+            white-space: nowrap;
+          }
+        }
         & .uni-select__input-placeholder {
           font-size: 28rpx;
           color: #999;

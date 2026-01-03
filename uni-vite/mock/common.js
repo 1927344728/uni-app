@@ -18,25 +18,25 @@ const getBannerList = () => {
   const data = cloneDeep(basicTemplate)
   data.data = [
     {
-      id: 2,
+      id: 1,
       title: '天空青草',
       type: 'image',
       image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231227_34_2.jpg',
-      url: '/pages/article/detail?id=u000011',
+      url: '/pages/article/detail?id=1',
+      seq: 0,
+      jumpTo: 'navigate'
+    },
+    {
+      id: 2,
+      title: '图书馆',
+      type: 'image',
+      image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231226_32_2.jpg',
+      url: '/pages/video/play?mode=single&id=2',
       seq: 0,
       jumpTo: 'navigate'
     },
     {
       id: 3,
-      title: '图书馆',
-      type: 'image',
-      image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231226_32_2.jpg',
-      url: '/pages/video/play?mode=single&id=3-1',
-      seq: 0,
-      jumpTo: 'navigate'
-    },
-    {
-      id: 1,
       title: '优雅聆听',
       type: 'image',
       image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231226_33_2.jpg',
@@ -48,14 +48,7 @@ const getBannerList = () => {
   return data
 }
 
-const getRecommendList = () => {
-  const data = cloneDeep(basicTemplate)
-  data.data = ARTICLE_LIST.filter(e => (e.type || '').split(',').includes('2'))
-  return data
-}
-
 export default {
   'api/hello/helloWord': helloWord,
-  'api/common/getBannerList': getBannerList,
-  'api/common/getRecommendList': getRecommendList,
+  'api/common/getBannerList': getBannerList
 }

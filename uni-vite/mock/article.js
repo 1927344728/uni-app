@@ -1,9 +1,15 @@
 import { get as _get, cloneDeep } from "lodash"
-import { ARTICLE_LIST, ARTICLE_DETAIL_LIST } from "/database/article.js"
+import { ARTICLE_TYPE_ENUM, ARTICLE_LIST, ARTICLE_DETAIL_LIST } from "/database/article.js"
 import { basicTemplate } from './common'
 
+const getArticleTypeList = (params) => {
+  const data = cloneDeep(basicTemplate)
+  data.data = cloneDeep(ARTICLE_TYPE_ENUM)
+  return data
+}
+
 const getArticlePageList = (params) => {
-  const { keyword, type, pageNum, pageSize } = params
+  const { keyword, type, pageNum = 0, pageSize = 10 } = params
   let list = cloneDeep(ARTICLE_LIST)
   if (keyword) {
     list = list.filter(item => {
@@ -11,7 +17,7 @@ const getArticlePageList = (params) => {
     })
   }
   if (type) {
-    list = list.filter(item => (item.type || '').split(',').includes(String(type)))
+    list = list.filter(item => (item.type || '').split(',').filter(Boolean).includes(String(type)))
   }
   list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
@@ -22,11 +28,12 @@ const getArticlePageList = (params) => {
 const getArticleById = (params) => {
   const { id } = params
   const data = cloneDeep(basicTemplate)
-  data.data = ARTICLE_DETAIL_LIST.find(e => e.id === id)
+  data.data = ARTICLE_DETAIL_LIST.find(e => String(e.id) === String(id))
   return data
 }
 
 export default {
+  'api/article/getArticleTypeList': getArticleTypeList,
   'api/article/getArticlePageList': getArticlePageList,
   'api/article/getArticleById': getArticleById
 }

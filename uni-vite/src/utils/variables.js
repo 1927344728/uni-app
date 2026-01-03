@@ -1,3 +1,4 @@
+import { get as _get } from 'lodash'
 import QS from 'qs'
 
 const _hostname = location ? location.hostname : ''
@@ -14,9 +15,9 @@ export const SERVER_API_DOMAIN = import.meta.env.VITE_SERVER_HOST
 export const COS_ASSET_PATH = `${VITE_SERVER_PROTOCOL}://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/`
 export const WEB_DOMAIN = '/pages/'
 
-export function getUrlParams () {
-	const hash = location ? location.hash : ''
-	const searchStr = hash ? hash.split('?')[1] : ''
-	return searchStr ? QS.parse(searchStr) : {}
+export function getUrlParams (url) {
+  const _url = url || _get(location, 'href') || ''
+  const searchStr = _url ? _url.split('?')[1] : ''
+  return searchStr ? QS.parse(searchStr) : {}
 }
 export const URL_PARAM = getUrlParams()

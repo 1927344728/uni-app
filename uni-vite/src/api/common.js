@@ -11,9 +11,3 @@ export function getBannerList() {
     url: 'api/common/getBannerList',
   });
 }
-
-export function getRecommendList() {
-  return request({
-    url: 'api/common/getRecommendList',
-  });
-}

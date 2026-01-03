@@ -66,7 +66,7 @@ const FEATURE_OPTIONS = [
   },
   {
     name: '我的视频',
-    url: '/pages/video/index?menuId=1',
+    url: '/pages/video/index?type=1',
     jumpTo: 'navigate'
   },
   {

@@ -90,7 +90,7 @@
 
 <script>
 import { get as _get } from 'lodash';
-import { getVideoListByMenuId, getVideoByRandom } from '@/api'
+import { getVideoListByType, getVideoByRandom } from '@/api'
 import { textEllipsis } from '@/utils/common.js';
 
 export default {
@@ -105,7 +105,7 @@ export default {
       type: [Number, String],
       default: null
     },
-    menuId: {
+    type: {
       type: Number,
       default: null
     },
@@ -169,10 +169,10 @@ export default {
   methods: {
     textEllipsis,
     async init () {
-      const { mode, id, menuId, video } = this;
+      const { mode, id, type, video } = this;
       let currentVideo = null
       if (mode === 'menu') {
-        this.allVideoList = await getVideoListByMenuId({menuId}).catch(() => []);
+        this.allVideoList = await getVideoListByType({type}).catch(() => []);
         currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
       } else {
         currentVideo = video;

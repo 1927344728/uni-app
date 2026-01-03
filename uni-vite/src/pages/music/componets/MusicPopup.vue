@@ -21,7 +21,7 @@
       <MusicPlayer
         ref="player"
         :mode="mode"
-        :menuId="menuId"
+        :type="type"
         :song="song"
         :songs="songs"
         v-bind="$attrs"
@@ -55,7 +55,7 @@ export default {
       type: String,
       default: 'auto'
     },
-    menuId: {
+    type: {
       type: Number,
       default: null
     },

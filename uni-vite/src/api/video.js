@@ -33,9 +33,9 @@ export function getVideoByRandom(params, options = {}) {
   });
 }
 
-export function getVideoListByMenuId(params, options = {}) {
+export function getVideoListByType(params, options = {}) {
   return request({
-    url: 'api/video/getVideoListByMenuId',
+    url: 'api/video/getVideoListByType',
     params,
 		...options
   });

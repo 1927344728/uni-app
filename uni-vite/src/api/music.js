@@ -33,9 +33,9 @@ export function getMusicByRandom(params, options = {}) {
   });
 }
 
-export function getMusicListByMenuId(params, options = {}) {
+export function getMusicListByType(params, options = {}) {
   return request({
-    url: 'api/music/getMusicListByMenuId',
+    url: 'api/music/getMusicListByType',
     params,
 		...options
   });

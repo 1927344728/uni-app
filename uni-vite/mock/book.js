@@ -20,7 +20,7 @@ const getBookPageList = (params) => {
 const getBookById = (params) => {
   const { id } = params
   const data = cloneDeep(basicTemplate)
-  data.data = BOOK_LIST.find(e => e.id === id)
+  data.data = BOOK_LIST.find(e => String(e.id) === String(id))
   return data
 }
 

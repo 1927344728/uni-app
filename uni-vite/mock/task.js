@@ -18,7 +18,7 @@ const getTaskPageList = (params) => {
 const getTaskById = (params) => {
   const { id } = params
   const data = cloneDeep(basicTemplate)
-  data.data = TASK_LIST.find(e => e.id === id)
+  data.data = TASK_LIST.find(e => String(e.id) === String(id))
   return data
 }
 

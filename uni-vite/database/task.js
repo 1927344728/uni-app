@@ -1,6 +1,6 @@
 export const TASK_LIST = [
   {
-    id: 'u0001',
+    id: 1,
     title: '李兮拉丁舞学习任务',
     status: 2,
     publisher: '李兆',
@@ -29,7 +29,7 @@ export const TASK_LIST = [
     endTime: 1777507200000
   },
   {
-    id: 'u0002',
+    id: 2,
     title: '何烨笼初二上学期单词记忆任务',
     status: 2,
     publisher: '李芳',
@@ -52,7 +52,7 @@ export const TASK_LIST = [
     endTime: 1767139200000
   },
   {
-    id: 'u0003',
+    id: 3,
     title: '李若绘画兴趣培养任务',
     status: 3,
     publisher: '李兆',

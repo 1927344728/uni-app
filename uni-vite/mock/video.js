@@ -9,12 +9,12 @@ const getVideoMenuList = () => {
 }
 
 const getVideoPageList = (params) => {
-  const { keyword, menuId, pageNum, pageSize } = params
+  const { keyword, type, pageNum, pageSize } = params
   let list = cloneDeep(VIDEO_LIST)
   if (keyword) {
     list = list.filter(item => item.title.includes(keyword) || item.desc.includes(keyword))
   }
-  list = list.filter(item => !menuId || item.menuId.split(',').includes(String(menuId)))
+  list = list.filter(item => !type || item.type.split(',').includes(String(type)))
   list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
   data.data = list
@@ -24,7 +24,7 @@ const getVideoPageList = (params) => {
 const getVideoById = (params) => {
   const id = _get(params, 'id')
   const data = cloneDeep(basicTemplate)
-  data.data = VIDEO_LIST.find(item => item.id === String(id)) || null;
+  data.data = VIDEO_LIST.find(item => String(item.id) === String(id)) || null;
   return data
 }
 
@@ -46,9 +46,9 @@ const getVideoByRandom = (params) => {
   return data
 }
 
-const getVideoListByMenuId = (params) => {
+const getVideoListByType = (params) => {
   const data = cloneDeep(basicTemplate)
-  data.data = VIDEO_LIST.filter(item => String(item.menuId) === String(_get(params, 'menuId'))) || null;
+  data.data = VIDEO_LIST.filter(item => String(item.type) === String(_get(params, 'type'))) || null;
   return data
 }
 
@@ -57,5 +57,5 @@ export default {
   'api/video/getVideoPageList': getVideoPageList,
   'api/video/getVideoById': getVideoById,
   'api/video/getVideoByRandom': getVideoByRandom,
-  'api/video/getVideoListByMenuId': getVideoListByMenuId,
+  'api/video/getVideoListByType': getVideoListByType,
 }

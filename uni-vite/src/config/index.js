@@ -29,7 +29,7 @@ export const FEATURE_ICON_ENUM = [
     key: 'video',
     name: '视频订阅',
     image: `${COS_ASSET_PATH}images/147d5438ef903fcbbac27fc51b5627c8.jpg`,
-    url: '/pages/video/index?menuId=1',
+    url: '/pages/video/index?type=1',
     jumpTo: 'navigate'
   },
 ]

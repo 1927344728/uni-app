@@ -20,10 +20,10 @@ const getMusicPageList = (params) => {
   return data
 }
 
-const getMusicById = (params) => {
-  const id = _get(params, 'id')
+const getMusicById = (params = {}) => {
+  const { id } = params
   const data = cloneDeep(basicTemplate)
-  data.data = MUSIC_LIST.find(item => item.id === String(id)) || null;
+  data.data = MUSIC_LIST.find(item => String(item.id) === String(id)) || null;
   return data
 }
 
@@ -40,14 +40,14 @@ const getMusicByRandom = (params) => {
   const songId = unplayedIds[randIdx];
 
   const data = cloneDeep(basicTemplate)
-  data.data = MUSIC_LIST.find(e => e.id === songId) || null;
+  data.data = MUSIC_LIST.find(e => String(e.id) === String(songId)) || null;
 
   return data
 }
 
-const getMusicListByMenuId = (params) => {
+const getMusicListByType = (params) => {
   const data = cloneDeep(basicTemplate)
-  data.data = MUSIC_LIST.filter(item => String(item.menuId) === String(_get(params, 'menuId'))) || null;
+  data.data = MUSIC_LIST.filter(item => String(item.type) === String(_get(params, 'type'))) || null;
   return data
 }
 
@@ -56,5 +56,5 @@ export default {
   'api/music/getMusicPageList': getMusicPageList,
   'api/music/getMusicById': getMusicById,
   'api/music/getMusicByRandom': getMusicByRandom,
-  'api/music/getMusicListByMenuId': getMusicListByMenuId,
+  'api/music/getMusicListByType': getMusicListByType,
 }

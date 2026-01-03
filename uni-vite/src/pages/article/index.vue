@@ -1,7 +1,10 @@
 <template>
-	<view class="article_page">
-		<ScrollList :request="getArticlePageList" :pageSize="5" />
-	</view>
+  <ScrollList
+    ref="ScrollList"
+    class="article_page"
+    :request="getArticlePageList"
+    :queryParams="queryParams"
+  />
 </template>
 
 <script>
@@ -10,6 +13,20 @@ import ScrollList from '@/components/scroll_list/index.vue'
 
 export default {
 	components: { ScrollList },
+  props: {
+    queryParams: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  watch: {
+    queryParams: {
+      deep: true,
+      handler () {
+        this.$refs.ScrollList.refreshList()
+      }
+    }
+  },
 	methods: {
     getArticlePageList
 	},

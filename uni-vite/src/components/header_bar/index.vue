@@ -2,12 +2,12 @@
 	<view v-if="list && list.length > 1" class="common_header_nav">
 		<view
 			v-for="o in list"
-			:key="o.id"
+			:key="o.key"
 			class="item"
 			:class="{
-				active: currentTab === o.id
+				active: currentTab === o.key
 			}"
-			@click="currentTab = o.id"
+			@click="currentTab = o.key"
 		>
 			{{ o.name }}
 		</view>

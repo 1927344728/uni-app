@@ -36,7 +36,7 @@
         v-for="(m, idx) in videoMenuList"
         :key="`menu-${m.id}-${idx}`"
         class="chip"
-        :class="{ active: videoMenuId === m.id }"
+        :class="{ active: type === m.id }"
         @click="onClickMenu(m)"
       >
         <text>{{ m.title }}</text>
@@ -82,7 +82,7 @@ export default {
   },
   data () {
     return {
-      videoMenuId: null,
+      type: null,
       bannerList: [],
       recommendedList: [],
       videoMenuList: [],
@@ -100,9 +100,9 @@ export default {
     }
   },
   onLoad (options) {
-    const menuId = _get(options, 'menuId')
-    if (Number(menuId)) {
-      this.videoMenuId = Number(menuId)
+    const type = _get(options, 'type')
+    if (Number(type)) {
+      this.type = Number(type)
     }
     this.refreshList()
   },
@@ -127,10 +127,10 @@ export default {
     convertHtmlToText,
 
     getVideoPageList () {
-      const { queryParams, videoMenuId, videoList, pagination } = this
+      const { queryParams, type, videoList, pagination } = this
       return getVideoPageList({
         ...(queryParams || {}),
-        menuId: videoMenuId,
+        type: type,
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then(data => {
@@ -155,7 +155,7 @@ export default {
     onClickCard (item) {
       if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/video/play?mode=menu&menuId=${item.id}`
+          url: `/pages/video/play?mode=menu&type=${item.id}`
         })
         return
       }
@@ -165,7 +165,7 @@ export default {
       })
     },
     onClickMenu (item) {
-      this.videoMenuId = item.id
+      this.type = item.id
       this.refreshList()
     },
     onClickVideo (item) {

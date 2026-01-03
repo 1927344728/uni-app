@@ -3,7 +3,6 @@
     ref="ScrollList"
     class="read_page"
     :request="getArticlePageList"
-    :pageSize="5"
   />
 </template>
 

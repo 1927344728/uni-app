@@ -4,7 +4,7 @@
       v-if="isLoaded"
       :mode="mode"
       :id="id"
-      :menuId="menuId"
+      :type="type"
       :video="video"
     />
   </view>
@@ -24,7 +24,7 @@ export default {
       isLoaded: false,
       mode: 'auto',
       id: null,
-      menuId: null,
+      type: null,
       video: null
     };
   },
@@ -36,7 +36,7 @@ export default {
       this.isLoaded = false
       this.mode = options.mode || 'auto';
       this.id = options.id ? options.id : null;
-      this.menuId = options.menuId ? Number(options.menuId) : null;
+      this.type = options.type ? Number(options.type) : null;
       this.video = options.video ? qs.parse(decodeURIComponent(options.video)) : null
       if (this.id) {
         const responseData = await getVideoById({ id: this.id }).catch(() => null);

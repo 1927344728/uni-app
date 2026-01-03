@@ -8,7 +8,7 @@
     />
     <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
-      <swiper-item v-for="item in filteredItems" :key="item.id">
+      <swiper-item v-for="item in filteredItems" :key="item.key">
         <component
           :is="item.component"
           :class="classObject"
@@ -21,6 +21,8 @@
 </template>
 <script>
 import { get as _get, cloneDeep } from 'lodash'
+import { textEllipsis } from '@/utils/common.js'
+import { getArticleTypeList } from '@/api'
 import HeaderBar from '@/components/header_bar/index.vue'
 import SearchBar from '@/components/search_bar/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
@@ -30,22 +32,12 @@ import ScoreList from './score/index.vue'
 import BookList from './book/index.vue'
 
 const items = [
-  { id: 'course', name: '课程', component: 'CourseList' },
-  { id: 'read', name: '阅读', component: 'ReadList' },
-  { id: 'score', name: '成绩', component: 'ScoreList' },
-  { id: 'book', name: '图书馆', component: 'BookList' },
+  { id: 1, key: 'course', name: '课程', component: 'CourseList' },
+  { id: 3, key: 'read', name: '阅读', component: 'ReadList' },
+  { id: 4, key: 'score', name: '成绩', component: 'ScoreList' },
+  { id: 8, key: 'book', name: '图书馆', component: 'BookList' },
 ]
-const SUB_TYPE_OPTION_MAP = {
-  read: [
-    { value: '2-1', text: '亲子阅读' },
-    { value: '2-2', text: '诗词' }
-  ],
-  book: [
-    { value: '4-1', text: '诗词' },
-    { value: '4-2', text: '经典名著' },
-    { value: '4-3', text: '少儿读物' }
-  ]
-}
+
 const initQueryParam = () => ({
   subType: null,
   keyword: ''
@@ -65,20 +57,33 @@ export default {
     return {
       currentTab: 'course',
       currentTabIndex: 0,
+      typeOptions: [],
       queryParams: initQueryParam(),
+      articleTypeEnum: null
     }
   },
   onLoad (options = {}) {
-    const option = this.filteredItems.find(e => e.id === options.tab)
-    const index = this.filteredItems.findIndex(e => e.id === options.tab)
+    const option = this.filteredItems.find(e => e.key === options.tab)
+    const index = this.filteredItems.findIndex(e => e.key === options.tab)
     if (option) {
-      this.currentTab = option.id
+      this.currentTab = option.key
       this.currentTabIndex = index
     }
   },
+  created () {
+    getArticleTypeList().then(data => {
+      this.articleTypeEnum = data || null
+    })
+  },
   computed: {
     filteredItems () {
-      return cloneDeep(items).filter(o => o.component)
+      const { articleTypeEnum } = this
+      let options = cloneDeep(items).filter(o => o.component)
+      if (articleTypeEnum) {
+        const typeIds = articleTypeEnum.map(e => e.id)
+        options = options.filter(e => typeIds.includes(e.id))
+      }
+      return options
     },
     classObject () {
       return {
@@ -90,7 +95,17 @@ export default {
       }
     },
     subTypeOptions () {
-      return cloneDeep(SUB_TYPE_OPTION_MAP)[this.currentTab] || []
+      const { currentTab, articleTypeEnum, filteredItems } = this
+      let subTypeOptions = []
+      const currentItem = filteredItems.find(e => e.key === currentTab)
+      if (articleTypeEnum && currentItem && currentItem.id) {
+        const currentType = articleTypeEnum.find(e => e.id === currentItem.id)
+        subTypeOptions = currentType.children || []
+      }
+      return subTypeOptions.map(e => ({
+        value: e.id,
+        text: textEllipsis(e.name, 12)
+      }))
     }
   },
   watch: {
@@ -100,10 +115,10 @@ export default {
   },
   methods: {
     onChangeTab (tab) {
-      this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.id === tab), 0)
+      this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.key === tab), 0)
     },
     onChangeSwiper (data) {
-      this.currentTab = _get(this, `filteredItems[${data.detail.current}].id`) || ''
+      this.currentTab = _get(this, `filteredItems[${data.detail.current}].key`) || ''
     }
   }
 }

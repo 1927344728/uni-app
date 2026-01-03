@@ -8,11 +8,14 @@
     />
     <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
-      <swiper-item v-for="item in filteredItems" :key="item.id">
+      <swiper-item v-for="item in filteredItems" :key="item.id + currentTab">
         <component
           :is="item.component"
           :class="classObject"
-          :queryParams="queryParams"
+          :queryParams="{
+            ...queryParams,
+            type: ({ travel: 5, ana: 6})[currentTab] || null
+          }"
         />
       </swiper-item>
     </swiper>
@@ -24,14 +27,15 @@ import { get as _get, cloneDeep } from 'lodash'
 import HeaderBar from '@/components/header_bar/index.vue'
 import SearchBar from '@/components/search_bar/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
+import ArticlelList from '@/pages/article/index.vue'
 import MusicList from '../music/index.vue'
 import VideoList from '../video/index.vue'
-import TravelList from './travel/index.vue'
 
 const items = [
-  { id: 'music', name: '音乐', component: 'MusicList' },
-  { id: 'video', name: '视频', component: 'VideoList' },
-  { id: 'travel', name: '旅游', component: 'TravelList' },
+  { key: 'music', name: '音乐', component: 'MusicList' },
+  { key: 'video', name: '视频', component: 'VideoList' },
+  { key: 'travel', name: '旅游', component: 'ArticlelList' },
+  { key: 'ana', name: '轻摘', component: 'ArticlelList' },
 ]
 const SUB_TYPE_OPTION_MAP = {
   
@@ -48,7 +52,7 @@ export default {
     FooterBar,
     MusicList,
     VideoList,
-    TravelList
+    ArticlelList
   },
   data () {
     return {
@@ -58,10 +62,10 @@ export default {
     }
   },
   onLoad (options = {}) {
-    const option = this.filteredItems.find(e => e.id === options.tab)
-    const index = this.filteredItems.findIndex(e => e.id === options.tab)
+    const option = this.filteredItems.find(e => e.key === options.tab)
+    const index = this.filteredItems.findIndex(e => e.key === options.tab)
     if (option) {
-      this.currentTab = option.id
+      this.currentTab = option.key
       this.currentTabIndex = index
     }
   },
@@ -84,10 +88,10 @@ export default {
   },
   methods: {
     onChangeTab (tab) {
-      this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.id === tab), 0)
+      this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.key === tab), 0)
     },
     onChangeSwiper (data) {
-      this.currentTab = _get(this, `filteredItems[${data.detail.current}].id`) || ''
+      this.currentTab = _get(this, `filteredItems[${data.detail.current}].key`) || ''
     }
   }
 }
