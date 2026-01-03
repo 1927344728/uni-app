@@ -51,6 +51,7 @@
         <view v-for="(v, i) in [item.content].flat()" :key="v + i"  class="detail_module_item">
           <video
             :src="v"
+            :id="`video_${idx}`"
             class="uni_video"
             controls
             :object-fit="item.objectFit || 'contain'"
@@ -58,6 +59,7 @@
             :style="{
               height: getVideoHeight(v, item) + 'px'
             }"
+            @play="onPlay(idx)"
           ></video>
           <view v-if="item.description && i + 1 === [item.content].flat().length" class="desc">
             {{ item.description }}
@@ -100,7 +102,9 @@ export default {
     return {
       // ttsService: new H5TTSService(),
       ttsService: new XfTTSService(),
-      speakingIndex: null
+      speakingIndex: null,
+      videoContexts: {},
+      currentVideoIndex: null
     }
   },
   computed: {
@@ -112,9 +116,16 @@ export default {
     }
   },
   mounted () {
+    const self = this
     // #ifdef H5
     window.addEventListener('beforeunload', this.stop)
     // #endif
+
+    self.articleData.forEach((item, index) => {
+      if (item.type === 'video') {
+        self.videoContexts[`video_${index}`] = uni.createVideoContext(`video_${index}`, self)
+      }
+    })
   },
   beforeUnmount() {
     this.stop()
@@ -157,7 +168,13 @@ export default {
         urls: images
       });
     },
-
+    onPlay (index) {
+      const { currentVideoIndex, videoContexts } = this
+      if (currentVideoIndex !== null && currentVideoIndex !== index) {
+        videoContexts[`video_${currentVideoIndex}`].pause()
+      }
+      this.currentVideoIndex = index
+    },
     getVideoHeight(url, item) {
       const windowWidth = uni.getWindowInfo().windowWidth
       const width = item.className === 'full_width' ? windowWidth : windowWidth - 32
