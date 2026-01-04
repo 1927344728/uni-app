@@ -55,8 +55,8 @@ export default {
   },
   data () {
     return {
-      currentTab: 'course',
-      currentTabIndex: 0,
+      currentTab: 'read',
+      currentTabIndex: 1,
       typeOptions: [],
       queryParams: initQueryParam(),
       articleTypeEnum: null

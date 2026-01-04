@@ -1,6 +1,6 @@
 <template>
   <view class="article_detail_module">
-    <block v-for="(item, idx) in articleData" :key="idx">
+    <block v-for="(item, idx) in cArticleData" :key="idx">
       <view v-if="['title', 'author', 'text'].includes(item.type)" :class="['detail_module', item.type, item.className]">
         <view v-for="(tx, i) in [item.content].flat()" :key="tx + i" class="detail_module_item">
           {{ tx }}
@@ -91,6 +91,11 @@ import { convert as convertHtmlToText } from 'html-to-text'
 import { getUrlParams } from '@/utils/variables.js'
 import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
 
+let ttsService = new H5TTSService()
+// #ifdef APP-PLUS
+ttsService = new XfTTSService()
+// #endif
+
 export default {
   props: {
     articleData: {
@@ -101,7 +106,7 @@ export default {
   data () {
     return {
       // ttsService: new H5TTSService(),
-      ttsService: new XfTTSService(),
+      ttsService,
       speakingIndex: null,
       videoContexts: {},
       currentVideoIndex: null
@@ -113,6 +118,18 @@ export default {
     },
     isPaused () {
       return this.ttsService.isPaused
+    },
+    cArticleData () {
+      return (this.articleData || []).map(item => {
+        if (item.type === 'readText') {
+          const contnet = [item.content].flat()
+          item.content = contnet.map(e => {
+            e = e.replace(/\n/g, '<br/>')
+            return e
+          })
+        }
+        return item
+      })
     }
   },
   mounted () {
@@ -147,9 +164,13 @@ export default {
       }
       this.speakingIndex = i
       const text = (item.content || []).map(e => e).join('')
+      let rate = item.rate
+      // #ifdef H5
+      rate = item.rate + 0.1
+      // #endif
       ttsService.speak(convertHtmlToText(text), {
         vcn: 'aisjinger',
-        rate: item.rate,
+        rate,
         onEnded: () => {
           this.speakingIndex = null
         }

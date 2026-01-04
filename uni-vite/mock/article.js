@@ -2,14 +2,14 @@ import { get as _get, cloneDeep } from "lodash"
 import { ARTICLE_TYPE_ENUM, ARTICLE_LIST, ARTICLE_DETAIL_LIST } from "/database/article.js"
 import { basicTemplate } from './common'
 
-const getArticleTypeList = (params) => {
+const getArticleTypeList = () => {
   const data = cloneDeep(basicTemplate)
   data.data = cloneDeep(ARTICLE_TYPE_ENUM)
   return data
 }
 
 const getArticlePageList = (params) => {
-  const { keyword, type, pageNum = 0, pageSize = 10 } = params
+  const { keyword, type, subType, pageNum = 0, pageSize = 10 } = params
   let list = cloneDeep(ARTICLE_LIST)
   if (keyword) {
     list = list.filter(item => {
@@ -19,8 +19,12 @@ const getArticlePageList = (params) => {
   if (type) {
     list = list.filter(item => (item.type || '').split(',').filter(Boolean).includes(String(type)))
   }
+  if (subType) {
+    list = list.filter(item => !item.subType || item.subType === subType)
+  }
   list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
+
   data.data = list
   return data
 }

@@ -12,6 +12,7 @@ export class H5TTSService {
     }
     this.isSpeaking = false
     this.isPaused = false
+    console.log('H5TTSService')
   }
 
   async speak(text, options = {}) {
@@ -128,6 +129,7 @@ export class XfTTSService  {
     this.isLoading = false
     this.isSpeaking = false;
     this.isPaused = false;
+    console.log('XfTTSService')
   }
   
   async speak(text, options = {}) {
