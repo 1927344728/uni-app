@@ -3,7 +3,7 @@ export default [
     id: 1,
     uuid: '',
     type: '2,7',
-    subType: '',
+    subType: null,
     title: '李若小画家绘画作品展',
     author: '李兆',
     note: '你的每一幅画，都是送给这个世界的一份独特礼物！',
@@ -67,7 +67,7 @@ export default [
         type: 'video',
         // className: 'full_width',
         content: [
-          'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/life/94805290ed6ad02dda8ec52773ddf2a7.mp4?ratio=1.7778'
+          'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/94805290ed6ad02dda8ec52773ddf2a7.mp4?ratio=1.7778'
         ],
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/94805290ed6ad02dda8ec52773ddf2a7s.jpg',
         description: '手指歌'

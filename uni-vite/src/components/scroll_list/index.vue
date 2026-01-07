@@ -4,10 +4,17 @@
       <uni-list-item
         v-for="item in list"
         :key="item.id"
+        :class="[item.className]"
         :title="item.title"
         :note="item.note"
         :thumb="item.image || defaultAvatarImage"
         :showExtraIcon="true"
+        :showBadge="!!item.badgeText"
+        :badgeText="item.badgeText"
+        :badgeStyle="{
+          background: 'red',
+          fontSize: '14px'
+        }"
         thumbSize="lg"
         link
         @click="openUrl(item)"
@@ -114,6 +121,15 @@ export default {
       }
       & ::v-deep .uni-icons {
         display: none;
+      }
+    }
+    & .uni-list-item.active {
+      & ::v-deep .uni-list-item__content-title {
+        font-weight: bold;
+        color: #59c2ad;
+      }
+      & ::v-deep .uni-list-item__content-note {
+        color: #59c2ad;
       }
     }
   }

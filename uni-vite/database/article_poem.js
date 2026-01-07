@@ -10,6 +10,7 @@ export default [
     seq: 100,
     time: 1766584009279,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/lotus-963450_1280.jpg',
+    className: 'active',
     content: [
       {
         type: 'title',

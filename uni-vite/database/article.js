@@ -3,6 +3,7 @@ import ARTICLE_POEM_LIST from './article_poem'
 import ARTICLE_SCORE_LIST from './article_score'
 import ARTICLE_ANA_LIST from './article_ana'
 import ARTICLE_NORMAL_LIST from './article_normal'
+import ARTICLE_READ_VIDEO_LIST from './article_read_video'
 
 export const ARTICLE_TYPE_ENUM = [
   {
@@ -59,6 +60,7 @@ export const ARTICLE_TYPE_ENUM = [
 
 export const ARTICLE_DETAIL_LIST = [].concat(
   ARTICLE_COURSE_LIST,
+  ARTICLE_READ_VIDEO_LIST,
   ARTICLE_POEM_LIST,
   ARTICLE_SCORE_LIST,
   ARTICLE_ANA_LIST,
@@ -70,7 +72,7 @@ export const ARTICLE_LIST= [
     id: 5,
     uuid: '',
     type: '1,2',
-    subType: '',
+    subType: null,
     title: '汉语拼音发音学习',
     note: '点击任意拼音即可播放发音',
     seq: 99,
@@ -83,7 +85,7 @@ export const ARTICLE_LIST= [
     id: 6,
     uuid: '',
     type: '2,7',
-    subType: '',
+    subType: null,
     title: '中国地方特色水果图鉴',
     note: '每一方水土，都有其独特的甜蜜献礼。探索中国大地上风味各异的地方名果。',
     seq: 0,
@@ -95,7 +97,7 @@ export const ARTICLE_LIST= [
     id: 7,
     uuid: '',
     type: '7',
-    subType: '',
+    subType: null,
     title: '摄影笔记深度解析',
     note: '从原理到实践的摄影入门指南——深入解读宁思潇潇的经典之作',
     seq: 0,
@@ -112,6 +114,7 @@ export const ARTICLE_LIST= [
     title: e.title,
     note: e.note,
     seq: e.seq,
+    className: e.className,
     image: e.image,
     url: `/pages/article/detail?id=${e.id}`,
     readCount: e.readCount || null,
