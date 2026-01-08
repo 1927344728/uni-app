@@ -25,7 +25,7 @@ export const VIDEO_MENU_LIST = [
     id: 4,
     icon: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/d055efbe683f9117949d5fa4088f0d55.jpg',
     title: '亲子阅读',
-    desc: '《跟大人一起读》系列视频',
+    desc: '《和大人一起读》系列视频',
   }
 ]
 
@@ -70,7 +70,7 @@ export const VIDEO_LIST = [
     id: 4,
     type: '4',
     title: '《懂礼貌》',
-    desc: '《跟大人一起读》第二册',
+    desc: '《和大人一起读》第二册',
     publisher: '李兆',
     seq: 0,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/27bfb6b8539391fec0769c7bdd20388d.mp4',
@@ -81,7 +81,7 @@ export const VIDEO_LIST = [
     id: 5,
     type: '4',
     title: '《了不起的黑夜娃娃》',
-    desc: '《跟大人一起读》第二册',
+    desc: '《和大人一起读》第二册',
     publisher: '李兆',
     seq: 0,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/c9bd69b4cd4a6f79b7c5bfca17e3dcf3.mp4',
@@ -92,7 +92,7 @@ export const VIDEO_LIST = [
     id: 6,
     type: '4',
     title: '《红灯笼》',
-    desc: '《跟大人一起读》第二册',
+    desc: '《和大人一起读》第二册',
     publisher: '李兆',
     seq: 0,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/ecd2f8449e111ce65a9c857c5980a235.mp4',

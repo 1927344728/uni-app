@@ -1,6 +1,6 @@
 <template>
   <view v-if="articleDetail" class="article_detail_page">
-    <ArticleDetail :articleData="articleDetail.content" :class="[articleDetail.className]" />
+    <ArticleDetail :articleData="articleDetail.content" />
   </view>
 </template>
 

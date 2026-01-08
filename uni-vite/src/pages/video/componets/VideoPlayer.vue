@@ -112,6 +112,10 @@ export default {
     video: {
       type: Object,
       default: () => ({})
+    },
+    videos: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -169,11 +173,21 @@ export default {
   methods: {
     textEllipsis,
     async init () {
-      const { mode, id, type, video } = this;
+      const { mode, id, type, video, videos } = this;
       let currentVideo = null
       if (mode === 'menu') {
-        this.allVideoList = await getVideoListByType({type}).catch(() => []);
-        currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
+        if (videos && videos.length) {
+          this.allVideoList = videos
+        }
+        if (type) {
+          this.allVideoList = await getVideoListByType({type}).catch(() => []);
+        }
+        if (video) {
+          currentVideo = video
+        }
+        if (id) {
+          currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
+        }
       } else {
         currentVideo = video;
         this.allVideoList.push(currentVideo);

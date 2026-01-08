@@ -4,20 +4,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第1-10篇（第一册）',
+    title: '和大人一起读第1-10篇（第一册）',
     author: '李兆',
-    note: '一年级跟大人一起读的朗读录屏，共4册。',
+    note: '一年级和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-10%E6%82%84%E6%82%84%E8%AF%9D2.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第1-10篇（第一册）'
+        content: '和大人一起读第1-10篇（第一册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -86,20 +86,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第11-20篇（第一册）',
+    title: '和大人一起读第11-20篇（第一册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-11%E9%9B%A8%E7%9A%84%E7%A7%8D%E5%AD%902.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第11-20篇（第一册）'
+        content: '和大人一起读第11-20篇（第一册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -168,20 +168,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第21-28篇（第一册）',
+    title: '和大人一起读第21-28篇（第一册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-28%E5%B0%8F%E9%B9%B0%E5%AD%A6%E9%A3%9E3.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第21-28篇（第一册）'
+        content: '和大人一起读第21-28篇（第一册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -238,20 +238,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第1-10篇（第二册）',
+    title: '和大人一起读第1-10篇（第二册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-03%E6%AF%9B%E6%AF%9B%E8%99%AB.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第1-10篇（第二册）'
+        content: '和大人一起读第1-10篇（第二册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -320,20 +320,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第11-20篇（第二册）',
+    title: '和大人一起读第11-20篇（第二册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-16%E5%B8%BD%E5%AD%90%E5%A7%90%E5%A7%90%E5%92%8C%E5%9B%B4%E5%B7%BE%E5%A6%B9%E5%A6%B92.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第11-20篇（第二册）'
+        content: '和大人一起读第11-20篇（第二册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -402,20 +402,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第21-31篇（第二册）',
+    title: '和大人一起读第21-31篇（第二册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-21%E6%B3%A2%E8%90%9D%E5%A3%B3%E5%B0%8F%E8%88%B93.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第21-31篇（第二册）'
+        content: '和大人一起读第21-31篇（第二册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -490,20 +490,20 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第1-10篇（第三册）',
+    title: '和大人一起读第1-10篇（第三册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 0,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-05%E5%A4%9C%E9%87%8C%E7%9A%84%E7%9C%BC%E7%9D%9B.jpg',
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第1-10篇（第三册）'
+        content: '和大人一起读第1-10篇（第三册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
@@ -572,9 +572,9 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第11-20篇（第三册）',
+    title: '和大人一起读第11-20篇（第三册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 100,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-13%E5%B0%8F%E6%B5%A3%E7%86%8A%E6%83%B3%E5%8E%BB%E7%9C%8B%E5%A4%A7%E6%B5%B72.jpg',
@@ -582,68 +582,70 @@ export default [
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第11-20篇（第三册）'
+        content: '和大人一起读第11-20篇（第三册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-11%E5%A4%AA%E9%98%B3%E8%9B%8B%E7%B3%95.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-11%E5%A4%AA%E9%98%B3%E8%9B%8B%E7%B3%95.jpg',
-        description: '11-太阳蛋糕'
+        description: '11-太阳蛋糕',
+        objectFit: 'contain'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-12%E7%8B%AE%E5%AD%90%E6%83%B3%E5%81%9A%E5%A4%A7%E6%98%8E%E6%98%9F2.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-12%E7%8B%AE%E5%AD%90%E6%83%B3%E5%81%9A%E5%A4%A7%E6%98%8E%E6%98%9F2.jpg',
-        description: '12-狮子想做大明星'
+        description: '12-狮子想做大明星',
+        objectFit: 'cover'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-13%E5%B0%8F%E6%B5%A3%E7%86%8A%E6%83%B3%E5%8E%BB%E7%9C%8B%E5%A4%A7%E6%B5%B72.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-13%E5%B0%8F%E6%B5%A3%E7%86%8A%E6%83%B3%E5%8E%BB%E7%9C%8B%E5%A4%A7%E6%B5%B72.jpg',
         description: '13-小浣熊想去看大海'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-14%E6%83%B3%E5%8F%98%E6%88%90%E6%A0%91%E5%8F%B6%E7%9A%84%E5%B0%8F%E7%8B%972.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-14%E6%83%B3%E5%8F%98%E6%88%90%E6%A0%91%E5%8F%B6%E7%9A%84%E5%B0%8F%E7%8B%972.jpg',
         description: '14-想变成树叶的小狗'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-15%E5%B0%8F%E7%86%8A%E7%AC%A8%E7%AC%A8%E7%9C%8B%E4%B8%8B%E9%9B%AA2.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-15%E5%B0%8F%E7%86%8A%E7%AC%A8%E7%AC%A8%E7%9C%8B%E4%B8%8B%E9%9B%AA2.jpg',
         description: '15-小熊笨笨看下雪'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-16%E8%A2%AB%E7%AA%9D%E7%8C%AA2.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-16%E8%A2%AB%E7%AA%9D%E7%8C%AA2.jpg',
         description: '16-被窝猪'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-17%E4%B8%8D%E5%90%AC%E8%AF%9D%E7%9A%84%E5%B0%8F%E8%B9%84%E5%85%942.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-17%E4%B8%8D%E5%90%AC%E8%AF%9D%E7%9A%84%E5%B0%8F%E8%B9%84%E5%85%942.jpg',
         description: '17-不听话的小蹄兔'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-18%E7%A5%9E%E5%A5%87%E7%9A%84%E5%B0%BE%E5%B7%B42.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-18%E7%A5%9E%E5%A5%87%E7%9A%84%E5%B0%BE%E5%B7%B42.jpg',
         description: '18-神奇的尾巴'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-19%E5%9C%B0%E6%B4%9E%E9%80%9A%E5%90%91%E5%93%AA%E9%87%8C3.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-19%E5%9C%B0%E6%B4%9E%E9%80%9A%E5%90%91%E5%93%AA%E9%87%8C3.jpg',
         description: '19-地洞通向哪里'
       },
       {
-        type: 'video',
+        type: 'videoPopup',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-20%E5%B0%8F%E4%BB%99%E5%AD%90%E7%9A%84%E5%B0%8F%E6%88%BF%E5%AD%903.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-20%E5%B0%8F%E4%BB%99%E5%AD%90%E7%9A%84%E5%B0%8F%E6%88%BF%E5%AD%903.jpg',
         description: '20-小仙子的小房子'
@@ -655,9 +657,9 @@ export default [
     uuid: '',
     type: '3',
     subType: 1,
-    title: '跟大人一起读第21-29篇（第三册）',
+    title: '和大人一起读第21-29篇（第三册）',
     author: '李兆',
-    note: '跟大人一起读的朗读录屏，共4册。',
+    note: '和大人一起读的朗读录屏，共4册。',
     seq: 100,
     time: 1767452658875,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-25%E6%88%B4%E5%B8%BD%E5%AD%90%E7%9A%84%E9%B9%853.jpg',
@@ -665,23 +667,25 @@ export default [
     content: [
       {
         type: 'title',
-        content: '跟大人一起读第21-29篇（第三册）'
+        content: '和大人一起读第21-29篇（第三册）'
       },
       {
         type: 'subTitle',
-        content: '跟大人一起读的朗读录屏，共4册。'
+        content: '和大人一起读的朗读录屏，共4册。'
       },
       {
         type: 'video',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-21%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89%E6%80%AA%E7%89%A9.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-21%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89%E6%80%AA%E7%89%A9.jpg',
-        description: '21-如果没有怪物'
+        description: '21-如果没有怪物',
+        objectFit: 'cover'
       },
       {
         type: 'video',
         content: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-22%E8%8C%B6%E5%A3%B6%E5%85%88%E7%94%9F%E6%85%A2%E6%82%A0%E6%82%A02.mp4',
         poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-22%E8%8C%B6%E5%A3%B6%E5%85%88%E7%94%9F%E6%85%A2%E6%82%A0%E6%82%A02.jpg',
-        description: '22-茶壶先生慢悠悠'
+        description: '22-茶壶先生慢悠悠',
+        objectFit: 'contain'
       },
       {
         type: 'video',

@@ -6,9 +6,9 @@
       :list="filteredItems"
       @change="onChangeTab"
     />
-    <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
+    <!-- <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" /> -->
     <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
-      <swiper-item v-for="item in filteredItems" :key="item.id + currentTab">
+      <swiper-item v-for="item in filteredItems" :key="item.key">
         <component
           :is="item.component"
           :class="classObject"
@@ -32,10 +32,10 @@ import MusicList from '../music/index.vue'
 import VideoList from '../video/index.vue'
 
 const items = [
-  { key: 'music', name: '音乐', component: 'MusicList' },
-  { key: 'video', name: '视频', component: 'VideoList' },
-  { key: 'travel', name: '旅游', component: 'ArticlelList' },
-  { key: 'ana', name: '轻摘', component: 'ArticlelList' },
+  { id: 1, key: 'music', name: '音乐', component: 'MusicList' },
+  { id: 2, key: 'video', name: '视频', component: 'VideoList' },
+  { id: 5, key: 'travel', name: '旅游', component: 'ArticlelList' },
+  { id: 6, key: 'ana', name: '轻摘', component: 'ArticlelList' },
 ]
 const SUB_TYPE_OPTION_MAP = {
   
@@ -78,7 +78,6 @@ export default {
         [this.currentTab]: true,
         with_header_bar: this.filteredItems.length > 1,
         with_tab_module: true,
-        with_search_bar: true,
         with_footer_bar: true
       }
     },

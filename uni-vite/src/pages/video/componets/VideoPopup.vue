@@ -3,44 +3,26 @@
     mode="bottom"
     ref="uniPopup"
     class="video_play_popup"
-    :show="modelValue"
-    :mask="true"
-    :mask-closable="maskClosable"
+    :is-mask-click="true"
+    :show="visible"
     :style="{ zIndex: zIndex, height: '100vh' }"
-    @update:show="onUpdateShow"
+    @maskClick="maskClosable"
     @close="close"
   >
-    <view
-      class="video_play_popup__content"
-      @click.stop
-      tabindex="0"
-      role="dialog"
-      aria-modal="true"
-    >
-        <view class="video_play_popup__viewer">
-          <VideoPlayer
-            ref="player"
-            :mode="mode"
-            :type="type"
-            :video="video"
-            :videos="videos"
-            v-bind="$attrs"
-            v-on="forwardedListeners"
-          />
+    <view class="video_play_main" @click.stop>
+      <VideoPlayer
+        ref="player"
+        :mode="mode"
+        :type="type"
+        :video="video"
+        :videos="videos"
+        v-bind="$attrs"
+        v-on="forwardedListeners"
+      />
 
-          <view class="video_popup_topbar">
-            <view class="video_popup_back" @click.stop="close">✕</view>
-            <view class="video_popup_title">{{ (video && video.title) || '' }}</view>
-            <view class="video_popup_share">⤴</view>
-          </view>
-
-          <view class="video_popup_actions">
-            <view class="action like">❤<text>1.2k</text></view>
-            <view class="action comment">💬<text>234</text></view>
-            <view class="action share">🔗<text>分享</text></view>
-          </view>
-
-        </view>
+      <cover-view class="video_close_icon" @click.stop="close">
+        ✕
+      </cover-view>
     </view>
   </UniPopup>
 </template>
@@ -56,9 +38,9 @@ export default {
     UniPopup
   },
   inheritAttrs: false,
-  emits: ['update:modelValue', 'open', 'close', 'play', 'pause', 'next', 'prev'],
+  emits: ['update:value', 'open', 'close', 'play', 'pause', 'next', 'prev'],
   props: {
-    modelValue: {
+    value: {
       type: Boolean,
       default: false
     },
@@ -71,8 +53,8 @@ export default {
       default: null
     },
     video: {
-      type: [String, Number, Object],
-      default: null
+      type: Object,
+      default: () => ({})
     },
     videos: {
       type: Array,
@@ -88,6 +70,20 @@ export default {
     }
   },
   computed: {
+    visible: {
+      get () {
+        if (this.value) {
+          this.open()
+        } else {
+          this.close()
+        }
+        console.log(this.value)
+        return this.value
+      },
+      set (v) {
+        this.$emit('update:value', v)
+      }
+    },
     forwardedListeners () {
       const map = {};
       ['play', 'pause', 'next', 'prev', 'ended', 'error'].forEach(k => {
@@ -99,15 +95,12 @@ export default {
     }
   },
   methods: {
-    onUpdateShow (val) {
-      this.$emit('update:modelValue', val);
-    },
     close () {
       const popup = this.$refs.uniPopup;
       if (popup && typeof popup.close === 'function') {
         popup.close();
       }
-      this.$emit('update:modelValue', false);
+      this.$emit('update:value', false);
       this.$emit('close');
     },
     open (position = 'bottom') {
@@ -115,7 +108,7 @@ export default {
       if (popup && typeof popup.open === 'function') {
         popup.open(position);
       } else {
-        this.$emit('update:modelValue', true);
+        this.$emit('update:value', true);
         this.$emit('open');
       }
     }

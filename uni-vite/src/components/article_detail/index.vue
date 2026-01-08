@@ -60,8 +60,25 @@
               height: getVideoHeight(v, item) + 'px'
             }"
             @play="onPlay(idx)"
-          ></video>
+          ></video>					
           <view v-if="item.description && i + 1 === [item.content].flat().length" class="desc">
+            {{ item.description }}
+          </view>
+        </view>
+      </view>
+
+      <view v-if="item.type === 'videoPopup'" :class="['detail_module', item.type, item.className]">
+        <view class="detail_module_item" @click="openVideoPopup(item)">
+          <view class="image_wrapper">
+            <image
+              :src="item.poster + ((item.poster || '').includes('?') ? '&' : '?') + 'imageMogr2/thumbnail/750x'"
+              mode="aspectFill"
+              class="uni_image"
+            />
+            <view class="mask"></view>
+            <view class="iconfont">&#xe609;</view>
+          </view>
+          <view v-if="item.description" class="desc">
             {{ item.description }}
           </view>
         </view>
@@ -83,13 +100,21 @@
         </view>
       </view>
     </block>
+    <VideoPopup
+      v-model:value="videoPopupConfig.visbile"
+      mode="menu"
+      :video="videoPopupConfig.video"
+      :videos="videoPopupConfig.videos"
+    />
   </view>
 </template>
 
 <script>
+import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { getUrlParams } from '@/utils/variables.js'
 import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
+import VideoPopup from '@/pages/video/componets/VideoPopup.vue'
 
 let ttsService = new H5TTSService()
 // #ifdef APP-PLUS
@@ -97,6 +122,9 @@ ttsService = new XfTTSService()
 // #endif
 
 export default {
+  components: {
+    VideoPopup
+  },
   props: {
     articleData: {
       type: Array,
@@ -109,7 +137,12 @@ export default {
       ttsService,
       speakingIndex: null,
       videoContexts: {},
-      currentVideoIndex: null
+      currentVideoIndex: null,
+      videoPopupConfig: {
+        visbile: false,
+        video: null,
+        videos: null
+      }
     }
   },
   computed: {
@@ -206,7 +239,29 @@ export default {
         height = width * ratio
       }
       return height
-    }
+    },
+    openVideoPopup (item) {
+      const { cArticleData } = this
+      const videos = (cArticleData || [])
+        .filter(e => e.type === 'videoPopup')
+        .map(e => ({
+          id: Number(Math.random().toString().substring(2)),
+          type: null,
+          title: e.description,
+          desc: e.description,
+          publisher: null,
+          url: e.content,
+          cover: e.poster,
+          bg: e.poster,
+          objectFit: e.objectFit || 'cover'
+        }))
+      const video = videos.find(e => e.url === item.content)
+      this.videoPopupConfig = {
+        visbile: true,
+        video,
+        videos
+      }
+    },
   }
 };
 </script>
