@@ -10,8 +10,8 @@
     @close="close"
   >
     <view class="video_play_main" @click.stop>
-      <VideoPlayer
-        ref="player"
+      <!-- #ifdef APP-PLUS -->
+      <VideoPlayer2
         :mode="mode"
         :type="type"
         :video="video"
@@ -19,22 +19,35 @@
         v-bind="$attrs"
         v-on="forwardedListeners"
       />
+      <!-- #endif -->
 
+      <!-- #ifndef APP-PLUS -->
+      <VideoPlayer
+        :mode="mode"
+        :type="type"
+        :video="video"
+        :videos="videos"
+        v-bind="$attrs"
+        v-on="forwardedListeners"
+      />
       <cover-view class="video_close_icon" @click.stop="close">
         ✕
       </cover-view>
+      <!-- #endif -->
     </view>
   </UniPopup>
 </template>
 
 <script>
 import VideoPlayer from './VideoPlayer.vue';
+import VideoPlayer2 from './VideoPlayer2.vue';
 import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
 
 export default {
   name: 'VideoPopup',
   components: {
     VideoPlayer,
+    VideoPlayer2,
     UniPopup
   },
   inheritAttrs: false,

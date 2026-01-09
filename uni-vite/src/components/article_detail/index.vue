@@ -76,7 +76,9 @@
               class="uni_image"
             />
             <view class="mask"></view>
-            <view class="iconfont">&#xe609;</view>
+            <view class="icon">
+              <view class="iconfont">&#xe609;</view>
+            </view>
           </view>
           <view v-if="item.description" class="desc">
             {{ item.description }}
@@ -242,6 +244,7 @@ export default {
     },
     openVideoPopup (item) {
       const { cArticleData } = this
+      const authorItem = cArticleData.find(e => e.type === 'author')
       const videos = (cArticleData || [])
         .filter(e => e.type === 'videoPopup')
         .map(e => ({
@@ -249,7 +252,7 @@ export default {
           type: null,
           title: e.description,
           desc: e.description,
-          publisher: null,
+          publisher: _get(authorItem, 'content') || '',
           url: e.content,
           cover: e.poster,
           bg: e.poster,

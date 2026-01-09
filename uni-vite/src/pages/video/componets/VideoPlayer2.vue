@@ -1,5 +1,5 @@
 <template>
-  <view class="video_play_module">
+  <view class="video_play_module2">
     <swiper
       class="video_play_swiper"
       :current="currentIndex"
@@ -41,10 +41,7 @@
                   id="playerVideo"
                   class="video_element"
                   :src="currentVideo.url"
-                  :show-progress="false"
-                  :controls="false"
-                  :autoplay="true"
-                  :show-center-play-btn="false"
+                  :autoplay="false"
                   :object-fit="currentVideo.objectFit || 'cover'"
                   :poster="currentVideo.cover"
                   @timeupdate="onTimeUpdate"
@@ -344,5 +341,5 @@ export default {
 </script>
 
 <style lang="less">
-@import './VideoPlayer.less';
+@import './VideoPlayer2.less';
 </style>
