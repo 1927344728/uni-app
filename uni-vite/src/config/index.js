@@ -15,7 +15,7 @@ export const FEATURE_ICON_ENUM = [
     key: 'book',
     name: '我的书单',
     image: `${COS_ASSET_PATH}images/d4f59adc3c18b9289aef1f340a93357e.jpg`,
-    url: '/pages/study/book/index',
+    url: '/pages/book/index',
     jumpTo: 'navigate'
   },
   {

@@ -59,19 +59,11 @@ export default {
       }
     }
   },
-  watch: {
-    queryParams: {
-      deep: true,
-      immediate: true,
-      handler () {
-        this.refreshList()
-      },
-    }
-  },
   created () {
     getMusicMenuList().then((data) => {
       this.musicMenuList = data || []
     })
+    this.refreshList()
   },
   methods: {
     getMusicPageList () {

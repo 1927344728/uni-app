@@ -24,23 +24,18 @@ export default {
     SearchBar,
     ScrollList
   },
-  props: {
-    queryParams: {
-      type: Object,
-      default: () => ({})
-    }
-  },
   data () {
     return {
-      subTypeOptions: [],
       queryParams: initQueryParam(),
+      subTypeOptions: [],
     }
   },
   computed: {
     cQueryParams () {
+      const { queryParams } = this
       return {
-        type: this.queryParams.subType,
-        keyword: this.queryParams.keyword
+        type: queryParams.subType,
+        keyword: queryParams.keyword,
       }
     }
   },
@@ -48,6 +43,7 @@ export default {
     cQueryParams: {
       deep: true,
       handler () {
+        console.log('watch: ', 'cQueryParams')
         setTimeout(() => {
           this.$refs.ScrollList.refreshList()
         }, 100)

@@ -7,7 +7,7 @@
         :class="[item.className]"
         :title="item.title"
         :note="item.note"
-        :thumb="item.image || defaultAvatarImage"
+        :thumb="item.image"
         :showExtraIcon="true"
         :showBadge="!!item.badgeText"
         :badgeText="item.badgeText"
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { DEFAULT_AVATAR_IMAGE } from '@/config'
+import qs from 'qs'
 import { openUrl } from '@/utils'
 
 export default {
@@ -41,7 +41,7 @@ export default {
     },
     queryParams: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     pageNum: Number,
     pageSize: Number,
@@ -51,7 +51,7 @@ export default {
       isLoad: false,
 			list: [],
       pagination: this.initPagination(),
-      defaultAvatarImage: DEFAULT_AVATAR_IMAGE
+      cacheMap: {}
 		}
 	},
   created () {
@@ -66,31 +66,33 @@ export default {
         isLast: false
       }
     },
-		getList () {
-      const { queryParams, pagination, list } = this
+		async getList () {
+      const { queryParams, pagination, list, cacheMap } = this
       this.isLoad = false
-			return this.request({
+      const params = {
         ...(queryParams || {}),
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize,
-      })
-        .then((data) => {
-          this.list = list.concat(data || [])
-          if (!data || data.length < pagination.pageSize) {
-            pagination.isLast = true
-          }
-        })
-        .finally(() => {
-          this.isLoad = true
-        })
-		},
+      }
+      const cacheKey = qs.stringify(params)
+      let data = cacheMap[cacheKey]
+      if (!data) {
+        data = await this.request(params).catch(() => {})
+        cacheMap[cacheKey] = data
+      }
+      this.list = list.concat(data || [])
+      if (!data || data.length < pagination.pageSize) {
+        pagination.isLast = true
+      }
+      this.isLoad = true
+    },
     refreshList () {
       this.list = []
       this.pagination = this.initPagination()
       this.getList()
     },
 		scrolltolower () {
-      console.log('scrolltolower')
+      console.log('scrollList: scrolltolower')
 			if (!this.pagination.isLast)  {
         this.pagination.pageNum ++
         this.getList()
@@ -108,11 +110,21 @@ export default {
   height: calc(100vh - constant(safe-area-inset-bottom));
   height: calc(100vh - env(safe-area-inset-bottom));
   & .uni-list {
-    color: red;
     & ::v-deep .uni-list--border-top {
       display: none;
     }
     & .uni-list-item {
+      & ::v-deep .uni-list-item__header {
+        & .uni-icons {
+          display: block!important;
+          width: 60px;
+          height: 60px;
+          margin-right: 18rpx;
+          border: 1px solid @border-primary-color;
+          background: @border-primary-color;
+          border-radius: 12rpx;
+        }
+      }
       & ::v-deep .uni-list--lg {
         width: 60px;
         height: 60px;

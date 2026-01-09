@@ -76,7 +76,7 @@ const FEATURE_OPTIONS = [
   },
   {
     name: '我的书单',
-    url: '/pages/study/book/index',
+    url: '/pages/book/index',
     jumpTo: 'navigate'
   },
   {

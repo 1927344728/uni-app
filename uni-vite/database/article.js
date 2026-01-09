@@ -24,6 +24,7 @@ export const ARTICLE_TYPE_ENUM = [
     children: [
       { id: 1, name: '亲子阅读' },
       { id: 2, name: '少儿诗词' },
+      { id: 3, name: '口才训练' },
     ]
   },
   {

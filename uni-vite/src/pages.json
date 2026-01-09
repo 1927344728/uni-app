@@ -72,13 +72,13 @@
 		  }
 		},
     {
-		  "path": "pages/study/book/index",
+		  "path": "pages/book/index",
 		  "style": {
 		    "navigationBarTitleText": "书籍列表"
 		  }
 		},
 		{
-		  "path": "pages/study/book/detail",
+		  "path": "pages/book/detail",
 		  "style": {
 		    "navigationBarTitleText": "书籍简介"
 		  }

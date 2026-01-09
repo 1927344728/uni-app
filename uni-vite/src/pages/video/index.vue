@@ -90,15 +90,6 @@ export default {
       pagination: initPagination()
     }
   },
-  watch: {
-    queryParams: {
-      deep: true,
-      immediate: true,
-      handler () {
-        this.refreshList()
-      },
-    }
-  },
   onLoad (options) {
     const type = _get(options, 'type')
     if (Number(type)) {

@@ -25,7 +25,7 @@ export default {
 			default: () => []
 		}
 	},
-  emits: ['update:value'],
+  emits: ['update:value', 'change'],
 	computed: {
 		currentTab: {
 			get () {

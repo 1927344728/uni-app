@@ -63,15 +63,6 @@ export default {
       pagination: initPagination()
     }
   },
-  watch: {
-    queryParams: {
-      deep: true,
-      immediate: true,
-      handler () {
-        this.refreshList()
-      }
-    },
-  },
   created () {
     this.getBookPageList()
   },
@@ -82,6 +73,7 @@ export default {
       this.isLoad = false
       return getBookPageList({
         ...(queryParams || {}),
+        type: null,
         pageNum,
         pageSize
       })
@@ -103,7 +95,7 @@ export default {
 		onClickCard (item) {
 			if (item) {
 				uni.navigateTo({
-					url: `/pages/study/book/detail?id=${encodeURIComponent(item.id)}`
+					url: `/pages/book/detail?id=${encodeURIComponent(item.id)}`
 				});
 			}
 		},
