@@ -90,7 +90,7 @@
 
 <script>
 import { get as _get } from 'lodash';
-import { getVideoListByType, getVideoByRandom } from '@/api'
+import { getVideoById, getVideoListByType, getVideoByRandom } from '@/api'
 import { textEllipsis } from '@/utils/common.js';
 
 export default {
@@ -101,27 +101,15 @@ export default {
       type: String,
       default: 'auto'
     },
-    id: {
-      type: [Number, String],
-      default: null
-    },
-    type: {
-      type: Number,
-      default: null
-    },
-    video: {
-      type: Object,
-      default: () => ({})
-    },
-    videos: {
-      type: Array,
-      default: () => []
-    }
+    id: [Number, String],
+    type: [Number, String],
+    video: [Object, String],
+    videos: Array
   },
   data () {
     return {
       allVideoList: [],
-      playedVideoIds: [],
+      playedIds: [],
       currentVideo: null,
       prevVideo: null,
       nextVideo: null,
@@ -152,7 +140,6 @@ export default {
     },
     currentIndex () {
       const index = this.swiperPages.findIndex(e => e.id === _get(this, 'currentVideo.id')) || 0
-      console.log(index)
       return index
     }
   },
@@ -174,34 +161,48 @@ export default {
     textEllipsis,
     async init () {
       const { mode, id, type, video, videos } = this;
-      this.playedVideoIds = [];
+
       let currentVideo = null
-      if (mode === 'menu') {
-        if (videos && videos.length) {
-          this.allVideoList = videos
-        }
-        if (type) {
-          this.allVideoList = await getVideoListByType({type}).catch(() => []);
-        }
-        if (video) {
+      let allVideoList = []
+      let playedIds = []
+
+      // 单视频播放：传视频 id 或者完整视频对象
+      if (mode === 'single') {
+        if (video && typeof video === 'string') {
+          try {
+            currentVideo = JSON.parse(decodeURIComponent(video))
+          } catch (e) {}
+        } else {
           currentVideo = video
         }
-        if (id) {
-          currentVideo = id ? this.allVideoList.find(s => s.id === id) : this.allVideoList[0];
-        }
-        if (currentVideo) {
-          const currentIndex = this.allVideoList.findIndex(e => e.id === currentVideo.id)
-          const playedVideoIds = this.allVideoList.map(e => e.id).filter((id, i) => i < currentIndex)
-          this.playedVideoIds = playedVideoIds
-        }
-      } else {
-        currentVideo = video;
-        this.allVideoList.push(currentVideo);
+        currentVideo = currentVideo || (await getVideoById({id})) || null
+        allVideoList = currentVideo ? [currentVideo] : null
       }
+
+      // 视频列表播放：传视频类型id，或者完整视频列表
+      if (mode === 'menu') {
+        if (_get(videos, 'length')) {
+          allVideoList = videos
+        } else if (type) {
+          allVideoList = await getVideoListByType({type})
+        }
+        const currentIndex = allVideoList.findIndex(e => String(e.id) === String(id))
+        currentVideo = allVideoList[Math.max(currentIndex, 0)]
+        playedIds = allVideoList.map(e => e.id).filter((id, i) => i < currentIndex)
+      }
+
+      // 无限下滑：视频id，也可以指定 type
+      if (mode === 'auto') {
+        currentVideo = currentVideo || (await getVideoById({ id })) || null
+        allVideoList = currentVideo ? [currentVideo] : null
+      }
+
       if (!(currentVideo && currentVideo.url)) {
-        uni.showToast({ title: '未找到播放视频', icon: 'none' });
+        uni.showToast({ title: '没有视频', icon: 'none' });
         return;
       }
+      this.playedIds = playedIds
+      this.allVideoList = allVideoList
       this.prevVideo = this.getPrevVideo();
       this.currentVideo = currentVideo
       this.nextVideo = await this.getNextVideo();
@@ -211,31 +212,31 @@ export default {
       return bg ? { '--video_play_bg': `url(${bg})` } : {};
     },
     getPrevVideo () {
-      const { mode, allVideoList, playedVideoIds } = this;
+      const { mode, allVideoList, playedIds } = this;
       this.isShowMoreDesc = false;
       let prevVideo = null
       if (['auto', 'menu'].includes(mode)) {
-        if (playedVideoIds.length > 0) {
-          const prevId = playedVideoIds[playedVideoIds.length - 1];
+        if (playedIds.length > 0) {
+          const prevId = playedIds[playedIds.length - 1];
           prevVideo = allVideoList.find(v => v.id === prevId) || null;
         }
       }
       return prevVideo
     },
     async getNextVideo () {
-      const { mode, allVideoList, playedVideoIds, currentVideo, swiperPages } = this;
+      const { mode, type, allVideoList, playedIds, currentVideo, swiperPages } = this;
       this.isShowMoreDesc = false;
       const currentVideoId = _get(currentVideo, 'id');
       const allVideoLength = _get(allVideoList, 'length', 0);
       let newVideo = null
       if (['auto'].includes(mode)) {
         newVideo = await getVideoByRandom({
-          playingVideoIds: swiperPages.map(e => e.id),
-          playedVideoIds
+          type,
+          playingIds: swiperPages.map(e => e.id),
+          playedIds
         }).catch(() => null);
         if (newVideo) {
           allVideoList.push(newVideo);
-          // console.log(allVideoList.map(e => e.title))
         }
       }
       if (['menu'].includes(mode) && allVideoLength > 1) {
@@ -300,7 +301,7 @@ export default {
     goPrevVideo () {
       const { videoCtx, prevVideo, currentVideo } = this;
       if (prevVideo) {
-        this.playedVideoIds.pop();
+        this.playedIds.pop();
         this.currentVideo = prevVideo;
         this.prevVideo = this.getPrevVideo();
         this.nextVideo = currentVideo
@@ -316,7 +317,7 @@ export default {
       const { videoCtx, currentVideo, nextVideo } = this;
       if (nextVideo) {
         const currentId = _get(currentVideo, 'id');
-        this.playedVideoIds.push(currentId)
+        this.playedIds.push(currentId)
         this.prevVideo = currentVideo;
         this.currentVideo = nextVideo;
         this.nextVideo = null
@@ -331,7 +332,6 @@ export default {
     },
     onChange (event) {
       const { currentIndex, nextVideo, prevVideo } = this;
-      console.log('event.detail.current', event.detail.current)
       if (event.detail.current > currentIndex && nextVideo) {
         this.goNextVideo();
       }

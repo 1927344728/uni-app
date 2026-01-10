@@ -1,0 +1,116 @@
+import { method } from "lodash"
+
+<template>
+  <div
+    class="swiper_item module"
+    :class="[`${video.index + 1}`]"
+    :style="{
+      height: `${height}px`,
+      top: `${height * video.index}px`
+    }"
+  >
+    <video
+      ref="video"
+      :id="`video_id_${index}`"
+      :src="video.url"
+      :style="fillScreenStyle"
+      :autoplay="false"
+      :loop="true" 
+      :play-strategy="2"
+      codec="hardware"
+      :controls="false"
+      :enable-play-gesture="true"
+      :objectFit="video.objectFit || 'contain'"
+      :show-fullscreen-btn="false"
+      :enable-progress-gesture="false"
+      :show-progress="false"
+      initial-time="1"
+      :show-play-btn="false"
+      @play="play"
+      @timeupdate="timeupdate"
+      @ended='ended'
+    />
+    
+    <cover-view v-if="!video.isPlaying" class="cover_view_stop">
+      <text class="iconfont cover_view_stop_iconfont">
+        &#xe609;
+      </text>
+    </cover-view>
+
+    <cover-view v-if="video.isShowCover" :style="fillScreenStyle" :class="[video.cover ? 'video_image' : 'video_image_mask']">
+      <cover-image v-if="video.cover" :src="video.cover"  :style="fillScreenStyle" />
+    </cover-view>
+
+    <div
+      class="video_action"
+      @touchstart.stop='touchstart'
+      @touchmove.stop="touchmove"
+      @touchend.stop='touchend'
+      @click.stop="click"
+    />
+
+    <cover-view class="video_content">
+      <text class="video_content_name">
+        @{{video.publisher}}
+      </text>
+      <view v-if="video.desc" class="video_content_description">
+        <text class="video_content_description_text">
+          {{textEllipsis(convertHtmlToText(video.desc || ''), 64)}}
+        </text>
+      </view>
+    </cover-view>
+  </div>
+</template>
+<script>
+import { convert as convertHtmlToText } from 'html-to-text'
+import { textEllipsis } from '@/utils/common.js';
+
+export default {
+  props: {
+    index: Number,
+    video: {
+      type: Object,
+      required: true
+    },
+    width: Number,
+    height: Number
+  },
+  emits: ['timeupdate', 'play', 'ended', 'touchstart', 'touchmove', 'touchend', 'click'],
+  computed: {
+    fillScreenStyle () {
+      return {
+        height: `${this.height}px`,
+        width: `${this.width}px`
+      }
+    }
+  },
+  methods: {
+    convertHtmlToText,
+    textEllipsis,
+    timeupdate (event) {
+      this.$emit('timeupdate', event)
+    },
+    play () {
+      this.$emit('play')
+    },
+    ended () {
+      this.$emit('ended')
+    },
+    touchstart (event) {
+      this.$emit('touchstart', event)
+    },
+    touchmove (event) {
+      this.$emit('touchmove', event)
+    },
+    touchend (event) {
+      this.$emit('touchend', event)
+    },
+    click () {
+      this.$emit('click')
+    },
+  }
+}
+</script>
+<style scoped>
+@import './swiper_item.less'
+</style>

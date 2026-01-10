@@ -104,7 +104,7 @@
     {
       "path": "pages/video/play",
       "style": {
-        "navigationBarTitleText": "视频播放"
+        "navigationBarTitleText": "视频"
       }
     },
     {
@@ -117,6 +117,12 @@
       "path": "pages/article/detail",
       "style": {
         "navigationBarTitleText": "文章详情"
+      }
+    },
+    {
+      "path": "pages/debug/index",
+      "style": {
+        "navigationBarTitleText": "测试页面"
       }
     }
   ],

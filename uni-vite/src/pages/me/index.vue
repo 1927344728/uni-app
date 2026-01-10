@@ -164,7 +164,6 @@ export default {
           title: '登出失败',
           icon: 'none'
         })
-        console.log(error)
       })
     }
   }

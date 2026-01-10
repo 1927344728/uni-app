@@ -1,5 +1,5 @@
 <template>
-  <view class="video_play_page">
+  <view class="video_player_page">
     <VideoPlayer
       v-if="isLoaded"
       :mode="mode"
@@ -33,18 +33,20 @@ export default {
   },
   methods: {
     async init (options = {}) {
-      this.isLoaded = false
-      this.mode = options.mode || 'auto';
-      this.id = options.id ? options.id : null;
-      this.type = options.type ? Number(options.type) : null;
-      this.video = options.video ? qs.parse(decodeURIComponent(options.video)) : null
-      if (this.id) {
-        const responseData = await getVideoById({ id: this.id }).catch(() => null);
-        if (responseData) {
-          this.video = responseData;
-        }
+      const { mode, id, type, video, key } = options
+
+      let videos = null
+      if (mode === 'menu') {
+        videos = uni.getStorageSync(key) || [] 
       }
+
+      this.mode = mode || 'auto'
+      this.id = id || null
+      this.type = type || null
+      this.video = video
+      this.videos = videos
       this.isLoaded = true
+      console.log('video_player_page')
     }
   }
 };

@@ -162,7 +162,9 @@ export default {
     onClickVideo (item) {
       if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/video/play?mode=auto&id=${item.id}`
+          url: `/pages/video/play?mode=auto&id=${item.id}`,
+
+          // url: `/pages/video/play?mode=auto&id=1&type=2`,
         })
         return
       }

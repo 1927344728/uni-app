@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { getUrlParams } from '@/utils/variables.js'
@@ -234,7 +235,6 @@ export default {
     getVideoHeight(url, item) {
       const windowWidth = uni.getWindowInfo().windowWidth
       const width = item.className === 'full_width' ? windowWidth : windowWidth - 32
-      console.log('getVideoHeight', width)
       let height = 225
       const { ratio } = getUrlParams(url || '') || {}
       if (ratio && width) {
@@ -259,11 +259,20 @@ export default {
           objectFit: e.objectFit || 'cover'
         }))
       const video = videos.find(e => e.url === item.content)
+      // #ifdef APP-PLUS
+      uni.setStorageSync('tempVideoCache', videos)
+      uni.navigateTo({
+        url: `/pages/video/play?mode=menu&id=${video.id}&key=tempVideoCache`
+      })
+      // #endif
+
+      // #ifndef APP-PLUS
       this.videoPopupConfig = {
         visbile: true,
         video,
         videos
       }
+      // #endif
     },
   }
 };

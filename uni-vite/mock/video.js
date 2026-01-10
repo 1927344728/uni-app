@@ -29,20 +29,34 @@ const getVideoById = (params) => {
 }
 
 const getVideoByRandom = (params) => {
-  const playingVideoIds = _get(params, 'playingVideoIds') || []
-  const playedVideoIds = _get(params, 'playedVideoIds') || []
+  let { type, playingIds, playedIds } = params || {}
+  type = type ? String(type) : ''
+  playingIds = (playingIds || []).map(id => String(id))
+  playedIds = (playedIds || []).map(id => String(id))
   
-  const allIds = VIDEO_LIST.map(e => e.id).filter(id => !playingVideoIds.includes(id))
-  let unplayedIds = allIds.filter(id => !playedVideoIds.includes(id))
-  if (!unplayedIds.length) {
-    unplayedIds = allIds
+  let list = cloneDeep(VIDEO_LIST).map(e => {
+    e.id = String(e.id)
+    e.type = e.type ? String(e.type).split(',') : []
+    return e
+  })
+  if (type) {
+    list = list.filter(item => item.type.includes(type))
   }
+  if (playingIds.length) {
+    list = list.filter(e => !playingIds.includes(e.id))
+  }
+  
+  const allIds = list.map(e => e.id)
+  let unplayedIds = []
+  if (playedIds.length) {
+    unplayedIds = allIds.filter(id => !playedIds.includes(id))
+  }
+  unplayedIds = unplayedIds.length ? unplayedIds : allIds
   const randIdx = Math.floor(Math.random() * unplayedIds.length);
   const songId = unplayedIds[randIdx];
 
   const data = cloneDeep(basicTemplate)
-  data.data = VIDEO_LIST.find(e => e.id === songId) || null;
-
+  data.data = list.find(e => String(e.id) === songId) || null;
   return data
 }
 

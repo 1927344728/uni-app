@@ -43,7 +43,6 @@ export default {
     cQueryParams: {
       deep: true,
       handler () {
-        console.log('watch: ', 'cQueryParams')
         setTimeout(() => {
           this.$refs.ScrollList.refreshList()
         }, 100)

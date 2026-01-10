@@ -183,7 +183,6 @@ export default {
     },
     currentIndex () {
       const index = this.prevSong ? 1 : 0
-      console.log(index)
       return index
     },
     canGoPrev () {
@@ -254,7 +253,6 @@ export default {
         }).catch(() => null);
         if (newSong) {
           allMusicList.push(newSong);
-          // console.log(allMusicList.map(e => e.title))
         }
       }
       if (['menu'].includes(mode) && allMusicLength > 1) {
@@ -421,7 +419,6 @@ export default {
     },
     onChange (event) {
       const { currentIndex, nextSong, prevSong } = this;
-      console.log('event.detail.current', event.detail.current)
       if (event.detail.current > currentIndex && nextSong) {
         this.goNextSong();
       }

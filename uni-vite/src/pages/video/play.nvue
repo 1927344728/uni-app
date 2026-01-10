@@ -1,0 +1,69 @@
+<template>
+  <VideoSwiper
+    v-if="isLoaded"
+    ref="swiper"
+    class="video_player_npage"
+    :mode="mode"
+    :id="id"
+    :type="type"
+    :video="video"
+    :videos="videos"
+  />
+</template>
+<script>
+import qs from 'qs'
+import { cloneDeep } from 'lodash'
+import VideoSwiper from '@/components/kai_video_swiper/index.nvue'
+
+/**
+ * 链接跳转示例：
+ * /pages/video/play?mode=single&video=${encodeURIComponent(JSON.stringify(video))}
+ * /pages/video/play?mode=single&id=2
+ * /pages/video/play?mode=menu&id=${video.id}&key=tempVideoCache
+ * /pages/video/play?mode=menu&id=${video.id}&type=2
+ * /pages/video/play?mode=auto&id=1
+ * /pages/video/play?mode=auto&id=1&type=2
+*/
+
+export default {
+  components: {
+    VideoSwiper
+  },
+  data() {
+    return {
+      isLoaded: false,
+      mode: 'auto',
+      id: null,
+      type: null,
+      video: null,
+      videos: null
+    }
+  },
+  onLoad (options = {}) {
+    this.init(options)
+  },
+  onHide() {
+    if (this.$refs.swiper) {
+      this.$refs.swiper.stop()
+    }
+  },
+  methods: {
+    async init (options = {}) {
+      const { mode, id, type, video, key } = options
+
+      let videos = null
+      if (mode === 'menu') {
+        videos = uni.getStorageSync(key) || [] 
+      }
+
+      this.mode = mode || 'auto'
+      this.id = id || null
+      this.type = type || null
+      this.video = video
+      this.videos = videos
+      this.isLoaded = true
+      console.log('video_player_npage')
+    },
+  }
+}
+</script>

@@ -8,14 +8,17 @@
     />
     <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
-      <swiper-item v-for="(item) in filteredItems" :key="item.key">
+      <swiper-item v-for="item in filteredItems" :key="item.key">
         <component
           :key="item.component"
           :ref="item.component + item.id"
           :is="item.component"
           :class="classObject"
           :request="getArticlePageList"
-          :queryParams="queryParams"
+          :queryParams="{
+            ...queryParams,
+            type: item.id
+          }"
         />
       </swiper-item>
     </swiper>
@@ -40,7 +43,6 @@ const items = [
 ]
 
 const initQueryParam = () => ({
-  type: 3,
   subType: null,
   keyword: ''
 })
@@ -99,7 +101,6 @@ export default {
   watch: {
     currentTabKey (k) {
       const currentTab = items.find(e => e.key === k)
-      this.queryParams.type = _get(currentTab, 'id') || null
       this.queryParams.subType = null
       this.queryParams.keyword = ''
     },

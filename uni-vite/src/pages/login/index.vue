@@ -132,7 +132,6 @@
               title: '登录成功！',
               icon: 'success'
             });
-            debugger
             setTimeout(() => {
               uni.redirectTo({
                 url: requestUrl || '/pages/index/index'

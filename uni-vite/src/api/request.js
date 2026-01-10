@@ -1,5 +1,4 @@
 import { mockData } from '/mock/index.js';
-import store from '@/store/index.js';
 import { SERVER_API_DOMAIN, gotoLogin } from '@/utils/index.js';
 
 // uni.configMTLS({
@@ -20,8 +19,9 @@ import { SERVER_API_DOMAIN, gotoLogin } from '@/utils/index.js';
 
 export default function (options) {
   const { baseURL, url, method, data, params, timeout, showLoading, login } = options
+  const store = getApp().$store
   if (store.state.isUseMock && mockData[url]) {
-    console.log(`[Mock]: ${url}`)
+    // console.log(`[Mock]: ${url}`)
     return new Promise((resolve) => {
       const mockResponse = mockData[url](params)
       resolve(mockResponse.data)
