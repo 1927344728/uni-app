@@ -1,8 +1,10 @@
 <template>
   <view class="search_bar_module">
-    <uni-data-select
+    <uni-data-picker
       v-if="subTypeOptions && subTypeOptions.length > 1"
       v-model="queryParams.subType"
+      placeholder="请选择类型"
+      popup-title="请选择类型"
       :localdata="subTypeOptions"
     />
     <uni-search-bar
@@ -51,30 +53,18 @@ export default {
   background: white;
   border-top: 2rpx solid @border-primary-color;
   border-bottom: 2rpx solid @border-primary-color;
-  & .uni-stat__select {
+  & .uni-data-tree {
     flex: 1;
-    margin-left: 10px;
-    & ::v-deep .uni-stat-box {
-      & .uni-select {
-        padding-left: 24rpx;
-        padding-right: 24rpx;
-        background: rgb(248, 248, 248);
+    padding: 10px;
+    & ::v-deep {
+      & .input-value-border {
         border: 0;
-        border-radius: 100rpx;
-        & .uni-select__selector {
-          width: 480rpx;
-          & uni-text {
-            white-space: nowrap;
-          }
-        }
-        & .uni-select__input-placeholder {
-          font-size: 28rpx;
-          color: #999;
-        }
-        & .uni-icons {
-          color: rgb(192, 196, 204);
-          font-size: 40rpx!important;
-        }
+        background: rgb(248, 248, 248);
+        border-radius: 60px;
+      }
+      & .placeholder {
+        font-size: 14px;
+        color: #B3B3B3;
       }
     }
   }

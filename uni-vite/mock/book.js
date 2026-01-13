@@ -1,15 +1,21 @@
 import { get as _get, cloneDeep } from "lodash"
-import { BOOK_LIST } from "/database/book.js"
+import { BOOK_TYPE_ENUM, BOOK_LIST } from "/database/book.js"
 import { basicTemplate } from './common'
+
+const getBookTypeList = () => {
+  const data = cloneDeep(basicTemplate)
+  data.data = cloneDeep(BOOK_TYPE_ENUM)
+  return data
+}
 
 const getBookPageList = (params) => {
   const { keyword, type, pageNum, pageSize } = params
   let list = cloneDeep(BOOK_LIST)
-  if (keyword) {
-    list = list.filter(item => item.title.includes(keyword) || item.owner.includes(keyword))
-  }
   if (type) {
     list = list.filter(item => (item.type || '').split(',').includes(String(type)))
+  }
+  if (keyword) {
+    list = list.filter(item => item.title.includes(keyword) || item.owner.includes(keyword))
   }
   list = list.splice(pageNum * pageSize, pageSize)
   const data = cloneDeep(basicTemplate)
@@ -25,6 +31,7 @@ const getBookById = (params) => {
 }
 
 export default {
+  'api/book/getBookTypeList': getBookTypeList,
   'api/book/getBookPageList': getBookPageList,
   'api/book/getBookById': getBookById
 }

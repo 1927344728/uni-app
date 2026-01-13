@@ -3,65 +3,60 @@
 @import '@/common/css/color.less';
 @import '@/common/css/apply.less';
 .book_detail_page {
-  height: calc(100vh - env(safe-area-inset-top));
-  background: linear-gradient(180deg, #fefefe 0%, #f7f4ff 60%, #fdf5f2 100%);
-  box-sizing: border-box;
   color: @text-primary-color;
   background: linear-gradient(180deg, #fefefe 0%, #f7f4ff 60%, #fdf5f2 100%);
 
-  & .book_hero {
+  & .overview {
     display: flex;
     gap: 32rpx;
     padding: 32rpx;
     background: rgba(255, 255, 255, 0.9);
-    border-bottom-left-radius: 32rpx;
-    border-bottom-right-radius: 32rpx;
-    margin-bottom: 32rpx;
-    & .book_cover {
+    border-bottom: 1px solid @border-primary-color;
+    & .cover {
       width: 220rpx;
       height: 320rpx;
       border-radius: 24rpx;
       box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.12);
     }
   
-    & .hero_info {
+    & .info {
       flex: 1;
       display: flex;
       flex-direction: column;
       gap: 16rpx;
-      & .book_title {
+      & .title {
         font-size: 42rpx;
         font-weight: 600;
       }
 
-      & .book_meta {
+      & .meta {
         display: flex;
         align-items: center;
         gap: 12rpx;
         font-size: 26rpx;
-        & .book_meta_label {
+        & .meta_label {
           font-size: 24rpx;
         }
 
-        & .book_meta_value {
+        & .meta_value {
           color: @text-primary-color;
         }
       }
 
-      & .book_rating {
+      & .rating {
         display: flex;
         align-items: center;
         gap: 12rpx;
-        & .book_rating_label {
+        & .rating_label {
           font-size: 24rpx;
         }
       
-        & .book_rating_value {
+        & .rating_value {
           font-size: 48rpx;
           font-weight: 600;
         }
       
-        & .book_rating_stars {
+        & .rating_stars {
           display: flex;
           gap: 4rpx;
           font-size: 28rpx;
@@ -75,12 +70,12 @@
         }
       }
 
-      & .book_tag {
+      & .tag {
         display: flex;
         flex-wrap: wrap;
         gap: 12rpx;
         margin-top: 8rpx;
-        & .tag {
+        & .tx {
           font-size: 22rpx;
           padding: 8rpx 16rpx;
           border-radius: 999rpx;
@@ -92,61 +87,48 @@
   }
 
   & .book_content {
-    padding: 24rpx;
+    padding: 32rpx 24rpx;
     
-    & .book_content_wrapper {
+    & .card {
+      padding: 24rpx;
+      margin-bottom: 32rpx;
       background: white;
       border-radius: 32rpx;
       box-shadow: 0 20rpx 50rpx rgba(71, 60, 140, 0.08);
-      & .content_card {
-        padding: 24rpx;
-        margin-bottom: 32rpx;
-      }
-      & .content_card:last-child {
-        margin-bottom: 0;
-      }
-    
-      & .content_card_title {
-        font-size: 36rpx;
-        font-weight: 600;
-        margin-bottom: 20rpx;
-        position: relative;
-      }
-    
-      & .summary_body {
-        font-size: 28rpx;
-        line-height: 1.7;
-      }
-    
-      & .highlight_body {
+    }
+    & .card:last-child {
+      margin-bottom: 0;
+    }
+  
+    & .title {
+      font-size: 36rpx;
+      font-weight: 600;
+      margin-bottom: 20rpx;
+      position: relative;
+    }
+  
+    & .summary {
+      margin-top: 24rpx;
+      font-size: 28rpx;
+      line-height: 1.7;
+    }
+  
+    & .highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 24rpx;
+      & .highlight {
         display: flex;
-        flex-direction: column;
-        gap: 24rpx;
-        & .highlight_item {
-          display: flex;
-          gap: 16rpx;
-          padding: 20rpx;
-          border-radius: 24rpx;
-          background: rgba(143, 109, 236, 0.12);
-          & .highlight_index {
-            width: 48rpx;
-            height: 48rpx;
-            border-radius: 16rpx;
-            background: @primary-color;
-            color: #fff;
-            font-size: 28rpx;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-        
-          & .highlight_text {
-            flex: 1;
-            font-size: 28rpx;
-            line-height: 1.6;
-            color: @text-primary-color;
-          }
+        gap: 16rpx;
+        padding: 20rpx;
+        border-radius: 24rpx;
+        background: rgba(143, 109, 236, 0.12);
+      
+        & .text {
+          flex: 1;
+          font-size: 28rpx;
+          line-height: 1.6;
+          color: @text-primary-color;
         }
       }
     }

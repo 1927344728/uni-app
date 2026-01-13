@@ -2,18 +2,20 @@
 	<view class="task_page">
 		<view class="task_toolbar">
       <view class="task_toolbar_select">
-        <uni-data-select
+        <uni-data-picker
           v-model="queryParam.targeter"
           :localdata="targeterList"
           :clear="true"
           placeholder="请选择任务人"
+          popup-title="请选择任务人"
           @clear="queryParam.targeter = null"
         />
-        <uni-data-select
+        <uni-data-picker
           v-model="queryParam.status"
           :localdata="statusList"
           :clear="true"
-          placeholder="请选择发布者"
+          placeholder="请选择状态"
+          popup-title="请选择状态"
           @clear="queryParam.status = null"
         />
       </view>

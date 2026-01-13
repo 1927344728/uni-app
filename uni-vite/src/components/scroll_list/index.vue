@@ -21,7 +21,7 @@
       />
     </uni-list>
     <view v-if="list.length && pagination.isLast" class="nomore_load_tips">
-      ~没有更多了~
+      ~没有更多了哦~
     </view>
     <view v-if="isLoad && !list.length" class="nothing_tips">
       ~什么都没有哦~

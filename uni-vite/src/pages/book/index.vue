@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="book_page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
-    <view class="book_header">
+    <view class="header">
       <view>
         <text class="title">一兆精选 · 图书馆</text>
         <text class="subtitle">沉浸阅读 · 私藏好书随时借阅</text>
@@ -8,25 +8,26 @@
     </view>
 
     <view v-if="isLoad" class="book_list">
-      <view class="book_item" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
-        <image class="book_cover" mode="aspectFill" :src="book.cover" />
+      <view v-if="bookList && bookList.length" class="book_item" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
+        <image class="book_cover" mode="aspectFill" :src="book.cover + '?imageMogr2/thumbnail/160x'" />
         <view class="book_content">
           <view class="book_header">
             <text class="book_title">{{ book.title }}</text>
-            <view class="book_score">
-              <text class="score">{{ book.score }}</text>
+            <view v-if="book.score" class="book_score">
+              <text class="score">{{ book.score.toFixed(1) }}</text>
               <text class="suffix">分</text>
             </view>
           </view>
 
           <view class="book_meta">
             <text>作者：{{ book.author }}</text>
-						<text class="dot">·</text>
+          </view>
+          <view class="book_meta">
 					  <text>书主：{{ book.owner }}</text>
           </view>
 
           <text class="book_desc">
-            {{ book.description }}
+            {{ textEllipsis(book.description, 32) }}
           </text>
 
           <view class="book_tag">
@@ -36,11 +37,17 @@
           </view>
         </view>
       </view>
-      <view v-if="pagination.isLast" class="nomore_load_tips">~没有更多书籍了~</view>
+      <view v-if="bookList && bookList.length && pagination.isLast" class="nomore_load_tips">
+        ~没有更多了哦~
+      </view>
+      <view v-if="!(bookList && bookList.length)" class="nothing_tips" style="padding-top: 30vh; padding-bottom: 30vh;">
+        ~什么都没有哦~
+      </view>
     </view>
   </scroll-view>
 </template>
 <script>
+import { textEllipsis } from '@/utils/common.js'
 import { getBookPageList } from '@/api/book.js'
 
 const initPagination = () => ({
@@ -67,13 +74,15 @@ export default {
     this.getBookPageList()
   },
 	methods: {
+    textEllipsis,
     getBookPageList () {
       const { queryParams, pagination } = this
       const { pageNum, pageSize } = pagination
+      const { subType, keyword } = queryParams
       this.isLoad = false
       return getBookPageList({
-        ...(queryParams || {}),
-        type: null,
+        type: subType || null,
+        keyword: keyword || '',
         pageNum,
         pageSize
       })

@@ -1,21 +1,21 @@
 <template>
-  <scroll-view v-if="book" class="book_detail_page" scroll-y>
-    <view class="book_hero">
-      <image class="book_cover" :src="book.cover" mode="aspectFill" />
-      <view class="hero_info">
-        <text class="book_title">{{ book.title }}</text>
-        <view class="book_meta">
-          <text class="book_meta_label">作者：</text>
-          <text class="book_meta_value">{{ book.author }}</text>
+  <view v-if="book" class="book_detail_page" scroll-y>
+    <view class="overview">
+      <image class="cover" :src="book.cover + '?imageMogr2/thumbnail/160x'" mode="aspectFill" />
+      <view class="info">
+        <text class="title">{{ book.title }}</text>
+        <view class="meta">
+          <text class="meta_label">作者：</text>
+          <text class="meta_value">{{ book.author }}</text>
         </view>
-        <view class="book_meta">
-          <text class="book_meta_label">书主：</text>
-          <text class="book_meta_value">{{ book.owner }}</text>
+        <view class="meta">
+          <text class="meta_label">书主：</text>
+          <text class="meta_value">{{ book.owner }}</text>
         </view>
-        <view class="book_rating">
-          <text class="book_rating_label">评分：</text>
-          <text class="book_rating_value">{{ book.score }}</text>
-          <view class="book_rating_stars">
+        <view v-if="book.score" class="rating">
+          <text class="rating_label">评分：</text>
+          <text class="rating_value">{{ book.score.toFixed(1) }}</text>
+          <view class="rating_stars">
             <text
               v-for="n in 5"
               :key="n"
@@ -26,30 +26,32 @@
             </text>
           </view>
         </view>
-        <view class="book_tag">
-          <text class="tag" v-for="tag in book.tags" :key="tag">{{ tag }}</text>
+        <view v-if="book.tags && book.tags.length" class="tag">
+          <text class="tx" v-for="tag in book.tags" :key="tag">
+            {{ tag }}
+          </text>
         </view>
       </view>
     </view>
 
     <view class="book_content">
-      <view class="book_content_wrapper">
-        <view v-if="book.summary" class="content_card">
-          <view class="content_card_title">书籍简介</view>
-          <text class="summary_body">{{ book.summary }}</text>
+      <view v-if="book.summaries" class="card">
+        <view class="title">书籍简介</view>
+        <view v-for="tx in [book.summaries].flat()" class="summary">
+          <rich-text :nodes="tx"></rich-text>
         </view>
+      </view>
 
-        <view v-if="book.highlights && book.highlights.length" class="content_card">
-          <view class="content_card_title">精彩内容</view>
-          <view class="highlight_body">
-            <view class="highlight_item" v-for="(highlight, index) in book.highlights" :key="index">
-              <text class="highlight_text">{{ highlight }}</text>
-            </view>
+      <view v-if="book.highlights && book.highlights.length" class="card">
+        <view class="title">精彩内容</view>
+        <view class="highlights">
+          <view class="highlight" v-for="(tx, index) in [book.highlights].flat()" :key="index">
+            <rich-text class="text" :nodes="tx"></rich-text>
           </view>
         </view>
       </view>
     </view>
-  </scroll-view>
+  </view>
 </template>
 
 <script>

@@ -25,17 +25,16 @@
       background: white;
       z-index: 1;
   
-      & .uni-stat__select {
+      & .uni-data-tree {
         flex: 1;
-        & ::v-deep .uni-icons {
-          font-size: 36rpx!important;
-        }
-        & ::v-deep .uni-select {
-          padding-left: 24rpx;
-          border-radius: 100rpx;
-        }
-        & ::v-deep .uni-select__input-box {
-          padding-right: 20rpx;
+        & ::v-deep {
+          & .input-value-border {
+            border-radius: 60px;
+          }
+          & .placeholder {
+            font-size: 14px;
+            color: #B3B3B3;
+          }
         }
       }
     }

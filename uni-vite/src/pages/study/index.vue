@@ -28,7 +28,7 @@
 <script>
 import { get as _get, cloneDeep } from 'lodash'
 import { textEllipsis } from '@/utils/common.js'
-import { getArticleTypeList, getArticlePageList } from '@/api'
+import { getArticleTypeList, getArticlePageList, getBookTypeList } from '@/api'
 import HeaderBar from '@/components/header_bar/index.vue'
 import SearchBar from '@/components/search_bar/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
@@ -61,7 +61,8 @@ export default {
       currentTabIndex: 1,
       typeOptions: [],
       queryParams: initQueryParam(),
-      articleTypeEnum: null
+      articleTypeEnum: null,
+      bookTypeEnum: null
     }
   },
   computed: {
@@ -85,13 +86,20 @@ export default {
       }
     },
     subTypeOptions () {
-      const { currentTabKey, articleTypeEnum, filteredItems } = this
+      const { currentTabKey, articleTypeEnum, bookTypeEnum, filteredItems } = this
+
       let subTypeOptions = []
-      const currentItem = filteredItems.find(e => e.key === currentTabKey)
-      if (articleTypeEnum && currentItem && currentItem.id) {
-        const currentType = articleTypeEnum.find(e => e.id === currentItem.id)
-        subTypeOptions = currentType.children || []
+      if (['course', 'read', 'score'].includes(currentTabKey) && articleTypeEnum) {
+        const currentItem = filteredItems.find(e => e.key === currentTabKey)
+        if (articleTypeEnum && currentItem && currentItem.id) {
+          const currentType = articleTypeEnum.find(e => e.id === currentItem.id)
+          subTypeOptions = currentType.children || []
+        }
       }
+      if (currentTabKey === 'book' && bookTypeEnum) {
+        subTypeOptions = bookTypeEnum
+      }
+
       return subTypeOptions.map(e => ({
         value: e.id,
         text: textEllipsis(e.name, 12)
@@ -132,6 +140,9 @@ export default {
   created () {
     getArticleTypeList().then(data => {
       this.articleTypeEnum = data || null
+    })
+    getBookTypeList().then(data => {
+      this.bookTypeEnum = data || null
     })
   },
   methods: {

@@ -1,5 +1,13 @@
 import request from './request.js';
 
+export function getBookTypeList(params, options = {}) {
+  return request({
+    url: 'api/book/getBookTypeList',
+    params,
+    ...options
+  });
+}
+
 export function getBookPageList(params, options = {}) {
   return request({
     url: 'api/book/getBookPageList',
