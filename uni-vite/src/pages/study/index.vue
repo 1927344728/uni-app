@@ -38,7 +38,7 @@ import BookList from '@/pages/book/index.vue'
 const items = [
   { id: 1, key: 'course', name: '课程', component: 'ScrollList' },
   { id: 3, key: 'read', name: '阅读', component: 'ScrollList' },
-  { id: 4, key: 'score', name: '成绩', component: 'ScrollList' },
+  { id: 4, key: 'culture', name: '文化', component: 'ScrollList' },
   { id: 8, key: 'book', name: '图书馆', component: 'BookList' },
 ]
 
@@ -89,7 +89,7 @@ export default {
       const { currentTabKey, articleTypeEnum, bookTypeEnum, filteredItems } = this
 
       let subTypeOptions = []
-      if (['course', 'read', 'score'].includes(currentTabKey) && articleTypeEnum) {
+      if (['course', 'read', 'culture'].includes(currentTabKey) && articleTypeEnum) {
         const currentItem = filteredItems.find(e => e.key === currentTabKey)
         if (articleTypeEnum && currentItem && currentItem.id) {
           const currentType = articleTypeEnum.find(e => e.id === currentItem.id)

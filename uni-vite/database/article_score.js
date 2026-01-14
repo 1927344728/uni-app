@@ -2,8 +2,8 @@ export default [
   {
     id: 2,
     uuid: '',
-    type: '4',
-    subType: '',
+    type: '1',
+    subType: '2',
     title: '李兮期中考试成绩（一年级上）',
     author: '李兆',
     note: '一年级上学期期中考试。兮小宝，要继续努力，不断进步哦！',

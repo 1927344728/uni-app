@@ -10,7 +10,8 @@ export const ARTICLE_TYPE_ENUM = [
     id: 1,
     name: '课程',
     children: [
-      { id: 1, name: '语文（一年级）' }
+      { id: 1, name: '课本' },
+      { id: 2, name: '成绩' }
     ]
   },
   {
@@ -29,7 +30,7 @@ export const ARTICLE_TYPE_ENUM = [
   },
   {
     id: 4,
-    name: '成绩',
+    name: '文化',
     children: []
   },
   {
