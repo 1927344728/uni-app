@@ -1,7 +1,7 @@
 <template>
   <view v-if="book" class="book_detail_page" scroll-y>
     <view class="overview">
-      <image class="cover" :src="book.cover + '?imageMogr2/thumbnail/160x'" mode="aspectFill" />
+      <image class="cover" :src="scaleImageWidthInCOS(book.cover, 160)" mode="aspectFill" />
       <view class="info">
         <text class="title">{{ book.title }}</text>
         <view class="meta">
@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { getBookById } from '@/api/book.js'
 export default {
   data () {
@@ -70,6 +71,9 @@ export default {
       })
     }
   },
+  methods: {
+    scaleImageWidthInCOS
+  }
 }
 </script>
 

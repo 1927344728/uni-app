@@ -36,7 +36,7 @@
       <view v-if="item.type === 'image'" :class="['detail_module', item.type, item.className]">
         <view v-for="(img, i) in [item.content].flat()" :key="img + i" class="detail_module_item">
           <image
-            :src="img + ((img || '').includes('?') ? '&' : '?') + 'imageMogr2/thumbnail/750x'"
+            :src="scaleImageWidthInCOS(img)"
             mode="widthFix"
             class="uni_image"
             @click="previewImage(img)"
@@ -71,7 +71,7 @@
         <view class="detail_module_item" @click="openVideoPopup(item)">
           <view class="image_wrapper">
             <image
-              :src="item.poster + ((item.poster || '').includes('?') ? '&' : '?') + 'imageMogr2/thumbnail/750x'"
+              :src="scaleImageWidthInCOS(item.poster)"
               mode="aspectFill"
               class="uni_image"
             />
@@ -94,7 +94,7 @@
         <view class="detail_module_wrapper">
           <image
             v-if="item.content[0]"
-            :src="item.content[0] + (item.content[0].includes('?') ? '&' : '?') + 'imageMogr2/thumbnail/750x'"
+            :src="scaleImageWidthInCOS(item.content[0])"
             class="uni_image"
             mode="widthFix"
           />
@@ -116,6 +116,7 @@ import qs from 'qs'
 import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { getUrlParams } from '@/utils/variables.js'
+import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
 import VideoPopup from '@/pages/video/componets/VideoPopup.vue'
 
@@ -187,6 +188,7 @@ export default {
     // #endif
   },
   methods: {
+    scaleImageWidthInCOS,
     onClickReadText (item, i) {
       const { ttsService, speakingIndex } = this
       ttsService.stop()

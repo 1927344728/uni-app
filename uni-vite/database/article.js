@@ -77,7 +77,7 @@ export const ARTICLE_LIST= [
     title: '汉语拼音发音学习',
     note: '点击任意拼音即可播放发音',
     seq: 99,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg?imageMogr2/thumbnail/160',
+    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg',
     // url: 'https://1927344728.github.io/web-page/hanyupinyin.html',
     url: '/static/hanyupinyin.html',
     jumpTo: 'webview'

@@ -9,7 +9,7 @@
 
     <view v-if="isLoad" class="book_list">
       <view v-if="bookList && bookList.length" class="book_item" v-for="book in bookList" :key="book.id" @click="onClickCard(book)">
-        <image class="book_cover" mode="aspectFill" :src="book.cover + '?imageMogr2/thumbnail/160x'" />
+        <image class="book_cover" mode="aspectFill" :src="scaleImageWidthInCOS(book.cover, 160)" />
         <view class="book_content">
           <view class="book_header">
             <text class="book_title">{{ book.title }}</text>
@@ -47,7 +47,7 @@
   </scroll-view>
 </template>
 <script>
-import { textEllipsis } from '@/utils/common.js'
+import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js'
 import { getBookPageList } from '@/api/book.js'
 
 const initPagination = () => ({
@@ -75,6 +75,7 @@ export default {
   },
 	methods: {
     textEllipsis,
+    scaleImageWidthInCOS,
     getBookPageList () {
       const { queryParams, pagination } = this
       const { pageNum, pageSize } = pagination

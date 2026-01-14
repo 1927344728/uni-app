@@ -1,3 +1,4 @@
+import qs from 'qs'
 import { get as _get } from 'lodash'
 
 export function getTimeStr(time) {
@@ -125,6 +126,20 @@ export function textEllipsis(text, maxLength) {
   if (!text) return '';
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';
+}
+
+export function getUrlParams (url) {
+  const _url = url || _get(location, 'href') || ''
+  const searchStr = _url ? _url.split('?')[1] : ''
+  return searchStr ? qs.parse(searchStr) : {}
+}
+
+export function scaleImageWidthInCOS (url, w = 750) {
+  const _url = url ? url.split('?')[0] : ''
+  const _scaleParam = `imageMogr2/thumbnail/${w}x`
+  let _paramString = qs.stringify(getUrlParams(_url))
+  _paramString = _paramString ? `?${_paramString}&${_scaleParam}` : `?${_scaleParam}`
+  return `${url}${_paramString}`
 }
 
 export function openUrl(item) {

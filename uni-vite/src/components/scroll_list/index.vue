@@ -7,7 +7,7 @@
         :class="[item.className]"
         :title="item.title"
         :note="item.note"
-        :thumb="item.image"
+        :thumb="scaleImageWidthInCOS(item.image, 120)"
         :showExtraIcon="true"
         :showBadge="!!item.badgeText"
         :badgeText="item.badgeText"
@@ -31,7 +31,7 @@
 
 <script>
 import qs from 'qs'
-import { openUrl } from '@/utils'
+import { openUrl, scaleImageWidthInCOS } from '@/utils'
 
 export default {
   props: {
@@ -59,6 +59,7 @@ export default {
 	},
 	methods: {
     openUrl,
+    scaleImageWidthInCOS,
     initPagination () {
       return {
         pageNum: this.pageNum || 0,

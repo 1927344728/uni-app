@@ -18,7 +18,7 @@
       <swiper class="swiper_box" @change="e => (currentBanner = e.detail.current)">
         <swiper-item v-for="item in bannerList" :key="item.id">
           <view class="swiper_item">
-            <image class="banner_img" :src="item.image" mode="aspectFill" @click="openUrl(item)"></image>
+            <image class="banner_img" :src="scaleImageWidthInCOS(item.image)" mode="aspectFill" @click="openUrl(item)"></image>
           </view>
         </swiper-item>
       </swiper>
@@ -42,7 +42,7 @@
       </view>
       <view class="list">
         <view v-for="a in recommendArticles" :key="a.id" class="item" @click="openUrl(a)">
-          <image class="image" :src="a.image" mode="aspectFill"></image>
+          <image class="image" :src="scaleImageWidthInCOS(a.image, 120)" mode="aspectFill"></image>
           <view class="content">
             <view class="title">{{ a.title }}</view>
             <view class="desc">{{ a.note }}</view>
@@ -62,7 +62,7 @@
 
 <script>
 import { get as _get } from 'lodash'
-import { openUrl } from '@/utils'
+import { openUrl, scaleImageWidthInCOS } from '@/utils'
 import { FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
 import { getUserInfo, getBannerList, getArticlePageList } from '@/api'
@@ -103,6 +103,7 @@ export default {
     console.log('onReachBottom')
   },
   methods: {
+    scaleImageWidthInCOS,
     openUrl (item) {
 			if (item && item) {
 				return openUrl(item)

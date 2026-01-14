@@ -26,7 +26,7 @@
             <view
               class="music_play_cover_wrapper"
               :style="{
-                backgroundImage: `url(${page.cover}?imageMogr2/thumbnail/750x)`
+                backgroundImage: `url(${scaleImageWidthInCOS(page.cover)})`
               }"
             />
 
@@ -117,6 +117,7 @@
 
 <script>
 import { get as _get } from 'lodash';
+import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { getMusicListByType, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
 
@@ -160,6 +161,7 @@ export default {
     };
   },
   computed: {
+    scaleImageWidthInCOS,
     swiperPages () {
       const { prevSong, currentSong, nextSong } = this;
       const pages = [];

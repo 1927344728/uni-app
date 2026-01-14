@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import { scaleImageWidthInCOS } from '@/utils/common.js'
 
 export default createStore({
   state: {

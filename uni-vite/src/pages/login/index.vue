@@ -2,7 +2,7 @@
   <view class="login_page">
     <image
       class="logo"
-      src="https://images.pexels.com/photos/1563355/pexels-photo-1563355.jpeg?imageMogr2/thumbnail/750x"
+      :src="scaleImageWidthInCOS('https://images.pexels.com/photos/1563355/pexels-photo-1563355.jpeg')"
       mode="widthFix"
     />
     <view class="form">
@@ -51,6 +51,7 @@
  </template>
 
  <script>
+  import { scaleImageWidthInCOS } from '@/utils/common'
   import { login } from '@/api';
 
   export default {
@@ -108,6 +109,7 @@
       this.requestUrl = options.requestUrl
     },
     methods: {
+      scaleImageWidthInCOS,
       onChange() {
         setTimeout(() => {
           this.$refs.Form.validate()

@@ -9,7 +9,7 @@ export default [
     note: '一年级上学期期中考试。兮小宝，要继续努力，不断进步哦！',
     seq: 0,
     time: 1766584009279,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/flowers-9115519_1280.jpg?imageMogr2/thumbnail/750x',
+    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/flowers-9115519_1280.jpg',
     content: [
       { type: 'text', content: '亲爱的李兮：' },
       { type: 'text', content: '这是你在一年级上学期期中考试的成绩单。' },
