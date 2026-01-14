@@ -1,5 +1,5 @@
 <template>
-  <scroll-view class="book_page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
+  <scroll-view class="book_page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="100">
     <view class="header">
       <view>
         <text class="title">一兆精选 · 图书馆</text>
@@ -52,7 +52,7 @@ import { getBookPageList } from '@/api/book.js'
 
 const initPagination = () => ({
   pageNum: 0,
-  pageSize: 5,
+  pageSize: 10,
   isLast: false
 })
 

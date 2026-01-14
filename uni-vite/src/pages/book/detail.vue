@@ -1,7 +1,7 @@
 <template>
   <view v-if="book" class="book_detail_page" scroll-y>
     <view class="overview">
-      <image class="cover" :src="scaleImageWidthInCOS(book.cover, 160)" mode="aspectFill" />
+      <image class="cover" :src="scaleImageWidthInCOS(book.cover, 160)" mode="aspectFill" @click="onPrivewImage(book.cover)" />
       <view class="info">
         <text class="title">{{ book.title }}</text>
         <view class="meta">
@@ -72,7 +72,12 @@ export default {
     }
   },
   methods: {
-    scaleImageWidthInCOS
+    scaleImageWidthInCOS,
+    onPrivewImage (url) {
+      uni.previewImage({
+        urls: [url]
+      })
+    }
   }
 }
 </script>

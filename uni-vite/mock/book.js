@@ -1,5 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
-import { BOOK_TYPE_ENUM, BOOK_LIST } from "/database/book.js"
+import { BOOK_TYPE_ENUM } from "/database/type_enum.js"
+import { BOOK_LIST } from "/database/book.js"
 import { basicTemplate } from './common'
 
 const getBookTypeList = () => {
