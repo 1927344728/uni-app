@@ -166,19 +166,19 @@ export default {
       let allVideoList = []
       let playedIds = []
 
+      if (video && typeof video === 'string') {
+        try {
+          currentVideo = JSON.parse(decodeURIComponent(video))
+        } catch (e) {}
+      } else {
+        currentVideo = video
+      }
+
       // 单视频播放：传视频 id 或者完整视频对象
       if (mode === 'single') {
-        if (video && typeof video === 'string') {
-          try {
-            currentVideo = JSON.parse(decodeURIComponent(video))
-          } catch (e) {}
-        } else {
-          currentVideo = video
-        }
         currentVideo = currentVideo || (await getVideoById({id})) || null
         allVideoList = currentVideo ? [currentVideo] : null
       }
-
       // 视频列表播放：传视频类型id，或者完整视频列表
       if (mode === 'menu') {
         if (_get(videos, 'length')) {
@@ -190,7 +190,6 @@ export default {
         currentVideo = allVideoList[Math.max(currentIndex, 0)]
         playedIds = allVideoList.map(e => e.id).filter((id, i) => i < currentIndex)
       }
-
       // 无限下滑：视频id，也可以指定 type
       if (mode === 'auto') {
         currentVideo = currentVideo || (await getVideoById({ id })) || null

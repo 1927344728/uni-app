@@ -25,6 +25,14 @@ export function getMusicById(params, options = {}) {
   });
 }
 
+export function getMusicByIds(params, options = {}) {
+  return request({
+    url: 'api/music/getMusicByIds',
+    params,
+		...options
+  });
+}
+
 export function getMusicByRandom(params, options = {}) {
   return request({
     url: 'api/music/getMusicByRandom',

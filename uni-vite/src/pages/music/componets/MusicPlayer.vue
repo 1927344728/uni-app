@@ -10,14 +10,15 @@
     >
       <swiper-item v-for="page in swiperPages" :key="page.id" >
         <view
+          v-if="page"
           class="music_play_swiper_item"
           :class="[`music_play_swiper_item--${page.key}`, `music_play_switch--${page.key}`]"
           :style="getPageBgStyle(page)"
         >
           <image
-            v-if="page && page.cover"
+            v-if="page.cover"
             class="music_play_bg"
-            :src="page.cover"
+            :src="scaleImageWidthInCOS(page.cover)"
             mode="aspectFill"
           />
           <view class="music_play_blur_mask"></view>
@@ -26,16 +27,16 @@
             <view
               class="music_play_cover_wrapper"
               :style="{
-                backgroundImage: `url(${scaleImageWidthInCOS(page.cover)})`
+                backgroundImage: `url('${scaleImageWidthInCOS(page.cover)}')`
               }"
             />
 
             <view class="music_play_titles">
               <text class="music_play_song">
-                {{ (page && page.title) || '音乐' }}
+                {{ page.title || '' }}
               </text>
               <text class="music_play_artist">
-                {{ (page && page.singer) || '未知歌手' }}
+                {{ page.singer || '未知歌手' }}
               </text>
             </view>
 
@@ -118,7 +119,7 @@
 <script>
 import { get as _get } from 'lodash';
 import { scaleImageWidthInCOS } from '@/utils/common.js'
-import { getMusicListByType, getMusicByRandom } from '@/api/music.js';
+import { getMusicById, getMusicByIds, getMusicListByType, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
 
 export default {
@@ -129,23 +130,16 @@ export default {
       type: String,
       default: 'auto'
     },
-    id: {
-      type: [String, Number],
-      default: null
-    },
-    type: {
-      type: [String, Number],
-      default: null
-    },
-    song: {
-      type: Object,
-      default: () => ({})
-    }
+    id: [String, Number],
+    ids: [String, Array],
+    type: [String, Number],
+    song: [Object, String],
+    songs: Array
   },
   data () {
     return {
       allMusicList: [],
-      playedMusicIds: [],
+      playedIds: [],
       currentSong: null,
       prevSong: null,
       nextSong: null,
@@ -161,7 +155,6 @@ export default {
     };
   },
   computed: {
-    scaleImageWidthInCOS,
     swiperPages () {
       const { prevSong, currentSong, nextSong } = this;
       const pages = [];
@@ -205,16 +198,51 @@ export default {
   },
   methods: {
     formatTime,
+    scaleImageWidthInCOS,
     async init () {
-      const { mode, id, type, song } = this;
+      let { mode, id, ids, type, song, songs } = this;
+
       let currentSong = null
-      if (mode === 'menu') {
-        this.allMusicList = await getMusicListByType({type}).catch(() => []);
-        currentSong = id ? this.allMusicList.find(s => s.id === id) : this.allMusicList[0];
+      let allMusicList = []
+      let playedIds = []
+      
+      if (song && typeof song === 'string') {
+        try {
+          currentSong = JSON.parse(decodeURIComponent(song))
+        } catch (e) {}
       } else {
-        this.allMusicList.push(song);
-        currentSong = song;
+        currentSong = song
       }
+      if (ids && typeof ids === 'string') {
+        try {
+          ids = JSON.parse(decodeURIComponent(ids))
+        } catch (e) {}
+      }
+
+      // 单音频播放：传音频 id 或者完整音频对象
+      if (mode === 'single') {
+        currentSong = currentSong || (await getMusicById({id})) || null
+        allMusicList = currentSong ? [currentSong] : null
+      }
+      // 音频列表播放：传音频类型id，或者完整音频列表
+      if (mode === 'menu') {
+        if (_get(songs, 'length')) {
+          allMusicList = songs
+        } else if (ids) {
+          allMusicList = await getMusicByIds({ids})
+        } else if (type) {
+          allMusicList = await getMusicListByType({type})
+        }
+        const currentIndex = allMusicList.findIndex(e => String(e.id) === String(id))
+        currentSong = allMusicList[Math.max(currentIndex, 0)]
+        playedIds = allMusicList.map(e => e.id).filter((id, i) => i < currentIndex)
+      }
+      // 无限下滑：音频id，也可以指定 type
+      if (mode === 'auto') {
+        currentSong = currentSong || (await getMusicById({id})) || null
+        allMusicList = currentSong ? [currentSong] : null
+      }
+
       if (!currentSong || !currentSong.url) {
         uni.showToast({
           title: '未找到播放歌曲',
@@ -222,36 +250,38 @@ export default {
         });
         return;
       }
-      this.playedMusicIds = [];
+      this.playedIds = [];
+      this.allMusicList = allMusicList
       this.prevSong = null;
       this.currentSong = currentSong;
       this.nextSong = await this.getNextSong()
       this.createAudio();
     },
     getPageBgStyle (song) {
-      const cover = _get(song, 'cover');
-      return cover ? { '--music_play_bg': `url(${cover})` } : {};
+      const _cover = _get(song, 'cover');
+      return _cover ? { '--music_play_bg': `url(${_cover})` } : {};
     },
     getPrevSong () {
-      const { mode, allMusicList, playedMusicIds } = this;
+      const { mode, allMusicList, playedIds } = this;
       let prevSong = null;
       if (['auto', 'menu'].includes(mode)) {
-        if (playedMusicIds.length > 0) {
-          const prevId = playedMusicIds[playedMusicIds.length - 1];
+        if (playedIds.length > 0) {
+          const prevId = playedIds[playedIds.length - 1];
           prevSong = allMusicList.find(song => song.id === prevId) || null;
         }
       }
       return prevSong
     },
     async getNextSong () {
-      const { mode, allMusicList, playedMusicIds, currentSong, swiperPages } = this;
+      const { mode, type, allMusicList, playedIds, currentSong, swiperPages } = this;
       const currentId = _get(currentSong, 'id');
       const allMusicLength = _get(allMusicList, 'length') || 0;
       let newSong = null
       if (['auto'].includes(mode)) {
         newSong = await getMusicByRandom({
-          playingMusicIds: swiperPages.map(e => e.id),
-          playedMusicIds
+          type,
+          playingIds: swiperPages.map(e => e.id),
+          playedIds
         }).catch(() => null);
         if (newSong) {
           allMusicList.push(newSong);
@@ -394,7 +424,7 @@ export default {
         return
       };
       if (prevSong) {
-        this.playedMusicIds.pop();
+        this.playedIds.pop();
         this.currentSong = prevSong
         this.prevSong = this.getPrevSong()
         this.nextSong = currentSong
@@ -411,7 +441,7 @@ export default {
         return;
       }
       const currentId = _get(currentSong, 'id');
-      this.playedMusicIds.push(currentId);
+      this.playedIds.push(currentId);
       this.prevSong = currentSong
       this.currentSong = nextSong;
       this.nextSong = null

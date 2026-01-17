@@ -49,11 +49,6 @@ export const ARTICLE_TYPE_ENUM = [
     children: []
   },
   {
-    id: 8,
-    name: '图书馆',
-    children: []
-  },
-  {
     id: 99,
     name: '其他',
     children: []

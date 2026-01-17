@@ -6,7 +6,7 @@
       :list="filteredItems"
       @change="onChangeTab"
     />
-    <SearchBar v-if="['travel', 'ana'].includes(currentTabKey)" v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
+    <SearchBar v-if="['music', 'travel', 'ana'].includes(currentTabKey)" v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
       <swiper-item v-for="item in filteredItems" :key="item.key">
         <component
@@ -26,7 +26,7 @@
   </view>
 </template>
 <script>
-import { get as _get } from 'lodash'
+import { get as _get, cloneDeep } from 'lodash'
 import { getArticleTypeList, getArticlePageList } from '@/api'
 import { textEllipsis } from '@/utils/common.js'
 import HeaderBar from '@/components/header_bar/index.vue'
@@ -63,7 +63,7 @@ export default {
       currentTabKey: 'music',
       currentTabIndex: 0,
       articleTypeEnum: null,
-      queryParams: initQueryParam(),
+      queryParams: initQueryParam()
     }
   },
   computed: {
@@ -75,7 +75,7 @@ export default {
       return {
         [currentTabKey]: true,
         with_header_bar: filteredItems.length > 1,
-        with_search_bar: ['travel', 'ana'].includes(currentTabKey),
+        with_search_bar: ['music', 'travel', 'ana'].includes(currentTabKey),
         with_tab_module: true,
         with_footer_bar: true
       }
@@ -84,7 +84,7 @@ export default {
       const { currentTabKey, articleTypeEnum, filteredItems } = this
       let subTypeOptions = []
       const currentItem = filteredItems.find(e => e.key === currentTabKey)
-      if (articleTypeEnum && currentItem && currentItem.id) {
+      if (articleTypeEnum && currentItem && currentItem.id && ['travel', 'ana'].includes(currentTabKey)) {
         const currentType = articleTypeEnum.find(e => e.id === currentItem.id)
         subTypeOptions = currentType.children || []
       }

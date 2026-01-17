@@ -71,7 +71,7 @@ export default {
       let options = cloneDeep(items).filter(o => o.component)
       if (articleTypeEnum) {
         const typeIds = articleTypeEnum.map(e => e.id)
-        options = options.filter(e => typeIds.includes(e.id))
+        options = options.filter(e => typeIds.includes(e.id) || e.key === 'book')
       }
       return options
     },

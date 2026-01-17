@@ -1,46 +1,75 @@
 <template>
-  <scroll-view class="life-music-page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="50">
-    <view class="music-section">
-      <view class="music-quick-grid">
-        <view
-          v-for="item in musicMenuList"
-          :key="item.id"
-          class="music-quick-card"
-          @click="onClickCard(item)"
-        >
-          <image class="music-quick-card__icon" :src="item.icon" mode="aspectFill" />
-          <view class="music-quick-card__info">
-            <text class="music-quick-card__title">{{ item.title }}</text>
-            <text class="music-quick-card__desc">{{ item.desc }}</text>
-          </view>
+  <scroll-view class="music_page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="100" @scroll="onScroll">
+    <view class="music_menu">
+      <view
+        v-for="item in menuList"
+        :key="item.id"
+        class="card"
+        @click="onClickMenu(item)"
+      >
+        <image class="icon" :src="scaleImageWidthInCOS(item.icon, 120)" mode="aspectFill" />
+        <view class="info">
+          <text class="title">{{ item.title }}</text>
+          <text class="desc">{{ item.desc }}</text>
         </view>
       </view>
     </view>
 
-    <view class="music-section">
-      <view class="music-section__header">
-        <text class="music-section__title">精选歌曲</text>
+    <view class="navigation_bar">
+      <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchstart.stop @touchmove.stop @touchend.stop>
+        <view
+          v-for="m in [{ id: null, name: '全部' }].concat(musicTypeEnum)"
+          :key="m.id"
+          class="tab"
+          :class="{
+            active: type === m.id
+          }"
+          @click="onClickTab(m)"
+        >
+          {{ m.name }}
+        </view>
       </view>
-      <view class="music-playlist-list">
+    </view>
+
+    <view class="music_main">
+      <view class="header">
+        <text class="title">精选歌曲</text>
+      </view>
+      <view class="list">
         <view
           v-for="item in musicList"
           :key="item.id"
-          class="music-playlist-card"
+          class="card"
           @click="onClickMusic(item)"
         >
-          <image class="music-playlist-card__cover" :src="item.cover" mode="aspectFill" />
-          <view class="music-playlist-card__body">
-            <text class="music-playlist-card__title">{{ item.title }}</text>
-            <text class="music-playlist-card__desc">{{ item.desc }}</text>
+          <image class="cover" :src="scaleImageWidthInCOS(item.cover, 120)" mode="aspectFill" />
+          <view class="body">
+            <text class="title">{{ item.title }}</text>
+            <text class="singer">{{ item.singer }}</text>
           </view>
         </view>
       </view>
-      <div v-if="!pagination.isLast" class="nomore_load_tips">~没有更多了~</div>
+      <view v-if="musicList.length && pagination.isLast" class="nomore_load_tips">
+        ~没有更多了哦~
+      </view>
+      <view v-if="isLoaded && !musicList.length" class="nothing_tips" :style="{ paddingTop: '20vh', paddingBottom: '20vh' }">
+        ~什么都没有哦~
+      </view>
     </view>
   </scroll-view>
 </template>
 <script>
+import qs from 'qs'
+import { cloneDeep } from 'lodash'
+import { MUSIC_TYPE_ENUM } from '/database/type_enum.js'
+import { scaleImageWidthInCOS } from '@/utils'
 import { getMusicMenuList, getMusicPageList } from '@/api'
+
+const initPagination = () => ({
+  pageNum: 0,
+  pageSize: 10,
+  isLast: false
+})
 export default {
   props: {
     queryParams: {
@@ -50,60 +79,70 @@ export default {
   },
   data () {
     return {
-      musicMenuList: [],
+      isLoaded: false,
+      type: 4,
+      menuList: [],
+      musicTypeEnum: cloneDeep(MUSIC_TYPE_ENUM),
       musicList: [],
-      pagination: {
-        pageNum: 0,
-        pageSize: 3,
-        isLast: false
-      }
+      pagination: initPagination(),
+      isFixedNavBar: false,
     }
   },
   created () {
     getMusicMenuList().then((data) => {
-      this.musicMenuList = data || []
+      this.menuList = data || []
     })
     this.refreshList()
   },
   methods: {
+    scaleImageWidthInCOS,
     getMusicPageList () {
-      const { queryParams, pagination } = this
+      const { queryParams, type, pagination } = this
+      this.isLoaded = false
       return getMusicPageList({
-        ...(queryParams || {}),
+        type,
+        keyword: queryParams.keyword || '',
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then((data) => {
         this.musicList = this.musicList.concat(data || [])
+        if ((data || []).length < pagination.pageSize) {
+          this.pagination.isLast = true
+        }
+      }).finally(() => {
+        this.isLoaded = true
       })
     },
     refreshList () {
       this.musicList = []
-      this.pagination.pageNum = 0
+      this.pagination = initPagination()
       this.getMusicPageList()
     },
-    onClickCard (item) {
+    onClickMenu (item) {
       if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/music/play?mode=menu&type=${item.id}`
+          url: `/pages/music/play?mode=menu&ids=${encodeURIComponent(JSON.stringify(item.songIds))}`
         })
-        return
       }
-      uni.showToast({
-        title: '暂无播放歌单',
-        icon: 'none'
-      })
+    },
+    onClickTab (item) {
+      this.type = item.id
+      this.refreshList()
     },
     onClickMusic (item) {
       if (item && item.id) {
+        const params = {
+          mode: 'auto',
+          id: item.id,
+          type: this.type || undefined
+        }
         uni.navigateTo({
-          url: `/pages/music/play?mode=auto&id=${item.id}`
+          url: `/pages/music/play?${qs.stringify(params)}`
         })
-        return
       }
-      uni.showToast({
-        title: '暂无播放地址',
-        icon: 'none'
-      })
+    },
+    onScroll (e) {
+      this.isFixedNavBar = e.detail.scrollTop > 100
     },
     onScrollToLower () {
       this.pagination.pageNum ++

@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="common_list_module" scroll-y :lower-threshold="50" @scrolltolower="scrolltolower">
-    <uni-list v-if="isLoad && list.length">
+    <uni-list v-if="isLoaded && list.length">
       <uni-list-item
         v-for="item in list"
         :key="item.id"
@@ -23,7 +23,7 @@
     <view v-if="list.length && pagination.isLast" class="nomore_load_tips">
       ~没有更多了哦~
     </view>
-    <view v-if="isLoad && !list.length" class="nothing_tips">
+    <view v-if="isLoaded && !list.length" class="nothing_tips">
       ~什么都没有哦~
     </view>
   </scroll-view>
@@ -48,7 +48,7 @@ export default {
   },
 	data () {
 		return {
-      isLoad: false,
+      isLoaded: false,
 			list: [],
       pagination: this.initPagination(),
       cacheMap: {}
@@ -69,7 +69,7 @@ export default {
     },
 		async getList () {
       const { queryParams, pagination, list, cacheMap } = this
-      this.isLoad = false
+      this.isLoaded = false
       const params = {
         ...(queryParams || {}),
         pageNum: pagination.pageNum,
@@ -85,7 +85,7 @@ export default {
       if (!data || data.length < pagination.pageSize) {
         pagination.isLast = true
       }
-      this.isLoad = true
+      this.isLoaded = true
     },
     refreshList () {
       this.list = []
