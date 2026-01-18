@@ -1,4 +1,4 @@
-import { method } from "lodash"
+import { method, transform } from "lodash"
 
 <template>
   <div
@@ -20,7 +20,7 @@ import { method } from "lodash"
       codec="hardware"
       :controls="false"
       :enable-play-gesture="true"
-      :objectFit="video.objectFit || 'contain'"
+      :objectFit="video.objectFit || 'cover'"
       :show-fullscreen-btn="false"
       :enable-progress-gesture="false"
       :show-progress="false"
@@ -36,9 +36,8 @@ import { method } from "lodash"
         &#xe609;
       </text>
     </cover-view>
-
     <cover-view v-if="video.isShowCover" :style="fillScreenStyle" :class="[video.cover ? 'video_image' : 'video_image_mask']">
-      <cover-image v-if="video.cover" :src="video.cover"  :style="fillScreenStyle" />
+      <cover-image v-if="video.cover" :src="video.cover" :style="coverImageStyle" />
     </cover-view>
 
     <div
@@ -62,6 +61,7 @@ import { method } from "lodash"
   </div>
 </template>
 <script>
+import { cloneDeep } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { textEllipsis } from '@/utils/common.js';
 
@@ -71,6 +71,10 @@ export default {
     video: {
       type: Object,
       required: true
+    },
+    objectFit: {
+      type: String,
+      default: 'cover'
     },
     width: Number,
     height: Number
@@ -82,6 +86,17 @@ export default {
         height: `${this.height}px`,
         width: `${this.width}px`
       }
+    },
+    coverImageStyle () {
+      const { video, width, height, fillScreenStyle } = this
+      const style = cloneDeep(fillScreenStyle)
+      if (video && video.objectFit === 'contain') {
+        const calcHeight = video.ratio ? width / video.ratio : 240
+        style.position = 'absolute'
+        style.top = `${height / 2 -  calcHeight / 2}px`
+        style.height = `${calcHeight}px`
+      }
+      return style
     }
   },
   methods: {

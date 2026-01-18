@@ -6,7 +6,7 @@
       :list="filteredItems"
       @change="onChangeTab"
     />
-    <SearchBar v-if="['music', 'travel', 'ana'].includes(currentTabKey)" v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
+    <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
       <swiper-item v-for="item in filteredItems" :key="item.key">
         <component
@@ -75,7 +75,7 @@ export default {
       return {
         [currentTabKey]: true,
         with_header_bar: filteredItems.length > 1,
-        with_search_bar: ['music', 'travel', 'ana'].includes(currentTabKey),
+        with_search_bar: true,
         with_tab_module: true,
         with_footer_bar: true
       }

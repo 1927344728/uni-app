@@ -1,24 +1,24 @@
 export const BOOK_TYPE_ENUM = [
-  { id: 1, name: '文化' },
-  { id: 2, name: '学习教育' },
-  { id: 3, name: '少儿读物' },
-  { id: 4, name: '名著' },
-  { id: 5, name: '典籍' },
-  { id: 6, name: '文学' },
-  { id: 7, name: '历史' },
-  { id: 8, name: '天文地理' },
-  { id: 10, name: '处世智慧' },
-  { id: 15, name: '技术' },
-  { id: 99, name: '其他' },
+  { typeId: 1, name: '文化' },
+  { typeId: 2, name: '学习教育' },
+  { typeId: 3, name: '少儿读物' },
+  { typeId: 4, name: '名著' },
+  { typeId: 5, name: '典籍' },
+  { typeId: 6, name: '文学' },
+  { typeId: 7, name: '历史' },
+  { typeId: 8, name: '天文地理' },
+  { typeId: 10, name: '处世智慧' },
+  { typeId: 15, name: '技术' },
+  { typeId: 99, name: '其他' },
 ]
 
 export const MUSIC_TYPE_ENUM = [
-  { id: 1, name: '推荐' },
-  { id: 2, name: '精选' },
-  { id: 3, name: '珍藏' },
-  { id: 4, name: '纯音乐' },
-  { id: 5, name: '经典' },
-  { id: 99, name: '其他' },
+  { typeId: 1, name: '推荐' },
+  { typeId: 2, name: '精选' },
+  { typeId: 3, name: '珍藏' },
+  { typeId: 4, name: '纯音乐' },
+  { typeId: 5, name: '经典' },
+  { typeId: 99, name: '其他' },
 ]
 
 export const MUSIC_MENU_LIST = [
@@ -51,4 +51,27 @@ export const MUSIC_MENU_LIST = [
     desc: '空冥・纯音乐',
     songIds: [99, 96, 108, 102, 97, 85, 95, 100, 105, 92]
   }
+]
+
+
+export const VIDEO_TYPE_ENUM = [
+  { typeId: 1, name: 'MV', desc: '视觉与听觉的盛宴' },
+  { typeId: 2, name: '短视频', desc: '精彩瞬间速递' },
+  { typeId: 3, name: '日常', desc: '日常生活精彩瞬间' },
+  { typeId: 4, name: '其他', desc: '' },
+]
+
+export const VIDEO_MENU_LIST = [
+  {
+    id: 1,
+    title: 'banner',
+    desc: 'banner',
+    videoIds: [7, 4, 1]
+  },
+  {
+    id: 2,
+    title: '推荐视频',
+    desc: '推荐视频',
+    videoIds: [8, 7, 5, 4, 6]
+  },
 ]

@@ -119,7 +119,7 @@
 <script>
 import { get as _get } from 'lodash';
 import { scaleImageWidthInCOS } from '@/utils/common.js'
-import { getMusicById, getMusicByIds, getMusicListByType, getMusicByRandom } from '@/api/music.js';
+import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
 
 export default {
@@ -231,7 +231,7 @@ export default {
         } else if (ids) {
           allMusicList = await getMusicByIds({ids})
         } else if (type) {
-          allMusicList = await getMusicListByType({type})
+          allMusicList = await getMusicPageList({type})
         }
         const currentIndex = allMusicList.findIndex(e => String(e.id) === String(id))
         currentSong = allMusicList[Math.max(currentIndex, 0)]

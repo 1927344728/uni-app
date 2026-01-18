@@ -8,7 +8,6 @@ export function getMusicMenuList(params, options = {}) {
   });
 }
 
-
 export function getMusicPageList(params, options = {}) {
   return request({
     url: 'api/music/getMusicPageList',
@@ -36,14 +35,6 @@ export function getMusicByIds(params, options = {}) {
 export function getMusicByRandom(params, options = {}) {
   return request({
     url: 'api/music/getMusicByRandom',
-    params,
-		...options
-  });
-}
-
-export function getMusicListByType(params, options = {}) {
-  return request({
-    url: 'api/music/getMusicListByType',
     params,
 		...options
   });

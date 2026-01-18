@@ -54,7 +54,7 @@
 
 <script>
 import { get as _get } from 'lodash'
-import { getVideoById, getVideoListByType, getVideoByRandom } from '@/api'
+import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
 import SwiperItem from './swiper_item'
 
 const MAX_SWIPER_ITEM_SIZE = 5
@@ -71,12 +71,12 @@ const initVideoInfo = () => ({
   title: '',
   url: '',
   cover: '',
-  bg: '',
   desc: "",
   publisher: '',
   isPlaying: false,
   isShowCover: true,
-  objectFit: 'fill'
+  objectFit: 'cover',
+  ratio: null
 })
 
 export default {
@@ -89,6 +89,7 @@ export default {
       default: 'auto'
     },
     id: [Number, String],
+    ids: [Array, String],
     type: [Number, String],
     video: [Object, String],
     videos: Array
@@ -163,47 +164,55 @@ export default {
   },
   methods: {
     async init () {
-      const { mode, id, type, video, videos } = this
+      let { mode, id, ids, type, video, videos } = this
       this.getSystemInfo()
-      let _video = null
-      let _videos = []
+      let currentVideo = null
+      let allVideoList = []
+
+      if (video && typeof video === 'string') {
+        try {
+          currentVideo = JSON.parse(decodeURIComponent(video))
+        } catch (e) {}
+      } else {
+        currentVideo = video
+      }
+      if (ids && typeof ids === 'string') {
+        try {
+          ids = JSON.parse(decodeURIComponent(ids))
+        } catch (e) {}
+      }
 
       // 单视频播放：传视频 id 或者完整视频对象
       if (mode === 'single') {
-        if (video && typeof video === 'string') {
-          try {
-            _video = JSON.parse(decodeURIComponent(video))
-          } catch (e) {}
-        } else {
-          _video = video
-        }
-        _video = _video || (await getVideoById({id})) || null
-        _videos = _video ? [_video] : null
+        currentVideo = currentVideo || (await getVideoById({id})) || null
+        allVideoList = currentVideo ? [currentVideo] : null
       }
 
       // 视频列表播放：传视频类型id，或者完整视频列表
       if (mode === 'menu') {
         if (_get(videos, 'length')) {
-          _videos = videos
-        } else if (type) {
-          _videos = await getVideoListByType({type})
+          allVideoList = videos
+        } else if (ids) {
+          allVideoList = await getVideoByIds({ids})
+        }  else if (type) {
+          allVideoList = await getVideoPageList({type})
         }
       }
 
       // 无限下滑：视频id，也可以指定 type
       if (mode === 'auto') {
-        _video = _video || (await getVideoById({ id })) || null
-        _videos = _video ? [_video] : null
+        currentVideo = currentVideo || (await getVideoById({ id })) || null
+        allVideoList = currentVideo ? [currentVideo] : null
       }
 
-      if (!_get(_videos, 'length')) {
+      if (!_get(allVideoList, 'length')) {
         uni.showToast({
           title: '没有视频',
           icon: "none"
         })
         return
       }
-      const videoList = (_videos || []).map((e, i) => {
+      const videoList = (allVideoList || []).map((e, i) => {
         const item = initVideoInfo()
         for (const k in e) {
           item[k] = e[k]

@@ -13,6 +13,47 @@ body {
   font-family: iconfont;
 }
 
+.navigation_bar {
+  height: 100rpx;
+  & .tabs {
+    padding: 24rpx 24rpx;
+    font-size: 0;
+    white-space: nowrap;
+    background: @bg-patch-color;
+    border-bottom: 1px solid @border-primary-color;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      display: inline-block;
+      min-width: 4em;
+      margin-right: 16rpx;
+      height: 48rpx;
+      font-size: 24rpx;
+      line-height: 48rpx;
+      text-align: center;
+      color: @text-patch1-color;
+      background-color: white;
+      border-radius: 100rpx;
+      border: 2rpx solid @border-primary-color;
+    }
+    .tab.active {
+      font-weight: bold;
+      color: @primary-color;
+      border: 2rpx solid @primary-color;
+    }
+  }
+  & .tabs.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+}
+
 .nomore_load_tips {
   padding: 30rpx 24rpx;
   padding-bottom: calc(30rpx - constant(safe-area-inset-bottom));

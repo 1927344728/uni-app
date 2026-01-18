@@ -257,7 +257,6 @@ export default {
           publisher: _get(authorItem, 'content') || '',
           url: e.content,
           cover: e.poster,
-          bg: e.poster,
           objectFit: e.objectFit || 'cover'
         }))
       const video = videos.find(e => e.url === item.content)

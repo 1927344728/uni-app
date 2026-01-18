@@ -1,130 +1,353 @@
-export const VIDEO_TYPE_ENUM = [
-  { id: 1, name: ''},
-]
-
-export const VIDEO_MENU_LIST = [
-  {
-    id: 1,
-    icon: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/d055efbe683f9117949d5fa4088f0d55.jpg',
-    title: '音乐MV',
-    desc: '视觉与听觉的盛宴',
-  },
-  {
-    id: 2,
-    icon: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/d055efbe683f9117949d5fa4088f0d55.jpg',
-    title: '舞蹈',
-    desc: '舞蹈欣赏和个人表演',
-  },
-  {
-    id: 3,
-    icon: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/d055efbe683f9117949d5fa4088f0d55.jpg',
-    title: '生活',
-    desc: '日常生活精彩瞬间',
-  },
-  {
-    id: 4,
-    icon: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/d055efbe683f9117949d5fa4088f0d55.jpg',
-    title: '亲子阅读',
-    desc: '《和大人一起读》系列视频',
-  }
-]
-
 export const VIDEO_LIST = [
   {
     id: 1,
     type: '2',
     title: '拉丁舞',
+    fileName: 'WeChat_20250505092731.mp4',
     desc: '兮小宝学拉丁舞的教学视频',
     publisher: '李兆',
-    seq: 0,
+    seq: -1,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/WeChat_20250505092731.mp4',
-    cover: 'https://imgs.699pic.com/images/600/351/234.jpg!detail.v1',
-    bg: 'https://imgs.699pic.com/images/600/351/234.jpg!detail.v1',
-    bg: 'https://hellorfimg.zcool.cn/large/2453961665.jpg',
-    objectFit: 'contain'
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/WeChat_20250505092731.jpg',
+    objectFit: 'contain',
+    ratio: 0.75
   },
   {
     id: 2,
     type: '3',
-    title: '图书馆',
-    desc: '兮小宝<span style="color: red;">图书馆</span>一日游兮小宝图书馆。<br/>一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝图书馆一日游兮小宝书馆1111',
-    richText: [
-      {
-        name: 'div',
-        children: [
-          {
-            type: 'text',
-            text: '兮小宝',
-            attrs: {
-              style: 'color: white;'
-            },
-          },
-          {
-            name: 'text',  // nvue 中需要用 text 标签包裹
-            attrs: {
-              style: 'color: red;'
-            },
-            text: '图书馆'
-          },
-          {
-            type: 'text',
-            text: '一日游兮小宝图书馆。',
-            attrs: {
-              style: 'color: white;'
-            },
-          }
-        ]
-      }
-    ],
+    title: '兮小宝图书馆看书',
+    fileName: 'b94aa424c7112d7152832de86723eec9.mp4',
+    desc: '去哪玩不如去图书馆，看书也是很好的选择',
     publisher: '李兆',
-    seq: 0,
+    seq: -1,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/b94aa424c7112d7152832de86723eec9.mp4',
-    cover: 'https://hellorfimg.zcool.cn/large/2453961665.jpg',
-    bg: '',
-    objectFit: 'cover'
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/b94aa424c7112d7152832de86723eec9.jpg',
+    objectFit: 'cover',
+    ratio: null
   },
   {
     id: 3,
-    type: '2',
-    title: '舞蹈表演',
-    desc: '兮小宝即兴舞蹈表演',
+    type: '3',
+    title: '兮小宝舞蹈表演',
+    fileName: 'befd8a2f5bbd8aad7bcb0a03e622a580.mp4',
+    desc: '突然找出小花伞，来个舞蹈表演',
     publisher: '李兆',
     seq: 0,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/befd8a2f5bbd8aad7bcb0a03e622a580.mp4',
-    cover: 'https://hellorfimg.zcool.cn/large/2453961665.jpg',
-    objectFit: 'cover'
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/befd8a2f5bbd8aad7bcb0a03e622a580.jpg',
+    objectFit: 'cover',
+    ratio: null
   },
   {
     id: 4,
-    type: '4',
-    title: '《懂礼貌》',
-    desc: '《和大人一起读》第二册',
+    type: '1',
+    title: '美人谷',
+    fileName: '阿兰-美人谷.mp4',
+    desc: '阿兰',
     publisher: '李兆',
     seq: 0,
-    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/27bfb6b8539391fec0769c7bdd20388d.mp4',
-    cover: 'https://hellorfimg.zcool.cn/large/2453961665.jpg',
-    objectFit: 'cover'
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E9%98%BF%E5%85%B0-%E7%BE%8E%E4%BA%BA%E8%B0%B7.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E9%98%BF%E5%85%B0-%E7%BE%8E%E4%BA%BA%E8%B0%B7.jpg',
+    objectFit: 'contain',
+    ratio: null
   },
   {
     id: 5,
-    type: '4',
-    title: '《了不起的黑夜娃娃》',
-    desc: '《和大人一起读》第二册',
+    type: '1',
+    title: '飞舞',
+    fileName: '王冰洋-飞舞.mkv',
+    desc: '王冰洋',
     publisher: '李兆',
     seq: 0,
-    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/c9bd69b4cd4a6f79b7c5bfca17e3dcf3.mp4',
-    cover: 'https://hellorfimg.zcool.cn/large/2453961665.jpg',
-    objectFit: 'cover'
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E7%8E%8B%E5%86%B0%E6%B4%8B-%E9%A3%9E%E8%88%9E.mkv',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E7%8E%8B%E5%86%B0%E6%B4%8B-%E9%A3%9E%E8%88%9E.jpg',
+    objectFit: 'contain',
+    ratio: null
   },
   {
     id: 6,
-    type: '4',
-    title: '《红灯笼》',
-    desc: '《和大人一起读》第二册',
+    type: '1',
+    title: '落 (花开花落日升日没)',
+    fileName: '唐伯虎Annie-落 (花开花落日升日没).mp4',
+    desc: '唐伯虎Annie',
     publisher: '李兆',
     seq: 0,
-    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/ecd2f8449e111ce65a9c857c5980a235.mp4',
-    cover: 'https://hellorfimg.zcool.cn/large/2453961665.jpg',
-    objectFit: 'cover'
-  }
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E5%94%90%E4%BC%AF%E8%99%8EAnnie-%E8%90%BD%20%28%E8%8A%B1%E5%BC%80%E8%8A%B1%E8%90%BD%E6%97%A5%E5%8D%87%E6%97%A5%E6%B2%A1%29.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E5%94%90%E4%BC%AF%E8%99%8EAnnie-%E8%90%BD%20%28%E8%8A%B1%E5%BC%80%E8%8A%B1%E8%90%BD%E6%97%A5%E5%8D%87%E6%97%A5%E6%B2%A1%29.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 7,
+    type: '1',
+    title: '点歌的人',
+    fileName: '海来阿木-点歌的人.mp4',
+    desc: '海来阿木',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8-%E7%82%B9%E6%AD%8C%E7%9A%84%E4%BA%BA.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8-%E7%82%B9%E6%AD%8C%E7%9A%84%E4%BA%BA.jpg',
+    objectFit: 'contain',
+    ratio: 1.9
+  },
+  {
+    id: 8,
+    type: '1',
+    title: '左手指月',
+    fileName: '萨顶顶-左手指月.mp4',
+    desc: '萨顶顶',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E8%90%A8%E9%A1%B6%E9%A1%B6-%E5%B7%A6%E6%89%8B%E6%8C%87%E6%9C%88.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E8%90%A8%E9%A1%B6%E9%A1%B6-%E5%B7%A6%E6%89%8B%E6%8C%87%E6%9C%88.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 9,
+    type: '3',
+    title: '手指歌',
+    fileName: '94805290ed6ad02dda8ec52773ddf2a7.mp4',
+    desc: '若若得得得的手指歌',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/94805290ed6ad02dda8ec52773ddf2a7.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/94805290ed6ad02dda8ec52773ddf2a7.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 10,
+    type: '1',
+    title: '红昭愿',
+    fileName: '小群星-红昭愿.mp4',
+    desc: '杨可欣&李菲菲&钟宝儿&陈舒宜&蒋韵兮&童和&吴浩铭',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E5%B0%8F%E7%BE%A4%E6%98%9F-%E7%BA%A2%E6%98%AD%E6%84%BF.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E5%B0%8F%E7%BE%A4%E6%98%9F-%E7%BA%A2%E6%98%AD%E6%84%BF.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 11,
+    type: '2',
+    title: '缘起亦缘灭',
+    fileName: 'share_2a1fc094a3f3d76ea61d3bb7d007df43.mp4',
+    desc: '合十的掌心，藏着未了的尘缘',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_2a1fc094a3f3d76ea61d3bb7d007df43.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_2a1fc094a3f3d76ea61d3bb7d007df43.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 12,
+    type: '2',
+    title: '情没有对错',
+    fileName: 'share_21dc8a7d6f4f2b5b5dd42c5989db67b81768726983755.mp4',
+    desc: '情不错，片刻拥有便不错',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_21dc8a7d6f4f2b5b5dd42c5989db67b81768726983755.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_21dc8a7d6f4f2b5b5dd42c5989db67b81768726983755.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 13,
+    type: '2',
+    title: '弥渡情歌',
+    fileName: 'share_67b348a43a01d61c8256be41f588fd831768723449402.mp4',
+    desc: '山对山来崖对崖，蜜蜂采花深山里来，蜜蜂本为采花死',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_67b348a43a01d61c8256be41f588fd831768723449402.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_67b348a43a01d61c8256be41f588fd831768723449402.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 14,
+    type: '2',
+    title: '难解',
+    fileName: 'share_d4bd0cf61a5850f0cd43f9a99004cf711768725541784.mp4',
+    desc: '今生相见定有亏欠，前世不欠，今生不见',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_d4bd0cf61a5850f0cd43f9a99004cf711768725541784.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_d4bd0cf61a5850f0cd43f9a99004cf711768725541784.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 15,
+    type: '2',
+    title: '金枝玉叶',
+    fileName: 'share_e20fcd54170f53487013f195414610e1.mp4',
+    desc: '公子可有空，如今这姑娘弃金枝，当你家宠儿无憾事',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_e20fcd54170f53487013f195414610e1.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_e20fcd54170f53487013f195414610e1.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 16,
+    type: '2',
+    title: '错位时空',
+    fileName: 'share_fe2a7467ab5ac5d7f368c2a3347d6fd21768724024779.mp4',
+    desc: '我吹过你吹过的晚风，那我们算不算相拥',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_fe2a7467ab5ac5d7f368c2a3347d6fd21768724024779.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/share_fe2a7467ab5ac5d7f368c2a3347d6fd21768724024779.jpg',
+    objectFit: 'contain',
+    ratio: null
+  },
+  {
+    id: 17,
+    type: '3',
+    title: '李兮读书',
+    fileName: 'VID_20240206_191504.mp4',
+    desc: '认真读书的小宝宝最可爱',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240206_191504.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240206_191504.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 18,
+    type: '3',
+    title: '不知道为什么突然哭',
+    fileName: 'VID_20240208_123658.mp4',
+    desc: '低着头哭，她也不说为什么',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240208_123658.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240208_123658.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 19,
+    type: '3',
+    title: '初一烧香',
+    fileName: 'VID_20240210_093718.mp4',
+    desc: '每年大年初一的必备节目，烧香拜佛',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240210_093718.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240210_093718.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 20,
+    type: '3',
+    title: '拜年',
+    fileName: 'VID_20240211_101732.mp4',
+    desc: '春节，到外婆家拜年',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240211_101732.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240211_101732.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 21,
+    type: '3',
+    title: '同学小聚',
+    fileName: 'VID_20240213_143517.mp4',
+    desc: '也就过年能多几个人聚在一起',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240213_143517.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240213_143517.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 22,
+    type: '3',
+    title: '姐妹俩的自娱时光',
+    fileName: 'VID_20240214_174443.mp4',
+    desc: '不吵架的姐妹俩的自娱时光',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240214_174443.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240214_174443.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 23,
+    type: '3',
+    title: '看起来很委屈的若若',
+    fileName: 'VID_20240505_095951.mp4',
+    desc: '哭着要看电脑，哄不起来的那种',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240505_095951.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240505_095951.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 24,
+    type: '3',
+    title: '镜像世界',
+    fileName: 'VID_20240917_114053.mp4',
+    desc: '两姐妹撑花伞玩得开心',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240917_114053.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240917_114053.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 25,
+    type: '3',
+    title: '牵手转圈圈',
+    fileName: 'VID_20240921_145923.mp4',
+    desc: '不怕转晕，牵手转转转',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240921_145923.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20240921_145923.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 26,
+    type: '3',
+    title: '被团团围住的哥哥',
+    fileName: 'VID_20250129_154622.mp4',
+    desc: '这就是为什么哥哥不想带你们出去玩',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20250129_154622.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20250129_154622.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
+  {
+    id: 27,
+    type: '3',
+    title: '机器人弹钢琴',
+    fileName: 'VID_20251122_110306.mp4',
+    desc: '杭州AI开源魔搭社区开发者大会',
+    publisher: '李兆',
+    seq: 0,
+    url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20251122_110306.mp4',
+    cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/VID_20251122_110306.jpg',
+    objectFit: 'cover',
+    ratio: null
+  },
 ].sort((a, b) => b.seq - a.seq)

@@ -16,9 +16,9 @@
           @click="togglePlay"
         >
           <image
-            v-if="page && page.bg"
+            v-if="page && page.cover"
             class="video_play_bg"
-            :src="page.bg"
+            :src="page.cover"
             mode="aspectFill"
           />
 
@@ -90,7 +90,7 @@
 
 <script>
 import { get as _get } from 'lodash';
-import { getVideoById, getVideoListByType, getVideoByRandom } from '@/api'
+import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
 import { textEllipsis } from '@/utils/common.js';
 
 export default {
@@ -102,6 +102,7 @@ export default {
       default: 'auto'
     },
     id: [Number, String],
+    ids: [Array, String],
     type: [Number, String],
     video: [Object, String],
     videos: Array
@@ -160,7 +161,7 @@ export default {
   methods: {
     textEllipsis,
     async init () {
-      const { mode, id, type, video, videos } = this;
+      let { mode, id, ids, type, video, videos } = this;
 
       let currentVideo = null
       let allVideoList = []
@@ -173,6 +174,11 @@ export default {
       } else {
         currentVideo = video
       }
+      if (ids && typeof ids === 'string') {
+        try {
+          ids = JSON.parse(decodeURIComponent(ids))
+        } catch (e) {}
+      }
 
       // 单视频播放：传视频 id 或者完整视频对象
       if (mode === 'single') {
@@ -183,8 +189,10 @@ export default {
       if (mode === 'menu') {
         if (_get(videos, 'length')) {
           allVideoList = videos
-        } else if (type) {
-          allVideoList = await getVideoListByType({type})
+        } else if (ids) {
+          allVideoList = await getVideoByIds({ids})
+        }  else if (type) {
+          allVideoList = await getVideoPageList({type})
         }
         const currentIndex = allVideoList.findIndex(e => String(e.id) === String(id))
         currentVideo = allVideoList[Math.max(currentIndex, 0)]
@@ -207,8 +215,8 @@ export default {
       this.nextVideo = await this.getNextVideo();
     },
     getPageBgStyle (video) {
-      const bg = _get(video, 'bg');
-      return bg ? { '--video_play_bg': `url(${bg})` } : {};
+      const cover = _get(video, 'cover');
+      return cover ? { '--video_play_bg': `url(${cover})` } : {};
     },
     getPrevVideo () {
       const { mode, allVideoList, playedIds } = this;

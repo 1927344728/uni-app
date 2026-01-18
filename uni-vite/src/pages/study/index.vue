@@ -97,7 +97,10 @@ export default {
         }
       }
       if (currentTabKey === 'book' && bookTypeEnum) {
-        subTypeOptions = bookTypeEnum
+        subTypeOptions = bookTypeEnum.map(e => ({
+          id: e.typeId,
+          name: e.name
+        }))
       }
 
       return subTypeOptions.map(e => ({

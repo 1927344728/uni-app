@@ -1,5 +1,11 @@
 <template>
-  <scroll-view class="music_page" scroll-y="true" @scrolltolower="onScrollToLower" lower-threshold="100" @scroll="onScroll">
+  <scroll-view
+    class="music_page"
+    scroll-y="true"
+    lower-threshold="100"
+    @scrolltolower="onScrollToLower"
+    @scroll="onScroll"
+  >
     <view class="music_menu">
       <view
         v-for="item in menuList"
@@ -15,14 +21,14 @@
       </view>
     </view>
 
-    <view class="navigation_bar">
+    <view v-if="musicTypeEnum && musicTypeEnum.length" class="navigation_bar">
       <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchstart.stop @touchmove.stop @touchend.stop>
         <view
-          v-for="m in [{ id: null, name: '全部' }].concat(musicTypeEnum)"
-          :key="m.id"
+          v-for="m in [{ typeId: null, name: '全部' }].concat(musicTypeEnum)"
+          :key="m.typeId"
           class="tab"
           :class="{
-            active: type === m.id
+            active: type === m.typeId
           }"
           @click="onClickTab(m)"
         >
@@ -80,7 +86,7 @@ export default {
   data () {
     return {
       isLoaded: false,
-      type: 4,
+      type: 1,
       menuList: [],
       musicTypeEnum: cloneDeep(MUSIC_TYPE_ENUM),
       musicList: [],
@@ -126,7 +132,7 @@ export default {
       }
     },
     onClickTab (item) {
-      this.type = item.id
+      this.type = item.typeId
       this.refreshList()
     },
     onClickMusic (item) {
@@ -142,7 +148,8 @@ export default {
       }
     },
     onScroll (e) {
-      this.isFixedNavBar = e.detail.scrollTop > 100
+      const menuHeight = 170
+      this.isFixedNavBar = e.detail.scrollTop > menuHeight
     },
     onScrollToLower () {
       this.pagination.pageNum ++

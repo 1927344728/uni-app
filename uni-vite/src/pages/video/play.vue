@@ -4,6 +4,7 @@
       v-if="isLoaded"
       :mode="mode"
       :id="id"
+      :ids="ids"
       :type="type"
       :video="video"
     />
@@ -24,6 +25,7 @@ export default {
       isLoaded: false,
       mode: 'auto',
       id: null,
+      ids: null,
       type: null,
       video: null
     };
@@ -33,7 +35,7 @@ export default {
   },
   methods: {
     async init (options = {}) {
-      const { mode, id, type, video, key } = options
+      const { mode, id, ids, type, video, key } = options
 
       let videos = null
       if (mode === 'menu') {
@@ -42,6 +44,7 @@ export default {
 
       this.mode = mode || 'auto'
       this.id = id || null
+      this.ids = ids || null
       this.type = type || null
       this.video = video
       this.videos = videos

@@ -25,17 +25,17 @@ export function getVideoById(params, options = {}) {
   });
 }
 
-export function getVideoByRandom(params, options = {}) {
+export function getVideoByIds(params, options = {}) {
   return request({
-    url: 'api/video/getVideoByRandom',
+    url: 'api/video/getVideoByIds',
     params,
 		...options
   });
 }
 
-export function getVideoListByType(params, options = {}) {
+export function getVideoByRandom(params, options = {}) {
   return request({
-    url: 'api/video/getVideoListByType',
+    url: 'api/video/getVideoByRandom',
     params,
 		...options
   });

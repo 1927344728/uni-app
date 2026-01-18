@@ -16,7 +16,7 @@ const getMusicMenuList = () => {
 }
 
 const getMusicPageList = (params) => {
-  const { type, keyword, pageNum, pageSize } = params
+  const { type, keyword, pageNum = 0, pageSize = 10 } = params
 
   let list = musicList
   if (type) {
@@ -42,10 +42,10 @@ const getMusicById = (params = {}) => {
 }
 
 const getMusicByIds = (params = {}) => {
-  let { ids } = params
-  ids = (ids || []).map(id => String(id))
-  let list = musicList.filter(item => ids.includes(String(item.id))) || null;
-  list = list.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+  const ids = (params.ids || []).map(id => String(id))
+  const list = musicList
+    .filter(item => ids.includes(String(item.id)))
+    .sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id)) || null;
 
   const data = cloneDeep(basicTemplate)
   data.data = list
@@ -78,18 +78,10 @@ const getMusicByRandom = (params) => {
   return data
 }
 
-const getMusicListByType = (params = {}) => {
-  const { type } = params
-  const data = cloneDeep(basicTemplate)
-  data.data = musicList.filter(item => item.type.includes(String(type))) || null;
-  return data
-}
-
 export default {
   'api/music/getMusicMenuList': getMusicMenuList,
   'api/music/getMusicPageList': getMusicPageList,
   'api/music/getMusicById': getMusicById,
   'api/music/getMusicByIds': getMusicByIds,
-  'api/music/getMusicByRandom': getMusicByRandom,
-  'api/music/getMusicListByType': getMusicListByType,
+  'api/music/getMusicByRandom': getMusicByRandom
 }

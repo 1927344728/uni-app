@@ -46,45 +46,6 @@
     }
   }
 
-  & .navigation_bar {
-    height: 100rpx;
-    & .tabs {
-      padding: 24rpx 24rpx;
-      white-space: nowrap;
-      overflow-x: auto;
-      background: @bg-patch-color;
-      border-bottom: 1px solid @border-primary-color;
-      &::-webkit-scrollbar {
-        display: none;
-      }
-  
-      .tab {
-        display: inline-block;
-        margin-right: 16rpx;
-        padding: 6rpx 24rpx;
-        font-size: 24rpx;
-        line-height: 32rpx;
-        text-align: center;
-        color: @text-patch1-color;
-        background-color: white;
-        border-radius: 100rpx;
-        border: 1px solid @border-primary-color;
-      }
-      .tab.active {
-        font-weight: bold;
-        color: @primary-color;
-        border: 1px solid @primary-color;
-      }
-    }
-    & .tabs.fixed {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 10;
-    }
-  }
-
   & .music_main {
     position: relative;
 
