@@ -69,3 +69,13 @@ body {
   color: #999;
   text-align: center;
 }
+
+::v-deep .uni-swiper-wrapper {
+  & .uni-swiper-slides {
+    & .uni-swiper-slide-frame {
+      & img {
+        max-height: none!important;
+      }
+    }
+  }
+}

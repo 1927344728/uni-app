@@ -1,6 +1,6 @@
 <template>
   <view>
-    <web-view :src="localHtmlPath"></web-view>
+    <web-view v-if="localHtmlPath" :src="localHtmlPath"></web-view>
   </view>
 </template>
 
@@ -9,18 +9,12 @@ import { get as _get } from 'lodash'
 export default {
   data() {
     return {
-      localHtmlPath: _get(this.getCurrentPageParams(), 'url')
+      localHtmlPath: null
     }
   },
-	methods: {
-		getCurrentPageParams() {
-		  const pages = getCurrentPages();
-		  if (pages.length === 0) return {};
-		  
-		  const currentPage = pages[pages.length - 1];
-		  return currentPage.$page.options || {};
-		}
-	}
+  onLoad (options = {}) {
+    this.localHtmlPath = options.url ? decodeURIComponent(options.url) : ''
+  }
 }
 </script>
 

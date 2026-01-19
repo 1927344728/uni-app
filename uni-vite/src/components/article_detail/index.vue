@@ -280,6 +280,6 @@ export default {
 </script>
 
 <style lang="less">
+@import '@/common/css/common.less';
 @import './index.less';
 </style>
-

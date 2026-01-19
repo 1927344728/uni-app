@@ -8,7 +8,6 @@ export default [
     author: '李兆',
     note: '你的每一幅画，都是送给这个世界的一份独特礼物！',
     seq: 99,
-    time: 1766584009279,
     image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251216003939_120_2.jpg',
     content: [
       {

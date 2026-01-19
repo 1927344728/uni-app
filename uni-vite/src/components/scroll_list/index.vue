@@ -8,7 +8,6 @@
         :title="item.title"
         :note="item.note"
         :thumb="scaleImageWidthInCOS(item.image, 120)"
-        :showExtraIcon="true"
         :showBadge="!!item.badgeText"
         :badgeText="item.badgeText"
         :badgeStyle="{
@@ -18,7 +17,11 @@
         thumbSize="lg"
         link
         @click="openUrl(item)"
-      />
+      >
+        <template v-slot:header>
+          <image class="slot-image" :src="scaleImageWidthInCOS(item.image, 120)" mode="aspectFill" />
+        </template>
+      </uni-list-item>
     </uni-list>
     <view v-if="list.length && pagination.isLast" class="nomore_load_tips">
       ~没有更多了哦~
@@ -115,25 +118,11 @@ export default {
       display: none;
     }
     & .uni-list-item {
-      & ::v-deep .uni-list-item__header {
-        & .uni-icons {
-          display: block!important;
-          width: 60px;
-          height: 60px;
-          margin-right: 18rpx;
-          border: 1px solid @border-primary-color;
-          background: @border-primary-color;
-          border-radius: 12rpx;
-        }
-      }
-      & ::v-deep .uni-list--lg {
+      & .slot-image {
         width: 60px;
         height: 60px;
+        margin-right: 24rpx;
         border-radius: 12rpx;
-        overflow: hidden;
-      }
-      & ::v-deep .uni-icons {
-        display: none;
       }
     }
     & .uni-list-item.active {

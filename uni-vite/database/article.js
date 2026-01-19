@@ -4,6 +4,8 @@ import ARTICLE_SCORE_LIST from './article_score'
 import ARTICLE_ANA_LIST from './article_ana'
 import ARTICLE_NORMAL_LIST from './article_normal'
 import ARTICLE_READ_VIDEO_LIST from './article_read_video'
+import ARTICLE_TRAVEL from './article_travel'
+import ARTICLE_CULTURE from './article_culture'
 
 export const ARTICLE_TYPE_ENUM = [
   {
@@ -31,7 +33,10 @@ export const ARTICLE_TYPE_ENUM = [
   {
     id: 4,
     name: '文化',
-    children: []
+    children: [
+      { id: 1, name: '诗词歌斌' },
+      { id: 2, name: '对联' },
+    ]
   },
   {
     id: 5,
@@ -61,7 +66,9 @@ export const ARTICLE_DETAIL_LIST = [].concat(
   ARTICLE_POEM_LIST,
   ARTICLE_SCORE_LIST,
   ARTICLE_ANA_LIST,
-  ARTICLE_NORMAL_LIST
+  ARTICLE_NORMAL_LIST,
+  ARTICLE_TRAVEL,
+  ARTICLE_CULTURE
 )
 
 export const ARTICLE_LIST= [
@@ -113,9 +120,9 @@ export const ARTICLE_LIST= [
     seq: e.seq,
     className: e.className,
     image: e.image,
-    url: `/pages/article/detail?id=${e.id}`,
+    url: e.url || `/pages/article/detail?id=${e.id}`,
     readCount: e.readCount || null,
     collectCount: e.collectCount || null,
-    jumpTo: 'navigate'
+    jumpTo: e.jumpTo || 'navigate'
   })))
   .sort((a, b) => b.seq - a.seq)
