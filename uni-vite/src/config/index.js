@@ -1,7 +1,9 @@
-import { WEB_DOMAIN, COS_ASSET_PATH } from '@/utils/variables'
-export const LOGO_IMAGE = `${COS_ASSET_PATH}images/logo.png`
-export const DEFAULT_AVATAR_IMAGE = `${COS_ASSET_PATH}images/default.png`
+import { COS_ASSET_PATH } from '@/utils/variables'
+export const APP_NAME = '一兆窗含'
+export const APP_VERSION = '1.0.0'
+export const APP_LOGO = `${COS_ASSET_PATH}images/logo.png`
 
+export const DEFAULT_AVATAR_IMAGE = `${COS_ASSET_PATH}images/default.png`
 
 export const FEATURE_ICON_ENUM = [
   {

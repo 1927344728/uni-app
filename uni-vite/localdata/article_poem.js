@@ -8,7 +8,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 100,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/lotus-963450_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/lotus-963450_1280.jpg',
     className: 'active',
     content: [
       {
@@ -89,7 +89,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/peach-blossom-5073107_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/peach-blossom-5073107_1280.jpg',
     content: [
       {
         type: 'title',
@@ -178,7 +178,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/white-plum-blossoms-181159_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/white-plum-blossoms-181159_1280.jpg',
     content: [
       {
         type: 'title',
@@ -267,7 +267,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/snow-3904461_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/snow-3904461_1280.jpg',
     content: [
       {
         type: 'title',
@@ -365,7 +365,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/oranges-5423697_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/oranges-5423697_1280.jpg',
     content: [
       {
         type: 'title',
@@ -472,7 +472,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/barn-swallow-10043616_1280.webp',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/barn-swallow-10043616_1280.webp',
     content: [
       {
         type: 'title',
@@ -579,7 +579,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/roe-deer-5502246_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/roe-deer-5502246_1280.jpg',
     content: [
       {
         type: 'title',
@@ -695,7 +695,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/bee-6127510_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/bee-6127510_1280.jpg',
     content: [
       {
         type: 'title',
@@ -811,7 +811,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/cicada-115913_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/cicada-115913_1280.jpg',
     content: [
       {
         type: 'title',
@@ -936,7 +936,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/horse-9815867_1280.webp',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/horse-9815867_1280.webp',
     content: [
       {
         type: 'title',
@@ -1061,7 +1061,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-9023056_1280.png',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-9023056_1280.png',
     content: [
       {
         type: 'title',
@@ -1186,7 +1186,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（小学组） ',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/white-horse-3010129_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/white-horse-3010129_1280.jpg',
     content: [
       {
         type: 'title',
@@ -1365,7 +1365,7 @@ export default [
     author: '',
     note: '2025诗词大会题库（7-9年级）',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/sunset-4241457_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/sunset-4241457_1280.jpg',
     content: [
       {
         type: 'title',
@@ -1661,7 +1661,7 @@ export default [
     author: '',
     note: '幼儿园大班2025春口才训练，总15篇',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/rabbit-9926492_1280.webp',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/rabbit-9926492_1280.webp',
     content: [
       {
         type: 'title',
@@ -1750,7 +1750,7 @@ export default [
     author: '',
     note: '幼儿园大班2025春口才训练，总15篇',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/water-3093587_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/water-3093587_1280.jpg',
     content: [
       {
         type: 'title',

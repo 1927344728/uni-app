@@ -27,7 +27,7 @@
     <view class="home_feature">
       <view class="wrapper">
         <view v-for="f in featureIcons" :key="f.key" class="item" @click="openUrl(f)">
-          <image class="icon" :src="f.image" mode="aspectFill"></image>
+          <image class="icon" :src="scaleImageWidthInCOS(f.image, 120)" mode="aspectFill"></image>
           <text class="text">{{ f.name }}</text>
         </view>
       </view>
@@ -42,7 +42,7 @@
       </view>
       <view class="list">
         <view v-for="a in recommendArticles" :key="a.id" class="item" @click="openUrl(a)">
-          <image class="image" :src="scaleImageWidthInCOS(a.image, 120)" mode="aspectFill"></image>
+          <image class="image" :src="scaleImageWidthInCOS(a.thumb, 120)" mode="aspectFill"></image>
           <view class="content">
             <view class="title">{{ a.title }}</view>
             <view class="desc">{{ a.note }}</view>
@@ -53,7 +53,7 @@
 
     <view class="home_version">
       <view>你好，{{userName}}！</view>
-      <view>一兆窗含@1.0.0 {{ isUseMock ? '[mock]' : '' }}</view>
+      <view>{{appName}}@{{appVersion}} {{ isUseMock ? '[mock]' : '' }}</view>
     </view>			
 
     <FooterBar activeTabKey="index" />
@@ -63,7 +63,7 @@
 <script>
 import { get as _get } from 'lodash'
 import { openUrl, scaleImageWidthInCOS } from '@/utils'
-import { FEATURE_ICON_ENUM } from '@/config/index.js'
+import { APP_NAME, APP_VERSION, FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
 import { getUserInfo, getBannerList, getArticlePageList } from '@/api'
 
@@ -78,6 +78,8 @@ export default {
       bannerList: null,
       featureIcons: FEATURE_ICON_ENUM,
       recommendArticles: null,
+      appName: APP_NAME,
+      appVersion: APP_VERSION
     }
   },
   computed: {

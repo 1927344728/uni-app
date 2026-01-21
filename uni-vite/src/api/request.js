@@ -1,27 +1,11 @@
 import { mockData } from '/mock/index.js';
 import { SERVER_API_DOMAIN, gotoLogin } from '@/utils/index.js';
 
-// uni.configMTLS({
-// 	certificates: [{
-// 		'host': 'app.yizhao.cn',
-// 		'client': '/ssl/client.p12',
-// 		'clientPassword': '123456',
-// 		'server': ['/ssl/server.pem'],
-// 	}],
-// 	success (res){
-// 		console.log(res)
-// 		// uni.showModal({
-// 		// 	title: 'configMTLS: success',
-// 		// 	content: JSON.stringify(res)
-// 		// });
-// 	}
-// });
-
 export default function (options) {
   const { baseURL, url, method, data, params, timeout, showLoading, login } = options
   const store = getApp().$store
   if (store.state.isUseMock && mockData[url]) {
-    // console.log(`[Mock]: ${url}`)
+    console.log(`[Mock]: ${url}`)
     return new Promise((resolve) => {
       const mockResponse = mockData[url](params)
       resolve(mockResponse.data)
@@ -70,7 +54,9 @@ export default function (options) {
         return reject(err);
       },
       complete () {
-        uni.hideLoading();
+        if (showLoading === 1) {
+          uni.hideLoading();
+        }
       }
     })
   })

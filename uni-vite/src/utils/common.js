@@ -1,5 +1,6 @@
 import qs from 'qs'
 import { get as _get } from 'lodash'
+import { getUrlParams } from './variables'
 
 export function getTimeStr(time) {
   const second = Math.round((new Date() - time) / 1000)
@@ -126,12 +127,6 @@ export function textEllipsis(text, maxLength) {
   if (!text) return '';
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';
-}
-
-export function getUrlParams (url) {
-  const _url = url || _get(location, 'href') || ''
-  const searchStr = _url ? _url.split('?')[1] : ''
-  return searchStr ? qs.parse(searchStr) : {}
 }
 
 export function scaleImageWidthInCOS (url, w = 750) {

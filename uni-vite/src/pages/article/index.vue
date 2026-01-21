@@ -10,7 +10,8 @@
 </template>
 
 <script>
-import { getArticleTypeList, getArticlePageList } from '@/api'
+import { mapState, mapActions } from 'vuex'
+import { getArticlePageList } from '@/api'
 import SearchBar from '@/components/search_bar/index.vue'
 import ScrollList from '@/components/scroll_list/index.vue'
 
@@ -26,17 +27,28 @@ export default {
   },
   data () {
     return {
-      queryParams: initQueryParam(),
-      subTypeOptions: [],
+      queryParams: initQueryParam()
     }
   },
   computed: {
+    ...mapState(['categoryEnum']),
     cQueryParams () {
       const { queryParams } = this
       return {
         type: queryParams.subType,
         keyword: queryParams.keyword,
       }
+    },
+    subTypeOptions () {
+      const { categoryEnum } = this
+      const options = (categoryEnum || [])
+        .filter(e => e.categoryId === 1)
+        .filter((e, i, arr) => arr.findIndex(a => a.typeId === e.typeId) === i)
+        .map(e => ({
+          value: e.typeId,
+          text: e.typeName
+        }))
+      return options
     }
   },
   watch: {
@@ -49,17 +61,15 @@ export default {
       }
     }
   },
+  onLoad (options = {}) {
+    const type = options.type ? Number(options.type) : null
+    this.queryParams.subType = Number(type) || this.queryParams.subType
+  },
   created () {
-    getArticleTypeList().then(data => {
-      this.subTypeOptions = (data || [])
-        .map(e => ({
-          value: e.id,
-          text: e.name
-        }))
-        .filter(e => [1, 3, 4, 5, 6, 7, 99].includes(e.value))
-    })
+    this.getCategoryEnum()
   },
 	methods: {
+    ...mapActions(['getCategoryEnum']),
     getArticlePageList
 	},
 }

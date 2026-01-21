@@ -8,7 +8,7 @@ export default [
     author: '',
     note: '',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-9227230_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-9227230_1280.jpg',
     content: [
       {
         type: 'card',
@@ -28,7 +28,7 @@ export default [
     author: '',
     note: '',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/poppy-1144084_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/poppy-1144084_1280.jpg',
     content: [
       {
         type: 'card',
@@ -48,7 +48,7 @@ export default [
     author: '',
     note: '',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/roe-deer-5502246_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/roe-deer-5502246_1280.jpg',
     content: [
       {
         type: 'card',

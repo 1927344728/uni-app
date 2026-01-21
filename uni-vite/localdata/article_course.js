@@ -3,12 +3,12 @@ export default [
     id: 8,
     uuid: '',
     type: '1',
-    subType: '',
+    subType: 1,
     title: '语文课程24-32页（一年级上）',
     author: '李兆',
     note: '一年级语文课本教学视频（王老师）',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/一年级上学期语文26页.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/一年级上学期语文26页.jpg',
     content: [
       {
         type: 'title',
@@ -60,12 +60,12 @@ export default [
     id: 9,
     uuid: '',
     type: '1',
-    subType: '',
+    subType: 1,
     title: '语文课程39-55页（一年级上）',
     author: '李兆',
     note: '一年级语文课本教学视频（王老师）',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/一年级上学期语文39页.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/一年级上学期语文39页.jpg',
     content: [
       {
         type: 'title',
@@ -128,7 +128,7 @@ export default [
     author: '李兆',
     note: '新一上语文高频考点知识梳理（十八个必背知识点）（10页）',
     seq: 100,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-9775091_1280.webp',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-9775091_1280.webp',
     className: 'active',
     content: [
       {

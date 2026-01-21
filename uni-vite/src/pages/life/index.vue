@@ -26,8 +26,9 @@
   </view>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import { get as _get, cloneDeep } from 'lodash'
-import { getArticleTypeList, getArticlePageList } from '@/api'
+import { getArticlePageList } from '@/api'
 import { textEllipsis } from '@/utils/common.js'
 import HeaderBar from '@/components/header_bar/index.vue'
 import SearchBar from '@/components/search_bar/index.vue'
@@ -37,10 +38,10 @@ import MusicList from '../music/index.vue'
 import VideoList from '../video/index.vue'
 
 const items = [
-  { id: 1, key: 'music', name: '音乐', component: 'MusicList' },
-  { id: 2, key: 'video', name: '视频', component: 'VideoList' },
-  { id: 5, key: 'travel', name: '旅游', component: 'ScrollList' },
-  { id: 6, key: 'ana', name: '轻摘', component: 'ScrollList' },
+  { id: 1, key: 'music', component: 'MusicList' },
+  { id: 2, key: 'video', component: 'VideoList' },
+  { id: 5, key: 'travel', component: 'ScrollList' },
+  { id: 6, key: 'ana', component: 'ScrollList' },
 ]
 
 const initQueryParam = () => ({
@@ -62,13 +63,46 @@ export default {
     return {
       currentTabKey: 'music',
       currentTabIndex: 0,
-      articleTypeEnum: null,
       queryParams: initQueryParam()
     }
   },
   computed: {
+    ...mapState(['categoryEnum']),
     filteredItems () {
-      return items.filter(e => e.component)
+      const categoryEnum = _get(this, 'categoryEnum') || []
+      const options = cloneDeep(items)
+        .filter(o => o.component)
+        .filter(o => categoryEnum.some(e => [3, 4].includes(e.categoryId) || (e.categoryId === 1 && e.typeId === o.id)))
+        .map(o => {
+          if (['music'].includes(o.key)) {
+            const option = categoryEnum.find(e => e.categoryId === 3)
+            o.name = _get(option, 'categoryName')
+          } else if (['music', 'video'].includes(o.key)) {
+            const option = categoryEnum.find(e => e.categoryId === 4)
+            o.name = _get(option, 'categoryName')
+          } else {
+            const option = categoryEnum.find(e => e.categoryId === 1 && e.typeId === o.id)
+            o.name = _get(option, 'typeName')
+          }
+          return o
+        })
+      return options
+    },
+    subTypeOptions () {
+      const { currentTabKey, filteredItems } = this
+      let options = []
+      const categoryEnum = _get(this, 'categoryEnum') || []
+      const currentItem = filteredItems.find(e => e.key === currentTabKey)
+      if (['travel', 'ana'].includes(currentTabKey) && currentItem && currentItem.id) {
+        options = categoryEnum
+          .filter(e => e.categoryId === 1 && e.typeId === currentItem.id)
+          .map(e => ({
+            value: e.subTypeId,
+            text: textEllipsis(e.subTypeName, 12)
+          }))
+          .filter(e => e.value)
+      }
+      return options
     },
     classObject () {
       const { currentTabKey, filteredItems } = this
@@ -79,19 +113,6 @@ export default {
         with_tab_module: true,
         with_footer_bar: true
       }
-    },
-    subTypeOptions () {
-      const { currentTabKey, articleTypeEnum, filteredItems } = this
-      let subTypeOptions = []
-      const currentItem = filteredItems.find(e => e.key === currentTabKey)
-      if (articleTypeEnum && currentItem && currentItem.id && ['travel', 'ana'].includes(currentTabKey)) {
-        const currentType = articleTypeEnum.find(e => e.id === currentItem.id)
-        subTypeOptions = currentType.children || []
-      }
-      return subTypeOptions.map(e => ({
-        value: e.id,
-        text: textEllipsis(e.name, 12)
-      }))
     },
   },
   watch: {
@@ -127,11 +148,10 @@ export default {
     }
   },
   created () {
-    getArticleTypeList().then(data => {
-      this.articleTypeEnum = data || null
-    })
+    this.getCategoryEnum()
   },
   methods: {
+    ...mapActions(['getCategoryEnum']),
     getArticlePageList,
     onChangeTab (tab) {
       this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.key === tab), 0)

@@ -21,10 +21,10 @@
       </view>
     </view>
 
-    <view v-if="musicTypeEnum && musicTypeEnum.length" class="navigation_bar">
+    <view v-if="musicTypeEnum.length > 1" class="navigation_bar">
       <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchstart.stop @touchmove.stop @touchend.stop>
         <view
-          v-for="m in [{ typeId: null, name: '全部' }].concat(musicTypeEnum)"
+          v-for="m in musicTypeEnum"
           :key="m.typeId"
           class="tab"
           :class="{
@@ -65,9 +65,9 @@
   </scroll-view>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import qs from 'qs'
 import { cloneDeep } from 'lodash'
-import { MUSIC_TYPE_ENUM } from '/database/type_enum.js'
 import { scaleImageWidthInCOS } from '@/utils'
 import { getMusicMenuList, getMusicPageList } from '@/api'
 
@@ -88,19 +88,41 @@ export default {
       isLoaded: false,
       type: 1,
       menuList: [],
-      musicTypeEnum: cloneDeep(MUSIC_TYPE_ENUM),
       musicList: [],
       pagination: initPagination(),
       isFixedNavBar: false,
     }
   },
+  computed: {
+    ...mapState(['categoryEnum']),
+    musicTypeEnum () {
+      const { categoryEnum } = this
+      let options = [
+        { typeId: null, name: '全部' }
+      ]
+      if (categoryEnum) {
+        categoryEnum
+          .filter(e => e.categoryId === 3)
+          .forEach(e => {
+            options.push({ typeId: e.typeId, name: e.typeName})
+          })
+      }
+      return options
+    }
+  },
+  onLoad (options = {}) {
+    const type = options.type ? Number(options.type) : null
+    this.type = Number(type) || this.type
+  },
   created () {
     getMusicMenuList().then((data) => {
       this.menuList = data || []
     })
+    this.getCategoryEnum()
     this.refreshList()
   },
   methods: {
+    ...mapActions(['getCategoryEnum']),
     scaleImageWidthInCOS,
     getMusicPageList () {
       const { queryParams, type, pagination } = this

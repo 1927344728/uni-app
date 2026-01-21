@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
-import { TASK_LIST } from "/database/task.js"
-import { basicTemplate } from './common'
+import { TASK_LIST } from "/localdata/task.js"
+import { initResponseData } from './common'
 
 const getTaskPageList = (params) => {
   const { title, status, targeter, pageNum, pageSize } = params
@@ -10,14 +10,14 @@ const getTaskPageList = (params) => {
     const hasTargeter = !targeter || e.targeter.split(/[,，\s]/).includes(targeter)
     return hasTitle && hasStatus && hasTargeter
   })
-  const data = cloneDeep(basicTemplate)
+  const data = initResponseData()
   data.data = list.splice(pageNum * pageSize, pageSize)
   return data
 }
 
 const getTaskById = (params) => {
   const { id } = params
-  const data = cloneDeep(basicTemplate)
+  const data = initResponseData()
   data.data = TASK_LIST.find(e => String(e.id) === String(id))
   return data
 }
@@ -32,7 +32,7 @@ const getTaskTargeterList = () => {
     }
   })
 
-  const data = cloneDeep(basicTemplate)
+  const data = initResponseData()
   data.data = Array.from(set)
   return data
 }

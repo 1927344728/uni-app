@@ -2,7 +2,7 @@
   <view class="login_page">
     <image
       class="logo"
-      :src="scaleImageWidthInCOS('https://images.pexels.com/photos/1563355/pexels-photo-1563355.jpeg')"
+      :src="scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8432306_1280.jpg')"
       mode="widthFix"
     />
     <view class="form">
@@ -28,7 +28,7 @@
             v-model="loginData.password"
             type="password"
             placeholder="请输入密码"
-            :maxlength="6"
+            :maxlength="12"
             @blur="onChange"
           />
         </uni-forms-item>

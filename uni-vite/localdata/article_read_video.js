@@ -8,7 +8,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第一册28篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-10%E6%82%84%E6%82%84%E8%AF%9D2.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-10%E6%82%84%E6%82%84%E8%AF%9D2.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -81,7 +81,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第一册28篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-11%E9%9B%A8%E7%9A%84%E7%A7%8D%E5%AD%902.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-11%E9%9B%A8%E7%9A%84%E7%A7%8D%E5%AD%902.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -154,7 +154,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第一册28篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-28%E5%B0%8F%E9%B9%B0%E5%AD%A6%E9%A3%9E3.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-1/1-28%E5%B0%8F%E9%B9%B0%E5%AD%A6%E9%A3%9E3.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -215,7 +215,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第二册31篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-03%E6%AF%9B%E6%AF%9B%E8%99%AB.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-03%E6%AF%9B%E6%AF%9B%E8%99%AB.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -288,7 +288,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第二册31篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-16%E5%B8%BD%E5%AD%90%E5%A7%90%E5%A7%90%E5%92%8C%E5%9B%B4%E5%B7%BE%E5%A6%B9%E5%A6%B92.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-16%E5%B8%BD%E5%AD%90%E5%A7%90%E5%A7%90%E5%92%8C%E5%9B%B4%E5%B7%BE%E5%A6%B9%E5%A6%B92.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -361,7 +361,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第二册31篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-21%E6%B3%A2%E8%90%9D%E5%A3%B3%E5%B0%8F%E8%88%B93.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-2/2-21%E6%B3%A2%E8%90%9D%E5%A3%B3%E5%B0%8F%E8%88%B93.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -440,7 +440,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第三册29篇。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-05%E5%A4%9C%E9%87%8C%E7%9A%84%E7%9C%BC%E7%9D%9B.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-05%E5%A4%9C%E9%87%8C%E7%9A%84%E7%9C%BC%E7%9D%9B.jpg',
     content: [
       {
         type: 'videoPopup',
@@ -513,7 +513,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第三册29篇。',
     seq: 100,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-13%E5%B0%8F%E6%B5%A3%E7%86%8A%E6%83%B3%E5%8E%BB%E7%9C%8B%E5%A4%A7%E6%B5%B72.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-13%E5%B0%8F%E6%B5%A3%E7%86%8A%E6%83%B3%E5%8E%BB%E7%9C%8B%E5%A4%A7%E6%B5%B72.jpg',
     className: 'active',
     content: [
       {
@@ -589,7 +589,7 @@ export default [
     author: '李兆',
     note: '和大人一起读的朗读录屏，第三册29篇。',
     seq: 100,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-25%E6%88%B4%E5%B8%BD%E5%AD%90%E7%9A%84%E9%B9%853.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/qzyd-3/3-25%E6%88%B4%E5%B8%BD%E5%AD%90%E7%9A%84%E9%B9%853.jpg',
     className: 'active',
     content: [
       {

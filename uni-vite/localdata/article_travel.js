@@ -8,7 +8,7 @@ export default [
     author: '李兆',
     note: '杭州孤山公园，春游赏梅',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/IMG_20240308_112105.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/IMG_20240308_112105.jpg',
     content: [
       {
         type: 'title',
@@ -45,7 +45,7 @@ export default [
     author: '李兆',
     note: '2024年9月，兮兮若若游西湖、浙江大学、图书馆、杭州花圃、城市阳台等地',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/mmexport1726273160468.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/mmexport1726273160468.jpg',
     content: [
       {
         type: 'title',
@@ -88,7 +88,7 @@ export default [
     author: '李兆',
     note: '2025年署假，兮小宝再游博库书城、城西银泰等地，在此期间学习拼音、加减法表。',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/mmexport1756006575771.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/mmexport1756006575771.jpg',
     content: [
       {
         type: 'title',

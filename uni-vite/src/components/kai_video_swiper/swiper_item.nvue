@@ -37,7 +37,7 @@ import { method, transform } from "lodash"
       </text>
     </cover-view>
     <cover-view v-if="video.isShowCover" :style="fillScreenStyle" :class="[video.cover ? 'video_image' : 'video_image_mask']">
-      <cover-image v-if="video.cover" :src="video.cover" :style="coverImageStyle" />
+      <cover-image v-if="video.cover" :src="scaleImageWidthInCOS(video.cover)" :style="coverImageStyle" />
     </cover-view>
 
     <div
@@ -63,7 +63,7 @@ import { method, transform } from "lodash"
 <script>
 import { cloneDeep } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
-import { textEllipsis } from '@/utils/common.js';
+import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js';
 
 export default {
   props: {
@@ -102,6 +102,7 @@ export default {
   methods: {
     convertHtmlToText,
     textEllipsis,
+    scaleImageWidthInCOS,
     timeupdate (event) {
       this.$emit('timeupdate', event)
     },

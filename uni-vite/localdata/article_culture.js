@@ -3,12 +3,12 @@ export default [
     id: 38,
     uuid: '',
     type: '4',
-    subType: '1',
+    subType: 1,
     title: '洛神赋',
     author: '[魏晋] 曹植',
     note: '古人有言：斯水之神，名曰宓妃',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8601367_1280.jpg',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8601367_1280.jpg',
     content: [
       {
         type: 'title',
@@ -56,12 +56,12 @@ export default [
     id: 39,
     uuid: '',
     type: '4',
-    subType: '2',
+    subType: 2,
     title: '古代千古名联（一）',
     author: '',
     note: '中国古代千古名对（对联）集锦，对对经典！',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8439196_1280.png',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8439196_1280.png',
     content: [
       {
         type: 'title',
@@ -105,12 +105,12 @@ export default [
     id: 40,
     uuid: '',
     type: '4',
-    subType: '2',
+    subType: 2,
     title: '古代千古名联（二）',
     author: '',
     note: '中国古代千古名对（对联）集锦，对对经典！',
     seq: 0,
-    image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8439215_1280.png',
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8439215_1280.png',
     content: [
       {
         type: 'title',

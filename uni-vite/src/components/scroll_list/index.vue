@@ -7,7 +7,7 @@
         :class="[item.className]"
         :title="item.title"
         :note="item.note"
-        :thumb="scaleImageWidthInCOS(item.image, 120)"
+        :thumb="scaleImageWidthInCOS(item.thumb, 120)"
         :showBadge="!!item.badgeText"
         :badgeText="item.badgeText"
         :badgeStyle="{
@@ -19,7 +19,7 @@
         @click="openUrl(item)"
       >
         <template v-slot:header>
-          <image class="slot-image" :src="scaleImageWidthInCOS(item.image, 120)" mode="aspectFill" />
+          <image class="slot-image" :src="scaleImageWidthInCOS(item.thumb, 120)" mode="aspectFill" />
         </template>
       </uni-list-item>
     </uni-list>

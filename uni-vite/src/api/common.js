@@ -6,6 +6,12 @@ export function helloWord() {
   });
 }
 
+export function getCategoryEnum() {
+  return request({
+    url: 'api/common/getCategoryEnum',
+  });
+}
+
 export function getBannerList() {
   return request({
     url: 'api/common/getBannerList',

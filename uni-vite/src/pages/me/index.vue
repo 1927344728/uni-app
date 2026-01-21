@@ -2,7 +2,9 @@
   <view>
     <view class="me_page">
       <view v-if="userInfo" class="user_info">
-        <image class="avatar" :src="defaultAvatar" mode="aspectFill" />
+        <view class="avatar">
+          <image class="image" :src="scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/snowman-8755896_1280.png', 160)" mode="aspectFill" />
+        </view>
         <view class="user_detail">
           <view class="user_name">
             <text class="name">
@@ -36,6 +38,19 @@
             <uni-icons type="right" size="18" color="#ccc"></uni-icons>
           </view>
         </view>
+
+        <view class="features">					
+          <view
+            v-for="item in baseOptions"
+            :key="item.key"
+            class="item"
+            @click="onClickOther(item)"
+          >
+            <view>{{ item.name }}</view>
+            <uni-icons type="right" size="18" color="#ccc"></uni-icons>
+          </view>
+        </view>
+
         <view class="mock" :class="[isUseMock ? 'network' : 'local']" @click="onClickMock">
           {{ isUseMock ? '连接数据库' : '使用本地数据' }}
         </view>
@@ -52,7 +67,7 @@
 
 <script>
 import { get as _get } from 'lodash'
-import { openUrl } from '@/utils'
+import { openUrl, scaleImageWidthInCOS } from '@/utils'
 import store from '@/store/index'
 import { getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
@@ -61,17 +76,17 @@ import { DEFAULT_AVATAR_IMAGE } from '@/config/index.js'
 const FEATURE_OPTIONS = [
   {
     name: '我的音乐',
-    url: '/pages/music/index',
+    url: '/pages/music/index?type=3',
     jumpTo: 'navigate'
   },
   {
     name: '我的视频',
-    url: '/pages/video/index?type=1',
+    url: '/pages/video/index?type=3',
     jumpTo: 'navigate'
   },
   {
     name: '我的文章',
-    url: '/pages/article/index',
+    url: '/pages/article/index?type=6',
     jumpTo: 'navigate'
   },
   {
@@ -81,9 +96,20 @@ const FEATURE_OPTIONS = [
   },
   {
     name: '我的成绩',
-    url: '/pages/article/index',
+    url: '/pages/article/index?type=1',
     jumpTo: 'navigate'
   }
+]
+
+const BASE_OPTIONS = [
+  {
+    key: 'cache',
+    name: '清除缓存',
+  },
+  {
+    key: 'about',
+    name: '关于',
+  },
 ]
 
 export default {
@@ -93,7 +119,8 @@ export default {
   data() {
     return {
       defaultAvatar: DEFAULT_AVATAR_IMAGE,
-      featureOptions: FEATURE_OPTIONS
+      featureOptions: FEATURE_OPTIONS,
+      baseOptions: BASE_OPTIONS
     };
   },
   computed: {
@@ -113,6 +140,7 @@ export default {
   },
   methods: {
     openUrl,
+    scaleImageWidthInCOS,
     fetchData() {
       return getUserInfo().then((data) => {
         store.commit('setUserInfo', data)
@@ -125,6 +153,22 @@ export default {
         3: '学生'
       };
       return map[role] || '未知角色';
+    },
+    onClickOther (item) {
+      if (item.key === 'cache') {
+        uni.clearStorageSync();
+        uni.showToast({
+          title: '缓存已清除！',
+          duration: 3000,
+          icon: 'success'
+        });
+        return
+      }
+      if (item.key === 'about') {
+        uni.navigateTo({
+          url: '/pages/me/about'
+        })
+      }
     },
     onClickMock () {
       const bool =  !this.isUseMock

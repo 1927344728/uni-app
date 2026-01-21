@@ -1,11 +1,12 @@
 import { createStore } from 'vuex'
-import { scaleImageWidthInCOS } from '@/utils/common.js'
+import { getCategoryEnum } from '@/api'
 
 export default createStore({
   state: {
     isUseMock: true,
     userInfo: null,
-    activeTabKey: 'index'
+    activeTabKey: 'index',
+    categoryEnum: null
   },
   mutations: {
     setIsUseMock (state, bool) {
@@ -22,6 +23,19 @@ export default createStore({
     },
     setActiveTabKey(state, str) {
       state.activeTabKey = str
+    },
+    setCategoryEnum(state, data) {
+      state.categoryEnum = data
+    }
+  },
+  actions: {
+    getCategoryEnum ({ state, commit }, categoryId) {
+      if (state.categoryEnum) {
+        return Promise.resolve(state.categoryEnum)
+      }
+      return getCategoryEnum(categoryId).then(data => {
+        commit('setCategoryEnum', data)
+      })
     }
   }
 })

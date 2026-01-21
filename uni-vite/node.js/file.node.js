@@ -34,7 +34,6 @@ function getAudioFiles(dir) {
       const ext = path.extname(file).toLowerCase();
       return ext === '.mp3' || ext === '.flac';
     });
-    // Write the array to database/temp_music.js
     const outputPath = path.join('database', 'temp_music.js');
     fs.writeFileSync(outputPath, `export default ${JSON.stringify(audioFiles, null, 2)};`);
     console.log(`Audio files list written to ${outputPath}`);

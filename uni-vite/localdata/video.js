@@ -1,3 +1,18 @@
+export const VIDEO_MENU_LIST = [
+  {
+    id: 1,
+    title: 'banner',
+    desc: 'banner',
+    videoIds: [7, 4, 1]
+  },
+  {
+    id: 2,
+    title: '推荐视频',
+    desc: '推荐视频',
+    videoIds: [8, 7, 5, 4, 6]
+  },
+]
+
 export const VIDEO_LIST = [
   {
     id: 1,

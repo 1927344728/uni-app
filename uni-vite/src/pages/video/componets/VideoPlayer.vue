@@ -18,7 +18,7 @@
           <image
             v-if="page && page.cover"
             class="video_play_bg"
-            :src="page.cover"
+            :src="scaleImageWidthInCOS(page.cover)"
             mode="aspectFill"
           />
 
@@ -91,7 +91,7 @@
 <script>
 import { get as _get } from 'lodash';
 import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
-import { textEllipsis } from '@/utils/common.js';
+import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js';
 
 export default {
   name: 'VideoPlayer',
@@ -160,6 +160,7 @@ export default {
   },
   methods: {
     textEllipsis,
+    scaleImageWidthInCOS,
     async init () {
       let { mode, id, ids, type, video, videos } = this;
 

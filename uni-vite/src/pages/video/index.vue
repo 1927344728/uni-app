@@ -32,10 +32,10 @@
       </view>
     </scroll-view>
 
-    <view v-if="videoTypeEnum && videoTypeEnum.length" class="navigation_bar">
+    <view v-if="videoTypeEnum.length > 1" class="navigation_bar">
       <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchstart.stop @touchmove.stop @touchend.stop>
         <view
-          v-for="m in [{ typeId: null, name: '全部' }].concat(videoTypeEnum)"
+          v-for="m in videoTypeEnum"
           :key="m.typeId"
           class="tab"
           :class="{
@@ -74,12 +74,12 @@
   </scroll-view>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import qs from 'qs'
 import { get as _get, cloneDeep } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { getVideoMenuList, getVideoByIds, getVideoPageList } from '@/api'
-import { VIDEO_TYPE_ENUM } from '/database/type_enum.js'
 
 const initPagination = () => ({
   pageNum: 0,
@@ -97,16 +97,29 @@ export default {
     return {
       isLoaded: false,
       type: 1,
-      videoMenuList: null,
       bannerList: [],
       recommendedList: [],
-      videoTypeEnum: cloneDeep(VIDEO_TYPE_ENUM),
       videoList: [],
       pagination: initPagination(),
       isFixedNavBar: false
     }
   },
   computed: {
+    ...mapState(['categoryEnum']),
+    videoTypeEnum () {
+      const { categoryEnum } = this
+      let options = [
+        { typeId: null, name: '全部' }
+      ]
+      if (categoryEnum) {
+        categoryEnum
+          .filter(e => e.categoryId === 4)
+          .forEach(e => {
+            options.push({ typeId: e.typeId, name: e.typeName})
+          })
+      }
+      return options
+    },
     isShowBanner () {
       return _get(this, 'bannerList.length')
     },
@@ -114,17 +127,14 @@ export default {
       return _get(this, 'recommendedList.length')
     }
   },
-  onLoad (options) {
-    const type = _get(options, 'type')
-    if (Number(type)) {
-      this.type = Number(type)
-    }
+  onLoad (options = {}) {
+    const type = options.type ? Number(options.type) : null
+    this.type = Number(type) || this.type
     this.refreshList()
   },
   async created () {
-    const { pagination } = this
+    this.getCategoryEnum()
     getVideoMenuList().then(data => {
-      this.videoMenuList = data
       if (data && data.length) {
         const bannerMenu = data.find(item => item.id === 1)
         const recommendMenu = data.find(item => item.id === 2)
@@ -143,6 +153,7 @@ export default {
     await this.getVideoPageList()
   },
   methods: {
+    ...mapActions(['getCategoryEnum']),
     convertHtmlToText,
     scaleImageWidthInCOS,
     getVideoPageList () {

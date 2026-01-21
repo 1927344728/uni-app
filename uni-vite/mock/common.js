@@ -1,21 +1,27 @@
 import { cloneDeep } from "lodash"
-import { ARTICLE_LIST } from '/database/article.js'
+import { CATEGORY_ENUM } from '/localdata/category.js'
 
-export const basicTemplate = {
+export const initResponseData = () => ({
   code: 200,
   success: true,
   message: '请求成功',
   data: null
-}
+})
 
 const helloWord = () => {
-  const data = cloneDeep(basicTemplate)
+  const data = initResponseData()
   data.data = 'Hello, World!'
   return data
 }
 
+const getCategoryEnum = () => {
+  const data = initResponseData()
+  data.data = cloneDeep(CATEGORY_ENUM)
+  return data 
+}
+
 const getBannerList = () => {
-  const data = cloneDeep(basicTemplate)
+  const data = initResponseData()
   data.data = [
     {
       id: 1,
@@ -50,5 +56,6 @@ const getBannerList = () => {
 
 export default {
   'api/hello/helloWord': helloWord,
+  'api/common/getCategoryEnum': getCategoryEnum,
   'api/common/getBannerList': getBannerList
 }
