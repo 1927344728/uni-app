@@ -143,11 +143,13 @@ export function openUrl(item) {
 			uni.navigateTo({
 				url: item.url
 			});
+      return
 		}
 		if (item.jumpTo === 'webview') {
 			uni.navigateTo({
 				url: `/pages/webview/index?url=${encodeURIComponent(item.url)}`
 			});
+      return
 		}
 		if (item.jumpTo === 'web') {
 			// #ifdef H5
@@ -163,6 +165,10 @@ export function openUrl(item) {
 					url: `/pages/webview/index?url=${encodeURIComponent(item.url)}`
 			});
 			// #endif
+      return
 		}
+    uni.navigateTo({
+      url: item.url
+    });
 	}
 }

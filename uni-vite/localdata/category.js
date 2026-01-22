@@ -36,3 +36,6 @@ export const CATEGORY_ENUM = [
   { id: 32, categoryId: 4, categoryName: '视频', typeId: 3, typeName: '日常', subTypeId: null, subTypeName: null },
   { id: 33, categoryId: 4, categoryName: '视频', typeId: 4, typeName: '其他', subTypeId: null, subTypeName: null },
 ]
+
+// const jsonString = JSON.stringify(CATEGORY_ENUM)
+// console.log(jsonString)

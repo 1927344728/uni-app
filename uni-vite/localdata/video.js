@@ -99,7 +99,7 @@ export const VIDEO_LIST = [
     fileName: '海来阿木-点歌的人.mp4',
     desc: '海来阿木',
     publisher: '李兆',
-    seq: 0,
+    seq: 10,
     url: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8-%E7%82%B9%E6%AD%8C%E7%9A%84%E4%BA%BA.mp4',
     cover: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8-%E7%82%B9%E6%AD%8C%E7%9A%84%E4%BA%BA.jpg',
     objectFit: 'contain',
@@ -366,3 +366,7 @@ export const VIDEO_LIST = [
     ratio: null
   },
 ].sort((a, b) => b.seq - a.seq)
+
+// const jsonString = JSON.stringify(VIDEO_MENU_LIST.sort((a,b) => a.id - b.id))
+// const jsonString = JSON.stringify(VIDEO_LIST.sort((a,b) => a.id - b.id))
+// console.log(jsonString)

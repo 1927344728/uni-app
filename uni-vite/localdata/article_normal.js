@@ -9,6 +9,9 @@ export default [
     note: '你的每一幅画，都是送给这个世界的一份独特礼物！',
     seq: 99,
     thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20251216003939_120_2.jpg',
+    className: null,
+    url: null,
+    jumpTo: 'navigate',
     content: [
       {
         type: 'title',

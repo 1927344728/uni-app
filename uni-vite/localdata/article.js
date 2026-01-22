@@ -7,18 +7,7 @@ import ARTICLE_READ_VIDEO_LIST from './article_read_video'
 import ARTICLE_TRAVEL from './article_travel'
 import ARTICLE_CULTURE from './article_culture'
 
-export const ARTICLE_DETAIL_LIST = [].concat(
-  ARTICLE_COURSE_LIST,
-  ARTICLE_READ_VIDEO_LIST,
-  ARTICLE_POEM_LIST,
-  ARTICLE_SCORE_LIST,
-  ARTICLE_ANA_LIST,
-  ARTICLE_NORMAL_LIST,
-  ARTICLE_TRAVEL,
-  ARTICLE_CULTURE
-)
-
-export const ARTICLE_LIST= [
+const ARTICLE_OTHER = [
   {
     id: 5,
     uuid: '',
@@ -56,7 +45,22 @@ export const ARTICLE_LIST= [
     jumpTo: 'webview'
   },
 ]
-  .concat(ARTICLE_DETAIL_LIST.map(e => ({
+
+export const ARTICLE_DETAIL_LIST = [
+  ARTICLE_OTHER,
+  ARTICLE_COURSE_LIST,
+  ARTICLE_READ_VIDEO_LIST,
+  ARTICLE_POEM_LIST,
+  ARTICLE_SCORE_LIST,
+  ARTICLE_ANA_LIST,
+  ARTICLE_NORMAL_LIST,
+  ARTICLE_TRAVEL,
+  ARTICLE_CULTURE
+].flat()
+
+
+export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
+  .map(e => ({
     id: e.id,
     uuid: e.uuid,
     type: e.type,
@@ -67,8 +71,17 @@ export const ARTICLE_LIST= [
     className: e.className,
     thumb: e.thumb,
     url: e.url || `/pages/article/detail?id=${e.id}`,
-    readCount: e.readCount || null,
-    collectCount: e.collectCount || null,
     jumpTo: e.jumpTo || 'navigate'
-  })))
+  }))
   .sort((a, b) => b.seq - a.seq)
+
+// const jsonString = JSON.stringify(ARTICLE_DETAIL_LIST
+//   .map(e => {
+//     delete e.uuid
+//     e.content = e.content || null
+//     e.jumpTo = e.jumpTo || 'navigate'
+//     return e
+//   })
+//   .sort((a, b) => a.id - b.id)
+// )
+// console.log(jsonString)

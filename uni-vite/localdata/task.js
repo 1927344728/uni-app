@@ -87,3 +87,6 @@ export const TASK_LIST = [
     endTime: 1767139200000
   }
 ].sort((a, b) => b.seq - a.seq)
+
+// const jsonString = JSON.stringify(TASK_LIST.sort((a,b) => a.id - b.id))
+// console.log(jsonString)
