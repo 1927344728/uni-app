@@ -73,12 +73,20 @@ public class MusicController {
   @ResponseBody
   public CommonResponse<MusicEntity> getMusicByRandom(
       @RequestParam(required = false) String type,
-      @RequestParam List<Long> playingIds,
+      @RequestParam(required = false) List<Long> playingIds,
       @RequestParam(required = false) List<Long> playedIds) {
-    long totalCount = musicRepository.countByIsDeletedFalse();
+    long totalCount = musicRepository.countByTypeAndIsDeletedFalse(type);
     Optional<MusicEntity> music;
-    if (playedIds != null && playedIds.size() >= totalCount) {
-      // 如果 playedIds 长度等于或大于所有记录，忽略 playedIds
+    int playedCount = 0;
+    int playingCount = 0;
+    if (playedIds != null) {
+      playedCount = playedIds.size();
+    }
+    if (playingIds != null) {
+      playingCount = playingIds.size();
+    }
+    if (playedIds != null && (playedCount + playingCount) >= totalCount) {
+      // 如果 playedIds + playingIds 长度等于或大于所有记录，忽略 playedIds
       music = musicRepository.findRandomMusic(type, playingIds, null);
     } else {
       music = musicRepository.findRandomMusic(type, playingIds, playedIds);

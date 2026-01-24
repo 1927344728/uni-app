@@ -4,7 +4,7 @@ import { getCategoryEnum } from '@/api'
 
 export default createStore({
   state: {
-    isUseMock: false,
+    isUseMock: true,
     userInfo: null,
     activeTabKey: 'index',
     categoryEnum: null

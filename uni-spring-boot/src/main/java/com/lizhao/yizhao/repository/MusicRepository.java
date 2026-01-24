@@ -13,7 +13,8 @@ import java.util.Optional;
 public interface MusicRepository extends JpaRepository<MusicEntity, Long> {
   Optional<MusicEntity> findByUuid(String uuid);
 
-  long countByIsDeletedFalse();
+  @Query("SELECT COUNT(m) FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%'))")
+  long countByTypeAndIsDeletedFalse(@Param("type") String type);
 
   @Query("SELECT m FROM MusicEntity m WHERE (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR m.title LIKE %:keyword%) AND m.isDeleted = false ORDER BY m.seq DESC, m.id ASC")
   Page<MusicEntity> findMusics(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);

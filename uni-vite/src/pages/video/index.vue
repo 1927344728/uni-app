@@ -158,20 +158,24 @@ export default {
     scaleImageWidthInCOS,
     getVideoPageList () {
       const { queryParams, type, videoList, pagination } = this
-      this.isLoaded = false
+			if (pagination.isLast) {
+				return
+			}
       return getVideoPageList({
         type,
         keyword: queryParams.keyword || '',
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then(data => {
-        this.videoList = videoList.concat(data || [])
-        pagination.isLast = (data || []).length < pagination.pageSize
+				const list = _get(data, 'content') || []
+        pagination.isLast = (list).length < pagination.pageSize
+        this.videoList = videoList.concat(list)
       }).finally(() => {
         this.isLoaded = true
       })
     },
     refreshList () {
+			this.isLoaded = false
       this.videoList = []
       this.pagination = initPagination()
       this.getVideoPageList()

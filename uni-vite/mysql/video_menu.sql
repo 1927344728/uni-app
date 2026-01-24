@@ -2,7 +2,7 @@ CREATE TABLE `video_menu` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `title` varchar(255) NOT NULL COMMENT '标题',
   `desc` varchar(500) DEFAULT NULL COMMENT '描述',
-  `video_ids` text NOT NULL COMMENT '视频ID列表(JSON格式)',
+  `video_ids` json NOT NULL COMMENT '视频ID列表(JSON格式)',
   `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_deleted` tinyint(1) DEFAULT '0' COMMENT '删除标识(0:正常 1:已删除)',
