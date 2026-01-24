@@ -61,8 +61,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { get as _get } from 'lodash'
-import { openUrl, scaleImageWidthInCOS } from '@/utils'
+import { USE_MOCK_KEY, openUrl, scaleImageWidthInCOS } from '@/utils'
 import { APP_NAME, APP_VERSION, FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
 import { welcome, getUserInfo, getBannerList, getArticlePageList } from '@/api'
@@ -83,17 +84,14 @@ export default {
     }
   },
   computed: {
+		...mapState(['isUseMock']),
     userName () {
       return _get(store, 'state.userInfo.name') || '欢迎来到'
     },
-    isUseMock () {
-      return _get(store, 'state.isUseMock')
-    }
   },
   async created () {
-    if (this.isUseMock) {
-      this.init()
-    } else {
+		const useMockKey = uni.getStorageSync(USE_MOCK_KEY)
+    if (!useMockKey) {
       welcome().then((data) => {
         store.commit('setIsUseMock', false)
       }).catch((err) => {
@@ -102,6 +100,8 @@ export default {
       }).finally(() => {
         this.init()
       })
+    } else {
+      this.init()
     }
   },
   onReachBottom () {
@@ -117,7 +117,7 @@ export default {
         this.bannerList = data || []
       })
       getArticlePageList({ type: '2' }).then((data) => {
-        this.recommendArticles = data || []
+        this.recommendArticles = _get(data, 'content') || []
       })
     },
     openUrl (item) {

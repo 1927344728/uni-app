@@ -82,6 +82,9 @@ export default {
       let data = cacheMap[cacheKey]
       if (!data) {
         data = await this.request(params).catch(() => {})
+        if (data && 'content' in data) {
+          data = data.content
+        }
         cacheMap[cacheKey] = data
       }
       this.list = list.concat(data || [])

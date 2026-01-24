@@ -79,6 +79,7 @@ export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
 //   .map(e => {
 //     delete e.uuid
 //     e.content = e.content || null
+// 		e.url = e.url || `/pages/article/detail?id=${e.id}`,
 //     e.jumpTo = e.jumpTo || 'navigate'
 //     return e
 //   })
