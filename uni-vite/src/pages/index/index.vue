@@ -63,7 +63,7 @@
 <script>
 import { mapState } from 'vuex'
 import { get as _get } from 'lodash'
-import { USE_MOCK_KEY, openUrl, scaleImageWidthInCOS } from '@/utils'
+import { openUrl, scaleImageWidthInCOS } from '@/utils'
 import { APP_NAME, APP_VERSION, FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
 import { welcome, getUserInfo, getBannerList, getArticlePageList } from '@/api'
@@ -90,8 +90,9 @@ export default {
     },
   },
   async created () {
-		const useMockKey = uni.getStorageSync(USE_MOCK_KEY)
-    if (!useMockKey) {
+    if (this.isUseMock) {
+      this.init()
+    } else {
       welcome().then((data) => {
         store.commit('setIsUseMock', false)
       }).catch((err) => {
@@ -100,8 +101,6 @@ export default {
       }).finally(() => {
         this.init()
       })
-    } else {
-      this.init()
     }
   },
   onReachBottom () {

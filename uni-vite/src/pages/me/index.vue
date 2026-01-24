@@ -3,7 +3,7 @@
     <view class="me_page">
       <view v-if="userInfo" class="user_info">
         <view class="avatar">
-          <image class="image" :src="scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/snowman-8755896_1280.png', 160)" mode="aspectFill" />
+          <image class="image" :src="defaultAvatar" mode="aspectFill" />
         </view>
         <view class="user_detail">
           <view class="user_name">
@@ -50,10 +50,6 @@
             <uni-icons type="right" size="18" color="#ccc"></uni-icons>
           </view>
         </view>
-
-        <view class="mock" :class="[isUseMock ? 'network' : 'local']" @click="onClickMock">
-          {{ isUseMock ? '连接数据库' : '使用本地数据' }}
-        </view>
       </view>
       <view v-if="userInfo" class="logout">
         <text class="text" @click="onChangePassword">修改密码</text>
@@ -66,13 +62,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { get as _get } from 'lodash'
-import { USE_MOCK_KEY, openUrl, scaleImageWidthInCOS } from '@/utils'
 import store from '@/store/index'
+import { openUrl, scaleImageWidthInCOS } from '@/utils'
 import { welcome, getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
-import { DEFAULT_AVATAR_IMAGE } from '@/config/index.js'
 
 const FEATURE_OPTIONS = [
   {
@@ -119,13 +113,12 @@ export default {
   },
   data() {
     return {
-      defaultAvatar: DEFAULT_AVATAR_IMAGE,
+      defaultAvatar: scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/snowman-8755896_1280.png', 160),
       featureOptions: FEATURE_OPTIONS,
       baseOptions: BASE_OPTIONS
     };
   },
   computed: {
-    ...mapState(['isUseMock']),
     userInfo () {
       return _get(store, 'state.userInfo')
     },
@@ -139,7 +132,6 @@ export default {
   },
   methods: {
     openUrl,
-    scaleImageWidthInCOS,
     fetchData() {
       return getUserInfo().then((data) => {
         store.commit('setUserInfo', data)
@@ -169,17 +161,6 @@ export default {
         })
       }
     },
-    onClickMock () {
-      const bool =  !this.isUseMock
-      store.commit('setIsUseMock', bool)
-      uni.setStorageSync(USE_MOCK_KEY, bool ? 1 : 0)
-      uni.showModal({
-        title: bool ? '仅有部分数据' : '全部数据',
-        content: bool ? '当前使用本地数据' : '已使用正常网络请求',
-        showCancel: false,
-        confirmText: '知道了'
-      })
-    },
     gotoLogin () {
       uni.navigateTo({
         url: '/pages/login/index',
@@ -199,6 +180,7 @@ export default {
     },
     onLogout() {
       return logout().then(() => {
+        store.commit('setIsUseMock', true)
         uni.navigateTo({
           url: '/pages/index/index'
         })

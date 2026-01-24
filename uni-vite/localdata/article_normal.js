@@ -66,15 +66,6 @@ export default [
         description: '冬至'
       },
       {
-        type: 'video',
-        // className: 'full_width',
-        content: [
-          'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/video/94805290ed6ad02dda8ec52773ddf2a7.mp4?ratio=1.7778'
-        ],
-        poster: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/94805290ed6ad02dda8ec52773ddf2a7s.jpg',
-        description: '手指歌'
-      },
-      {
         type: 'richText',
         content: [
           '请继续这样画下去吧，用你的眼睛发现更多美好，用你的小手创造更多奇迹。画纸永远是你最好的朋友，它会忠实地保存你每一个天马行空的想法。老师和爸爸妈妈都期待着，看你用画笔继续讲述那些只有你知道的、藏在心里的小故事。',
