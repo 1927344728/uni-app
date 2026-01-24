@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { get as _get } from 'lodash'
 import { getTaskTargeterList, getTaskPageList } from '@/api'
 import { TASK_STATUS_ENUM } from './constant.js'
 import FooterBar from '@/components/footer_bar/index.vue'
@@ -76,7 +77,7 @@ const initQueryParam = () => ({
 })
 const initPagination = () => ({
   pageNum: 0,
-  pageSize: 4,
+  pageSize: 10,
   isLast: false
 })
 export default {
@@ -136,8 +137,9 @@ export default {
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize,
       }).then((data) => {
-        this.taskList = taskList.concat(data || [])
-        if (!data || data.length < pagination.pageSize) {
+				const list = _get(data, 'content') || []
+        this.taskList = taskList.concat(list)
+        if (list.length < pagination.pageSize) {
           pagination.isLast = true
         }
       }).finally(() => {

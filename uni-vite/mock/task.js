@@ -11,7 +11,9 @@ const getTaskPageList = (params) => {
     return hasTitle && hasStatus && hasTargeter
   })
   const data = initResponseData()
-  data.data = list.splice(pageNum * pageSize, pageSize)
+  data.data = {
+		content: list.splice(pageNum * pageSize, pageSize)
+	}
   return data
 }
 

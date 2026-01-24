@@ -72,7 +72,6 @@ export default {
     },
 		async getList () {
       const { queryParams, pagination, list, cacheMap } = this
-      this.isLoaded = false
       const params = {
         ...(queryParams || {}),
         pageNum: pagination.pageNum,
@@ -94,6 +93,7 @@ export default {
       this.isLoaded = true
     },
     refreshList () {
+			this.isLoaded = false
       this.list = []
       this.pagination = this.initPagination()
       this.getList()

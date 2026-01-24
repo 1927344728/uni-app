@@ -28,6 +28,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     String getJumpTo();
   }
 
-  @Query("SELECT a.id as id, a.uuid as uuid, a.type as type, a.subType as subType, a.title as title, a.author as author, a.note as note, a.seq as seq, a.className as className, a.thumb as thumb, a.url as url, a.jumpTo as jumpTo FROM ArticleEntity a WHERE (:keyword IS NULL OR a.title LIKE %:keyword%) AND (:type IS NULL OR CONCAT(',', a.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:subType IS NULL OR a.subType = :subType) AND a.isDeleted = false ORDER BY a.seq DESC")
+  @Query("SELECT a.id as id, a.uuid as uuid, a.type as type, a.subType as subType, a.title as title, a.author as author, a.note as note, a.seq as seq, a.className as className, a.thumb as thumb, a.url as url, a.jumpTo as jumpTo FROM ArticleEntity a WHERE (:keyword IS NULL OR :keyword = '' OR a.title LIKE %:keyword%) AND (:type IS NULL OR :type = '' OR CONCAT(',', a.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:subType IS NULL OR a.subType = :subType) AND a.isDeleted = false ORDER BY a.seq DESC")
   Page<ArticleSummary> findArticles(@Param("keyword") String keyword, @Param("type") String type, @Param("subType") Integer subType, Pageable pageable);
 }
