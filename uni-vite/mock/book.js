@@ -13,7 +13,9 @@ const getBookPageList = (params) => {
   }
   list = list.splice(pageNum * pageSize, pageSize)
   const data = initResponseData()
-  data.data = list
+  data.data = {
+		content: list,
+	}
   return data
 }
 

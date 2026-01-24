@@ -47,6 +47,7 @@
   </scroll-view>
 </template>
 <script>
+import { get as _get } from 'lodash'
 import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js'
 import { getBookPageList } from '@/api/book.js'
 
@@ -80,7 +81,6 @@ export default {
       const { queryParams, pagination } = this
       const { pageNum, pageSize } = pagination
       const { subType, keyword } = queryParams
-      this.isLoad = false
       return getBookPageList({
         type: subType || null,
         keyword: keyword || '',
@@ -88,16 +88,18 @@ export default {
         pageSize
       })
         .then(data => {
-          this.bookList = this.bookList.concat(data || [])
-          if ((data || []).length < pageSize) {
+					const list = _get(data, 'content') || []
+          if (list.length < pageSize) {
             pagination.isLast = true
           }
+          this.bookList = this.bookList.concat(list)
         })
         .finally(() => {
           this.isLoad = true
         })
     },
     refreshList () {
+			this.isLoad = false
       this.bookList = []
       this.pagination = initPagination()
       this.getBookPageList()
