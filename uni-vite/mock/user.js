@@ -9,7 +9,7 @@ const getUserInfo = () => {
     role: 2,
     phone_number: '15857185220'
   }
-  // data.data = null
+  data.data = null
   return data
 }
 

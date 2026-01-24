@@ -1,4 +1,4 @@
-package com.lizhao.yizhao.authority;
+package com.lizhao.yizhao.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -16,7 +16,7 @@ public class JwtUtil {
   private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
   // 使用安全的密钥（生产环境应从配置读取）
-  private static final byte[] SECRET = "ea1cf910f0f649c1a60971a9e678ccdda1519cd47649471ca7c5301cadaef04c".getBytes();
+  private static final byte[] SECRET = "8af87d1df85b11f094dab4a9fc7c4063".getBytes();
   private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET);
   private static final long EXPIRATION_HOURS = 24; // 24小时过期
 

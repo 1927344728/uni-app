@@ -1,9 +1,11 @@
 import { createStore } from 'vuex'
+import { USE_MOCK_KEY } from '@/utils/variables.js'
 import { getCategoryEnum } from '@/api'
 
+const useMockKey = uni.getStorageSync(USE_MOCK_KEY)
 export default createStore({
   state: {
-    isUseMock: true,
+    isUseMock: useMockKey !== 0,
     userInfo: null,
     activeTabKey: 'index',
     categoryEnum: null

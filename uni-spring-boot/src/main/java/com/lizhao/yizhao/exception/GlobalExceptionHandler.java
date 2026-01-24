@@ -1,6 +1,6 @@
 package com.lizhao.yizhao.exception;
 
-import com.lizhao.yizhao.common.ResponseResult;
+import com.lizhao.yizhao.dto.response.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,36 +19,36 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(NoHandlerFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseResult <String> handleNotFoundException(NoHandlerFoundException e) {
+  public CommonResponse<String> handleNotFoundException(NoHandlerFoundException e) {
     logger.error("路径不存在", e);
-    return ResponseResult.fail(404, "路径不存在，请检查路径是否正确");
+    return CommonResponse.fail(404, "路径不存在，请检查路径是否正确");
   }
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-  public ResponseResult <String>  handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+  public CommonResponse<String> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
     logger.error("请求方法错误", e);
-    return ResponseResult.fail(405, "不支持" + e.getMethod() + "请求方法");
+    return CommonResponse.fail(405, "不支持" + e.getMethod() + "请求方法");
   }
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseResult <Void> handleMethodArgumentNotValidException(MissingServletRequestParameterException e) {
+  public CommonResponse<Void> handleMethodArgumentNotValidException(MissingServletRequestParameterException e) {
     logger.error("请求参数错误", e);
-    return ResponseResult.fail(400, "参数错误");
+    return CommonResponse.fail(400, "参数错误");
   }
 
   @ExceptionHandler(AsyncRequestTimeoutException.class)
   @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
-  public ResponseResult <Void> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
+  public CommonResponse<Void> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
     logger.error("请求超时", e);
-    return ResponseResult.fail(408, "请求超时");
+    return CommonResponse.fail(408, "请求超时");
   }
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ResponseResult <Void> handleException(Exception e) {
+  public CommonResponse<Void> handleException(Exception e) {
     logger.error("系统错误", e);
-    return ResponseResult.fail(500, "系统错误");
+    return CommonResponse.fail(500, "系统错误");
   }
 }

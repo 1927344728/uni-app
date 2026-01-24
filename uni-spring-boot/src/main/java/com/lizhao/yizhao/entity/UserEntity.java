@@ -1,13 +1,16 @@
-package com.lizhao.yizhao.user;
+package com.lizhao.yizhao.entity;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "user_info")
-public class UserInfoEntity {
+@Table(name = "user", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "uuid"),
+    @UniqueConstraint(columnNames = "phone")
+})
+public class UserEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -15,45 +18,51 @@ public class UserInfoEntity {
   @Column(nullable = false, unique = true, length = 36)
   private String uuid;
 
-  @Column(name = "phone", nullable = false, unique = true, length = 11)
+  @Column(nullable = false, unique = true, length = 11)
   private String phone;
 
-  @Column(name = "name", nullable = true, length = 255)
+  @Column(nullable = true, length = 255)
   private String name;
 
-  @Column(name = "user_name", nullable = true, length = 255)
-  private String userName;
+  @Column(nullable = true)
+  private Integer sex;
 
-  @Column(name = "nickname", nullable = false, length = 255)
+  @Column(nullable = true)
+  private LocalDateTime birthday;
+
+  @Column(nullable = false, length = 255)
+  private String alias;
+
+  @Column(nullable = true, length = 255)
   private String nickname;
 
-  @Column(name = "role", nullable = false)
+  @Column(nullable = true, length = 255)
+  private String email;
+
+  @Column(nullable = false)
   private Integer role;
 
-  @Column(name = "captcha", nullable = true, length = 6)
-  private String captcha;
-
-  @Column(name = "password", nullable = true, length = 36)
+  @Column(nullable = false, length = 36)
   private String password;
+
+  @Column(nullable = true, length = 6)
+  private String captcha;
 
   @Column(nullable = true, length = 255)
   private String token;
 
-  public UserInfoEntity() {}
-
   @Column(name = "created_at", nullable = false, updatable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "updated_at", nullable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-  private Timestamp updatedAt;
+  private LocalDateTime updatedAt;
 
   @Column(name = "is_deleted", nullable = false)
   private Boolean isDeleted;
 
-  @Column(nullable = true, length = 255)
-  private String email;
+  public UserEntity() {}
 
   // Getters and Setters
   public Long getId() {
@@ -84,11 +93,25 @@ public class UserInfoEntity {
     this.name = name;
   }
 
-  public String getUserName() {
-    return userName;
+  public Integer getSex() {
+    return sex;
   }
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setSex(Integer sex) {
+    this.sex = sex;
+  }
+
+  public LocalDateTime getBirthday() {
+    return birthday;
+  }
+  public void setBirthday(LocalDateTime birthday) {
+    this.birthday = birthday;
+  }
+
+  public String getAlias() {
+    return alias;
+  }
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
   public String getNickname() {
@@ -98,6 +121,13 @@ public class UserInfoEntity {
     this.nickname = nickname;
   }
 
+  public String getEmail() {
+    return email;
+  }
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
   public Integer getRole() {
     return role;
   }
@@ -105,7 +135,7 @@ public class UserInfoEntity {
     this.role = role;
   }
 
-  public String getPassword () {
+  public String getPassword() {
     return password;
   }
   public void setPassword(String password) {
@@ -115,7 +145,6 @@ public class UserInfoEntity {
   public String getCaptcha() {
     return captcha;
   }
-
   public void setCaptcha(String captcha) {
     this.captcha = captcha;
   }
@@ -123,40 +152,28 @@ public class UserInfoEntity {
   public String getToken() {
     return token;
   }
-
   public void setToken(String token) {
     this.token = token;
   }
 
-  public Timestamp getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
-
-  public void setCreatedAt(Timestamp createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public Timestamp getUpdatedAt() {
+  public LocalDateTime getUpdatedAt() {
     return updatedAt;
   }
-
-  public void setUpdatedAt(Timestamp updatedAt) {
+  public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
 
   public Boolean getIsDeleted() {
     return isDeleted;
   }
-
   public void setIsDeleted(Boolean isDeleted) {
     this.isDeleted = isDeleted;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
   }
 }

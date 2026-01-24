@@ -65,7 +65,7 @@ import { get as _get } from 'lodash'
 import { openUrl, scaleImageWidthInCOS } from '@/utils'
 import { APP_NAME, APP_VERSION, FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
-import { getUserInfo, getBannerList, getArticlePageList } from '@/api'
+import { welcome, getUserInfo, getBannerList, getArticlePageList } from '@/api'
 
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
@@ -90,22 +90,36 @@ export default {
       return _get(store, 'state.isUseMock')
     }
   },
-  created () {
-    getUserInfo().then((data) => {
-      store.commit('setUserInfo', data)
-    })
-    getBannerList().then((data) => {
-      this.bannerList = data || []
-    })
-    getArticlePageList({ type: '2' }).then((data) => {
-      this.recommendArticles = data || []
-    })
+  async created () {
+    if (this.isUseMock) {
+      this.init()
+    } else {
+      welcome().then((data) => {
+        store.commit('setIsUseMock', false)
+      }).catch((err) => {
+        uni.hideToast()
+        store.commit('setIsUseMock', true)
+      }).finally(() => {
+        this.init()
+      })
+    }
   },
   onReachBottom () {
     console.log('onReachBottom')
   },
   methods: {
     scaleImageWidthInCOS,
+    init () {
+      getUserInfo().then((data) => {
+        store.commit('setUserInfo', data)
+      })
+      getBannerList().then((data) => {
+        this.bannerList = data || []
+      })
+      getArticlePageList({ type: '2' }).then((data) => {
+        this.recommendArticles = data || []
+      })
+    },
     openUrl (item) {
 			if (item && item) {
 				return openUrl(item)

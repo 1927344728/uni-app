@@ -1,4 +1,4 @@
-package com.lizhao.yizhao.authority;
+package com.lizhao.yizhao.config.authority;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,12 +11,12 @@ public class AuthorityCorsConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
       // 替换为你的前端实际域名，不要用"*"
       .allowedOrigins(
-        "http://app.lizhao.com",
-        "https://app.lizhao.com",
+        "http://izhao.com.cn",
+        "http://dev.izhao.com.cn:9000",
         "http://localhost:9000",
-        "https://localhost:9000",
-        "http://d894401acb3a.ngrok-free.app",
-        "https://d894401acb3a.ngrok-free.app"
+        "https://izhao.com.cn",
+        "https://dev.izhao.com.cn:9000",
+        "https://localhost:9000"
       )
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
       .allowedHeaders("*")

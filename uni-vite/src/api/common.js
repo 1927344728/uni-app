@@ -6,6 +6,12 @@ export function helloWord() {
   });
 }
 
+export function welcome() {
+  return request({
+    url: 'api/hello/welcome',
+  });
+}
+
 export function getCategoryEnum() {
   return request({
     url: 'api/common/getCategoryEnum',

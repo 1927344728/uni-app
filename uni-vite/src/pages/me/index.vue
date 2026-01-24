@@ -66,10 +66,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { get as _get } from 'lodash'
-import { openUrl, scaleImageWidthInCOS } from '@/utils'
+import { USE_MOCK_KEY, openUrl, scaleImageWidthInCOS } from '@/utils'
 import store from '@/store/index'
-import { getUserInfo, logout } from '@/api'
+import { welcome, getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 import { DEFAULT_AVATAR_IMAGE } from '@/config/index.js'
 
@@ -124,9 +125,7 @@ export default {
     };
   },
   computed: {
-    isUseMock () {
-      return store.state.isUseMock
-    },
+    ...mapState(['isUseMock']),
     userInfo () {
       return _get(store, 'state.userInfo')
     },
@@ -173,6 +172,7 @@ export default {
     onClickMock () {
       const bool =  !this.isUseMock
       store.commit('setIsUseMock', bool)
+      uni.setStorageSync(USE_MOCK_KEY, bool ? 1 : 0)
       uni.showModal({
         title: bool ? '仅有部分数据' : '全部数据',
         content: bool ? '当前使用本地数据' : '已使用正常网络请求',

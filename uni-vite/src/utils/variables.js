@@ -10,6 +10,7 @@ const protocol = import.meta.env.VITE_SERVER_PROTOCOL
 export const SERVER_API_DOMAIN = import.meta.env.VITE_SERVER_HOST
 export const COS_ASSET_PATH = `${protocol}://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/`
 export const WEB_DOMAIN = '/pages/'
+export const USE_MOCK_KEY = 'use_mock_key'
 
 export function getUrlParams (url) {
   const _url = url || _get(location, 'href') || ''

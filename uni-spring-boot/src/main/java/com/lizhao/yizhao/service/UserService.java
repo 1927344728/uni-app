@@ -1,12 +1,9 @@
 package com.lizhao.yizhao.service;
 
-import com.lizhao.yizhao.common.ResponseResult;
-import com.lizhao.yizhao.common.User;
-import com.lizhao.yizhao.user.*;
-import com.lizhao.yizhao.user.UserDetailEntity;
-import com.lizhao.yizhao.user.UserInfoEntity;
-import com.lizhao.yizhao.user.UserInfoRepository;
-import com.lizhao.yizhao.user.UserDetailRepository;
+import com.lizhao.yizhao.dto.response.CommonResponse;
+import com.lizhao.yizhao.dto.response.UserResponse;
+import com.lizhao.yizhao.entity.UserEntity;
+import com.lizhao.yizhao.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.Cookie;
@@ -16,31 +13,27 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-  private final UserInfoRepository userInfoRepository;
-  private final UserDetailRepository detailRepository;
+  private final UserRepository userInfoRepository;
 
-  public UserService(UserInfoRepository userInfoRepository, UserDetailRepository detailRepository) {
+  public UserService(UserRepository userInfoRepository) {
     this.userInfoRepository = userInfoRepository;
-    this.detailRepository = detailRepository;
   }
 
-  public ResponseResult<User> getUserByCookieToken(HttpServletRequest request) {
+  public CommonResponse<UserResponse> getUserByCookieToken(HttpServletRequest request) {
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
       for (Cookie cookie : cookies) {
         if ("token".equals(cookie.getName())) {
           String token = cookie.getValue();
-          Optional<UserInfoEntity> userInfo = userInfoRepository.findByToken(token);
-          Optional<UserDetailEntity> userDetail = userInfo.flatMap(info -> detailRepository.findById(info.getId()));
+          Optional<UserEntity> userInfo = userInfoRepository.findByToken(token);
 
-          User user = new User();
+          UserResponse user = new UserResponse();
           userInfo.ifPresent(user::setUser);
-          userDetail.ifPresent(user::setUser);
 
-          return ResponseResult.success(user);
+          return CommonResponse.success(user);
         }
       }
     }
-    return ResponseResult.fail(401, "请登录");
+    return CommonResponse.fail(401, "请登录");
   }
 }

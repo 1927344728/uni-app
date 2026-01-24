@@ -1,6 +1,6 @@
-package com.lizhao.yizhao.authority;
+package com.lizhao.yizhao.config.authority;
 
-import com.lizhao.yizhao.user.UserInfoEntity;
+import com.lizhao.yizhao.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +23,7 @@ public class UserDetailsImpl implements UserDetails {
     this.password = password;
   }
 
-  public static UserDetailsImpl build(UserInfoEntity userInfo) {
+  public static UserDetailsImpl build(UserEntity userInfo) {
     return new UserDetailsImpl(
       userInfo.getId(),
       userInfo.getName(),

@@ -1,6 +1,7 @@
-package com.lizhao.yizhao.authority;
+package com.lizhao.yizhao.config.authority;
 
-import com.lizhao.yizhao.common.ResponseResult;
+import com.lizhao.yizhao.dto.response.CommonResponse;
+import com.lizhao.yizhao.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,7 +46,7 @@ public class AuthorityFilter extends OncePerRequestFilter {
       if (!isPublicPath && !isValidToken) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        ResponseResult<Void> result = ResponseResult.fail(HttpServletResponse.SC_UNAUTHORIZED, "请登录");
+        CommonResponse<Void> result = CommonResponse.fail(HttpServletResponse.SC_UNAUTHORIZED, "请登录");
         response.getWriter().write(objectMapper.writeValueAsString(result));
         return;
       }

@@ -1,4 +1,4 @@
-package com.lizhao.yizhao.https;
+package com.lizhao.yizhao.config.https;
 
 import org.apache.catalina.connector.Connector;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
