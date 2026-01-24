@@ -35,7 +35,9 @@ const getMusicPageList = (params) => {
     })
 
   const data = initResponseData()
-  data.data = list
+  data.data = {
+		content: list,
+	}
   return data
 }
 

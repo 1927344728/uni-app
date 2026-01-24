@@ -67,7 +67,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import qs from 'qs'
-import { cloneDeep } from 'lodash'
+import { get as _get, cloneDeep } from 'lodash'
 import { scaleImageWidthInCOS } from '@/utils'
 import { getMusicMenuList, getMusicPageList } from '@/api'
 
@@ -125,23 +125,27 @@ export default {
     ...mapActions(['getCategoryEnum']),
     scaleImageWidthInCOS,
     getMusicPageList () {
-      const { queryParams, type, pagination } = this
-      this.isLoaded = false
+      const { queryParams, type, musicList, pagination } = this
+			if (pagination.isLast) {
+				return
+			}
       return getMusicPageList({
         type,
         keyword: queryParams.keyword || '',
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }).then((data) => {
-        this.musicList = this.musicList.concat(data || [])
-        if ((data || []).length < pagination.pageSize) {
-          this.pagination.isLast = true
+				const list = _get(data, 'content') || []
+        if (list.length < pagination.pageSize) {
+          pagination.isLast = true
         }
+        this.musicList = musicList.concat(list)
       }).finally(() => {
         this.isLoaded = true
       })
     },
     refreshList () {
+			this.isLoaded = false
       this.musicList = []
       this.pagination = initPagination()
       this.getMusicPageList()
