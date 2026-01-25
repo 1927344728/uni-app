@@ -12,7 +12,7 @@ import { method, transform } from "lodash"
     <video
       ref="video"
       :id="`video_id_${index}`"
-      :src="video.url"
+      :src="replaceCosDomainName(video.url)"
       :style="fillScreenStyle"
       :autoplay="false"
       :loop="true" 
@@ -63,6 +63,7 @@ import { method, transform } from "lodash"
 <script>
 import { cloneDeep } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
+import { replaceCosDomainName  } from '@/utils/variables.js'
 import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js';
 
 export default {
@@ -103,6 +104,7 @@ export default {
     convertHtmlToText,
     textEllipsis,
     scaleImageWidthInCOS,
+    replaceCosDomainName,
     timeupdate (event) {
       this.$emit('timeupdate', event)
     },

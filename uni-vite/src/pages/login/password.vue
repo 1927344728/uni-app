@@ -2,7 +2,7 @@
   <view class="password_page">
     <image
       class="banner"
-      :src="scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/fantasy-illustration-7600566_1280.jpg')"
+      :src="passwordBannerUrl"
       mode="widthFix"
     />
     <view class="form">
@@ -53,7 +53,7 @@
 
 <script>
 import { get as _get } from 'lodash'
-import { scaleImageWidthInCOS } from '@/utils/common'
+import { COS_DOMAIN_NAME, scaleImageWidthInCOS } from '@/utils'
 import { updatePassword } from '@/api'
 
 export default {
@@ -65,6 +65,7 @@ export default {
         newPassword: '',
         confirmPassword: ''
       },
+      passwordBannerUrl: scaleImageWidthInCOS(`${COS_DOMAIN_NAME}/images/fantasy-illustration-7600566_1280.jpg`),
       rules: {
         password: {
           rules: [

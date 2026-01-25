@@ -40,13 +40,13 @@
                   v-if="currentVideo && currentVideo.url"
                   id="playerVideo"
                   class="video_element"
-                  :src="currentVideo.url"
+                  :src="replaceCosDomainName(currentVideo.url)"
                   :show-progress="false"
                   :controls="false"
                   :autoplay="true"
                   :show-center-play-btn="false"
                   :object-fit="currentVideo.objectFit || 'cover'"
-                  :poster="currentVideo.cover"
+                  :poster="replaceCosDomainName(currentVideo.cover)"
                   @timeupdate="onTimeUpdate"
                   @ended="onEnded"
                   @error="onError"
@@ -91,7 +91,7 @@
 <script>
 import { get as _get } from 'lodash';
 import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
-import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js';
+import { textEllipsis, scaleImageWidthInCOS, replaceCosDomainName } from '@/utils';
 
 export default {
   name: 'VideoPlayer',
@@ -161,6 +161,7 @@ export default {
   methods: {
     textEllipsis,
     scaleImageWidthInCOS,
+    replaceCosDomainName,
     async init () {
       let { mode, id, ids, type, video, videos } = this;
 
@@ -217,7 +218,7 @@ export default {
     },
     getPageBgStyle (video) {
       const cover = _get(video, 'cover');
-      return cover ? { '--video_play_bg': `url(${cover})` } : {};
+      return cover ? { '--video_play_bg': `url(${replaceCosDomainName(cover)})` } : {};
     },
     getPrevVideo () {
       const { mode, allVideoList, playedIds } = this;

@@ -2,6 +2,7 @@
 @import '@/common/css/common.less';
 @import '@/common/css/color.less';
 @import '@/common/css/apply.less';
+@import '@/common/css/variable.less';
 
 .me_page {
   position: relative;
@@ -17,7 +18,7 @@
     height: 400rpx;
     align-items: center;
     font-size: 28rpx;
-		background: url(https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8432305_1280.jpg?imageMogr2/thumbnail/750x) no-repeat center 80%;
+		background: url('@{cos-domain-name}/images/ai-generated-8432305_1280.jpg?imageMogr2/thumbnail/750x') no-repeat center 80%;
     background-size: 135%;
     background-position: -16px -32px;
     & .avatar {
@@ -68,7 +69,7 @@
     position: relative;
     margin-bottom: 120rpx;
     height: 500rpx;
-		background: url(https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/pexels-photo-531880.jpeg?imageMogr2/thumbnail/750x) no-repeat center;
+		background: url('@{cos-domain-name}/images/pexels-photo-531880.jpeg?imageMogr2/thumbnail/750x') no-repeat center;
     background-size: 120%;
     text-align: center;
     & .button {

@@ -54,6 +54,7 @@
 
 <script>
 import { get as _get } from 'lodash'
+import { COS_DOMAIN_NAME } from '@/utils/variables.js'
 import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
 import SwiperItem from './swiper_item'
 
@@ -121,7 +122,7 @@ export default {
     const domModule = weex.requireModule('dom');
     domModule.addRule('fontFace', {
       'fontFamily': "iconfont",
-      'src': "url('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/font/font_5075020_dvsb5eed4rh.ttf?t=1764604111574') format('truetype')"
+      'src': `url('${COS_DOMAIN_NAME}/font/font_5075020_dvsb5eed4rh.ttf?t=1764604111574') format('truetype')`
     });
     // #endif
   },

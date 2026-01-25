@@ -445,7 +445,7 @@
 
   <script>
     // 拼音数据
-    const COS_ASSET_PATH = 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com';
+    const cosAssetsDomain = 'assets.izhao.com.cn';
     const PINYIN_TYPE_OPTIONS = [
       { value: 'all', name: '全部（63）' },
       { value: 'shengmu', name: '声母（23）' },
@@ -704,7 +704,7 @@
         const item = PINYIN_CHARACTERS.find(c => c.value === value);
         if (item) {
           const audio = new Audio();
-          audio.src = `${COS_ASSET_PATH}/audio/hanyupinyin/${item.audio || item.value}.mp3`;
+          audio.src = `${cosAssetsDomain}/audio/hanyupinyin/${item.audio || item.value}.mp3`;
           audio.onended = () => {
             resolve();
           };

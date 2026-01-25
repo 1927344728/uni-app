@@ -2,7 +2,7 @@
 	<view class="login_page">
 		<image
 			class="logo"
-			:src="scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8432306_1280.jpg')"
+			:src="logoBannerUrl"
 			mode="widthFix"
 		/>
 		<view class="form">
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { scaleImageWidthInCOS } from '@/utils'
+import { COS_DOMAIN_NAME, scaleImageWidthInCOS } from '@/utils'
 import { login } from '@/api';
 import store from '@/store/index.js'
 
@@ -68,6 +68,7 @@ export default {
         password: '',
         agree: []
       },
+      logoBannerUrl: scaleImageWidthInCOS(`${COS_DOMAIN_NAME}/images/ai-generated-8432306_1280.jpg`),
       rules: {
         account: {
           rules: [
@@ -113,7 +114,6 @@ export default {
     this.requestUrl = options.requestUrl
   },
   methods: {
-    scaleImageWidthInCOS,
     onChange() {
       setTimeout(() => {
         this.$refs.Form.validate()

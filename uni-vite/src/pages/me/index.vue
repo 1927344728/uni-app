@@ -3,7 +3,7 @@
     <view class="me_page">
       <view v-if="userInfo" class="user_info">
         <view class="avatar">
-          <image class="image" :src="defaultAvatar" mode="aspectFill" />
+          <image class="image" :src="replaceCosDomainName(defaultAvatar)" mode="aspectFill" />
         </view>
         <view class="user_detail">
           <view class="user_name">
@@ -64,8 +64,9 @@
 <script>
 import { get as _get } from 'lodash'
 import store from '@/store/index'
-import { openUrl, scaleImageWidthInCOS } from '@/utils'
-import { welcome, getUserInfo, logout } from '@/api'
+import { replaceCosDomainName  } from '@/utils/variables.js'
+import { COS_DOMAIN_NAME, openUrl, scaleImageWidthInCOS } from '@/utils'
+import { getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 
 const FEATURE_OPTIONS = [
@@ -113,7 +114,7 @@ export default {
   },
   data() {
     return {
-      defaultAvatar: scaleImageWidthInCOS('https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/snowman-8755896_1280.png', 160),
+      defaultAvatar: scaleImageWidthInCOS(`${COS_DOMAIN_NAME}/images/snowman-8755896_1280.png`, 160),
       featureOptions: FEATURE_OPTIONS,
       baseOptions: BASE_OPTIONS
     };
@@ -132,6 +133,7 @@ export default {
   },
   methods: {
     openUrl,
+    replaceCosDomainName,
     fetchData() {
       return getUserInfo().then((data) => {
         store.commit('setUserInfo', data)

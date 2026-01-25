@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash"
+import { COS_DOMAIN_NAME } from '@/utils/variables.js'
 import { CATEGORY_ENUM } from '/localdata/category.js'
 
 export const initResponseData = () => ({
@@ -27,7 +28,7 @@ const getBannerList = () => {
       id: 1,
       title: '天空青草',
       type: 'image',
-      image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231227_34_2.jpg',
+      image: `${COS_DOMAIN_NAME}/images/微信图片_20251117231227_34_2.jpg`,
       url: '/pages/article/detail?id=1',
       seq: 0,
       jumpTo: 'navigate'
@@ -36,7 +37,7 @@ const getBannerList = () => {
       id: 2,
       title: '图书馆',
       type: 'image',
-      image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231226_32_2.jpg',
+      image: `${COS_DOMAIN_NAME}/images/微信图片_20251117231226_32_2.jpg`,
       url: '/pages/video/play?mode=single&id=2',
       seq: 0,
       jumpTo: 'navigate'
@@ -45,7 +46,7 @@ const getBannerList = () => {
       id: 3,
       title: '优雅聆听',
       type: 'image',
-      image: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117231226_33_2.jpg',
+      image: `${COS_DOMAIN_NAME}/images/微信图片_20251117231226_33_2.jpg`,
       url: '/static/hanyupinyin.html',
       seq: 0,
       jumpTo: 'webview'

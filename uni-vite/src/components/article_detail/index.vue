@@ -50,7 +50,7 @@
       <view v-if="item.type === 'video'" :class="['detail_module', item.type, item.className]">
         <view v-for="(v, i) in [item.content].flat()" :key="v + i"  class="detail_module_item">
           <video
-            :src="v"
+            :src="replaceCosDomainName(v)"
             :id="`video_${idx}`"
             class="uni_video"
             controls
@@ -112,10 +112,9 @@
 </template>
 
 <script>
-import qs from 'qs'
 import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
-import { getUrlParams } from '@/utils/variables.js'
+import { getUrlParams, replaceCosDomainName  } from '@/utils/variables.js'
 import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
 import VideoPopup from '@/pages/video/componets/VideoPopup.vue'
