@@ -9,10 +9,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.lizhao</groupId>
-  <artifactId>uni-spring-boot</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>uni-spring-boot</name>
-  <description>uni-spring-boot</description>
+  <artifactId>yizhao-spring-boot</artifactId>
+  <version>0.0.1</version>
+  <name>yizhao-spring-boot</name>
+  <description>yizhao-spring-boot</description>
   <url/>
   <licenses>
     <license/>

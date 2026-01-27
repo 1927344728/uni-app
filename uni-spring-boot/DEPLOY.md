@@ -86,7 +86,7 @@ java -version
 
 1. 将 `deploy/uni-spring-boot.service` 放到服务器：
    ```bash
-   sudo cp deploy/app.service /etc/systemd/system/
+   sudo cp deploy/yizhao-app.service /etc/systemd/system/
    ```
 2. 按实际路径修改服务文件中的 `WorkingDirectory`、`ExecStart` 中的 jar 路径，以及 `spring.profiles.active=prod` 等。
 3. 启动并设置开机自启：

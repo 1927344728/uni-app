@@ -1,0 +1,29 @@
+[Unit]
+Description=Uni Spring Boot HTTPS Application
+After=network.target mysqld.service
+Wants=mysqld.service
+Requires=mysqld.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/yizhao
+Environment="JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC"
+ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/yizhao/deploy/yizhao-spring-boot-0.0.1.jar --spring.profiles.active=prod --spring.config.location=file:/opt/yizhao/deploy/application-prod.properties
+ExecStop=/bin/kill -15 $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SuccessExitStatus=143
+
+# 安全配置
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/yizhao/logs
+
+# 设置绑定低端口的能力
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
