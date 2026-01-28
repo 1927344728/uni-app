@@ -5,7 +5,7 @@ export const CATEGORY_ENUM = [
   { id: 4, categoryId: 1, categoryName: '文章', typeId: 3, typeName: '阅读', subTypeId: 1, subTypeName: '亲子阅读' },
   { id: 5, categoryId: 1, categoryName: '文章', typeId: 3, typeName: '阅读', subTypeId: 2, subTypeName: '少儿诗词' },
   { id: 6, categoryId: 1, categoryName: '文章', typeId: 3, typeName: '阅读', subTypeId: 3, subTypeName: '口才训练' },
-  { id: 7, categoryId: 1, categoryName: '文章', typeId: 4, typeName: '文化', subTypeId: 1, subTypeName: '诗词歌斌' },
+  { id: 7, categoryId: 1, categoryName: '文章', typeId: 4, typeName: '文化', subTypeId: 1, subTypeName: '诗词歌赋' },
   { id: 8, categoryId: 1, categoryName: '文章', typeId: 4, typeName: '文化', subTypeId: 2, subTypeName: '对联' },
   { id: 9, categoryId: 1, categoryName: '文章', typeId: 5, typeName: '旅游', subTypeId: null, subTypeName: null },
   { id: 10, categoryId: 1, categoryName: '文章', typeId: 6, typeName: '轻摘', subTypeId: null, subTypeName: null },

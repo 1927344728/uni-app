@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { get as _get } from 'lodash'
 import { COS_DOMAIN_NAME, scaleImageWidthInCOS } from '@/utils'
 import { login } from '@/api';
 import store from '@/store/index.js'
@@ -144,14 +145,16 @@ export default {
             uni.redirectTo({
               url: requestUrl || '/pages/index/index'
             });
-          }, 1000);
+          }, 2000);
         })
       }).catch((err) => {
         const errMsg = _get(err, 'errMsg') || '请完善表单信息！'
         uni.showToast({
           title: errMsg,
-          icon: 'none'
+          icon: 'none',
+					duration: 3000
         })
+				console.error(err)
       })
     },
     onUseMock () {

@@ -7,7 +7,7 @@
       @change="onChangeTab"
     />
     <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
-    <swiper :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
+    <swiper v-if="isSupportSwiper" :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
       <swiper-item v-for="item in filteredItems" :key="item.key">
         <component
           :key="item.component"
@@ -22,11 +22,28 @@
         />
       </swiper-item>
     </swiper>
+		<view v-else>
+			<template v-for="item in filteredItems">
+				<component
+					v-if="currentTabKey === item.key"
+          :key="item.key"
+          :ref="item.component + item.id"
+          :is="item.component"
+          :class="classObject"
+          :request="getArticlePageList"
+          :queryParams="{
+            ...queryParams,
+            type: item.id || null
+          }"
+				/>
+			</template>
+		</view>
     <FooterBar activeTabKey="life" />
   </view>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
+import semver from 'semver'
 import { get as _get, cloneDeep } from 'lodash'
 import { getArticlePageList } from '@/api'
 import { textEllipsis } from '@/utils/common.js'
@@ -114,6 +131,15 @@ export default {
         with_footer_bar: true
       }
     },
+		isSupportSwiper () {
+			let bool = true
+			const systemInfo = uni.getSystemInfoSync()
+			const { osName, osVersion } = systemInfo
+			if (osName === 'android' && semver.valid(osVersion) && semver.lt(osVersion, '10.0.0')) {
+				bool = false
+			}
+			return bool
+		}
   },
   watch: {
     currentTabKey (k) {
