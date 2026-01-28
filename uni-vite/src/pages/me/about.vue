@@ -31,7 +31,7 @@ export default {
         logo: APP_LOGO
       },
       recordInfo: {
-        websiteRecord: '备案号：赣ICP备2026000533号-1',
+        websiteRecord: '备案号：赣ICP备2026000533号-2A',
         appRecord: '',
         copyright: `版权所有 © 2025-${new Date().getFullYear()} 李兆 保留所有权利`
       },
