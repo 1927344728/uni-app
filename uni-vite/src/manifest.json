@@ -45,7 +45,8 @@
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                ],
+                "android_icp": "赣ICP备2026000533号-2A"
             },
             "ios" : {},
             /* ios打包配置 */
