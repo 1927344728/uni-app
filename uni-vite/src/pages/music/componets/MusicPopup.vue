@@ -1,5 +1,4 @@
 <template>
-  
   <UniPopup
     mode="bottom"
     ref="uniPopup"

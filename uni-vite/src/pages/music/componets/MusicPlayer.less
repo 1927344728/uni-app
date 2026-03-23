@@ -151,6 +151,68 @@
     transform: scale(1.05);
   }
 
+  & .music_play_setting {
+    position: fixed;
+    left: 0;
+    display: flex;
+    bottom: 296rpx;
+    width: 100%;
+    height: 60rpx;
+    padding: 0 20rpx;
+    box-sizing: border-box;
+    & .left {
+      flex: 1;
+    }
+    & .right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      & .uni-icons {
+        color: white;
+      }
+    }
+  }
+
+  & .music_play_setting_popup {
+    & ::v-deep .uni-popup__wrapper {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 30vh;
+    }
+    & .wrapper {
+      width: 100%;
+      height: 100%;
+      padding: 25rpx;
+      background: rgba(15, 15, 15, 0.8);
+      border-top-left-radius: 24rpx;
+      border-top-right-radius: 24rpx;
+      box-sizing: border-box;
+    }
+    & .item {
+      color: white;
+      & .pills {
+        text-align: center;
+        display: flex;
+        margin-top: 24rpx;
+        background: #999;
+        border-radius: 24rpx;
+        & .pill {
+          flex: 1;
+          padding: 24rpx 24rpx;
+          color: #333;
+          border-radius: 12rpx;
+        }
+        & .pill.active {
+          color: white;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
   & .music_play_footer {
     position: fixed;
     bottom: 0;

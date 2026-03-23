@@ -74,6 +74,13 @@
       </swiper-item>
     </swiper>
 
+    <view class="music_play_setting">
+      <view class="left"></view>
+      <view class="right">
+        <uni-icons type="gear" size="24" color="white" @click="onClickSetting"></uni-icons>
+      </view>
+    </view>
+
     <view class="music_play_footer">
       <view class="music_play_progress">
         <text class="music_play_time">{{ formatTime(currentTime) }}</text>
@@ -113,6 +120,33 @@
         </view>
       </view>
     </view>
+
+    <UniPopup
+      mode="bottom"
+      ref="uniPopup"
+      class="music_play_setting_popup"
+      :style="{ zIndex: 100, height: '40vh' }"
+      @close="$refs.uniPopup.close()"
+    >
+      <view class="wrapper">
+        <view class="item">
+          <view class="title">定时关闭</view>
+          <view class="pills">
+            <view
+              class="pill"
+              v-for="m in [0, 10, 20, 30, 60, 90]"
+              :key="m"
+              :class="{
+                active: durationMinutes === m
+              }"
+              @click="onClickMinute(m)"
+            >
+              {{m === 0 ? '关闭' : m}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </UniPopup>
   </view>
 </template>
 
@@ -121,9 +155,13 @@ import { get as _get } from 'lodash';
 import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
+import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
 
 export default {
   name: 'MusicPlayer',
+  components: {
+    UniPopup
+  },
   emits: ['play', 'pause', 'next', 'prev', 'ended', 'error'],
   props: {
     mode: {
@@ -152,6 +190,7 @@ export default {
       lyricLines: [],
       activeLyricIndex: 0,
       currentLyricAnchor: '',
+      durationMinutes: 0
     };
   },
   computed: {
@@ -282,7 +321,7 @@ export default {
           type,
           playingIds: swiperPages.map(e => e.id),
           playedIds
-        }).catch(() => null);
+        })
         if (newSong) {
           allMusicList.push(newSong);
         }
@@ -445,7 +484,13 @@ export default {
       this.prevSong = currentSong
       this.currentSong = nextSong;
       this.nextSong = null
-      this.nextSong = await this.getNextSong()
+      this.nextSong = await this.getNextSong().catch(() => {
+        this.goNextSong()
+        return null
+      })
+      if (!this.nextSong) {
+        uni.showToast('未加载下一歌曲！')
+      }
       this.loadCurrentSong();
       this.$emit('next', this.currentSong);
     },
@@ -457,6 +502,25 @@ export default {
       if (event.detail.current < currentIndex && prevSong) {
         this.goPrevSong();
       }
+    },
+    onClickSetting () {
+      this.$refs.uniPopup.open()
+    },
+    onClickMinute (m) {
+      const self = this
+      self.durationMinutes = m
+      if (self.audioCtx) {
+        self.audioCtx.play()
+      }
+      if (self.durationMinutes) {
+        setTimeout(() => {
+          if (self.audioCtx) {
+            self.audioCtx.pause()
+          }
+          self.durationMinutes = 0
+        }, self.durationMinutes * 60 * 1000)
+      }
+      this.$refs.uniPopup.close()
     }
   }
 };
