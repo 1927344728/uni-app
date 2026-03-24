@@ -81,7 +81,6 @@ const getMusicByRandom = (params) => {
 
   const data = initResponseData()
   data.data = MUSIC_LIST.find(e => String(e.id) === String(songId)) || null;
-
   return data
 }
 

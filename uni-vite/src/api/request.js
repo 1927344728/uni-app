@@ -8,6 +8,9 @@ export default function (options) {
     console.log(`[Mock]: ${url}`)
     return new Promise((resolve) => {
       const mockResponse = mockData[url](params)
+      if (mockResponse instanceof Promise) {
+        resolve(mockResponse.then(data => data.data))
+      }
       resolve(mockResponse.data)
     })
   }

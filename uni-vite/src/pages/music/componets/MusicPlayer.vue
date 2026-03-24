@@ -157,6 +157,7 @@ import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from 
 import { parseLyric, formatTime } from './MusicPlayer.js';
 import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
 
+let randomRequestCount = 0
 export default {
   name: 'MusicPlayer',
   components: {
@@ -317,10 +318,27 @@ export default {
       const allMusicLength = _get(allMusicList, 'length') || 0;
       let newSong = null
       if (['auto'].includes(mode)) {
+        randomRequestCount ++
         newSong = await getMusicByRandom({
           type,
           playingIds: swiperPages.map(e => e.id),
           playedIds
+        }).catch(async () => {
+          uni.showModal({
+            title: '提示',
+            content: '请求错误！是否重新加载下一首歌曲？',
+            showCancel: false,
+            confirmText: '重新加载',
+            success: (res) => {
+              if (res.confirm) {
+                this.getNextSong()
+              }
+            }
+          });
+          if (randomRequestCount <= 10) {
+            return await this.getNextSong()
+          }
+          return null
         })
         if (newSong) {
           allMusicList.push(newSong);
@@ -479,15 +497,13 @@ export default {
       if (!nextSong) {
         return;
       }
+      randomRequestCount = 0
       const currentId = _get(currentSong, 'id');
       this.playedIds.push(currentId);
       this.prevSong = currentSong
       this.currentSong = nextSong;
       this.nextSong = null
-      this.nextSong = await this.getNextSong().catch(() => {
-        this.goNextSong()
-        return null
-      })
+      this.nextSong = await this.getNextSong().catch(() => null)
       if (!this.nextSong) {
         uni.showToast('未加载下一歌曲！')
       }
