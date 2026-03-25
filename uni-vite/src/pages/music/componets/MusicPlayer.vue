@@ -156,8 +156,6 @@ import { scaleImageWidthInCOS } from '@/utils/common.js'
 import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
 import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
-
-let randomRequestCount = 0
 export default {
   name: 'MusicPlayer',
   components: {
@@ -183,6 +181,8 @@ export default {
       prevSong: null,
       nextSong: null,
       audioCtx: null,
+      nextSongFetchPromise: null,
+      isSwitching: false,
       isPlaying: false,
       isSeeking: false,
       swiperDuration: 320,
@@ -239,6 +239,9 @@ export default {
   methods: {
     formatTime,
     scaleImageWidthInCOS,
+    sleep (ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
     async init () {
       let { mode, id, ids, type, song, songs } = this;
 
@@ -313,47 +316,63 @@ export default {
       return prevSong
     },
     async getNextSong () {
-      const { mode, type, allMusicList, playedIds, currentSong, swiperPages } = this;
+      const { mode, type, playedIds, currentSong, swiperPages, allMusicList } = this;
       const currentId = _get(currentSong, 'id');
       const allMusicLength = _get(allMusicList, 'length') || 0;
-      let newSong = null
+
+      // 无限下滑：请求下一首，网络抖动时自动重试且不中断播放流程
       if (['auto'].includes(mode)) {
-        randomRequestCount ++
-        newSong = await getMusicByRandom({
-          type,
-          playingIds: swiperPages.map(e => e.id),
-          playedIds
-        }).catch(async () => {
-          uni.showModal({
-            title: '提示',
-            content: '请求错误！是否重新加载下一首歌曲？',
-            showCancel: false,
-            confirmText: '重新加载',
-            success: (res) => {
-              if (res.confirm) {
-                this.getNextSong()
-              }
-            }
-          });
-          if (randomRequestCount <= 10) {
-            return await this.getNextSong()
-          }
-          return null
-        })
-        if (newSong) {
-          allMusicList.push(newSong);
+        if (this.nextSongFetchPromise) {
+          return await this.nextSongFetchPromise;
         }
+
+        const playingIds = swiperPages.map(e => e.id);
+        this.nextSongFetchPromise = (async () => {
+          const maxRetry = 10;
+          const baseDelayMs = 500;
+          for (let attempt = 1; attempt <= maxRetry; attempt++) {
+            try {
+              const newSong = await getMusicByRandom({
+                type,
+                playingIds,
+                playedIds
+              });
+              // 后端偶发返回空/异常数据时也按失败重试
+              if (!newSong || !newSong.url) {
+                throw new Error('invalid song response');
+              }
+              if (Array.isArray(this.allMusicList)) {
+                this.allMusicList.push(newSong);
+              } else if (this.currentSong) {
+                this.allMusicList = [this.currentSong, newSong];
+              }
+              return newSong;
+            } catch (e) {
+              if (attempt >= maxRetry) return null;
+              const delay = Math.min(baseDelayMs * Math.pow(2, attempt - 1), 5000);
+              await this.sleep(delay);
+            }
+          }
+          return null;
+        })();
+
+        const res = await this.nextSongFetchPromise;
+        this.nextSongFetchPromise = null;
+        return res;
       }
+
+      // 音频列表播放：循环下一首
       if (['menu'].includes(mode) && allMusicLength > 1) {
         const index = allMusicList.findIndex(song => song.id === currentId);
         if (index !== -1) {
           const nextIndex = (index + 1) % allMusicLength;
           if (nextIndex !== index) {
-            newSong = allMusicList[nextIndex];
+            return allMusicList[nextIndex];
           }
         }
       }
-      return newSong
+
+      return null;
     },
     createAudio () {
       if (this.audioCtx) {
@@ -383,9 +402,9 @@ export default {
         this.isPlaying = false;
         this.currentTime = 0;
       });
-      ctx.onEnded(() => {
+      ctx.onEnded(async () => {
         this.$emit('ended', this.currentSong);
-        this.goNextSong();
+        await this.goNextSong();
       });
       ctx.onError(err => {
         uni.showToast({
@@ -394,6 +413,10 @@ export default {
         });
         console.error(err)
         this.$emit('error', err);
+        // auto 模式下：当前曲播放失败时自动跳到下一首继续
+        if (this.mode === 'auto') {
+          this.goNextSong();
+        }
       });
       ctx.onTimeUpdate(() => {
         if (this.isSeeking) return;
@@ -490,25 +513,47 @@ export default {
       this.$emit('prev', this.currentSong);
     },
     async goNextSong () {
-      const { audioCtx, currentSong, nextSong } = this;
-      if (!audioCtx) {
-        return
-      };
-      if (!nextSong) {
-        return;
+      const { audioCtx, currentSong } = this;
+      if (!audioCtx) return;
+      if (this.isSwitching) return;
+
+      this.isSwitching = true;
+      try {
+        // 兜底：如果上一轮预加载失败导致 nextSong 为空，ended/onError 时再拉取一次
+        let nextSong = this.nextSong;
+        if (!nextSong) {
+          nextSong = await this.getNextSong().catch(() => null);
+          if (!nextSong) {
+            uni.showToast({
+              title: '未加载下一歌曲，将稍后重试',
+              icon: 'none'
+            });
+            return;
+          }
+        }
+
+        const currentId = _get(currentSong, 'id');
+        this.playedIds.push(currentId);
+
+        this.prevSong = currentSong;
+        this.currentSong = nextSong;
+        this.nextSong = null;
+
+        // 预加载下一首（用于下一次 ended）
+        this.nextSong = await this.getNextSong().catch(() => null);
+        if (!this.nextSong) {
+          // 不中断当前播放，等当前歌结束后再临时拉取
+          uni.showToast({
+            title: '下一首暂时不可用，播放将继续',
+            icon: 'none'
+          });
+        }
+
+        await this.loadCurrentSong();
+        this.$emit('next', this.currentSong);
+      } finally {
+        this.isSwitching = false;
       }
-      randomRequestCount = 0
-      const currentId = _get(currentSong, 'id');
-      this.playedIds.push(currentId);
-      this.prevSong = currentSong
-      this.currentSong = nextSong;
-      this.nextSong = null
-      this.nextSong = await this.getNextSong().catch(() => null)
-      if (!this.nextSong) {
-        uni.showToast('未加载下一歌曲！')
-      }
-      this.loadCurrentSong();
-      this.$emit('next', this.currentSong);
     },
     onChange (event) {
       const { currentIndex, nextSong, prevSong } = this;
