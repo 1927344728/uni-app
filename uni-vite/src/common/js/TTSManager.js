@@ -265,6 +265,7 @@ export class AppTTSService {
         const tts = new TextToSpeech(context, (status) => {
           // 0 = SUCCESS
           if (status === 0) {
+            console.log('[AppTTSService] TextToSpeech init SUCCESS')
             // 尽量安装进度回调；个别机型可能不支持，失败也不阻断播放。
             try {
               const setListener = () => {
@@ -311,6 +312,7 @@ export class AppTTSService {
 
             resolve()
           } else {
+            console.error('[AppTTSService] TextToSpeech init failed, status=', status)
             reject(new Error('Android TTS init failed, status=' + status))
           }
         })
