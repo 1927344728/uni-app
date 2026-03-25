@@ -203,7 +203,7 @@ export default {
       const text = (item.content || []).map(e => e).join('')
       let rate = item.rate
       // #ifdef H5
-      rate = item.rate + 0.1
+      rate += 0.1
       // #endif
       ttsService.speak(convertHtmlToText(text), {
         vcn: 'aisjinger',

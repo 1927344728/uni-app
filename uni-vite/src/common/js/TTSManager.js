@@ -147,9 +147,25 @@ export class AppTTSService {
     this._pendingReject = null
     this._currentUtteranceId = null
     this._utteranceIndex = 0
+    // 用于结束判定：优先用 TTS 引擎状态轮询，其次才用最大时长兜底。
     this._fallbackTimer = null
+    this._endPollInterval = null
+    this._endPollTimeout = null
+    this._endedHandledUtteranceId = null
+    // 解决“首次 speak 偶发无声”的初始化时序问题：首次播放前进行短预热。
+    this._warmedUp = false
 
-    console.log('AppTTSService')
+    // 尽量在 constructor 阶段就开始初始化，避免首次点击时机型/引擎仍未完全就绪。
+    // 注意：这里不阻塞构造；失败时 speak() 会再次按需初始化。
+    if (this._isAndroid()) {
+      try {
+        this._initAndroidTTS()
+          .then(() => {
+            this._warmedUp = true
+          })
+          .catch(() => {})
+      } catch (e) {}
+    }
   }
 
   _isAndroid () {
@@ -169,6 +185,14 @@ export class AppTTSService {
       clearTimeout(this._fallbackTimer)
       this._fallbackTimer = null
     }
+    if (this._endPollInterval) {
+      clearInterval(this._endPollInterval)
+      this._endPollInterval = null
+    }
+    if (this._endPollTimeout) {
+      clearTimeout(this._endPollTimeout)
+      this._endPollTimeout = null
+    }
 
     if (resolvePending && this._pendingResolve) {
       try {
@@ -179,6 +203,53 @@ export class AppTTSService {
     this._pendingResolve = null
     this._pendingReject = null
     this._currentUtteranceId = null
+  }
+
+  _handleEnded ({ utteranceId, callFrom } = {}) {
+    // 停止/切换时可能把 _currentUtteranceId 清掉；这种场景直接忽略。
+    const currentId = this._currentUtteranceId
+    if (!currentId) return
+
+    // 监听回调若没有回传 utteranceId，可能会在“旧回调竞争新播放”时误伤当前播放。
+    // 此类情况交给 poll/timeout 去兜底。
+    if (callFrom === 'listener' && !utteranceId) return
+
+    // 若引擎回传了 utteranceId 且不一致，则视为旧回调。
+    if (utteranceId && utteranceId !== currentId) return
+
+    if (this._endedHandledUtteranceId === currentId) return
+    this._endedHandledUtteranceId = currentId
+
+    this.isLoading = false
+    this.isSpeaking = false
+    this.isPaused = false
+
+    const opts = this._currentOptions || {}
+    if (opts.onEnded) opts.onEnded()
+
+    // 清理 timers/state，避免 onDone/poll/timeout 多次触发
+    this._clearPending({ resolvePending: true })
+  }
+
+  _handleError ({ err, utteranceId } = {}) {
+    const currentId = this._currentUtteranceId
+    if (!currentId) return
+    if (utteranceId && utteranceId !== currentId) return
+
+    this.isLoading = false
+    this.isSpeaking = false
+    this.isPaused = false
+
+    const opts = this._currentOptions || {}
+    if (opts.onError) opts.onError(err)
+
+    const pendingReject = this._pendingReject
+    this._clearPending({ resolvePending: false })
+    if (pendingReject) {
+      try {
+        pendingReject(err)
+      } catch (e) {}
+    }
   }
 
   async _initAndroidTTS () {
@@ -201,7 +272,11 @@ export class AppTTSService {
 
                 const listener = plus.android.implements('android.speech.tts.UtteranceProgressListener', {
                   onStart: (utteranceId) => {
-                    if (utteranceId && utteranceId === this._currentUtteranceId) {
+                    const currentId = this._currentUtteranceId
+                    if (!currentId) return
+                    if (utteranceId && utteranceId !== currentId) return
+
+                    if (currentId) {
                       this.isLoading = false
                       this.isSpeaking = true
                       this.isPaused = false
@@ -211,31 +286,11 @@ export class AppTTSService {
                     }
                   },
                   onDone: (utteranceId) => {
-                    if (utteranceId && utteranceId === this._currentUtteranceId) {
-                      this.isLoading = false
-                      this.isSpeaking = false
-                      this.isPaused = false
-
-                      const opts = this._currentOptions || {}
-
-                      if (opts.onEnded) opts.onEnded()
-                      this._clearPending({ resolvePending: true })
-                    }
+                    this._handleEnded({ utteranceId, callFrom: 'listener' })
                   },
                   onError: (utteranceId) => {
-                    if (utteranceId && utteranceId === this._currentUtteranceId) {
-                      this.isLoading = false
-                      this.isSpeaking = false
-                      this.isPaused = false
-
-                      const err = new Error('Android TTS error')
-                      const opts = this._currentOptions || {}
-                      if (opts.onError) opts.onError(err)
-
-                      const pendingReject = this._pendingReject
-                      this._clearPending({ resolvePending: false })
-                      if (pendingReject) pendingReject(err)
-                    }
+                    const err = new Error('Android TTS error')
+                    this._handleError({ err, utteranceId })
                   }
                 })
 
@@ -245,6 +300,13 @@ export class AppTTSService {
               }
 
               setListener()
+            } catch (e) {}
+
+            // 某些系统/引擎会强制用户在“系统 TTS 设置”里的默认值，可能导致 setSpeechRate/setPitch 被覆盖。
+            try {
+              if (typeof tts.areDefaultsEnforced === 'function') {
+                console.log('[AppTTSService] areDefaultsEnforced=', tts.areDefaultsEnforced())
+              }
             } catch (e) {}
 
             resolve()
@@ -285,40 +347,62 @@ export class AppTTSService {
 
     await this._initAndroidTTS()
 
+    // 某些机型在首次初始化后立刻 speak() 会偶发无声，需要给引擎一点点就绪时间。
+    if (!this._warmedUp) {
+      this._warmedUp = true
+      console.log('[AppTTSService] warm-up delay before first speak')
+      await new Promise(resolve => setTimeout(resolve, 350))
+    }
+
     console.log('AppTTSService')
     const rate = options.rate || this.config.rate || 1.0
     const pitch = options.pitch || this.config.pitch || 1.0
 
+    const effectiveRate = Math.max(0.1, Math.min(2.0, Number(rate)))
+    const effectivePitch = Math.max(0.1, Math.min(2.0, Number(pitch)))
+
     // 应用语速/音高（Android 原生对音量支持有限，这里先忽略 volume）
     try {
       if (this.tts && this.tts.setSpeechRate) {
-        this.tts.setSpeechRate(Math.max(0.1, Math.min(2.0, rate)))
+        this.tts.setSpeechRate(effectiveRate)
       }
     } catch (e) {}
     try {
       if (this.tts && this.tts.setPitch) {
-        this.tts.setPitch(Math.max(0.1, Math.min(2.0, pitch)))
+        this.tts.setPitch(effectivePitch)
       }
     } catch (e) {}
 
     const utteranceId = 'tts_' + Date.now() + '_' + (this._utteranceIndex++)
     this._currentUtteranceId = utteranceId
+    this._endedHandledUtteranceId = null
 
     return new Promise((resolve, reject) => {
       this._pendingResolve = resolve
       this._pendingReject = reject
 
-      // 兜底：进度监听未生效时，用时长估算结束。
-      this._fallbackTimer = setTimeout(() => {
+      const maxDurationMs = this._estimateDurationMs(text, rate)
+
+      // 优先使用引擎的 isSpeaking() 状态轮询来判断播放是否真正结束，
+      // 以减少某些机型 onDone 回调延迟（你提到的 10s 左右情况）。
+      this._endPollInterval = setInterval(() => {
+        if (this._currentUtteranceId !== utteranceId) return
+        try {
+          if (this.tts && typeof this.tts.isSpeaking === 'function') {
+            const speaking = this.tts.isSpeaking()
+            if (!speaking) {
+              this._handleEnded({ utteranceId, callFrom: 'poll' })
+            }
+          }
+        } catch (e) {}
+      }, 300)
+
+      // 最大时长兜底：避免引擎状态/回调都失效导致 Promise 永远不结束。
+      this._endPollTimeout = setTimeout(() => {
         if (this._currentUtteranceId === utteranceId) {
-          this.isLoading = false
-          this.isSpeaking = false
-          this.isPaused = false
-          const opts = this._currentOptions || {}
-          if (opts.onEnded) opts.onEnded()
-          this._clearPending({ resolvePending: true })
+          this._handleEnded({ utteranceId, callFrom: 'timeout' })
         }
-      }, this._estimateDurationMs(text, rate))
+      }, maxDurationMs)
 
       const TextToSpeech = plus.android.importClass('android.speech.tts.TextToSpeech')
       const Bundle = plus.android.importClass('android.os.Bundle')
@@ -328,19 +412,76 @@ export class AppTTSService {
         params.putString('utterance_id', utteranceId)
       } catch (e) {}
 
+      // 为了提高不同引擎上“语速/音高生效率”，同时通过 Bundle 传入引擎参数。
+      // 某些 Android 版本/引擎会忽略 setSpeechRate/setPitch，但会读取 params 中的 KEY_PARAM_*。
+      try {
+        const Engine = plus.android.importClass('android.speech.tts.TextToSpeech$Engine')
+        const rateKey = Engine && Engine.KEY_PARAM_RATE
+        const pitchKey = Engine && Engine.KEY_PARAM_PITCH
+
+        const putInt = (key, value) => {
+          if (!key) return
+          // plus.android 下静态常量有时是字符串，有时是对象包装。
+          const actualKey = typeof key === 'string' ? key : key.value
+          if (actualKey) params.putInt(String(actualKey), value)
+        }
+
+        putInt(rateKey, Math.round(effectiveRate * 100))
+        putInt(pitchKey, Math.round(effectivePitch * 100))
+      } catch (e) {}
+
       const queueMode = TextToSpeech.QUEUE_FLUSH
 
-      try {
-        this.tts.speak(text, queueMode, params, utteranceId)
-      } catch (e) {
-        // 老/特殊机型：尝试少一个参数的重载
+      // 某些机型首发偶发失败：尝试一次重试。
+      let didRetry = false
+      const invokeSpeakOnce = () => {
+        // 这里尽量不依赖 speak 的返回值类型（plus.android 下可能是数字/对象），
+        // 但如果能拿到数字且非 0，则视为失败。
+        let ret
         try {
-          this.tts.speak(text, queueMode, params)
-        } catch (e2) {
-          if (this._pendingReject) this._pendingReject(e2)
+          ret = this.tts.speak(text, queueMode, params, utteranceId)
+        } catch (e) {
+          // 老/特殊机型：尝试少一个参数的重载
+          ret = this.tts.speak(text, queueMode, params)
+        }
+        return ret
+      }
+
+      const invokeSpeak = () => {
+        if (this._currentUtteranceId !== utteranceId) return
+
+        let ret
+        try {
+          ret = invokeSpeakOnce()
+        } catch (err) {
+          try {
+            reject(err)
+          } catch (e) {}
           this._clearPending({ resolvePending: false })
+          return
+        }
+
+        if (typeof ret === 'number' && ret !== 0) {
+          if (!didRetry) {
+            didRetry = true
+            console.warn('[AppTTSService] speak non-zero code, retry once. code=', ret)
+            setTimeout(() => {
+              if (this._currentUtteranceId === utteranceId) {
+                invokeSpeak()
+              }
+            }, 250)
+          } else {
+            const err = new Error('Android TTS speak failed, code=' + ret)
+            try {
+              console.error('[AppTTSService] speak failed after retry. code=', ret)
+              reject(err)
+            } catch (e) {}
+            this._clearPending({ resolvePending: false })
+          }
         }
       }
+
+      invokeSpeak()
     })
   }
 
@@ -351,7 +492,6 @@ export class AppTTSService {
 
     this.isLoading = false
     this.isSpeaking = false
-    this.isPaused = false
 
     this._clearPending({ resolvePending: true })
   }
