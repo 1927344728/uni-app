@@ -116,12 +116,12 @@ import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { getUrlParams, replaceCosDomainName  } from '@/utils/variables.js'
 import { scaleImageWidthInCOS } from '@/utils/common.js'
-import { H5TTSService, XfTTSService } from '@/common/js/TTSManager.js'
+import { H5TTSService, AppTTSService } from '@/common/js/TTSManager.js'
 import VideoPopup from '@/pages/video/componets/VideoPopup.vue'
 
 let ttsService = new H5TTSService()
 // #ifdef APP-PLUS
-ttsService = new XfTTSService()
+ttsService = new AppTTSService()
 // #endif
 
 export default {
