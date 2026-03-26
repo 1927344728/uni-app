@@ -182,6 +182,12 @@ export default {
       nextSong: null,
       audioCtx: null,
       nextSongFetchPromise: null,
+      // 兜底定时重试：当需要切歌但 nextSong 为空且拉取失败时启动。
+      // 期望行为：当该标记为 false 时，setInterval 会触发 goNextSong，直到切歌成功。
+      nextSongSwitchRetryFlag: true,
+      nextSongRetryTimer: null,
+      nextSongRetryToastShown: false,
+      nextSongRetryIntervalMs: 5000,
       isSwitching: false,
       isPlaying: false,
       isSeeking: false,
@@ -235,12 +241,29 @@ export default {
       this.audioCtx.destroy();
       this.audioCtx = null;
     }
+    if (this.nextSongRetryTimer) {
+      clearInterval(this.nextSongRetryTimer);
+      this.nextSongRetryTimer = null;
+    }
   },
   methods: {
     formatTime,
     scaleImageWidthInCOS,
-    sleep (ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    startNextSongRetryTimer () {
+      if (this.nextSongRetryTimer) return;
+      this.nextSongRetryTimer = setInterval(() => {
+        // 仅在“需要重试切歌”的场景触发，避免影响正常播放/手动切歌。
+        if (this.mode !== 'auto') return;
+        if (this.nextSongSwitchRetryFlag) return; // 标记为 false 时才调用 goNextSong
+        if (this.isSwitching) return;
+        this.goNextSong();
+      }, this.nextSongRetryIntervalMs);
+    },
+    stopNextSongRetryTimer () {
+      if (this.nextSongRetryTimer) {
+        clearInterval(this.nextSongRetryTimer);
+        this.nextSongRetryTimer = null;
+      }
     },
     async init () {
       let { mode, id, ids, type, song, songs } = this;
@@ -320,7 +343,8 @@ export default {
       const currentId = _get(currentSong, 'id');
       const allMusicLength = _get(allMusicList, 'length') || 0;
 
-      // 无限下滑：请求下一首，网络抖动时自动重试且不中断播放流程
+      // 无限下滑：单次拉取下一首，避免息屏时 sleep/setTimeout 被节流导致阻塞。
+      // “需要切歌但 nextSong 为空/拉取失败”的兜底由 goNextSong 的 setInterval 完成。
       if (['auto'].includes(mode)) {
         if (this.nextSongFetchPromise) {
           return await this.nextSongFetchPromise;
@@ -328,32 +352,21 @@ export default {
 
         const playingIds = swiperPages.map(e => e.id);
         this.nextSongFetchPromise = (async () => {
-          const maxRetry = 10;
-          const baseDelayMs = 500;
-          for (let attempt = 1; attempt <= maxRetry; attempt++) {
-            try {
-              const newSong = await getMusicByRandom({
-                type,
-                playingIds,
-                playedIds
-              });
-              // 后端偶发返回空/异常数据时也按失败重试
-              if (!newSong || !newSong.url) {
-                throw new Error('invalid song response');
-              }
-              if (Array.isArray(this.allMusicList)) {
-                this.allMusicList.push(newSong);
-              } else if (this.currentSong) {
-                this.allMusicList = [this.currentSong, newSong];
-              }
-              return newSong;
-            } catch (e) {
-              if (attempt >= maxRetry) return null;
-              const delay = Math.min(baseDelayMs * Math.pow(2, attempt - 1), 5000);
-              await this.sleep(delay);
-            }
+          const newSong = await getMusicByRandom({
+            type,
+            playingIds,
+            playedIds
+          }).catch(() => null);
+
+          // 后端偶发返回空/异常数据：返回 null，交由上层兜底重试。
+          if (!newSong || !newSong.url) return null;
+
+          if (Array.isArray(this.allMusicList)) {
+            this.allMusicList.push(newSong);
+          } else if (this.currentSong) {
+            this.allMusicList = [this.currentSong, newSong];
           }
-          return null;
+          return newSong;
         })();
 
         const res = await this.nextSongFetchPromise;
@@ -519,17 +532,38 @@ export default {
 
       this.isSwitching = true;
       try {
-        // 兜底：如果上一轮预加载失败导致 nextSong 为空，ended/onError 时再拉取一次
+        // 兜底：如果上一轮预加载失败导致 nextSong 为空，ended/onError 时再拉取一次；
+        // 若仍拉取失败，在 auto 模式下启动 setInterval 直到切歌成功（不退出页面）。
         let nextSong = this.nextSong;
         if (!nextSong) {
           nextSong = await this.getNextSong().catch(() => null);
           if (!nextSong) {
+            if (this.mode === 'auto') {
+              this.nextSongSwitchRetryFlag = false; // 标记为 false 时 setInterval 会触发 goNextSong
+              this.startNextSongRetryTimer();
+              if (!this.nextSongRetryToastShown) {
+                uni.showToast({
+                  title: '下一首暂不可用，正在自动重试',
+                  icon: 'none'
+                });
+                this.nextSongRetryToastShown = true;
+              }
+              return;
+            }
+
             uni.showToast({
               title: '未加载下一歌曲，将稍后重试',
               icon: 'none'
             });
             return;
           }
+        }
+
+        if (this.mode === 'auto') {
+          // 切歌成功，停止兜底轮询
+          this.nextSongSwitchRetryFlag = true;
+          this.stopNextSongRetryTimer();
+          this.nextSongRetryToastShown = false;
         }
 
         const currentId = _get(currentSong, 'id');
