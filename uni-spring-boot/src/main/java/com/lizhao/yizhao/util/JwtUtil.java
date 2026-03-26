@@ -18,7 +18,7 @@ public class JwtUtil {
   // 使用安全的密钥（生产环境应从配置读取）
   private static final byte[] SECRET = "8af87d1df85b11f094dab4a9fc7c4063".getBytes();
   private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET);
-  private static final long EXPIRATION_HOURS = 24; // 24小时过期
+  private static final long EXPIRATION_HOURS = 24 * 30; // 30天过期
 
   public String generateToken(String phone) {
     return Jwts.builder()
