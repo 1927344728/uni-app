@@ -7,3 +7,4 @@ export * from './video.js'
 export * from './article.js'
 export * from './task.js';
 export * from './book.js';
+export * from './study.js';

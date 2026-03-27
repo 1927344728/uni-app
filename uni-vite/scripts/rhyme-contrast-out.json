@@ -1,0 +1,1130 @@
+[
+  {
+    "key": "an-ang",
+    "title": "an（前鼻韵） 和 ang（后鼻韵）",
+    "leftRhyme": "an",
+    "rightRhyme": "ang",
+    "left": [
+      {
+        "word": "早安",
+        "pinyin": "zǎo ān",
+        "pyArr": [
+          "zǎo",
+          "ān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "答案",
+        "pinyin": "dá àn",
+        "pyArr": [
+          "dá",
+          "àn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "喜欢",
+        "pinyin": "xǐ huan",
+        "pyArr": [
+          "xǐ",
+          "huan"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "公园",
+        "pinyin": "gōng yuán",
+        "pyArr": [
+          "gōng",
+          "yuán"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "安全",
+        "pinyin": "ān quán",
+        "pyArr": [
+          "ān",
+          "quán"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "寒冷",
+        "pinyin": "hán lěng",
+        "pyArr": [
+          "hán",
+          "lěng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "蓝天",
+        "pinyin": "lán tiān",
+        "pyArr": [
+          "lán",
+          "tiān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "看见",
+        "pinyin": "kàn jiàn",
+        "pyArr": [
+          "kàn",
+          "jiàn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "面包",
+        "pinyin": "miàn bāo",
+        "pyArr": [
+          "miàn",
+          "bāo"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "饭店",
+        "pinyin": "fàn diàn",
+        "pyArr": [
+          "fàn",
+          "diàn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "雨伞",
+        "pinyin": "yǔ sǎn",
+        "pyArr": [
+          "yǔ",
+          "sǎn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "参加",
+        "pinyin": "cān jiā",
+        "pyArr": [
+          "cān",
+          "jiā"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "班长",
+        "pinyin": "bān zhǎng",
+        "pyArr": [
+          "bān",
+          "zhǎng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "光盘",
+        "pinyin": "guāng pán",
+        "pyArr": [
+          "guāng",
+          "pán"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "弹琴",
+        "pinyin": "tán qín",
+        "pyArr": [
+          "tán",
+          "qín"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "花盆",
+        "pinyin": "huā pén",
+        "pyArr": [
+          "huā",
+          "pén"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "铅笔",
+        "pinyin": "qiān bǐ",
+        "pyArr": [
+          "qiān",
+          "bǐ"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "语言",
+        "pinyin": "yǔ yán",
+        "pyArr": [
+          "yǔ",
+          "yán"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "温暖",
+        "pinyin": "wēn nuǎn",
+        "pyArr": [
+          "wēn",
+          "nuǎn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "河边",
+        "pinyin": "hé biān",
+        "pyArr": [
+          "hé",
+          "biān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "探险",
+        "pinyin": "tàn xiǎn",
+        "pyArr": [
+          "tàn",
+          "xiǎn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "栏杆",
+        "pinyin": "lán gān",
+        "pyArr": [
+          "lán",
+          "gān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "危险",
+        "pinyin": "wēi xiǎn",
+        "pyArr": [
+          "wēi",
+          "xiǎn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "板凳",
+        "pinyin": "bǎn dèng",
+        "pyArr": [
+          "bǎn",
+          "dèng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "安然",
+        "pinyin": "ān rán",
+        "pyArr": [
+          "ān",
+          "rán"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "饭碗",
+        "pinyin": "fàn wǎn",
+        "pyArr": [
+          "fàn",
+          "wǎn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "竹竿",
+        "pinyin": "zhú gān",
+        "pyArr": [
+          "zhú",
+          "gān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "沙滩",
+        "pinyin": "shā tān",
+        "pyArr": [
+          "shā",
+          "tān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "帆船",
+        "pinyin": "fān chuán",
+        "pyArr": [
+          "fān",
+          "chuán"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "衬衫",
+        "pinyin": "chèn shān",
+        "pyArr": [
+          "chèn",
+          "shān"
+        ],
+        "mark": 1
+      }
+    ],
+    "right": [
+      {
+        "word": "太阳",
+        "pinyin": "tài yáng",
+        "pyArr": [
+          "tài",
+          "yáng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "花香",
+        "pinyin": "huā xiāng",
+        "pyArr": [
+          "huā",
+          "xiāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "明亮",
+        "pinyin": "míng liàng",
+        "pyArr": [
+          "míng",
+          "liàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "广场",
+        "pinyin": "guǎng chǎng",
+        "pyArr": [
+          "guǎng",
+          "chǎng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "方向",
+        "pinyin": "fāng xiàng",
+        "pyArr": [
+          "fāng",
+          "xiàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "帮忙",
+        "pinyin": "bāng máng",
+        "pyArr": [
+          "bāng",
+          "máng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "长江",
+        "pinyin": "cháng jiāng",
+        "pyArr": [
+          "cháng",
+          "jiāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "商场",
+        "pinyin": "shāng chǎng",
+        "pyArr": [
+          "shāng",
+          "chǎng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "希望",
+        "pinyin": "xī wàng",
+        "pyArr": [
+          "xī",
+          "wàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "想象",
+        "pinyin": "xiǎng xiàng",
+        "pyArr": [
+          "xiǎng",
+          "xiàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "月亮",
+        "pinyin": "yuè liàng",
+        "pyArr": [
+          "yuè",
+          "liàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "响亮",
+        "pinyin": "xiǎng liàng",
+        "pyArr": [
+          "xiǎng",
+          "liàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "冰箱",
+        "pinyin": "bīng xiāng",
+        "pyArr": [
+          "bīng",
+          "xiāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "飞翔",
+        "pinyin": "fēi xiáng",
+        "pyArr": [
+          "fēi",
+          "xiáng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "绵羊",
+        "pinyin": "mián yáng",
+        "pyArr": [
+          "mián",
+          "yáng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "螳螂",
+        "pinyin": "táng láng",
+        "pyArr": [
+          "táng",
+          "láng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "池塘",
+        "pinyin": "chí táng",
+        "pyArr": [
+          "chí",
+          "táng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "窗户",
+        "pinyin": "chuāng hù",
+        "pyArr": [
+          "chuāng",
+          "hù"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "强壮",
+        "pinyin": "qiáng zhuàng",
+        "pyArr": [
+          "qiáng",
+          "zhuàng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "蟑螂",
+        "pinyin": "zhāng láng",
+        "pyArr": [
+          "zhāng",
+          "láng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "风霜",
+        "pinyin": "fēng shuāng",
+        "pyArr": [
+          "fēng",
+          "shuāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "粮仓",
+        "pinyin": "liáng cāng",
+        "pyArr": [
+          "liáng",
+          "cāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "海浪",
+        "pinyin": "hǎi làng",
+        "pyArr": [
+          "hǎi",
+          "làng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "灯光",
+        "pinyin": "dēng guāng",
+        "pyArr": [
+          "dēng",
+          "guāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "银行",
+        "pinyin": "yín háng",
+        "pyArr": [
+          "yín",
+          "háng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "羊肠",
+        "pinyin": "yáng cháng",
+        "pyArr": [
+          "yáng",
+          "cháng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "霜冻",
+        "pinyin": "shuāng dòng",
+        "pyArr": [
+          "shuāng",
+          "dòng"
+        ],
+        "mark": 1
+      }
+    ]
+  },
+  {
+    "key": "en-eng",
+    "title": "en（前鼻韵） 和 eng（后鼻韵）",
+    "leftRhyme": "en",
+    "rightRhyme": "eng",
+    "left": [
+      {
+        "word": "认真",
+        "pinyin": "rèn zhēn",
+        "pyArr": [
+          "rèn",
+          "zhēn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "声音",
+        "pinyin": "shēng yīn",
+        "pyArr": [
+          "shēng",
+          "yīn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "本子",
+        "pinyin": "běn zi",
+        "pyArr": [
+          "běn",
+          "zi"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "门口",
+        "pinyin": "mén kǒu",
+        "pyArr": [
+          "mén",
+          "kǒu"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "森林",
+        "pinyin": "sēn lín",
+        "pyArr": [
+          "sēn",
+          "lín"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "温暖",
+        "pinyin": "wēn nuǎn",
+        "pyArr": [
+          "wēn",
+          "nuǎn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "树根",
+        "pinyin": "shù gēn",
+        "pyArr": [
+          "shù",
+          "gēn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "灰尘",
+        "pinyin": "huī chén",
+        "pyArr": [
+          "huī",
+          "chén"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "衬衫",
+        "pinyin": "chèn shān",
+        "pyArr": [
+          "chèn",
+          "shān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "新闻",
+        "pinyin": "xīn wén",
+        "pyArr": [
+          "xīn",
+          "wén"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "门诊",
+        "pinyin": "mén zhěn",
+        "pyArr": [
+          "mén",
+          "zhěn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "花盆",
+        "pinyin": "huā pén",
+        "pyArr": [
+          "huā",
+          "pén"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "深沉",
+        "pinyin": "shēn chén",
+        "pyArr": [
+          "shēn",
+          "chén"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "早晨",
+        "pinyin": "zǎo chén",
+        "pyArr": [
+          "zǎo",
+          "chén"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "人们",
+        "pinyin": "rén men",
+        "pyArr": [
+          "rén",
+          "men"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "根本",
+        "pinyin": "gēn běn",
+        "pyArr": [
+          "gēn",
+          "běn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "身体",
+        "pinyin": "shēn tǐ",
+        "pyArr": [
+          "shēn",
+          "tǐ"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "真正",
+        "pinyin": "zhēn zhèng",
+        "pyArr": [
+          "zhēn",
+          "zhèng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "门铃",
+        "pinyin": "mén líng",
+        "pyArr": [
+          "mén",
+          "líng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "沉闷",
+        "pinyin": "chén mèn",
+        "pyArr": [
+          "chén",
+          "mèn"
+        ],
+        "mark": 1
+      }
+    ],
+    "right": [
+      {
+        "word": "青蛙",
+        "pinyin": "qīng wā",
+        "pyArr": [
+          "qīng",
+          "wā"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "风筝",
+        "pinyin": "fēng zheng",
+        "pyArr": [
+          "fēng",
+          "zheng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "灯光",
+        "pinyin": "dēng guāng",
+        "pyArr": [
+          "dēng",
+          "guāng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "成长",
+        "pinyin": "chéng zhǎng",
+        "pyArr": [
+          "chéng",
+          "zhǎng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "明天",
+        "pinyin": "míng tiān",
+        "pyArr": [
+          "míng",
+          "tiān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "朋友",
+        "pinyin": "péng yǒu",
+        "pyArr": [
+          "péng",
+          "yǒu"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "风声",
+        "pinyin": "fēng shēng",
+        "pyArr": [
+          "fēng",
+          "shēng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "钟声",
+        "pinyin": "zhōng shēng",
+        "pyArr": [
+          "zhōng",
+          "shēng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "成功",
+        "pinyin": "chéng gōng",
+        "pyArr": [
+          "chéng",
+          "gōng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "丰盛",
+        "pinyin": "fēng shèng",
+        "pyArr": [
+          "fēng",
+          "shèng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "蜜蜂",
+        "pinyin": "mì fēng",
+        "pyArr": [
+          "mì",
+          "fēng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "蜻蜓",
+        "pinyin": "qīng tíng",
+        "pyArr": [
+          "qīng",
+          "tíng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "星星",
+        "pinyin": "xīng xīng",
+        "pyArr": [
+          "xīng",
+          "xīng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "名称",
+        "pinyin": "míng chēng",
+        "pyArr": [
+          "míng",
+          "chēng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "英雄",
+        "pinyin": "yīng xióng",
+        "pyArr": [
+          "yīng",
+          "xióng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "熊猫",
+        "pinyin": "xióng māo",
+        "pyArr": [
+          "xióng",
+          "māo"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "长城",
+        "pinyin": "cháng chéng",
+        "pyArr": [
+          "cháng",
+          "chéng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "乘凉",
+        "pinyin": "chéng liáng",
+        "pyArr": [
+          "chéng",
+          "liáng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "农民",
+        "pinyin": "nóng mín",
+        "pyArr": [
+          "nóng",
+          "mín"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "梦境",
+        "pinyin": "mèng jìng",
+        "pyArr": [
+          "mèng",
+          "jìng"
+        ],
+        "mark": 1
+      }
+    ]
+  },
+  {
+    "key": "in-ing",
+    "title": "in（前鼻韵） 和 ing（后鼻韵）",
+    "leftRhyme": "in",
+    "rightRhyme": "ing",
+    "left": [
+      {
+        "word": "今天",
+        "pinyin": "jīn tiān",
+        "pyArr": [
+          "jīn",
+          "tiān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "拼音",
+        "pinyin": "pīn yīn",
+        "pyArr": [
+          "pīn",
+          "yīn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "新年",
+        "pinyin": "xīn nián",
+        "pyArr": [
+          "xīn",
+          "nián"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "心里",
+        "pinyin": "xīn lǐ",
+        "pyArr": [
+          "xīn",
+          "lǐ"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "近处",
+        "pinyin": "jìn chù",
+        "pyArr": [
+          "jìn",
+          "chù"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "金鱼",
+        "pinyin": "jīn yú",
+        "pyArr": [
+          "jīn",
+          "yú"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "信心",
+        "pinyin": "xìn xīn",
+        "pyArr": [
+          "xìn",
+          "xīn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "前进",
+        "pinyin": "qián jìn",
+        "pyArr": [
+          "qián",
+          "jìn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "毛巾",
+        "pinyin": "máo jīn",
+        "pyArr": [
+          "máo",
+          "jīn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "辛勤",
+        "pinyin": "xīn qín",
+        "pyArr": [
+          "xīn",
+          "qín"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "亲近",
+        "pinyin": "qīn jìn",
+        "pyArr": [
+          "qīn",
+          "jìn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "阴天",
+        "pinyin": "yīn tiān",
+        "pyArr": [
+          "yīn",
+          "tiān"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "银杏",
+        "pinyin": "yín xìng",
+        "pyArr": [
+          "yín",
+          "xìng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "临近",
+        "pinyin": "lín jìn",
+        "pyArr": [
+          "lín",
+          "jìn"
+        ],
+        "mark": 1
+      }
+    ],
+    "right": [
+      {
+        "word": "星星",
+        "pinyin": "xīng xīng",
+        "pyArr": [
+          "xīng",
+          "xīng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "事情",
+        "pinyin": "shì qíng",
+        "pyArr": [
+          "shì",
+          "qíng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "安静",
+        "pinyin": "ān jìng",
+        "pyArr": [
+          "ān",
+          "jìng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "蜻蜓",
+        "pinyin": "qīng tíng",
+        "pyArr": [
+          "qīng",
+          "tíng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "听见",
+        "pinyin": "tīng jiàn",
+        "pyArr": [
+          "tīng",
+          "jiàn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "声音",
+        "pinyin": "shēng yīn",
+        "pyArr": [
+          "shēng",
+          "yīn"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "电影",
+        "pinyin": "diàn yǐng",
+        "pyArr": [
+          "diàn",
+          "yǐng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "透明",
+        "pinyin": "tòu míng",
+        "pyArr": [
+          "tòu",
+          "míng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "姓名",
+        "pinyin": "xìng míng",
+        "pyArr": [
+          "xìng",
+          "míng"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "苹果",
+        "pinyin": "píng guǒ",
+        "pyArr": [
+          "píng",
+          "guǒ"
+        ],
+        "mark": 1
+      },
+      {
+        "word": "熊猫",
+        "pinyin": "xióng māo",
+        "pyArr": [
+          "xióng",
+          "māo"
+        ],
+        "mark": 1
+      }
+    ]
+  }
+]

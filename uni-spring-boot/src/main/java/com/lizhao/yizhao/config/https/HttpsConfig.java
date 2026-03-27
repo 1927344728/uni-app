@@ -17,13 +17,13 @@ public class HttpsConfig {
     return tomcat;
   }
 
-  // 创建 HTTP 80 端口的连接器，并重定向到 HTTPS 443
+  // 创建 HTTP 80 端口的连接器，并重定向到 HTTPS 9443
   private Connector createHttpConnector() {
     Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
     connector.setScheme("http");
     connector.setPort(80);
     connector.setSecure(false);
-    connector.setRedirectPort(443);
+    connector.setRedirectPort(9443);
     return connector;
   }
 }

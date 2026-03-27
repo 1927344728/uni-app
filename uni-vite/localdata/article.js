@@ -12,13 +12,49 @@ const ARTICLE_OTHER = [
     id: 5,
     uuid: '',
     type: '1,2',
-    subType: 1,
+    subType: 3,
     title: '汉语拼音发音学习',
     note: '点击任意拼音即可播放发音',
     seq: 99,
     thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg',
     url: '/static/hanyupinyin.html',
     jumpTo: 'webview'
+  },
+  {
+    id: 53,
+    uuid: '',
+    type: '1,2',
+    subType: 3,
+    title: '听写链接生成器',
+    note: '输入听写词语，一键生成听写链接',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8496132_1280.jpg',
+    url: '/pages/study/gen-dictation/index',
+    jumpTo: 'navigate'
+  },
+  {
+    id: 54,
+    uuid: '',
+    type: '1,2',
+    subType: 3,
+    title: '听写小助手',
+    note: '可指定听写词语，也可以从已有数据中随机生成',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8050032_1280.jpg',
+    url: '/pages/study/dictation/index',
+    jumpTo: 'navigate'
+  },
+  {
+    id: 55,
+    uuid: '',
+    type: '1,2',
+    subType: 3,
+    title: '前后鼻韵母强化练习',
+    note: '常见前后鼻韵母强化练习，可选择检测模式或结果模式',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/animals-8651226_1280.jpg',
+    url: '/pages/study/rhyme/index',
+    jumpTo: 'navigate'
   },
   {
     id: 6,
@@ -74,6 +110,7 @@ export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
     jumpTo: e.jumpTo || 'navigate'
   }))
   .sort((a, b) => b.seq - a.seq)
+console.log(ARTICLE_LIST.map(e => e.id))
 
 // const jsonString = JSON.stringify(ARTICLE_DETAIL_LIST
 //   .map(e => {

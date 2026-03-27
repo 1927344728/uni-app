@@ -5,6 +5,7 @@ import videoMockData from './video'
 import articleMockData from './article'
 import taskMockData from './task'
 import bookMockData from './book'
+import studyMockData from './study'
 
 export const mockData = {
   ...userMockData,
@@ -13,5 +14,6 @@ export const mockData = {
   ...videoMockData,
   ...articleMockData,
   ...taskMockData,
-  ...bookMockData
+  ...bookMockData,
+  ...studyMockData
 }

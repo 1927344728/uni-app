@@ -1,6 +1,7 @@
 export const CATEGORY_ENUM = [
   { id: 1, categoryId: 1, categoryName: '文章', typeId: 1, typeName: '课程', subTypeId: 1, subTypeName: '课本' },
   { id: 2, categoryId: 1, categoryName: '文章', typeId: 1, typeName: '课程', subTypeId: 2, subTypeName: '成绩' },
+  { id: 2, categoryId: 1, categoryName: '文章', typeId: 1, typeName: '课程', subTypeId: 3, subTypeName: '小助手' },
   { id: 3, categoryId: 1, categoryName: '文章', typeId: 2, typeName: '推荐', subTypeId: null, subTypeName: null },
   { id: 4, categoryId: 1, categoryName: '文章', typeId: 3, typeName: '阅读', subTypeId: 1, subTypeName: '亲子阅读' },
   { id: 5, categoryId: 1, categoryName: '文章', typeId: 3, typeName: '阅读', subTypeId: 2, subTypeName: '少儿诗词' },

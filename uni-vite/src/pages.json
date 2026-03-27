@@ -27,6 +27,27 @@
       }
     },
     {
+      "path": "pages/study/dictation/index",
+      "style": {
+        "navigationBarTitleText": "听写小助手",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/study/gen-dictation/index",
+      "style": {
+        "navigationBarTitleText": "听写链接生成器",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/study/rhyme/index",
+      "style": {
+        "navigationBarTitleText": "前后鼻韵母强化练习",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/life/index",
       "style": {
         "navigationBarTitleText" : "生活",

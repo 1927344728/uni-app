@@ -21,19 +21,7 @@ export class H5TTSService {
       return Promise.reject('文本内容不能为空')
     }
     
-    try {
-      // #ifdef H5
-      return await this.play(text, options)
-      // #endif
-      uni.showToast({
-        title: '平台不支持',
-        icon: 'error'
-      });
-      return Promise.reject('平台不支持')
-    } catch (error) {
-      console.error('TTS播放失败:', error)
-      throw error
-    }
+    return this.play(text, options).catch(error => {})
   }
 
   async play(text, options = {}) {
@@ -66,6 +54,7 @@ export class H5TTSService {
         if (options.onEnded) {
           options.onEnded();
         }
+        resolve()
       }
 
       utterance.onerror = (event) => {
@@ -73,6 +62,7 @@ export class H5TTSService {
         if (options.onError){
           options.onError(event.error);
         }
+        reject(event && event.error ? event.error : 'TTS播放失败')
       }
 
       if (this.isSpeaking) {
@@ -663,5 +653,44 @@ export class XfTTSService  {
       }
     }
     // #endif
+  }
+}
+
+let _defaultTtsService = null
+
+export function getDefaultTTSService () {
+  if (_defaultTtsService) return _defaultTtsService
+  let service = new H5TTSService()
+  // #ifdef APP-PLUS
+  service = new AppTTSService()
+  // #endif
+  _defaultTtsService = service
+  return _defaultTtsService
+}
+
+export const TTSManager = {
+  speak (text, options = {}) {
+    return getDefaultTTSService().speak(text, options)
+  },
+  stop () {
+    return getDefaultTTSService().stop()
+  },
+  pause () {
+    return getDefaultTTSService().pause()
+  },
+  resume () {
+    return getDefaultTTSService().resume()
+  },
+  destroy () {
+    return getDefaultTTSService().destroy()
+  },
+  get isLoading () {
+    return !!getDefaultTTSService().isLoading
+  },
+  get isSpeaking () {
+    return !!getDefaultTTSService().isSpeaking
+  },
+  get isPaused () {
+    return !!getDefaultTTSService().isPaused
   }
 }

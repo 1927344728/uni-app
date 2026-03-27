@@ -13,6 +13,7 @@ export const CUSTOM_COS_DOMAIN_NAME = 'assets.izhao.com.cn'
 export const COS_DOMAIN_NAME = `${protocol}://${CUSTOM_COS_DOMAIN_NAME}`
 
 export const WEB_DOMAIN = '/pages/'
+export const PUBLIC_WEB_DOMAIN = 'https://app.izhao.com.cn/index.html#'
 export const USE_MOCK_KEY = 'use_mock_key'
 
 export const URL_PARAM = getUrlParams()

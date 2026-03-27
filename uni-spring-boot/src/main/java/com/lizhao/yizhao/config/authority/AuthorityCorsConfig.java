@@ -15,6 +15,7 @@ public class AuthorityCorsConfig implements WebMvcConfigurer {
         "http://dev.izhao.com.cn:9000",
         "http://localhost:9000",
         "https://izhao.com.cn",
+        "https://app.izhao.com.cn",
         "https://dev.izhao.com.cn:9000",
         "https://localhost:9000"
       )

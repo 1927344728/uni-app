@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Date;
 import java.util.Optional;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 
 
 @RestController
@@ -44,18 +46,21 @@ public class LoginController {
       Long id = userInfo.getId();
       String token = jwtUtil.generateToken(phone);
       Claims claims = jwtUtil.parseToken(token);
-      int expiration = Long.valueOf(claims.getExpiration().getTime() - new Date().getTime()).intValue();
+      // 剩余毫秒数可能超过 Integer.MAX_VALUE（如 30 天），不能用 int 存，否则溢出成负的 Max-Age
+      long remainingMs = claims.getExpiration().getTime() - System.currentTimeMillis();
+      int maxAgeSeconds = (int) Math.max(0L, remainingMs / 1000);
 
       userInfo.setToken(token);
       userRepository.updateTokenById(id, token);
 
-      Cookie cookie = new Cookie("token", token);
-      cookie.setMaxAge(expiration / 1000);
-      cookie.setPath("/");
-      cookie.setHttpOnly(true);
-
-      response.addCookie(cookie);
-      response.setHeader("Set-Cookie", String.format("token=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=None; Secure", token, expiration / 1000));
+      ResponseCookie tokenCookie = ResponseCookie.from("token", token)
+          .maxAge(maxAgeSeconds)
+          .path("/")
+          .httpOnly(true)
+          .secure(true)
+          .sameSite("None")
+          .build();
+      response.addHeader(HttpHeaders.SET_COOKIE, tokenCookie.toString());
 
       return CommonResponse.success("登录成功");
     } catch (Exception e) {
@@ -71,11 +76,14 @@ public class LoginController {
       Long id = userInfo.getData().id;
       userRepository.updateTokenById(id, null);
 
-      Cookie cookie = new Cookie("token", null);
-      cookie.setMaxAge(0);
-      cookie.setPath("/");
-      cookie.setHttpOnly(true);
-      response.addCookie(cookie);
+      ResponseCookie cleared = ResponseCookie.from("token", "")
+          .maxAge(0)
+          .path("/")
+          .httpOnly(true)
+          .secure(true)
+          .sameSite("None")
+          .build();
+      response.addHeader(HttpHeaders.SET_COOKIE, cleared.toString());
 
       return CommonResponse.success("登出成功");
     } catch (Exception e) {
