@@ -110,7 +110,6 @@ export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
     jumpTo: e.jumpTo || 'navigate'
   }))
   .sort((a, b) => b.seq - a.seq)
-console.log(ARTICLE_LIST.map(e => e.id))
 
 // const jsonString = JSON.stringify(ARTICLE_DETAIL_LIST
 //   .map(e => {

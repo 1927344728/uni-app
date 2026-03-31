@@ -2,7 +2,7 @@
   <view class="music_play_module">
     <swiper
       class="music_play_swiper"
-      :current="currentIndex"
+      :current="swiperCurrent"
       :duration="swiperDuration"
       :circular="false"
       vertical
@@ -182,13 +182,19 @@ export default {
       nextSong: null,
       audioCtx: null,
       nextSongFetchPromise: null,
-      // 兜底定时重试：当需要切歌但 nextSong 为空且拉取失败时启动。
-      // 期望行为：当该标记为 false 时，setInterval 会触发 goNextSong，直到切歌成功。
-      nextSongSwitchRetryFlag: true,
-      nextSongRetryTimer: null,
-      nextSongRetryToastShown: false,
-      nextSongRetryIntervalMs: 5000,
+      // auto 模式下：预取队列（替代 setInterval 兜底）
+      prefetchCount: 10,
+      upcomingSongs: [],
+      prefetchPromise: null,
+      prefetchTargetCount: 0,
+
+      // 省电策略引导（24h 最多弹一次）
+      batteryGuideLastShownAt: 0,
       isSwitching: false,
+      // swiper 受控索引 & 程序性 change 屏蔽
+      swiperCurrent: 0,
+      suppressSwiperChange: false,
+      suppressSwiperChangeTimer: null,
       isPlaying: false,
       isSeeking: false,
       swiperDuration: 320,
@@ -241,28 +247,154 @@ export default {
       this.audioCtx.destroy();
       this.audioCtx = null;
     }
-    if (this.nextSongRetryTimer) {
-      clearInterval(this.nextSongRetryTimer);
-      this.nextSongRetryTimer = null;
-    }
   },
   methods: {
     formatTime,
     scaleImageWidthInCOS,
-    startNextSongRetryTimer () {
-      if (this.nextSongRetryTimer) return;
-      this.nextSongRetryTimer = setInterval(() => {
-        // 仅在“需要重试切歌”的场景触发，避免影响正常播放/手动切歌。
-        if (this.mode !== 'auto') return;
-        if (this.nextSongSwitchRetryFlag) return; // 标记为 false 时才调用 goNextSong
-        if (this.isSwitching) return;
-        this.goNextSong();
-      }, this.nextSongRetryIntervalMs);
+    syncSwiperCurrent () {
+      this.swiperCurrent = this.prevSong ? 1 : 0;
     },
-    stopNextSongRetryTimer () {
-      if (this.nextSongRetryTimer) {
-        clearInterval(this.nextSongRetryTimer);
-        this.nextSongRetryTimer = null;
+    withSuppressedSwiperChange (fn) {
+      this.suppressSwiperChange = true;
+      if (this.suppressSwiperChangeTimer) {
+        clearTimeout(this.suppressSwiperChangeTimer);
+        this.suppressSwiperChangeTimer = null;
+      }
+      try {
+        fn();
+      } finally {
+        // 受控 :current 会在后续若干帧触发 change，这里覆盖整个动画时长
+        const holdMs = Math.max(0, Number(this.swiperDuration) || 0) + 80;
+        this.suppressSwiperChangeTimer = setTimeout(() => {
+          this.suppressSwiperChange = false;
+          this.suppressSwiperChangeTimer = null;
+        }, holdMs);
+      }
+    },
+    getBatteryGuideStorageKey () {
+      return 'music_player:battery_guide_last_shown_at';
+    },
+    loadBatteryGuideLastShownAt () {
+      try {
+        const v = uni.getStorageSync(this.getBatteryGuideStorageKey());
+        return Number(v) || 0;
+      } catch (e) {
+        return 0;
+      }
+    },
+    saveBatteryGuideLastShownAt (ts) {
+      try {
+        uni.setStorageSync(this.getBatteryGuideStorageKey(), ts);
+      } catch (e) {}
+    },
+    openAppDetailSettings () {
+      try {
+        // #ifdef APP-PLUS
+        if (!plus || !plus.os || plus.os.name !== 'Android') return false;
+        const main = plus.android.runtimeMainActivity();
+        const Intent = plus.android.importClass('android.content.Intent');
+        const Uri = plus.android.importClass('android.net.Uri');
+        const intent = new Intent('android.settings.APPLICATION_DETAILS_SETTINGS');
+        intent.setData(Uri.parse('package:' + main.getPackageName()));
+        main.startActivity(intent);
+        return true;
+        // #endif
+      } catch (e) {
+        return false;
+      }
+      return false;
+    },
+    maybeShowBatteryGuide () {
+      // 仅 Android App 才需要/才有效（不要用 APP-ANDROID 宏，部分构建链路可能不生效）
+      // #ifdef APP-PLUS
+      if (!plus || !plus.os || plus.os.name !== 'Android') return;
+      // #endif
+      // #ifndef APP-PLUS
+      return;
+      // #endif
+      if (this.mode !== 'auto') return;
+
+      const now = Date.now();
+      const last = this.batteryGuideLastShownAt || this.loadBatteryGuideLastShownAt();
+      const oneDay = 24 * 60 * 60 * 1000;
+      if (last && now - last < oneDay) return;
+
+      this.batteryGuideLastShownAt = now;
+      this.saveBatteryGuideLastShownAt(now);
+
+      uni.showModal({
+        title: '为保证锁屏连续播放',
+        content:
+          '系统省电策略可能限制后台联网/自动切歌，导致锁屏后播放中断。\n' +
+          '建议将本应用的电池策略设置为「无限制」。\n\n' +
+          '路径一般在：应用信息 → 电池/省电策略/后台运行 → 选择「无限制」。',
+        confirmText: '去设置',
+        cancelText: '稍后再说',
+        success: (res) => {
+          if (res.confirm) {
+            const ok = this.openAppDetailSettings();
+            if (!ok) {
+              uni.showToast({
+                title: '无法打开设置页，请到系统设置中手动设置',
+                icon: 'none'
+              });
+            }
+          }
+        }
+      });
+    },
+    getAutoPlayingIds () {
+      const { prevSong, currentSong, upcomingSongs } = this;
+      const ids = [];
+      if (prevSong?.id) ids.push(prevSong.id);
+      if (currentSong?.id) ids.push(currentSong.id);
+      if (Array.isArray(upcomingSongs)) {
+        upcomingSongs.forEach(s => s?.id && ids.push(s.id));
+      }
+      return ids;
+    },
+    async fetchOneAutoNextSong () {
+      const { type, playedIds } = this;
+      const playingIds = this.getAutoPlayingIds();
+      const newSong = await getMusicByRandom({
+        type,
+        playingIds,
+        playedIds
+      }).catch(() => null);
+
+      if (!newSong || !newSong.url) return null;
+
+      if (Array.isArray(this.allMusicList)) {
+        this.allMusicList.push(newSong);
+      } else if (this.currentSong) {
+        this.allMusicList = [this.currentSong, newSong];
+      }
+      return newSong;
+    },
+    async prefetchAutoSongs (targetCount = this.prefetchCount) {
+      if (this.mode !== 'auto') return;
+      const wanted = Math.max(0, Number(targetCount) || 0);
+      if (wanted === 0) return;
+
+      if (this.prefetchPromise) {
+        this.prefetchTargetCount = Math.max(this.prefetchTargetCount, wanted);
+        return this.prefetchPromise;
+      }
+
+      this.prefetchTargetCount = wanted;
+      this.prefetchPromise = (async () => {
+        while (this.upcomingSongs.length < this.prefetchTargetCount) {
+          const song = await this.fetchOneAutoNextSong();
+          if (!song) break;
+          this.upcomingSongs.push(song);
+          this.nextSong = this.upcomingSongs[0] || null;
+        }
+      })();
+
+      try {
+        await this.prefetchPromise;
+      } finally {
+        this.prefetchPromise = null;
       }
     },
     async init () {
@@ -320,8 +452,20 @@ export default {
       this.allMusicList = allMusicList
       this.prevSong = null;
       this.currentSong = currentSong;
-      this.nextSong = await this.getNextSong()
+      this.batteryGuideLastShownAt = this.loadBatteryGuideLastShownAt();
+
+      if (mode === 'auto') {
+        this.upcomingSongs = [];
+        await this.prefetchAutoSongs(1).catch(() => {});
+        this.nextSong = this.upcomingSongs[0] || null;
+      } else {
+        this.nextSong = await this.getNextSong()
+      }
+      this.syncSwiperCurrent();
       this.createAudio();
+      if (mode === 'auto') {
+        this.prefetchAutoSongs(this.prefetchCount).catch(() => {});
+      }
     },
     getPageBgStyle (song) {
       const _cover = _get(song, 'cover');
@@ -517,10 +661,13 @@ export default {
         return
       };
       if (prevSong) {
-        this.playedIds.pop();
-        this.currentSong = prevSong
-        this.prevSong = this.getPrevSong()
-        this.nextSong = currentSong
+        this.withSuppressedSwiperChange(() => {
+          this.playedIds.pop();
+          this.currentSong = prevSong
+          this.prevSong = this.getPrevSong()
+          this.nextSong = currentSong
+          this.syncSwiperCurrent();
+        });
         this.loadCurrentSong();
       }
       this.$emit('prev', this.currentSong);
@@ -532,25 +679,44 @@ export default {
 
       this.isSwitching = true;
       try {
-        // 兜底：如果上一轮预加载失败导致 nextSong 为空，ended/onError 时再拉取一次；
-        // 若仍拉取失败，在 auto 模式下启动 setInterval 直到切歌成功（不退出页面）。
+        // auto 模式：优先消费预取队列，不依赖 setInterval 兜底
+        if (this.mode === 'auto') {
+          let nextSong = null;
+
+          if (Array.isArray(this.upcomingSongs) && this.upcomingSongs.length > 0) {
+            nextSong = this.upcomingSongs.shift();
+          } else {
+            nextSong = await this.fetchOneAutoNextSong().catch(() => null);
+          }
+
+          if (!nextSong) {
+            this.maybeShowBatteryGuide();
+            return;
+          }
+
+          const currentId = _get(currentSong, 'id');
+          this.playedIds.push(currentId);
+
+          this.withSuppressedSwiperChange(() => {
+            this.prevSong = currentSong;
+            this.currentSong = nextSong;
+            this.nextSong = this.upcomingSongs[0] || null;
+            this.syncSwiperCurrent();
+          });
+
+          // 不阻塞切歌：异步补齐队列到 N 首
+          this.prefetchAutoSongs(this.prefetchCount).catch(() => {});
+
+          await this.loadCurrentSong();
+          this.$emit('next', this.currentSong);
+          return;
+        }
+
+        // 非 auto 模式：保持原先逻辑
         let nextSong = this.nextSong;
         if (!nextSong) {
           nextSong = await this.getNextSong().catch(() => null);
           if (!nextSong) {
-            if (this.mode === 'auto') {
-              this.nextSongSwitchRetryFlag = false; // 标记为 false 时 setInterval 会触发 goNextSong
-              this.startNextSongRetryTimer();
-              if (!this.nextSongRetryToastShown) {
-                uni.showToast({
-                  title: '下一首暂不可用，正在自动重试',
-                  icon: 'none'
-                });
-                this.nextSongRetryToastShown = true;
-              }
-              return;
-            }
-
             uni.showToast({
               title: '未加载下一歌曲，将稍后重试',
               icon: 'none'
@@ -559,24 +725,19 @@ export default {
           }
         }
 
-        if (this.mode === 'auto') {
-          // 切歌成功，停止兜底轮询
-          this.nextSongSwitchRetryFlag = true;
-          this.stopNextSongRetryTimer();
-          this.nextSongRetryToastShown = false;
-        }
-
         const currentId = _get(currentSong, 'id');
         this.playedIds.push(currentId);
 
-        this.prevSong = currentSong;
-        this.currentSong = nextSong;
-        this.nextSong = null;
+        this.withSuppressedSwiperChange(() => {
+          this.prevSong = currentSong;
+          this.currentSong = nextSong;
+          this.nextSong = null;
+          this.syncSwiperCurrent();
+        });
 
         // 预加载下一首（用于下一次 ended）
         this.nextSong = await this.getNextSong().catch(() => null);
         if (!this.nextSong) {
-          // 不中断当前播放，等当前歌结束后再临时拉取
           uni.showToast({
             title: '下一首暂时不可用，播放将继续',
             icon: 'none'
@@ -590,12 +751,34 @@ export default {
       }
     },
     onChange (event) {
-      const { currentIndex, nextSong, prevSong } = this;
-      if (event.detail.current > currentIndex && nextSong) {
-        this.goNextSong();
+      const newIndex = event?.detail?.current ?? 0;
+      const oldIndex = this.swiperCurrent;
+      const source = event?.detail?.source;
+
+      // 只响应用户手势触发（程序性 setData/受控 current 会产生额外 change）
+      if (source && source !== 'touch') {
+        this.syncSwiperCurrent();
+        return;
       }
-      if (event.detail.current < currentIndex && prevSong) {
-        this.goPrevSong();
+
+      // 程序性重置 current 引发的 change：忽略，且把 swiper 拉回正确位置
+      if (this.suppressSwiperChange) {
+        this.syncSwiperCurrent();
+        return;
+      }
+
+      if (newIndex > oldIndex) {
+        if (this.canGoNext) {
+          this.goNextSong();
+        } else {
+          this.withSuppressedSwiperChange(() => this.syncSwiperCurrent());
+        }
+      } else if (newIndex < oldIndex) {
+        if (this.canGoPrev) {
+          this.goPrevSong();
+        } else {
+          this.withSuppressedSwiperChange(() => this.syncSwiperCurrent());
+        }
       }
     },
     onClickSetting () {
