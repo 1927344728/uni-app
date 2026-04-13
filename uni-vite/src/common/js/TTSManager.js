@@ -2,6 +2,11 @@
 // NOTE: iFlytek TTS (XfTTSService) is loaded lazily to avoid including it in
 // App runtime when only AppTTSService is used.
 
+function isWeixinBuiltInBrowser () {
+  if (typeof navigator === 'undefined') return false
+  return /MicroMessenger/i.test(navigator.userAgent || '')
+}
+
 export class H5TTSService {
   constructor(config = {}) {
     this.config = {
@@ -27,6 +32,17 @@ export class H5TTSService {
   async play(text, options = {}) {
     return new Promise((resolve, reject) => {
       if (!window.speechSynthesis) {
+        if (isWeixinBuiltInBrowser()) {
+          try {
+            uni.showModal({
+              title: '请用系统浏览器打开',
+              content:
+                '微信内置浏览器不支持语音朗读。请点击右上角「···」，选择「在浏览器中打开」，使用 Chrome、Safari 等浏览器访问本页后再试。',
+              showCancel: false,
+              confirmText: '知道了'
+            })
+          } catch (e) {}
+        }
         reject('浏览器不支持Web Speech API')
         return
       }
@@ -34,7 +50,7 @@ export class H5TTSService {
 
       const config = { ...this.config, ...options }
       const utterance = new SpeechSynthesisUtterance(text)
-      
+
       utterance.rate = config.rate || 1
       utterance.volume = config.volume || 1.0
       utterance.pitch = config.pitch || 1.0
