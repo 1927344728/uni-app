@@ -62,6 +62,10 @@ export class H5TTSService {
         if (options.onError){
           options.onError(event.error);
         }
+        uni.showToast({
+          title: event.error && event.error.message ? event.error.message : 'TTS播放失败',
+          icon: 'error'
+        })
         reject(event && event.error ? event.error : 'TTS播放失败')
       }
 
