@@ -205,8 +205,10 @@
 
 <script>
 import { pinyin } from 'pinyin-pro'
-import { TTSManager } from '@/common/js/TTSManager.js'
+import { TTSService } from '@/common/js/TTSManager.js'
 import { CONTRAST_STATIC, SINGLE_STATIC } from './constant.js'
+
+const tts = new TTSService()
 
 /** 静态 { word, mark } → 运行时补全 pinyin / pyArr */
 function enrichItem (wordItem) {
@@ -266,7 +268,7 @@ export default {
     }
   },
   beforeUnmount () {
-    try { TTSManager.stop() } catch (e) {}
+    try { tts.stop() } catch (e) {}
   },
   methods: {
     charsOf (word) {
@@ -282,7 +284,7 @@ export default {
     },
     speak (word) {
       if (!word) return
-      TTSManager.speak(word)
+      tts.speak(word)
     },
     buildAnswerPool () {
       const pool = []

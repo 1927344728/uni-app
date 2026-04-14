@@ -135,9 +135,11 @@
 
 <script>
 import { get as _get } from 'lodash'
-import { TTSManager } from '@/common/js/TTSManager.js'
+import { TTSService } from '@/common/js/TTSManager.js'
 import { getChineseWordList } from '@/api'
 import { clampNumber, splitWords, toPinyinSymbol } from '@/utils/dictation.js'
+
+const tts = new TTSService()
 
 
 function buildWordList (words) {
@@ -247,13 +249,13 @@ export default {
 
     this.$nextTick(() => {
       if (this.noteText) {
-        TTSManager.speak(this.noteText)
+        tts.speak(this.noteText)
       }
     })
   },
   beforeUnmount () {
     this.clearWaiting()
-    try { TTSManager.stop() } catch (e) {}
+    try { tts.stop() } catch (e) {}
   },
   methods: {
     getChineseWordList (id) {
@@ -343,7 +345,7 @@ export default {
     restart () {
       this.clearWaiting()
       this.pausedDuringWait = false
-      try { TTSManager.stop() } catch (e) {}
+      try { tts.stop() } catch (e) {}
       this.status = 'pending'
       this.completedSet = new Set()
       this.currentIndex = 0
@@ -353,7 +355,7 @@ export default {
       this.clearWaiting()
       this.pausedDuringWait = false
       this.status = 'finished'
-      try { TTSManager.stop() } catch (e) {}
+      try { tts.stop() } catch (e) {}
       this.isPaused = false
     },
     togglePause () {
@@ -364,14 +366,14 @@ export default {
           this.pausedDuringWait = false
           this.speakCurrent()
         } else {
-          try { TTSManager.resume() } catch (e) {}
+          try { tts.resume() } catch (e) {}
         }
         return
       }
       this.pausedDuringWait = !!this.waitingTimer
       this.isPaused = true
       this.clearWaiting()
-      try { TTSManager.pause() } catch (e) {}
+      try { tts.pause() } catch (e) {}
     },
     clearWaiting () {
       if (this.waitingTimer) {
@@ -390,7 +392,7 @@ export default {
     onClickCard (item) {
       if (!item || !item.word) return
       this.clearWaiting()
-      TTSManager.speak(item.word)
+      tts.speak(item.word)
     },
     async speakCurrent () {
       if (this.status !== 'active') return
@@ -402,12 +404,12 @@ export default {
       const intervalSec = this.settings.intervalTime || 20
       const gapMs = Math.max(1000, Math.floor((intervalSec * 1000) / 4))
       let repeatCount = 0
-      TTSManager.speak(item.word)
+      tts.speak(item.word)
       this.waitingTimer = setInterval(() => {
         if (this.status !== 'active' || this.isPaused) return
         repeatCount ++
         if (repeatCount < 3) {
-          TTSManager.speak(item.word)
+          tts.speak(item.word)
         }
         if (repeatCount >= 4) {
           this.clearWaiting()
@@ -422,7 +424,7 @@ export default {
     },
     completeAndAdvance () {
       this.clearWaiting()
-      try { TTSManager.stop() } catch (e) {}
+      try { tts.stop() } catch (e) {}
 
       const idx = this.currentIndex
       if (!this.completedSet.has(idx)) {

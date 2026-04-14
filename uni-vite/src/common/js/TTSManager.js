@@ -1,12 +1,3 @@
-
-// NOTE: iFlytek TTS (XfTTSService) is loaded lazily to avoid including it in
-// App runtime when only AppTTSService is used.
-
-function isWeixinBuiltInBrowser () {
-  if (typeof navigator === 'undefined') return false
-  return /MicroMessenger/i.test(navigator.userAgent || '')
-}
-
 export class H5TTSService {
   constructor(config = {}) {
     this.config = {
@@ -16,6 +7,7 @@ export class H5TTSService {
       pitch: 1.0,
       ...config
     }
+    this.isLoading = false
     this.isSpeaking = false
     this.isPaused = false
     console.log('H5TTSService')
@@ -25,24 +17,13 @@ export class H5TTSService {
     if (!text) {
       return Promise.reject('文本内容不能为空')
     }
-    
-    return this.play(text, options).catch(error => {})
+
+    return this.play(text, options).catch(() => {})
   }
 
   async play(text, options = {}) {
     return new Promise((resolve, reject) => {
       if (!window.speechSynthesis) {
-        if (isWeixinBuiltInBrowser()) {
-          try {
-            uni.showModal({
-              title: '请用系统浏览器打开',
-              content:
-                '微信内置浏览器不支持语音朗读。请点击右上角「···」，选择「在浏览器中打开」，使用 Chrome、Safari 等浏览器访问本页后再试。',
-              showCancel: false,
-              confirmText: '知道了'
-            })
-          } catch (e) {}
-        }
         reject('浏览器不支持Web Speech API')
         return
       }
@@ -50,6 +31,10 @@ export class H5TTSService {
 
       const config = { ...this.config, ...options }
       const utterance = new SpeechSynthesisUtterance(text)
+
+      this.isLoading = true
+      this.isSpeaking = false
+      this.isPaused = false
 
       utterance.rate = config.rate || 1
       utterance.volume = config.volume || 1.0
@@ -78,22 +63,20 @@ export class H5TTSService {
         if (options.onError){
           options.onError(event.error);
         }
-        uni.showToast({
-          title: event.error && event.error.message ? event.error.message : 'TTS播放失败',
-          icon: 'error'
-        })
+        if (event.error !== 'interrupted') {
+          uni.showToast({
+            title: event.error && event.error.message ? event.error.message : 'TTS播放失败',
+            icon: 'error'
+          })
+        }
         reject(event && event.error ? event.error : 'TTS播放失败')
       }
 
-      if (this.isSpeaking) {
-        setTimeout(() => {
-          window.speechSynthesis.speak(utterance)
-          this.isSpeaking = true
-        }, 300)
-      } else {
+      setTimeout(() => {
         window.speechSynthesis.speak(utterance)
+        this.isLoading = false
         this.isSpeaking = true
-      }
+      }, 100)
     })
   }
 
@@ -103,12 +86,16 @@ export class H5TTSService {
       window.speechSynthesis.cancel()
     }
     // #endif
+    this.isLoading = false
+    this.isSpeaking = false
+    this.isPaused = false
   }
 
   pause() {
     // #ifdef H5
     if (window.speechSynthesis) {
       window.speechSynthesis.pause()
+      this.isLoading = false
       this.isSpeaking = false
       this.isPaused = true
     }
@@ -119,6 +106,7 @@ export class H5TTSService {
     // #ifdef H5
     if (window.speechSynthesis) {
       window.speechSynthesis.resume()
+      this.isLoading = false
       this.isSpeaking = true
       this.isPaused = false
     }
@@ -127,6 +115,7 @@ export class H5TTSService {
 
   destroy () {
     this.stop()
+    this.isLoading = false
     this.isSpeaking = false
     this.isPaused = false
   }
@@ -545,7 +534,7 @@ export class AppTTSService {
 }
 
 export class XfTTSService  {
-  constructor(config) {
+  constructor(config = {}) {
     this.xfTTSInstance = null
     this.config = config
     this.innerAudioContext = null;
@@ -565,21 +554,23 @@ export class XfTTSService  {
   
   async speak(text, options = {}) {
     try {
+      if (!text) return Promise.reject('文本内容不能为空')
       await this._ensureXfInstance()
       const ttsOptions = {}
-      if (ttsOptions.vcn) {
+      if (options.vcn) {
         ttsOptions.vcn = options.vcn;
       }
       if (options.rate) {
         ttsOptions.speed = options.rate * 100;
       }
-      if (ttsOptions.volume) {
+      if (options.volume !== undefined) {
         ttsOptions.volume = options.volume;
       }
       this.isLoading = true
       const audioUrl = await this.xfTTSInstance.createAudioUrl(text, ttsOptions)
+      this.currentAudioUrl = audioUrl
       await this.play(audioUrl, options || {});
-      return audioUrl;
+      return
     } catch (error) {
       throw error;
     }
@@ -604,6 +595,8 @@ export class XfTTSService  {
       this.innerAudioContext.onPlay(() => {
         console.log('音频开始播放');
         this.isLoading = false
+        this.isSpeaking = true
+        this.isPaused = false
         if (options.onPlay) {
           options.onPlay();
         }
@@ -611,18 +604,26 @@ export class XfTTSService  {
       
       this.innerAudioContext.onEnded(() => {
         console.log('音频播放结束');
+        this.isLoading = false
+        this.isSpeaking = false
+        this.isPaused = false
         if (options.onEnded) {
           options.onEnded()
         };
+        this.stop()
         resolve();
       });
       
       this.innerAudioContext.onError((error) => {
         console.error('音频播放错误:', error);
         console.error('音频源路径:', audioUrl);
+        this.isLoading = false
+        this.isSpeaking = false
+        this.isPaused = false
         if (options.onError){
           options.onError(error);
         }
+        this.stop()
         reject(error);
       });
       
@@ -635,15 +636,19 @@ export class XfTTSService  {
     if (this.innerAudioContext) {
       this.isLoading = false
       this.isSpeaking = false
+      this.isPaused = false
       this.innerAudioContext.stop();
       this.innerAudioContext.destroy();
       this.innerAudioContext = null;
     }
+    this.revokeAudioUrl(this.currentAudioUrl);
+    this.currentAudioUrl = null;
   }
 
   pause() {
     if (this.innerAudioContext && !this.innerAudioContext.paused) {
       this.isPaused = true
+      this.isSpeaking = false
       this.innerAudioContext.pause();
     }
   }
@@ -651,14 +656,14 @@ export class XfTTSService  {
   resume() {
     if (this.innerAudioContext && this.innerAudioContext.paused) {
       this.isPaused = false
+      this.isSpeaking = true
       this.innerAudioContext.play();
     }
   }
 
   destroy() {
     this.stop();
-    this.revokeAudioUrl(this.currentAudioUrl);
-    this.currentAudioUrl = null;
+    this.isLoading = false
     this.isSpeaking = false
     this.isPaused = false
   }
@@ -676,41 +681,50 @@ export class XfTTSService  {
   }
 }
 
-let _defaultTtsService = null
+export class TTSService {
+  constructor(config = {}) {
+    this.ttsService = null
+    // #ifdef APP-PLUS
+    this.ttsService = new AppTTSService(config)
+    console.log('TTSService', 'AppTTSService')
+    // #endif
 
-export function getDefaultTTSService () {
-  if (_defaultTtsService) return _defaultTtsService
-  let service = new H5TTSService()
-  // #ifdef APP-PLUS
-  service = new AppTTSService()
-  // #endif
-  _defaultTtsService = service
-  return _defaultTtsService
-}
+    // #ifdef H5
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      this.ttsService = new H5TTSService(config)
+      console.log('TTSService', 'H5TTSService')
+    }
+    // #endif
 
-export const TTSManager = {
+    if (!this.ttsService) {
+      this.ttsService = new XfTTSService(config)
+      console.log('TTSService', 'XfTTSService')
+    }
+  }
+
   speak (text, options = {}) {
-    return getDefaultTTSService().speak(text, options)
-  },
+    return this.ttsService.speak(text, options)
+  }
   stop () {
-    return getDefaultTTSService().stop()
-  },
+    return this.ttsService.stop()
+  }
   pause () {
-    return getDefaultTTSService().pause()
-  },
+    return this.ttsService.pause()
+  }
   resume () {
-    return getDefaultTTSService().resume()
-  },
+    return this.ttsService.resume()
+  }
   destroy () {
-    return getDefaultTTSService().destroy()
-  },
+    return this.ttsService.destroy()
+  }
+
   get isLoading () {
-    return !!getDefaultTTSService().isLoading
-  },
+    return !!this.ttsService.isLoading
+  }
   get isSpeaking () {
-    return !!getDefaultTTSService().isSpeaking
-  },
+    return !!this.ttsService.isSpeaking
+  }
   get isPaused () {
-    return !!getDefaultTTSService().isPaused
+    return !!this.ttsService.isPaused
   }
 }

@@ -116,13 +116,10 @@ import { get as _get } from 'lodash'
 import { convert as convertHtmlToText } from 'html-to-text'
 import { getUrlParams, replaceCosDomainName  } from '@/utils/variables.js'
 import { scaleImageWidthInCOS } from '@/utils/common.js'
-import { H5TTSService, AppTTSService } from '@/common/js/TTSManager.js'
+import { TTSService } from '@/common/js/TTSManager.js'
 import VideoPopup from '@/pages/video/componets/VideoPopup.vue'
 
-let ttsService = new H5TTSService()
-// #ifdef APP-PLUS
-ttsService = new AppTTSService()
-// #endif
+const ttsService = new TTSService()
 
 export default {
   components: {
@@ -136,8 +133,6 @@ export default {
   },
   data () {
     return {
-      // ttsService: new H5TTSService(),
-      ttsService,
       speakingIndex: null,
       videoContexts: {},
       currentVideoIndex: null,
@@ -150,10 +145,10 @@ export default {
   },
   computed: {
     isLoading () {
-      return this.ttsService.isLoading
+      return ttsService.isLoading
     },
     isPaused () {
-      return this.ttsService.isPaused
+      return ttsService.isPaused
     },
     cArticleData () {
       return (this.articleData || []).map(item => {
@@ -189,7 +184,7 @@ export default {
   methods: {
     scaleImageWidthInCOS,
     onClickReadText (item, i) {
-      const { ttsService, speakingIndex } = this
+      const { speakingIndex } = this
       ttsService.stop()
       if (speakingIndex === i) {
         if (ttsService.isPaused) {
@@ -201,7 +196,7 @@ export default {
       }
       this.speakingIndex = i
       const text = (item.content || []).map(e => e).join('')
-      let rate = item.rate
+      let rate = item.rate || 0.5
       // #ifdef H5
       rate += 0.1
       // #endif
@@ -214,7 +209,7 @@ export default {
       })
     },
     stop () {
-      this.ttsService.stop()
+      ttsService.stop()
     },
     previewImage(url) {
       const { articleData } = this
