@@ -555,7 +555,6 @@ export class XfTTSService  {
       }
       this.isLoading = true
       const audioUrl = await this.xfTTSInstance.createAudioUrl(text, ttsOptions)
-      this.currentAudioUrl = audioUrl
       await this.play(audioUrl, options || {});
       return
     } catch (error) {
