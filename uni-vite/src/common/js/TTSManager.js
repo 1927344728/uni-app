@@ -264,7 +264,6 @@ export class AppTTSService {
         const tts = new TextToSpeech(context, (status) => {
           // 0 = SUCCESS
           if (status === 0) {
-            console.log('[AppTTSService] TextToSpeech init SUCCESS')
             // 尽量安装进度回调；个别机型可能不支持，失败也不阻断播放。
             try {
               const setListener = () => {
@@ -302,16 +301,8 @@ export class AppTTSService {
               setListener()
             } catch (e) {}
 
-            // 某些系统/引擎会强制用户在“系统 TTS 设置”里的默认值，可能导致 setSpeechRate/setPitch 被覆盖。
-            try {
-              if (typeof tts.areDefaultsEnforced === 'function') {
-                console.log('[AppTTSService] areDefaultsEnforced=', tts.areDefaultsEnforced())
-              }
-            } catch (e) {}
-
             resolve()
           } else {
-            console.error('[AppTTSService] TextToSpeech init failed, status=', status)
             reject(new Error('Android TTS init failed, status=' + status))
           }
         })
@@ -351,11 +342,9 @@ export class AppTTSService {
     // 某些机型在首次初始化后立刻 speak() 会偶发无声，需要给引擎一点点就绪时间。
     if (!this._warmedUp) {
       this._warmedUp = true
-      console.log('[AppTTSService] warm-up delay before first speak')
       await new Promise(resolve => setTimeout(resolve, 350))
     }
 
-    console.log('AppTTSService')
     const rate = options.rate || this.config.rate || 1.0
     const pitch = options.pitch || this.config.pitch || 1.0
 
@@ -465,7 +454,6 @@ export class AppTTSService {
         if (typeof ret === 'number' && ret !== 0) {
           if (!didRetry) {
             didRetry = true
-            console.warn('[AppTTSService] speak non-zero code, retry once. code=', ret)
             setTimeout(() => {
               if (this._currentUtteranceId === utteranceId) {
                 invokeSpeak()
@@ -474,7 +462,6 @@ export class AppTTSService {
           } else {
             const err = new Error('Android TTS speak failed, code=' + ret)
             try {
-              console.error('[AppTTSService] speak failed after retry. code=', ret)
               reject(err)
             } catch (e) {}
             this._clearPending({ resolvePending: false })
