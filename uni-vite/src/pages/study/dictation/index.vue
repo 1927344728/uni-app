@@ -175,6 +175,17 @@ export default {
     }
   },
   computed: {
+    isWechatH5 () {
+      // #ifdef H5
+      try {
+        const ua = (navigator.userAgent || '').toLowerCase()
+        return ua.includes('micromessenger')
+      } catch (e) {
+        return false
+      }
+      // #endif
+      return false
+    },
     hasLinkParams () {
       if (this.routeId) return true
       return splitWords(this.routeWordsRaw).length > 0
@@ -401,6 +412,11 @@ export default {
       if (!item) return
 
       this.clearWaiting()
+      if (this.isWechatH5) {
+        tts.speak(item.word)
+        return
+      }
+
       const intervalSec = this.settings.intervalTime || 20
       const gapMs = Math.max(1000, Math.floor((intervalSec * 1000) / 4))
       let repeatCount = 0
@@ -440,6 +456,7 @@ export default {
         return
       }
       this.currentIndex = nextIndex
+
       this.speakCurrent()
     }
   }
