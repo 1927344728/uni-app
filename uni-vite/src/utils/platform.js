@@ -1,5 +1,7 @@
 import { Buffer } from 'buffer';
+// #ifndef H5
 import iconv from 'iconv-lite';
+// #endif
 
 export function stringToBase64(str) {
   // #ifdef H5
@@ -47,29 +49,56 @@ export function stringToBase64(str) {
   }
 }
 
+function decodeUtf8 (arrayBuffer) {
+  try {
+    if (typeof TextDecoder !== 'undefined') {
+      return new TextDecoder('utf-8').decode(new Uint8Array(arrayBuffer));
+    }
+  } catch (e) {}
+  try {
+    return Buffer.from(arrayBuffer).toString('utf8');
+  } catch (e) {}
+  return '';
+}
+
+/**
+ * 将 ArrayBuffer 按 GBK 解码为字符串。
+ * H5：FileReader（返回 Promise）
+ * App：iconv-lite（同步字符串）
+ * 调用方使用 Promise.resolve(...) 统一处理即可。
+ */
 export function ArrayBufferToGBK (arrayBuffer) {
   try {
+    // #ifdef H5
     if (typeof Blob !== 'undefined' && typeof FileReader !== 'undefined') {
       return new Promise((resolve) => {
-        const blob = new Blob([arrayBuffer], { type: 'text/plain;charset=gbk' })
-        const reader = new FileReader()
-        reader.onload = () => {
-          resolve(reader.result)
+        try {
+          const blob = new Blob([arrayBuffer], { type: 'text/plain;charset=gbk' });
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve(reader.result || '');
+          };
+          reader.onerror = () => {
+            resolve(decodeUtf8(arrayBuffer));
+          };
+          reader.readAsText(blob, 'gbk');
+        } catch (e) {
+          resolve(decodeUtf8(arrayBuffer));
         }
-        reader.onerror = () => {
-          resolve('')
-        }
-        reader.readAsText(blob, 'gbk')
-      })
+      });
     }
+    return decodeUtf8(arrayBuffer);
+    // #endif
 
-    if (typeof plus !== 'undefined' && plus.io) {
-      const buffer = Buffer.from(arrayBuffer);
-      const gbkText = iconv.decode(buffer, 'gbk')
-      return gbkText
+    // #ifndef H5
+    try {
+      return iconv.decode(Buffer.from(arrayBuffer), 'gbk');
+    } catch (e) {
+      return decodeUtf8(arrayBuffer);
     }
+    // #endif
   } catch (err) {
-    console.error('ArrayBufferToGBK error', err)
+    console.error('ArrayBufferToGBK error', err);
+    return decodeUtf8(arrayBuffer);
   }
-  return ''
 }

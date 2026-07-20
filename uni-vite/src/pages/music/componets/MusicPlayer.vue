@@ -1,78 +1,27 @@
 <template>
   <view class="music_play_module">
-    <swiper
-      class="music_play_swiper"
-      :current="swiperCurrent"
-      :duration="swiperDuration"
-      :circular="false"
-      vertical
-      @change="onChange"
+    <view
+      v-if="currentSong"
+      class="music_play_track"
+      :style="{
+        height: `${swiperPages.length * wHeight}px`,
+        top: `${realSwiperTop}px`
+      }"
+      @touchstart="ontouchstart"
+      @touchmove="ontouchmove"
+      @touchend="ontouchend"
     >
-      <swiper-item v-for="page in swiperPages" :key="page.id" >
-        <view
-          v-if="page"
-          class="music_play_swiper_item"
-          :class="[`music_play_swiper_item--${page.key}`, `music_play_switch--${page.key}`]"
-          :style="getPageBgStyle(page)"
-        >
-          <image
-            v-if="page.cover"
-            class="music_play_bg"
-            :src="scaleImageWidthInCOS(page.cover)"
-            mode="aspectFill"
-          />
-          <view class="music_play_blur_mask"></view>
-
-          <view class="music_play_content">
-            <view
-              class="music_play_cover_wrapper"
-              :style="{
-                backgroundImage: `url('${scaleImageWidthInCOS(page.cover)}')`
-              }"
-            />
-
-            <view class="music_play_titles">
-              <text class="music_play_song">
-                {{ page.title || '' }}
-              </text>
-              <text class="music_play_artist">
-                {{ page.singer || '未知歌手' }}
-              </text>
-            </view>
-
-            <block v-if="page.key === 'current'">
-              <view class="music_play_lyric" v-if="lyricLines.length">
-                <scroll-view
-                  class="music_lyric_scroll"
-                  scroll-y
-                  :scroll-with-animation="true"
-                  :scroll-into-view="currentLyricAnchor"
-                >
-                  <view
-                    v-for="(line, idx2) in lyricLines"
-                    :key="`lyric-${idx2}-${line.time}`"
-                    class="music_lyric_line"
-                    :id="`lyric-${idx2}`"
-                    :class="{ active: idx2 === activeLyricIndex }"
-                  >
-                    {{ line.text }}
-                  </view>
-                </scroll-view>
-              </view>
-              <view class="music_play_lyric music_play_lyric_empty" v-else>
-                <text>暂无歌词</text>
-              </view>
-            </block>
-
-            <block v-else>
-              <view class="music_play_hint">
-                <text>{{ page.key === 'prev' ? '下滑返回当前歌曲' : page.key === 'next' ? '上滑切换到下一首' : '' }}</text>
-              </view>
-            </block>
-          </view>
-        </view>
-      </swiper-item>
-    </swiper>
+      <MusicPlayerItem
+        v-for="(page, i) in swiperPages"
+        :key="page.id"
+        :index="i"
+        :song="page"
+        :height="wHeight"
+        :lyric-lines="page.key === 'current' ? lyricLines : []"
+        :active-lyric-index="activeLyricIndex"
+        :current-lyric-anchor="currentLyricAnchor"
+      />
+    </view>
 
     <view class="music_play_setting">
       <view class="left"></view>
@@ -152,13 +101,21 @@
 
 <script>
 import { get as _get } from 'lodash';
-import { scaleImageWidthInCOS } from '@/utils/common.js'
+import { unlockAudio, adoptUnlockedAudio, clearUnlockedAudio, playInnerAudio } from '@/utils/audioUnlock.js';
 import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
+import MusicPlayerItem from './MusicPlayerItem.vue';
 import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
+
+let startTime = 0;
+let endTime = 0;
+let startPageY = 0;
+let endPageY = 0;
+
 export default {
   name: 'MusicPlayer',
   components: {
+    MusicPlayerItem,
     UniPopup
   },
   emits: ['play', 'pause', 'next', 'prev', 'ended', 'error'],
@@ -175,6 +132,9 @@ export default {
   },
   data () {
     return {
+      wWidth: 1,
+      wHeight: 1,
+
       allMusicList: [],
       playedIds: [],
       currentSong: null,
@@ -191,13 +151,14 @@ export default {
       // 省电策略引导（24h 最多弹一次）
       batteryGuideLastShownAt: 0,
       isSwitching: false,
-      // swiper 受控索引 & 程序性 change 屏蔽
-      swiperCurrent: 0,
-      suppressSwiperChange: false,
-      suppressSwiperChangeTimer: null,
+      isSliding: false,
+      swiperTop: 0,
+      realSwiperTop: 0,
+      slideTimer: null,
+
       isPlaying: false,
       isSeeking: false,
-      swiperDuration: 320,
+      autoplayBlocked: false,
       duration: 0,
       currentTime: 0,
       lyricLines: [],
@@ -211,38 +172,43 @@ export default {
       const { prevSong, currentSong, nextSong } = this;
       const pages = [];
       if (prevSong) {
-        pages.push(Object.assign(prevSong, {
-          key: 'prev',
-        }));
+        pages.push({
+          ...prevSong,
+          key: 'prev'
+        });
       }
       if (currentSong) {
-        pages.push(Object.assign(currentSong, {
+        pages.push({
+          ...currentSong,
           key: 'current'
-        }));
+        });
       }
       if (nextSong) {
-        pages.push(Object.assign(nextSong, {
-          key: 'next',
-        }));
+        pages.push({
+          ...nextSong,
+          key: 'next'
+        });
       }
-      // console.log(pages.map(e => e.title))
       return pages;
     },
     currentIndex () {
-      const index = this.prevSong ? 1 : 0
-      return index
+      return this.prevSong ? 1 : 0;
     },
     canGoPrev () {
-      return !!this.prevSong;;
+      return !!this.prevSong;
     },
     canGoNext () {
       return !!this.nextSong;
     }
   },
   async mounted () {
+    // 先起播，避免额外 await 拉长与列表点击手势的间隔（对齐改前逻辑）
+    this.initViewport();
     await this.init();
   },
   unmounted () {
+    this.clearSlideTimer();
+    clearUnlockedAudio();
     if (this.audioCtx) {
       this.audioCtx.destroy();
       this.audioCtx = null;
@@ -250,26 +216,66 @@ export default {
   },
   methods: {
     formatTime,
-    scaleImageWidthInCOS,
-    syncSwiperCurrent () {
-      this.swiperCurrent = this.prevSong ? 1 : 0;
-    },
-    withSuppressedSwiperChange (fn) {
-      this.suppressSwiperChange = true;
-      if (this.suppressSwiperChangeTimer) {
-        clearTimeout(this.suppressSwiperChangeTimer);
-        this.suppressSwiperChangeTimer = null;
-      }
+    initViewport () {
       try {
-        fn();
-      } finally {
-        // 受控 :current 会在后续若干帧触发 change，这里覆盖整个动画时长
-        const holdMs = Math.max(0, Number(this.swiperDuration) || 0) + 80;
-        this.suppressSwiperChangeTimer = setTimeout(() => {
-          this.suppressSwiperChange = false;
-          this.suppressSwiperChangeTimer = null;
-        }, holdMs);
+        const res = uni.getSystemInfoSync();
+        this.wWidth = res.windowWidth || 1;
+        this.wHeight = res.windowHeight || 1;
+      } catch (e) {}
+      this.$nextTick(() => {
+        uni.createSelectorQuery()
+          .in(this)
+          .select('.music_play_module')
+          .boundingClientRect((rect) => {
+            if (rect && rect.height) {
+              this.wWidth = rect.width || this.wWidth;
+              this.wHeight = rect.height;
+              this.syncSlidePosition();
+            }
+          })
+          .exec();
+      });
+    },
+    syncSlidePosition () {
+      this.swiperTop = -this.wHeight * this.currentIndex;
+      this.realSwiperTop = this.swiperTop;
+    },
+    clearSlideTimer () {
+      if (this.slideTimer) {
+        clearInterval(this.slideTimer);
+        this.slideTimer = null;
       }
+    },
+    animateTo (targetTop) {
+      return new Promise((resolve) => {
+        this.clearSlideTimer();
+        const goingUp = targetTop < this.realSwiperTop;
+        let s = 15;
+        let ss = 20;
+        this.slideTimer = setInterval(() => {
+          if (goingUp) {
+            this.realSwiperTop = this.realSwiperTop - ss;
+            if (this.realSwiperTop < targetTop + 10) {
+              this.realSwiperTop = targetTop;
+              this.clearSlideTimer();
+              resolve();
+            }
+          } else {
+            this.realSwiperTop = this.realSwiperTop + ss;
+            if (this.realSwiperTop > targetTop - 10) {
+              this.realSwiperTop = targetTop;
+              this.clearSlideTimer();
+              resolve();
+            }
+          }
+          s = Math.max(--s, 3);
+          ss = Math.min(++ss, 35);
+        }, s);
+      });
+    },
+    resetSlidePosition () {
+      this.realSwiperTop = this.swiperTop;
+      this.isSliding = false;
     },
     getBatteryGuideStorageKey () {
       return 'music_player:battery_guide_last_shown_at';
@@ -400,45 +406,63 @@ export default {
     async init () {
       let { mode, id, ids, type, song, songs } = this;
 
-      let currentSong = null
-      let allMusicList = []
-      let playedIds = []
-      
+      let currentSong = null;
+      let allMusicList = [];
+      let playedIds = [];
+
       if (song && typeof song === 'string') {
         try {
-          currentSong = JSON.parse(decodeURIComponent(song))
+          currentSong = JSON.parse(decodeURIComponent(song));
         } catch (e) {}
       } else {
-        currentSong = song
+        currentSong = song;
       }
       if (ids && typeof ids === 'string') {
         try {
-          ids = JSON.parse(decodeURIComponent(ids))
+          ids = JSON.parse(decodeURIComponent(ids));
         } catch (e) {}
       }
 
       // 单音频播放：传音频 id 或者完整音频对象
       if (mode === 'single') {
-        currentSong = currentSong || (await getMusicById({id})) || null
-        allMusicList = currentSong ? [currentSong] : null
+        currentSong = currentSong || (await getMusicById({id})) || null;
+        allMusicList = currentSong ? [currentSong] : null;
       }
       // 音频列表播放：传音频类型id，或者完整音频列表
       if (mode === 'menu') {
         if (_get(songs, 'length')) {
-          allMusicList = songs
+          allMusicList = songs;
         } else if (ids) {
-          allMusicList = await getMusicByIds({ids})
+          allMusicList = await getMusicByIds({ids});
         } else if (type) {
-          allMusicList = await getMusicPageList({type})
+          allMusicList = await getMusicPageList({type});
         }
-        const currentIndex = allMusicList.findIndex(e => String(e.id) === String(id))
-        currentSong = allMusicList[Math.max(currentIndex, 0)]
-        playedIds = allMusicList.map(e => e.id).filter((id, i) => i < currentIndex)
+        const currentIndex = allMusicList.findIndex(e => String(e.id) === String(id));
+        currentSong = allMusicList[Math.max(currentIndex, 0)];
+        playedIds = allMusicList.map(e => e.id).filter((id, i) => i < currentIndex);
       }
       // 无限下滑：音频id，也可以指定 type
       if (mode === 'auto') {
-        currentSong = currentSong || (await getMusicById({id})) || null
-        allMusicList = currentSong ? [currentSong] : null
+        let pending = null;
+        try {
+          pending = uni.getStorageSync('__music_unlock_song__');
+          uni.removeStorageSync('__music_unlock_song__');
+        } catch (e) {}
+        // 优先用列表点击缓存，尽快接管手势内已起播的 Audio
+        if (pending && String(pending.id) === String(id) && pending.url) {
+          currentSong = pending;
+          getMusicById({ id }).then((full) => {
+            if (!full || !this.currentSong) return;
+            if (String(full.id) !== String(this.currentSong.id)) return;
+            this.currentSong = Object.assign({}, this.currentSong, full);
+            parseLyric(full.lyric).then((lines) => {
+              this.lyricLines = lines || [];
+            }).catch(() => {});
+          }).catch(() => {});
+        } else {
+          currentSong = currentSong || (await getMusicById({id})) || null;
+        }
+        allMusicList = currentSong ? [currentSong] : null;
       }
 
       if (!currentSong || !currentSong.url) {
@@ -449,27 +473,26 @@ export default {
         return;
       }
       this.playedIds = [];
-      this.allMusicList = allMusicList
+      this.allMusicList = allMusicList;
       this.prevSong = null;
       this.currentSong = currentSong;
       this.batteryGuideLastShownAt = this.loadBatteryGuideLastShownAt();
 
+      // 先起播/接管，再异步预取下一首（避免 await 预取拖死首播）
+      this.syncSlidePosition();
+      this.createAudio();
+
       if (mode === 'auto') {
         this.upcomingSongs = [];
-        await this.prefetchAutoSongs(1).catch(() => {});
-        this.nextSong = this.upcomingSongs[0] || null;
-      } else {
-        this.nextSong = await this.getNextSong()
-      }
-      this.syncSwiperCurrent();
-      this.createAudio();
-      if (mode === 'auto') {
+        this.prefetchAutoSongs(1).then(() => {
+          this.nextSong = this.upcomingSongs[0] || null;
+        }).catch(() => {});
         this.prefetchAutoSongs(this.prefetchCount).catch(() => {});
+      } else {
+        this.getNextSong().then((s) => {
+          this.nextSong = s;
+        }).catch(() => {});
       }
-    },
-    getPageBgStyle (song) {
-      const _cover = _get(song, 'cover');
-      return _cover ? { '--music_play_bg': `url(${_cover})` } : {};
     },
     getPrevSong () {
       const { mode, allMusicList, playedIds } = this;
@@ -480,7 +503,7 @@ export default {
           prevSong = allMusicList.find(song => song.id === prevId) || null;
         }
       }
-      return prevSong
+      return prevSong;
     },
     async getNextSong () {
       const { mode, type, playedIds, currentSong, swiperPages, allMusicList } = this;
@@ -488,7 +511,6 @@ export default {
       const allMusicLength = _get(allMusicList, 'length') || 0;
 
       // 无限下滑：单次拉取下一首，避免息屏时 sleep/setTimeout 被节流导致阻塞。
-      // “需要切歌但 nextSong 为空/拉取失败”的兜底由 goNextSong 的 setInterval 完成。
       if (['auto'].includes(mode)) {
         if (this.nextSongFetchPromise) {
           return await this.nextSongFetchPromise;
@@ -534,8 +556,12 @@ export default {
     createAudio () {
       if (this.audioCtx) {
         this.audioCtx.destroy();
+        this.audioCtx = null;
       }
-      const ctx = uni.createInnerAudioContext();
+
+      // H5：优先接管列表点击手势内已 play 过的同一 Audio 实例
+      const reused = adoptUnlockedAudio();
+      const ctx = reused || uni.createInnerAudioContext();
       try {
         ctx.obeyMuteSwitch = false;
       } catch (e) {
@@ -549,6 +575,7 @@ export default {
       });
       ctx.onPlay(() => {
         this.isPlaying = true;
+        this.autoplayBlocked = false;
         this.$emit('play', this.currentSong);
       });
       ctx.onPause(() => {
@@ -561,18 +588,19 @@ export default {
       });
       ctx.onEnded(async () => {
         this.$emit('ended', this.currentSong);
-        await this.goNextSong();
+        // 播完切歌先切数据并 play，避免 H5 因动画/await 丢失连续播放权限
+        await this.goNextSong({ animate: false });
       });
       ctx.onError(err => {
         uni.showToast({
           title: err?.errMsg || '播放失败',
           icon: 'none'
         });
-        console.error(err)
+        console.error(err);
         this.$emit('error', err);
         // auto 模式下：当前曲播放失败时自动跳到下一首继续
         if (this.mode === 'auto') {
-          this.goNextSong();
+          this.goNextSong({ animate: false });
         }
       });
       ctx.onTimeUpdate(() => {
@@ -584,28 +612,57 @@ export default {
         this.updateLyricByTime(ctx.currentTime);
       });
       this.audioCtx = ctx;
-      this.loadCurrentSong();
+      this.loadCurrentSong({ reuse: !!reused });
     },
-    async loadCurrentSong () {
+    playAudio () {
+      if (!this.audioCtx) return;
+      try {
+        playInnerAudio(this.audioCtx);
+      } catch (err) {
+        this.isPlaying = false;
+        this.autoplayBlocked = true;
+      }
+    },
+    async loadCurrentSong ({ reuse = false } = {}) {
       const { lyric, url, title } = this.currentSong;
-      this.currentTime = 0;
-      this.duration = 0;
       this.activeLyricIndex = 0;
       this.currentLyricAnchor = '';
-      this.audioCtx.stop();
-      this.audioCtx.src = url;
-      this.audioCtx.seek(0);
-      this.audioCtx.play();
+
+      if (reuse) {
+        // 同一 Audio 实例已在手势内解锁，勿 stop() 打断
+        const needRetarget = this.audioCtx.src !== url;
+        if (needRetarget) {
+          this.audioCtx.src = url;
+        }
+        this.currentTime = this.audioCtx.currentTime || 0;
+        this.duration = this.audioCtx.duration || 0;
+        this.isPlaying = true;
+        this.autoplayBlocked = false;
+        const audio = this.audioCtx._audio;
+        const alreadyPlaying = !!(audio && !audio.paused);
+        if (needRetarget || !alreadyPlaying) {
+          this.playAudio();
+        }
+      } else {
+        this.currentTime = 0;
+        this.duration = 0;
+        this.audioCtx.stop();
+        this.audioCtx.src = url;
+        this.audioCtx.seek(0);
+        this.playAudio();
+      }
+
       uni.setNavigationBarTitle({
         title: title || '音乐'
-      })
+      });
       this.lyricLines = await parseLyric(lyric).catch((error) => {
-        console.error(error)
+        console.error(error);
+        return [];
       });
     },
     updateLyricByTime (time) {
       const { lyricLines, activeLyricIndex } = this;
-      let index = 0
+      let index = 0;
       if (lyricLines.length) {
         index = lyricLines.findIndex((line, idx) => {
           const next = lyricLines[idx + 1];
@@ -626,7 +683,9 @@ export default {
       if (this.isPlaying) {
         this.audioCtx.pause();
       } else {
-        this.audioCtx.play();
+        this.autoplayBlocked = false;
+        unlockAudio();
+        this.playAudio();
       }
     },
     handleSliderChanging (e) {
@@ -638,167 +697,336 @@ export default {
       const value = e.detail.value;
       this.audioCtx.seek(value);
       if (!this.isPlaying) {
-        this.audioCtx.play();
+        this.playAudio();
       }
       this.isSeeking = false;
     },
 
     handlePrev () {
       if (this.canGoPrev) {
-        this.goPrevSong();
-        this.$emit('prev', this.currentSong);
+        this.goPrevSong({ animate: true });
       }
     },
     handleNext () {
       if (this.canGoNext) {
-        this.goNextSong();
-        this.$emit('next', this.currentSong);
+        this.goNextSong({ animate: true });
       }
     },
-    goPrevSong () {
-      const { audioCtx, prevSong, currentSong } = this;
-      if (!audioCtx) {
-        return
-      };
-      if (prevSong) {
-        this.withSuppressedSwiperChange(() => {
-          this.playedIds.pop();
-          this.currentSong = prevSong
-          this.prevSong = this.getPrevSong()
-          this.nextSong = currentSong
-          this.syncSwiperCurrent();
-        });
-        this.loadCurrentSong();
+    ontouchstart (e) {
+      // H5：首次用户手势解锁音频自动播放限制
+      if (this.autoplayBlocked && this.audioCtx) {
+        this.autoplayBlocked = false;
+        this.playAudio();
       }
+
+      if (this.isSliding || this.isSwitching) return;
+      if (this.swiperPages.length <= 1) return;
+
+      const timestamp = e.timeStamp || e.timestamp || Date.now();
+      if ((timestamp - startTime) >= 500) {
+        startPageY = e.changedTouches[0].screenY || e.changedTouches[0].pageY || 0;
+      }
+      endTime = startTime;
+      startTime = timestamp;
+    },
+    ontouchmove (e) {
+      const isIgnoreEvent = startTime - endTime < 500;
+      if (isIgnoreEvent) return;
+      if (this.isSliding || this.isSwitching) return;
+      if (this.swiperPages.length <= 1) return;
+
+      endPageY = e.changedTouches[0].screenY || e.changedTouches[0].pageY || 0;
+      const distance = endPageY - startPageY;
+      const { currentIndex, swiperPages, swiperTop } = this;
+      if (currentIndex === 0 && distance > 50) {
+        this.realSwiperTop = 50;
+      } else if (currentIndex === swiperPages.length - 1 && distance < 0) {
+        this.realSwiperTop = swiperTop;
+      } else {
+        this.realSwiperTop = swiperTop + distance;
+      }
+    },
+    async ontouchend (e) {
+      const isIgnoreEvent = startTime - endTime < 500;
+      if (isIgnoreEvent) return;
+      if (this.isSliding || this.isSwitching) return;
+      if (this.swiperPages.length <= 1) return;
+
+      endPageY = e.changedTouches[0].screenY || e.changedTouches[0].pageY || 0;
+      const distance = endPageY - startPageY;
+
+      if (Math.abs(distance) <= 40) {
+        this.resetSlidePosition();
+        return;
+      }
+
+      // 上滑 → 下一首
+      if (distance < -30) {
+        if (!this.canGoNext) {
+          this.resetSlidePosition();
+          return;
+        }
+        await this.slidingToNext();
+        return;
+      }
+
+      // 下滑 → 上一首
+      if (distance > 30) {
+        if (!this.canGoPrev) {
+          this.resetSlidePosition();
+          return;
+        }
+        await this.slidingToPrev();
+        return;
+      }
+
+      this.resetSlidePosition();
+    },
+    async slidingToNext () {
+      this.isSliding = true;
+      this.isSwitching = true;
+      try {
+        if (!this.nextSong && !this.canGoNext) {
+          this.resetSlidePosition();
+          return;
+        }
+        const targetTop = this.swiperTop - this.wHeight;
+        await this.animateTo(targetTop);
+
+        // 动画结束后：同步提交窗口 + 立刻复位 top，避免 await 期间按错误位置渲染一帧
+        const ok = this.commitNextSongSync();
+        if (!ok) {
+          this.resetSlidePosition();
+          return;
+        }
+        this.syncSlidePosition();
+
+        await this.loadCurrentSong();
+        this.$emit('next', this.currentSong);
+
+        if (this.mode === 'auto') {
+          this.prefetchAutoSongs(this.prefetchCount).catch(() => {});
+        } else if (!this.nextSong) {
+          this.nextSong = await this.getNextSong().catch(() => null);
+        }
+      } finally {
+        this.isSwitching = false;
+        this.isSliding = false;
+      }
+    },
+    async slidingToPrev () {
+      this.isSliding = true;
+      this.isSwitching = true;
+      try {
+        if (!this.prevSong) {
+          this.resetSlidePosition();
+          return;
+        }
+        const targetTop = this.swiperTop + this.wHeight;
+        await this.animateTo(targetTop);
+
+        this.commitPrevSongSync();
+        this.syncSlidePosition();
+
+        await this.loadCurrentSong();
+        this.$emit('prev', this.currentSong);
+      } finally {
+        this.isSwitching = false;
+        this.isSliding = false;
+      }
+    },
+    /** 同步切换到上一首窗口（不加载音频） */
+    commitPrevSongSync () {
+      const { prevSong, currentSong } = this;
+      if (!prevSong) return false;
+      this.playedIds.pop();
+      this.currentSong = prevSong;
+      this.prevSong = this.getPrevSong();
+      this.nextSong = currentSong;
+      this.lyricLines = [];
+      this.activeLyricIndex = 0;
+      this.currentLyricAnchor = '';
+      this.currentTime = 0;
+      this.duration = 0;
+      return true;
+    },
+    /**
+     * 同步切换到下一首窗口（不加载音频、不 await）
+     * 依赖 this.nextSong / upcomingSongs 已就绪
+     */
+    commitNextSongSync () {
+      const { currentSong } = this;
+      let nextSong = null;
+
+      if (this.mode === 'auto') {
+        if (Array.isArray(this.upcomingSongs) && this.upcomingSongs.length > 0) {
+          nextSong = this.upcomingSongs.shift();
+        } else {
+          nextSong = this.nextSong;
+        }
+        if (!nextSong) {
+          this.maybeShowBatteryGuide();
+          return false;
+        }
+        this.playedIds.push(_get(currentSong, 'id'));
+        this.prevSong = currentSong;
+        this.currentSong = nextSong;
+        this.nextSong = this.upcomingSongs[0] || null;
+      } else {
+        nextSong = this.nextSong;
+        if (!nextSong) return false;
+        this.playedIds.push(_get(currentSong, 'id'));
+        this.prevSong = currentSong;
+        this.currentSong = nextSong;
+        this.nextSong = null;
+      }
+
+      // 清掉上一首歌词，避免短暂显示在新 current 上
+      this.lyricLines = [];
+      this.activeLyricIndex = 0;
+      this.currentLyricAnchor = '';
+      this.currentTime = 0;
+      this.duration = 0;
+      return true;
+    },
+    applyPrevSong () {
+      if (!this.commitPrevSongSync()) return;
+      this.loadCurrentSong();
       this.$emit('prev', this.currentSong);
     },
-    async goNextSong () {
-      const { audioCtx, currentSong } = this;
-      if (!audioCtx) return;
-      if (this.isSwitching) return;
+    goPrevSong ({ animate = false } = {}) {
+      const { audioCtx, prevSong } = this;
+      if (!audioCtx || !prevSong) return;
+      if (this.isSwitching || this.isSliding) return;
+
+      if (animate) {
+        this.slidingToPrev();
+        return;
+      }
+      this.applyPrevSong();
+      this.syncSlidePosition();
+    },
+    async applyNextSong () {
+      const { audioCtx } = this;
+      if (!audioCtx) return false;
+      if (this.isSwitching) return false;
 
       this.isSwitching = true;
       try {
-        // auto 模式：优先消费预取队列，不依赖 setInterval 兜底
-        if (this.mode === 'auto') {
-          let nextSong = null;
-
-          if (Array.isArray(this.upcomingSongs) && this.upcomingSongs.length > 0) {
-            nextSong = this.upcomingSongs.shift();
+        // 无动画切歌：若还没有 next，先补齐（可 await）
+        if (!this.nextSong) {
+          if (this.mode === 'auto') {
+            if (Array.isArray(this.upcomingSongs) && this.upcomingSongs.length > 0) {
+              this.nextSong = this.upcomingSongs[0];
+            } else {
+              const song = await this.fetchOneAutoNextSong().catch(() => null);
+              if (song) {
+                this.upcomingSongs.push(song);
+                this.nextSong = song;
+              }
+            }
           } else {
-            nextSong = await this.fetchOneAutoNextSong().catch(() => null);
+            this.nextSong = await this.getNextSong().catch(() => null);
           }
-
-          if (!nextSong) {
-            this.maybeShowBatteryGuide();
-            return;
-          }
-
-          const currentId = _get(currentSong, 'id');
-          this.playedIds.push(currentId);
-
-          this.withSuppressedSwiperChange(() => {
-            this.prevSong = currentSong;
-            this.currentSong = nextSong;
-            this.nextSong = this.upcomingSongs[0] || null;
-            this.syncSwiperCurrent();
-          });
-
-          // 不阻塞切歌：异步补齐队列到 N 首
-          this.prefetchAutoSongs(this.prefetchCount).catch(() => {});
-
-          await this.loadCurrentSong();
-          this.$emit('next', this.currentSong);
-          return;
         }
 
-        // 非 auto 模式：保持原先逻辑
-        let nextSong = this.nextSong;
-        if (!nextSong) {
-          nextSong = await this.getNextSong().catch(() => null);
-          if (!nextSong) {
+        if (!this.nextSong) {
+          if (this.mode === 'auto') {
+            this.maybeShowBatteryGuide();
+          } else {
             uni.showToast({
               title: '未加载下一歌曲，将稍后重试',
               icon: 'none'
             });
-            return;
           }
+          return false;
         }
 
-        const currentId = _get(currentSong, 'id');
-        this.playedIds.push(currentId);
-
-        this.withSuppressedSwiperChange(() => {
-          this.prevSong = currentSong;
-          this.currentSong = nextSong;
-          this.nextSong = null;
-          this.syncSwiperCurrent();
-        });
-
-        // 预加载下一首（用于下一次 ended）
-        this.nextSong = await this.getNextSong().catch(() => null);
-        if (!this.nextSong) {
-          uni.showToast({
-            title: '下一首暂时不可用，播放将继续',
-            icon: 'none'
-          });
-        }
+        const ok = this.commitNextSongSync();
+        if (!ok) return false;
+        this.syncSlidePosition();
 
         await this.loadCurrentSong();
         this.$emit('next', this.currentSong);
+
+        if (this.mode === 'auto') {
+          this.prefetchAutoSongs(this.prefetchCount).catch(() => {});
+        } else if (!this.nextSong) {
+          this.nextSong = await this.getNextSong().catch(() => null);
+          if (!this.nextSong) {
+            uni.showToast({
+              title: '下一首暂时不可用，播放将继续',
+              icon: 'none'
+            });
+          }
+        }
+        return true;
       } finally {
         this.isSwitching = false;
       }
     },
-    onChange (event) {
-      const newIndex = event?.detail?.current ?? 0;
-      const oldIndex = this.swiperCurrent;
-      const source = event?.detail?.source;
+    async goNextSong ({ animate = false } = {}) {
+      const { audioCtx } = this;
+      if (!audioCtx) return;
+      if (this.isSwitching || this.isSliding) return;
 
-      // 只响应用户手势触发（程序性 setData/受控 current 会产生额外 change）
-      if (source && source !== 'touch') {
-        this.syncSwiperCurrent();
+      // 确保有下一首可读（用于动画前渲染 next 页）
+      if (!this.nextSong) {
+        if (this.mode === 'auto') {
+          if (Array.isArray(this.upcomingSongs) && this.upcomingSongs.length > 0) {
+            this.nextSong = this.upcomingSongs[0];
+          } else {
+            const song = await this.fetchOneAutoNextSong().catch(() => null);
+            if (song) {
+              this.upcomingSongs.push(song);
+              this.nextSong = song;
+            }
+          }
+        } else {
+          this.nextSong = await this.getNextSong().catch(() => null);
+        }
+      }
+
+      if (!this.nextSong) {
+        if (this.mode === 'auto') {
+          this.maybeShowBatteryGuide();
+        }
+        this.resetSlidePosition();
         return;
       }
 
-      // 程序性重置 current 引发的 change：忽略，且把 swiper 拉回正确位置
-      if (this.suppressSwiperChange) {
-        this.syncSwiperCurrent();
+      if (animate) {
+        // 等 next 页渲染进 DOM 后再滑动，避免界面与数据错位
+        await this.$nextTick();
+        await this.slidingToNext();
         return;
       }
 
-      if (newIndex > oldIndex) {
-        if (this.canGoNext) {
-          this.goNextSong();
-        } else {
-          this.withSuppressedSwiperChange(() => this.syncSwiperCurrent());
-        }
-      } else if (newIndex < oldIndex) {
-        if (this.canGoPrev) {
-          this.goPrevSong();
-        } else {
-          this.withSuppressedSwiperChange(() => this.syncSwiperCurrent());
-        }
+      const ok = await this.applyNextSong();
+      if (ok) {
+        this.syncSlidePosition();
+      } else {
+        this.resetSlidePosition();
       }
     },
     onClickSetting () {
-      this.$refs.uniPopup.open()
+      this.$refs.uniPopup.open();
     },
     onClickMinute (m) {
-      const self = this
-      self.durationMinutes = m
+      const self = this;
+      self.durationMinutes = m;
       if (self.audioCtx) {
-        self.audioCtx.play()
+        self.playAudio();
       }
       if (self.durationMinutes) {
         setTimeout(() => {
           if (self.audioCtx) {
-            self.audioCtx.pause()
+            self.audioCtx.pause();
           }
-          self.durationMinutes = 0
-        }, self.durationMinutes * 60 * 1000)
+          self.durationMinutes = 0;
+        }, self.durationMinutes * 60 * 1000);
       }
-      this.$refs.uniPopup.close()
+      this.$refs.uniPopup.close();
     }
   }
 };

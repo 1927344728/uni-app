@@ -69,6 +69,7 @@ import { mapState, mapActions } from 'vuex'
 import qs from 'qs'
 import { get as _get, cloneDeep } from 'lodash'
 import { scaleImageWidthInCOS } from '@/utils'
+import { unlockAudio } from '@/utils/audioUnlock.js'
 import { getMusicMenuList, getMusicPageList } from '@/api'
 
 const initPagination = () => ({
@@ -152,6 +153,7 @@ export default {
     },
     onClickMenu (item) {
       if (item && item.id) {
+        unlockAudio()
         uni.navigateTo({
           url: `/pages/music/play?mode=menu&ids=${encodeURIComponent(JSON.stringify(item.songIds))}`
         })
@@ -163,6 +165,11 @@ export default {
     },
     onClickMusic (item) {
       if (item && item.id) {
+        // 手势内解锁/起播，供播放页接管同一 Audio 实例
+        unlockAudio(item.url)
+        try {
+          uni.setStorageSync('__music_unlock_song__', item)
+        } catch (e) {}
         const params = {
           mode: 'auto',
           id: item.id,

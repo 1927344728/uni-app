@@ -17,8 +17,19 @@ export function fetchFileTextByUrl (url = '') {
           resolve(res.data);
           return;
         }
-        if (res?.data instanceof ArrayBuffer) {
-          resolve(ArrayBufferToGBK(res.data));
+        const data = res?.data;
+        let buffer = null;
+        if (data instanceof ArrayBuffer) {
+          buffer = data;
+        } else if (ArrayBuffer.isView(data)) {
+          buffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+        }
+        if (buffer) {
+          Promise.resolve(ArrayBufferToGBK(buffer))
+            .then((text) => {
+              resolve(typeof text === 'string' ? text : '');
+            })
+            .catch(() => resolve(''));
           return;
         }
         resolve('');

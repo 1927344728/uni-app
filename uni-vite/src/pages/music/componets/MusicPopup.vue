@@ -36,6 +36,7 @@
 <script>
 import MusicPlayer from './MusicPlayer.vue';
 import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
+import { unlockAudio } from '@/utils/audioUnlock.js';
 
 export default {
   name: 'MusicPopup',
@@ -99,6 +100,7 @@ export default {
       this.$emit('close');
     },
     open (position = 'bottom') {
+      unlockAudio();
       const popup = this.$refs.uniPopup;
       if (popup && typeof popup.open === 'function') {
         popup.open(position);
