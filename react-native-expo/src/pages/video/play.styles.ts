@@ -1,0 +1,5 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  page: { flex: 1, backgroundColor: '#101010' }, loading: { flex: 1, alignItems: 'center', justifyContent: 'center' }, background: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%', transform: [{ scale: 1.2 }] }, mask: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,.4)' }, video: { ...StyleSheet.absoluteFillObject }, overlay: { flex: 1 }, back: { position: 'absolute', top: 44, left: 18, zIndex: 3 }, backText: { color: '#fff', fontSize: 40 }, tapArea: { flex: 1, alignItems: 'center', justifyContent: 'center' }, play: { color: 'rgba(255,255,255,.8)', fontSize: 70 }, caption: { position: 'absolute', left: 18, right: 18, bottom: 38 }, publisher: { color: '#fff', fontWeight: '700', fontSize: 18, marginBottom: 8 }, description: { color: '#fff', lineHeight: 21 }, hint: { marginTop: 5, color: 'rgba(255,255,255,.65)', fontSize: 12 }, progress: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 5, backgroundColor: 'rgba(255,255,255,.3)' }, progressValue: { height: 5, backgroundColor: '#fff' },
+});
