@@ -3,9 +3,10 @@ import { type ComponentProps, useEffect, useMemo, useState } from 'react';
 import { Alert, Image, Pressable, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useLocalSearchParams } from 'expo-router';
+import { appAssets } from '@/config/assets';
 import { api } from '@/lib/api';
 
-const banner = 'https://assets.izhao.com.cn/images/ai-generated-8432306_1280.jpg';
+const banner = appAssets.loginBanner;
 
 export default function LoginScreen() {
   const { requestUrl } = useLocalSearchParams<{ requestUrl?: string }>();

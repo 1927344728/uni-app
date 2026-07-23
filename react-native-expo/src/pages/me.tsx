@@ -4,12 +4,13 @@ import { Alert, Image, ImageBackground, Linking, Pressable, ScrollView, Text, Vi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useFocusEffect } from 'expo-router';
 import { AppFooter } from '@/components/AppFooter';
+import { appAssets } from '@/config/assets';
+import { scaleCosImage } from '@/common/utils/cos';
 import { api, type ApiItem } from '@/lib/api';
 
-const COS = 'https://assets.izhao.com.cn';
-const avatar = `${COS}/images/snowman-8755896_1280.png?imageMogr2/thumbnail/160x`;
-const background = `${COS}/images/ai-generated-8432305_1280.jpg?imageMogr2/thumbnail/750x`;
-const loginBackground = `${COS}/images/pexels-photo-531880.jpeg?imageMogr2/thumbnail/750x`;
+const avatar = scaleCosImage(appAssets.profileAvatar, 160);
+const background = scaleCosImage(appAssets.profileBackground, 750);
+const loginBackground = scaleCosImage(appAssets.loginBackground, 750);
 const features = [
   { name: '我的音乐', href: '/music?type=3' },
   { name: '我的视频', href: '/video?type=3' },

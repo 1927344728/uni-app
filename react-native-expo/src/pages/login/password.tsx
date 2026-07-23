@@ -2,9 +2,10 @@ import { styles } from './password.styles';
 import { type ComponentProps, useMemo, useState } from 'react';
 import { Alert, Image, Pressable, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
+import { appAssets } from '@/config/assets';
 import { api } from '@/lib/api';
 
-const banner = 'https://assets.izhao.com.cn/images/fantasy-illustration-7600566_1280.jpg';
+const banner = appAssets.passwordBanner;
 
 export default function PasswordScreen() {
   const [password, setPassword] = useState('');

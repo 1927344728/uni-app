@@ -1,14 +1,15 @@
 import { styles } from './about.styles';
 import { Image, Linking, Pressable, Text, View } from 'react-native';
-
-const COS = 'https://assets.izhao.com.cn';
+import { APP_NAME, APP_VERSION } from '@/config/app';
+import { appAssets } from '@/config/assets';
+import { scaleCosImage } from '@/common/utils/cos';
 
 export default function AboutScreen() {
   return <View style={styles.page}>
     <View style={styles.header}>
-      <Image source={{ uri: `${COS}/images/logo.png?imageMogr2/thumbnail/120x` }} style={styles.logo} />
-      <Text style={styles.name}>一兆窗含</Text>
-      <Text style={styles.version}>版本 1.0.4</Text>
+      <Image source={{ uri: scaleCosImage(appAssets.logo, 120) }} style={styles.logo} />
+      <Text style={styles.name}>{APP_NAME}</Text>
+      <Text style={styles.version}>版本 {APP_VERSION}</Text>
     </View>
     <View style={styles.copyright}>
       <Pressable onPress={() => Linking.openURL('https://beian.miit.gov.cn/#/Integrated/index')}><Text style={[styles.text, styles.record]}>备案号：赣ICP备2026000533号-2A</Text></Pressable>

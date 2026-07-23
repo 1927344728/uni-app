@@ -37,16 +37,15 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "local-ssl-proxy": "^2.0.5",
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "node ./scripts/start-https.js",
-    "start:http": "expo start --port 9011",
+    "start": "expo start --port 9000",
+    "start:http": "set EXPO_USE_HTTP=1&& expo start --port 9000",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --port 9011 --android",
-    "ios": "expo start --port 9011 --ios",
-    "web": "node ./scripts/start-https.js --web",
+    "android": "expo start --port 9000 --android",
+    "ios": "expo start --port 9000 --ios",
+    "web": "expo start --port 9000 --web",
     "lint": "expo lint"
   },
   "private": true

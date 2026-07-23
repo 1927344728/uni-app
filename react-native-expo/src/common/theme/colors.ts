@@ -1,0 +1,15 @@
+export const colors = {
+  primary: '#59c2ad',
+  minor: '#146464',
+  path: '#f3622b',
+  backgroundPrimary: '#f5ffff',
+  backgroundMinor: '#f2f2f2',
+  backgroundPatch: '#f8f8f8',
+  textPrimary: '#333',
+  textMinor: '#666',
+  textMuted: '#999',
+  textDisabled: '#ddd',
+  border: '#f0f0f0',
+  white: '#fff',
+  taskStatus: { 1: 'red', 2: '#1687e6', 3: '#1dd41d', 4: 'gray' },
+} as const;
