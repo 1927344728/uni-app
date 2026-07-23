@@ -1,8 +1,11 @@
 import { styles } from './music.styles';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { AppRefreshControl } from '@/components/AppRefreshControl';
+import { useScrollToLower } from '@/common/hooks/useScrollToLower';
 import { api, type ApiItem } from '@/lib/api';
+import { mergeUniqueById, uniqueTypeTabs } from '@/common/utils/categoryTabs';
 
 type Category = ApiItem & { categoryId?: number; typeId?: number; typeName?: string };
 const imageUri = (value: unknown, width = 180) => typeof value === 'string' ? `${value}${value.includes('?') ? '&' : '?'}imageMogr2/thumbnail/${width}x` : undefined;
@@ -15,22 +18,44 @@ export default function MusicScreen() {
   const [items, setItems] = useState<ApiItem[]>([]);
   const [page, setPage] = useState(0);
   const [last, setLast] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const tabs = useMemo(() => [{ id: null, name: '全部' }, ...categories.filter(item => Number(item.categoryId) === 3).map(item => ({ id: String(item.typeId), name: String(item.typeName ?? '') }))], [categories]);
-  const load = (nextPage: number, append = false) => api.musicPage({ type: type ?? undefined, keyword: keyword ?? '', pageNum: nextPage, pageSize: 10 })
+  const tabs = useMemo(() => uniqueTypeTabs(categories, 3), [categories]);
+
+  const load = useCallback((nextPage: number, append = false) => api.musicPage({ type: type ?? undefined, keyword: keyword ?? '', pageNum: nextPage, pageSize: 10 })
     .then(value => {
       const next = value.content ?? [];
-      setItems(old => append ? [...old, ...next] : next);
+      setItems(old => mergeUniqueById(old, next, append));
       setPage(nextPage);
       setLast(next.length < 10);
-    }).catch(() => { if (!append) setItems([]); setLast(true); });
+    }).catch(() => { if (!append) setItems([]); setLast(true); }), [keyword, type]);
 
-  useEffect(() => { api.musicMenus().then(value => setMenus(value ?? [])).catch(() => undefined); api.categories().then(value => setCategories(value as Category[] ?? [])).catch(() => undefined); }, []);
-  useEffect(() => { load(0); }, [type, keyword]);
+  const loadMenus = useCallback(() => api.musicMenus().then(value => setMenus(value ?? [])).catch(() => setMenus([])), []);
+
+  useEffect(() => { void loadMenus(); api.categories().then(value => setCategories(value as Category[] ?? [])).catch(() => undefined); }, [loadMenus]);
+  useEffect(() => { void load(0); }, [load]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    Promise.all([loadMenus(), load(0)]).finally(() => setRefreshing(false));
+  };
+
+  const loadMore = () => {
+    if (last) return;
+    void load(page + 1, true);
+  };
+
+  const onScrollToLower = useScrollToLower(loadMore, !last);
 
   return (
     <View style={styles.page}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.content}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onScroll={onScrollToLower}
+        scrollEventThrottle={16}
+      >
         {!!menus.length && (
           <View style={styles.menuGrid}>
             {menus.map(menu => (
@@ -88,9 +113,7 @@ export default function MusicScreen() {
         ))}
         {!items.length && <Text style={styles.empty}>~什么都没有哦~</Text>}
         {!!items.length && (
-          <Pressable onPress={() => !last && load(page + 1, true)}>
-            <Text style={styles.empty}>{last ? '~没有更多了哦~' : '加载更多'}</Text>
-          </Pressable>
+          <Text style={styles.empty}>{last ? '~没有更多了哦~' : '加载中...'}</Text>
         )}
       </ScrollView>
     </View>

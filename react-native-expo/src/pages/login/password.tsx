@@ -2,6 +2,7 @@ import { styles } from './password.styles';
 import { type ComponentProps, useMemo, useState } from 'react';
 import { Alert, Image, Pressable, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
+import { inputStyles } from '@/common/theme/input';
 import { appAssets } from '@/config/assets';
 import { api } from '@/lib/api';
 
@@ -47,7 +48,7 @@ function Field({ label, ...props }: { label: string } & ComponentProps<typeof Te
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput {...props} secureTextEntry style={styles.input} placeholderTextColor="#b3b3b3" maxLength={12} />
+      <TextInput {...props} secureTextEntry style={[inputStyles.fieldInput, styles.input]} placeholderTextColor="#b3b3b3" maxLength={12} />
     </View>
   );
 }

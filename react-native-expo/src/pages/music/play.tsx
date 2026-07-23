@@ -1,7 +1,7 @@
 import { styles } from './play.styles';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Modal, PanResponder, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { api, type ApiItem } from '@/lib/api';
@@ -12,11 +12,13 @@ const formatTime = (value: number) => `${Math.floor(value / 60)}:${String(Math.f
 const lyrics = (value: unknown) => typeof value === 'string' ? value.split('\n').map(line => { const match = line.match(/\[(\d+):(\d+(?:\.\d+)?)\](.*)/); return match ? { time: Number(match[1]) * 60 + Number(match[2]), text: match[3].trim() } : null; }).filter((line): line is { time: number; text: string } => !!line) : [];
 
 export default function MusicPlayScreen() {
-  const { mode = 'auto', id, ids, type } = useLocalSearchParams<{ mode?: string; id?: string; ids?: string; type?: string }>();
+  const { mode = 'auto', id, ids } = useLocalSearchParams<{ mode?: string; id?: string; ids?: string; type?: string }>();
   const [queue, setQueue] = useState<ApiItem[]>([]);
   const [index, setIndex] = useState(0);
   const [timerVisible, setTimerVisible] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const [sliderWidth, setSliderWidth] = useState(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const insets = useSafeAreaInsets();
   const player = useAudioPlayer(null, { updateInterval: 300 });
   const status = useAudioPlayerStatus(player);
   const current = queue[index];
@@ -32,10 +34,12 @@ export default function MusicPlayScreen() {
       try {
         if (mode === 'menu') {
           const list = await api.musicByIds(asIds(ids));
-          setQueue(list ?? []); setIndex(0);
+          setQueue(list ?? []);
+          setIndex(0);
         } else {
           const song = id ? await api.music(id) : undefined;
-          setQueue(song ? [song] : []); setIndex(0);
+          setQueue(song ? [song] : []);
+          setIndex(0);
         }
       } catch { setQueue([]); }
     };
@@ -64,20 +68,23 @@ export default function MusicPlayScreen() {
     setTimerVisible(false);
   };
 
-  if (!current) return <View style={styles.loading}><Text>正在加载音乐…</Text></View>;
+  if (!current) return <View style={styles.loading}><Text style={styles.loadingText}>正在加载音乐…</Text></View>;
   const cover = imageUri(current.cover);
+  const progress = Math.min(100, status.currentTime / (status.duration || 1) * 100);
 
   return (
     <View style={styles.page} {...gestures.panHandlers}>
       {cover && <Image source={{ uri: cover }} blurRadius={30} style={styles.background} />}
       <View style={styles.mask} />
-      <SafeAreaView style={styles.content}>
-        <Pressable style={styles.back} onPress={() => router.back()}>
-          <Text style={styles.backText}>‹</Text>
-        </Pressable>
-        <Pressable style={styles.settings} onPress={() => setTimerVisible(true)}>
-          <Text style={styles.settingsText}>⚙</Text>
-        </Pressable>
+      <SafeAreaView style={styles.content} edges={['top']}>
+        <View style={styles.header}>
+          <Pressable style={styles.back} onPress={() => router.back()}>
+            <Text style={styles.backText}>‹</Text>
+          </Pressable>
+          <Pressable style={styles.settings} onPress={() => setTimerVisible(true)}>
+            <Text style={styles.settingsText}>⚙</Text>
+          </Pressable>
+        </View>
         <View style={styles.hero}>
           {cover ? <Image source={{ uri: cover }} style={styles.artwork} /> : <View style={styles.artwork} />}
           <Text numberOfLines={1} style={styles.title}>{String(current.title ?? '')}</Text>
@@ -90,32 +97,35 @@ export default function MusicPlayScreen() {
             </Text>
           )) : <Text style={styles.lyric}>暂无歌词</Text>}
         </ScrollView>
-        <View style={styles.footer}>
-          <View style={styles.progress}>
-            <Text style={styles.time}>{formatTime(status.currentTime)}</Text>
-            <Pressable
-              style={styles.slider}
-              onPress={event => {
-                if (status.duration) player.currentTime = Math.max(0, Math.min(status.duration, status.duration * event.nativeEvent.locationX / 220));
-              }}
-            >
-              <View style={[styles.trackFill, { width: `${Math.min(100, status.currentTime / (status.duration || 1) * 100)}%` }]} />
-            </Pressable>
-            <Text style={styles.time}>{formatTime(status.duration)}</Text>
-          </View>
-          <View style={styles.controls}>
-            <Pressable disabled={mode !== 'menu' || queue.length < 2} onPress={() => move(-1)} style={styles.skip}>
-              <Text style={styles.controlText}>上一曲</Text>
-            </Pressable>
-            <Pressable onPress={() => status.playing ? player.pause() : player.play()} style={styles.play}>
-              <Text style={styles.playText}>{status.playing ? 'Ⅱ' : '▶'}</Text>
-            </Pressable>
-            <Pressable disabled={mode !== 'menu' || queue.length < 2} onPress={() => move(1)} style={styles.skip}>
-              <Text style={styles.controlText}>下一曲</Text>
-            </Pressable>
-          </View>
-        </View>
       </SafeAreaView>
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        <View style={styles.progress}>
+          <Text style={styles.time}>{formatTime(status.currentTime)}</Text>
+          <Pressable
+            style={styles.slider}
+            onLayout={event => setSliderWidth(event.nativeEvent.layout.width)}
+            onPress={event => {
+              if (status.duration && sliderWidth) {
+                player.currentTime = Math.max(0, Math.min(status.duration, status.duration * event.nativeEvent.locationX / sliderWidth));
+              }
+            }}
+          >
+            <View style={[styles.trackFill, { width: `${progress}%` }]} />
+          </Pressable>
+          <Text style={styles.time}>{formatTime(status.duration)}</Text>
+        </View>
+        <View style={styles.controls}>
+          <Pressable disabled={mode !== 'menu' || queue.length < 2} onPress={() => move(-1)} style={styles.skip}>
+            <Text style={styles.controlText}>上一曲</Text>
+          </Pressable>
+          <Pressable onPress={() => status.playing ? player.pause() : player.play()} style={styles.play}>
+            <Text style={styles.playText}>{status.playing ? 'Ⅱ' : '▶'}</Text>
+          </Pressable>
+          <Pressable disabled={mode !== 'menu' || queue.length < 2} onPress={() => move(1)} style={styles.skip}>
+            <Text style={styles.controlText}>下一曲</Text>
+          </Pressable>
+        </View>
+      </View>
       <Modal transparent visible={timerVisible} animationType="slide" onRequestClose={() => setTimerVisible(false)}>
         <Pressable style={styles.modalMask} onPress={() => setTimerVisible(false)}>
           <View style={styles.sheet}>

@@ -1,8 +1,11 @@
 import { StyleSheet } from 'react-native';
 
+import { LIST_BOTTOM_PADDING } from '@/common/theme/layout';
+import { shadow } from '@/common/theme/shadow';
+
 export const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: '#f2f2f2' },
-  scroll: { paddingTop: 12, paddingBottom: 64 },
+  scroll: { paddingTop: 12, paddingBottom: LIST_BOTTOM_PADDING },
   withBanner: { paddingTop: 0 },
   bannerWrap: { margin: 12, height: 180, borderRadius: 12, overflow: 'hidden' },
   banner: { height: 180, backgroundColor: '#e5e5e5' },
@@ -19,7 +22,7 @@ export const styles = StyleSheet.create({
   sectionTitle: { color: '#333', fontSize: 18, fontWeight: '500' },
   more: { color: '#14c8a5', fontSize: 13 },
   list: { gap: 12 },
-  article: { minHeight: 66, flexDirection: 'row', alignItems: 'center', borderRadius: 8, padding: 12, backgroundColor: '#fff', shadowColor: '#000', shadowOpacity: .05, shadowRadius: 4, elevation: 1 },
+  article: { minHeight: 66, flexDirection: 'row', alignItems: 'center', borderRadius: 8, padding: 12, backgroundColor: '#fff', ...shadow({ opacity: .05, radius: 4, elevation: 1 }) },
   articleImage: { height: 66, width: 66, borderRadius: 8, backgroundColor: '#e5e5e5' },
   articleContent: { flex: 1, marginLeft: 12 },
   articleTitle: { color: '#333', fontSize: 16, fontWeight: '500' },

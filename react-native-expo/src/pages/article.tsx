@@ -1,7 +1,10 @@
 import { styles } from './article.styles';
-import { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { AppRefreshControl } from '@/components/AppRefreshControl';
+import { useScrollToLower } from '@/common/hooks/useScrollToLower';
+import { SearchBar } from '@/components/SearchBar';
 import { api, type ApiItem } from '@/lib/api';
 
 function thumbnail(uri: unknown) {
@@ -16,22 +19,37 @@ export default function ArticleScreen() {
   const [keyword, setKeyword] = useState('');
   const [pageNum, setPageNum] = useState(0);
   const [isLast, setIsLast] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const options = useMemo(() => categories.filter(item => Number(item.categoryId) === 1).filter((item, index, all) => all.findIndex(value => value.typeId === item.typeId) === index), [categories]);
 
   useEffect(() => { api.categories().then(value => setCategories(value ?? [])).catch(() => setCategories([])); }, []);
-  const load = (page: number, append = false) => api.articlePage({ type, keyword, pageNum: page, pageSize: 15 }).then(value => {
+
+  const load = useCallback((page: number, append = false) => api.articlePage({ type, keyword, pageNum: page, pageSize: 15 }).then(value => {
     const next = value.content ?? [];
     setItems(current => append ? [...current, ...next] : next);
     setPageNum(page);
     setIsLast(next.length < 15);
-  }).catch(() => { if (!append) setItems([]); setIsLast(true); });
-  useEffect(() => { const timer = setTimeout(() => load(0), 200); return () => clearTimeout(timer); }, [type, keyword]);
+  }).catch(() => { if (!append) setItems([]); setIsLast(true); }), [type, keyword]);
+
+  useEffect(() => { const timer = setTimeout(() => load(0), 200); return () => clearTimeout(timer); }, [load]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    void load(0).finally(() => setRefreshing(false));
+  };
+
+  const loadMore = () => {
+    if (isLast) return;
+    void load(pageNum + 1, true);
+  };
+
+  const onScrollToLower = useScrollToLower(loadMore, !isLast);
 
   return (
     <View style={styles.page}>
-      <View style={styles.toolbar}>
+      <View style={styles.header}>
         {options.length > 1 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.types}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.typesRow} contentContainerStyle={styles.types}>
             <Pressable onPress={() => setType(undefined)}>
               <Text style={[styles.type, !type && styles.typeActive]}>全部</Text>
             </Pressable>
@@ -44,15 +62,17 @@ export default function ArticleScreen() {
             ))}
           </ScrollView>
         )}
-        <TextInput
-          value={keyword}
-          onChangeText={setKeyword}
-          placeholder="请输入搜索词"
-          placeholderTextColor="#b3b3b3"
-          style={styles.search}
-        />
+        <View style={styles.searchRow}>
+          <SearchBar value={keyword} onChangeText={setKeyword} placeholder="请输入搜索词" />
+        </View>
       </View>
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.list}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onScroll={onScrollToLower}
+        scrollEventThrottle={16}
+      >
         {items.map(item => (
           <Pressable
             key={String(item.id)}
@@ -73,9 +93,7 @@ export default function ArticleScreen() {
         ))}
         {!items.length && isLast && <Text style={styles.empty}>~什么都没有哦~</Text>}
         {!!items.length && (
-          <Pressable onPress={() => !isLast && load(pageNum + 1, true)}>
-            <Text style={styles.more}>{isLast ? '~没有更多了哦~' : '加载更多'}</Text>
-          </Pressable>
+          <Text style={styles.more}>{isLast ? '~没有更多了哦~' : '加载中...'}</Text>
         )}
       </ScrollView>
     </View>

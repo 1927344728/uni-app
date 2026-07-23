@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack, usePathname } from 'expo-router';
 import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
@@ -35,10 +37,12 @@ export default function RootLayout() {
   const title = pageTitles.find(([path]) => pathname === path || pathname.startsWith(`${path}/`))?.[1] ?? APP_NAME;
 
   return (
-    <SafeAreaProvider>
-      <Head><title>{title}</title></Head>
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.backgroundMinor } }} />
-      <StatusBar style="dark" />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <Head><title>{title}</title></Head>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.backgroundMinor } }} />
+        <StatusBar style="dark" />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

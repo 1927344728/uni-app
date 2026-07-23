@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppFooter } from '@/components/AppFooter';
+import { AppRefreshControl } from '@/components/AppRefreshControl';
 import { APP_NAME, APP_VERSION } from '@/config/app';
 import { HOME_FEATURES } from '@/config/features';
 import { scaleCosImage } from '@/common/utils/cos';
@@ -16,18 +17,29 @@ export default function HomeScreen() {
   const [articles, setArticles] = useState<ApiItem[]>([]);
   const [user, setUser] = useState<ApiItem | null>(null);
   const [isMock, setIsMock] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    api.welcome().catch(() => setIsMock(true));
-    api.user().then(setUser).catch(() => undefined);
-    api.banners().then(value => setBanners(value ?? [])).catch(() => setBanners([]));
-    api.articlePage({ type: '2' }).then(value => setArticles(value.content ?? [])).catch(() => setArticles([]));
-  }, []);
+  const loadHome = () => Promise.all([
+    api.welcome().catch(() => setIsMock(true)),
+    api.user().then(setUser).catch(() => undefined),
+    api.banners().then(value => setBanners(value ?? [])).catch(() => setBanners([])),
+    api.articlePage({ type: '2' }).then(value => setArticles(value.content ?? [])).catch(() => setArticles([])),
+  ]);
+
+  useEffect(() => { void loadHome(); }, []);
 
   const userName = String(user?.name ?? '欢迎来到');
   const bannerWidth = useMemo(() => width - 24, []);
   const openItem = (item: ApiItem, fallback?: string) => {
     const href = String(item.url ?? fallback ?? '');
+    if (href.includes('hanyupinyin')) {
+      router.push(`/recommend/hanyupinyin` as never);
+      return;
+    }
+    if (href.startsWith('/static/')) {
+      router.push(`/webview?url=${encodeURIComponent(href)}` as never);
+      return;
+    }
     if (href.startsWith('/pages/')) {
       const [path, query] = href.replace('/pages/', '/').split('?');
       router.push(`${path.replace(/\/index$/, '')}${query ? `?${query}` : ''}` as never);
@@ -36,7 +48,17 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.page}>
-      <ScrollView contentContainerStyle={[styles.scroll, banners.length > 0 && styles.withBanner]} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={[styles.scroll, banners.length > 0 && styles.withBanner]}
+        showsVerticalScrollIndicator={false}
+        refreshControl={(
+          <AppRefreshControl
+            refreshing={refreshing}
+            onRefresh={() => { setRefreshing(true); void loadHome().finally(() => setRefreshing(false)); }}
+          />
+        )}
+      >
         {banners.length > 0 && (
           <View style={styles.bannerWrap}>
             <ScrollView

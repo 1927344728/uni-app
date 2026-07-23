@@ -1,11 +1,16 @@
 import { styles } from './task.styles';
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppFooter } from '@/components/AppFooter';
+import { AppRefreshControl } from '@/components/AppRefreshControl';
+import { DataPicker } from '@/components/DataPicker';
+import { useScrollToLower } from '@/common/hooks/useScrollToLower';
+import { SearchBar } from '@/components/SearchBar';
 import { api, type ApiItem } from '@/lib/api';
 
 const statusMap: Record<string, string> = { '1': '未开始', '2': '进行中', '3': '已完成', '4': '已取消' };
+const statusOptions = Object.entries(statusMap).map(([value, label]) => ({ value, label }));
 
 export default function TaskScreen() {
   const [items, setItems] = useState<ApiItem[]>([]);
@@ -15,48 +20,69 @@ export default function TaskScreen() {
   const [status, setStatus] = useState<string | null>(null);
   const [pageNum, setPageNum] = useState(0);
   const [isLast, setIsLast] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => { api.taskTargeters().then(value => setTargeters(value ?? [])).catch(() => undefined); }, []);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      api.taskPage({ title: keyword, targeter: targeter ?? undefined, status: status ?? undefined, pageNum: 0, pageSize: 10 })
-        .then(value => { const next = value.content ?? []; setItems(next); setPageNum(0); setIsLast(next.length < 10); })
-        .catch(() => { setItems([]); setIsLast(true); });
-    }, 200);
-    return () => clearTimeout(timer);
+
+  const fetchList = useCallback((page: number, append = false) => {
+    return api.taskPage({ title: keyword, targeter: targeter ?? undefined, status: status ?? undefined, pageNum: page, pageSize: 10 })
+      .then(value => {
+        const next = value.content ?? [];
+        setItems(current => append ? [...current, ...next] : next);
+        setPageNum(page);
+        setIsLast(next.length < 10);
+      })
+      .catch(() => {
+        if (!append) setItems([]);
+        setIsLast(true);
+      });
   }, [keyword, targeter, status]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => { void fetchList(0); }, 200);
+    return () => clearTimeout(timer);
+  }, [fetchList]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    void fetchList(0).finally(() => setRefreshing(false));
+  };
 
   const loadMore = () => {
     if (isLast) return;
-    const nextPage = pageNum + 1;
-    api.taskPage({ title: keyword, targeter: targeter ?? undefined, status: status ?? undefined, pageNum: nextPage, pageSize: 10 })
-      .then(value => { const next = value.content ?? []; setItems(current => [...current, ...next]); setPageNum(nextPage); setIsLast(next.length < 10); })
-      .catch(() => setIsLast(true));
+    void fetchList(pageNum + 1, true);
   };
+
+  const onScrollToLower = useScrollToLower(loadMore, !isLast);
 
   return (
     <View style={styles.page}>
       <View style={styles.toolbar}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.selectRow}>
-          <Filter label={targeter ?? '请选择任务人'} active={Boolean(targeter)} onPress={() => setTargeter(targeter ? null : targeters[0] ?? null)} />
-          <Filter label={status ? statusMap[status] : '请选择状态'} active={Boolean(status)} onPress={() => setStatus(status === '4' ? null : String(Number(status ?? 0) + 1))} />
-        </ScrollView>
-        <View style={styles.optionRow}>
-          {targeters.map(name => (
-            <Pressable key={name} onPress={() => setTargeter(name === targeter ? null : name)}>
-              <Text style={[styles.option, targeter === name && styles.optionActive]}>{name}</Text>
-            </Pressable>
-          ))}
+        <View style={styles.selectRow}>
+          <DataPicker
+            value={targeter}
+            options={targeters.map(name => ({ value: name, label: name }))}
+            placeholder="请选择任务人"
+            title="请选择任务人"
+            onChange={setTargeter}
+          />
+          <DataPicker
+            value={status}
+            options={statusOptions}
+            placeholder="请选择状态"
+            title="请选择状态"
+            onChange={setStatus}
+          />
         </View>
-        <TextInput
-          value={keyword}
-          onChangeText={setKeyword}
-          placeholder="请输入任务名称"
-          placeholderTextColor="#b3b3b3"
-          style={styles.search}
-        />
+        <SearchBar value={keyword} onChangeText={setKeyword} placeholder="请输入任务名称" />
       </View>
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.list}
+        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onScroll={onScrollToLower}
+        scrollEventThrottle={16}
+      >
         {items.map(item => (
           <Pressable key={String(item.id)} onPress={() => router.push(`/task/detail?id=${item.id}`)} style={styles.card}>
             <View style={styles.header}>
@@ -79,21 +105,10 @@ export default function TaskScreen() {
           </Pressable>
         ))}
         {items.length > 0 && (
-          <Pressable onPress={loadMore}>
-            <Text style={styles.noMore}>{isLast ? '~没有更多了~' : '加载更多'}</Text>
-          </Pressable>
+          <Text style={styles.noMore}>{isLast ? '~没有更多了哦~' : '加载中...'}</Text>
         )}
       </ScrollView>
       <AppFooter active="task" />
     </View>
-  );
-}
-
-function Filter({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={[styles.filter, active && styles.filterActive]}>
-      <Text style={[styles.filterText, active && styles.filterTextActive]}>{label}</Text>
-      <Text style={[styles.caret, active && styles.filterTextActive]}>⌄</Text>
-    </Pressable>
   );
 }

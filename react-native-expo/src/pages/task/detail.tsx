@@ -2,6 +2,7 @@ import { styles } from './detail.styles';
 import { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { ContentBlocks } from '@/components/ContentBlocks';
 import { api, type ApiItem } from '@/lib/api';
 
 const statuses: Record<string, string> = { '1': '未开始', '2': '进行中', '3': '已完成', '4': '已取消' };
@@ -13,25 +14,6 @@ function date(value: unknown) {
 
 function text(value: unknown) {
   return String(value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
-}
-
-function DetailBlocks({ data }: { data: unknown }) {
-  const blocks = Array.isArray(data) ? data : [];
-  return (
-    <View>
-      {blocks.map((block, index) => {
-        const item = block as ApiItem;
-        const content = Array.isArray(item.content) ? item.content : [item.content];
-        return (
-          <View key={`${String(item.type)}-${index}`} style={styles.block}>
-            {content.filter(Boolean).map((value, contentIndex) => (
-              <Text key={contentIndex} style={styles.blockText}>{text(value)}</Text>
-            ))}
-          </View>
-        );
-      })}
-    </View>
-  );
 }
 
 export default function TaskDetailScreen() {
@@ -50,6 +32,7 @@ export default function TaskDetailScreen() {
   );
 
   const sectionTitles = { awards: '奖励', attachments: '附件', works: '作品' } as const;
+  const statusStyle = styles[`status${String(task.status)}` as 'status1' | 'status2' | 'status3' | 'status4'];
 
   return (
     <ScrollView style={styles.page} contentContainerStyle={styles.content}>
@@ -63,7 +46,7 @@ export default function TaskDetailScreen() {
       {detail('验收标准', task.finished)}
       <View style={styles.item}>
         <Text style={styles.label}>状态</Text>
-        <View style={[styles.status, styles[`status${String(task.status)}` as keyof typeof styles]]}>
+        <View style={[styles.status, statusStyle]}>
           <Text style={styles.statusText}>{statuses[String(task.status)] ?? '未知'}</Text>
         </View>
       </View>
@@ -80,7 +63,7 @@ export default function TaskDetailScreen() {
         Array.isArray(task[key]) && task[key].length > 0 && (
           <View style={styles.section} key={key}>
             <Text style={styles.sectionTitle}>{sectionTitles[key]}</Text>
-            <DetailBlocks data={task[key]} />
+            <ContentBlocks content={task[key]} />
           </View>
         )
       ))}

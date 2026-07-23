@@ -3,6 +3,7 @@ import { type ComponentProps, useEffect, useMemo, useState } from 'react';
 import { Alert, Image, Pressable, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useLocalSearchParams } from 'expo-router';
+import { inputStyles } from '@/common/theme/input';
 import { appAssets } from '@/config/assets';
 import { api } from '@/lib/api';
 
@@ -60,7 +61,7 @@ function Field({ label, ...props }: { label: string } & ComponentProps<typeof Te
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput {...props} style={styles.input} placeholderTextColor="#b3b3b3" />
+      <TextInput {...props} style={[inputStyles.fieldInput, styles.input]} placeholderTextColor="#b3b3b3" />
     </View>
   );
 }

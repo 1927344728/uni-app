@@ -1,5 +1,23 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#101010' }, loading: { flex: 1, alignItems: 'center', justifyContent: 'center' }, background: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%', transform: [{ scale: 1.2 }] }, mask: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,.4)' }, video: { ...StyleSheet.absoluteFillObject }, overlay: { flex: 1 }, back: { position: 'absolute', top: 44, left: 18, zIndex: 3 }, backText: { color: '#fff', fontSize: 40 }, tapArea: { flex: 1, alignItems: 'center', justifyContent: 'center' }, play: { color: 'rgba(255,255,255,.8)', fontSize: 70 }, caption: { position: 'absolute', left: 18, right: 18, bottom: 38 }, publisher: { color: '#fff', fontWeight: '700', fontSize: 18, marginBottom: 8 }, description: { color: '#fff', lineHeight: 21 }, hint: { marginTop: 5, color: 'rgba(255,255,255,.65)', fontSize: 12 }, progress: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 5, backgroundColor: 'rgba(255,255,255,.3)' }, progressValue: { height: 5, backgroundColor: '#fff' },
+  page: { flex: 1, backgroundColor: '#0f0f0f' },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0f0f0f' },
+  loadingText: { color: '#fff' },
+  background: { ...StyleSheet.absoluteFill, width: '100%', height: '100%', transform: [{ scale: 1.2 }] },
+  mask: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,.45)' },
+  video: { ...StyleSheet.absoluteFill },
+  overlay: { flex: 1 },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingBottom: 8 },
+  back: { padding: 6 },
+  backText: { color: '#fff', fontSize: 36, lineHeight: 36 },
+  tapArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  play: { color: 'rgba(255,255,255,.7)', fontSize: 72 },
+  caption: { paddingHorizontal: 16, paddingBottom: 12 },
+  publisher: { color: '#fff', fontWeight: '600', fontSize: 18, marginBottom: 6 },
+  description: { color: '#fff', fontSize: 14, lineHeight: 22 },
+  hint: { marginTop: 6, color: 'rgba(255,255,255,.65)', fontSize: 12 },
+  footer: { paddingHorizontal: 0, paddingBottom: 0 },
+  progress: { height: 4, backgroundColor: 'rgba(255,255,255,.25)' },
+  progressValue: { height: 4, backgroundColor: '#fff' },
 });

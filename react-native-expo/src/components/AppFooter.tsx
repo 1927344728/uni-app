@@ -15,7 +15,7 @@ export function AppFooter({ active }: { active: (typeof FOOTER_TABS)[number]['ke
             name={active === tab.key ? tab.activeIcon : tab.icon}
             size={tab.key === 'study' ? 27 : 20}
             color={active === tab.key ? colors.primary : colors.textMuted}
-            style={[styles.icon, tab.key === 'study' && styles.studyIcon]}
+            style={tab.key === 'study' ? styles.studyIcon : undefined}
           />
           <Text style={[styles.label, active === tab.key && styles.active]}>{tab.name}</Text>
         </Pressable>
