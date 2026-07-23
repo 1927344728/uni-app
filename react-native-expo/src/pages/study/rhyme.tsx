@@ -1,6 +1,7 @@
 import { styles } from './rhyme.styles';
 import { useMemo, useState } from 'react';
-import { Modal, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Speech from 'expo-speech';
 import { pinyin } from 'pinyin-pro';
 
@@ -17,7 +18,24 @@ const singles = [{ key: 'un', title: 'un（前鼻韵）', words: words('春天 �
 const enrich = (raw: RawWord) => ({ ...raw, pinyin: pinyin(raw.word, { toneType: 'symbol' }), pyArr: pinyin(raw.word, { type: 'array', toneType: 'symbol' }) as string[] });
 
 function WordCell({ item, onPress }: { item: ReturnType<typeof enrich>; onPress: () => void }) {
-  return <Pressable style={styles.cell} onPress={onPress}><View style={styles.characters}>{[...item.word].map((character, index) => <Text key={`${character}-${index}`} style={[styles.character, item.mark === index && styles.mark]}>{character}</Text>)}</View><View style={styles.pinyin}>{item.pyArr.map((syllable, index) => <Text key={`${syllable}-${index}`} style={[styles.syllable, item.mark === index && styles.mark]}>{syllable}</Text>)}</View></Pressable>;
+  return (
+    <Pressable style={styles.cell} onPress={onPress}>
+      <View style={styles.characters}>
+        {[...item.word].map((character, index) => (
+          <Text key={`${character}-${index}`} style={[styles.character, item.mark === index && styles.mark]}>
+            {character}
+          </Text>
+        ))}
+      </View>
+      <View style={styles.pinyin}>
+        {item.pyArr.map((syllable, index) => (
+          <Text key={`${syllable}-${index}`} style={[styles.syllable, item.mark === index && styles.mark]}>
+            {syllable}
+          </Text>
+        ))}
+      </View>
+    </Pressable>
+  );
 }
 
 export default function RhymeScreen() {
@@ -28,23 +46,150 @@ export default function RhymeScreen() {
   const [score, setScore] = useState(0);
   const [scoreOpen, setScoreOpen] = useState(false);
   const scorePercent = items.length ? Math.floor(score / items.length * 100) : 0;
+
   const start = () => {
     const pool: Item[] = contrasts.flatMap(group => [
       ...group.left.map(raw => ({ ...enrich(raw), leftRhyme: group.leftRhyme, rightRhyme: group.rightRhyme, answer: 'front' as const })),
       ...group.right.map(raw => ({ ...enrich(raw), leftRhyme: group.leftRhyme, rightRhyme: group.rightRhyme, answer: 'back' as const })),
     ]).sort(() => Math.random() - .5);
-    setItems(Array.from({ length: 50 }, (_, index) => ({ ...pool[index % pool.length], uid: `${Date.now()}-${index}` }))); setChoices({}); setResults(false); setDetecting(true);
+    setItems(Array.from({ length: 50 }, (_, index) => ({ ...pool[index % pool.length], uid: `${Date.now()}-${index}` })));
+    setChoices({});
+    setResults(false);
+    setDetecting(true);
   };
   const complete = () => {
     let total = 0;
-    const next = items.map((item, index) => { const result = choices[index] ? choices[index] === item.answer ? 'ok' : 'bad' : 'skip'; if (result === 'ok') total++; return { ...item, result }; });
-    setScore(total); setItems(next); setResults(true); setScoreOpen(true);
+    const next = items.map((item, index) => {
+      const result = choices[index] ? choices[index] === item.answer ? 'ok' : 'bad' : 'skip';
+      if (result === 'ok') total++;
+      return { ...item, result };
+    });
+    setScore(total);
+    setItems(next);
+    setResults(true);
+    setScoreOpen(true);
   };
   const sorted = useMemo(() => [...items].sort((a, b) => ({ bad: 0, ok: 1, skip: 2 }[a.result ?? 'skip'] - { bad: 0, ok: 1, skip: 2 }[b.result ?? 'skip'])), [items]);
   const speak = (word: string) => { Speech.stop(); Speech.speak(word, { language: 'zh-CN' }); };
-  return <SafeAreaView style={styles.page}><ScrollView contentContainerStyle={styles.content}>
-    {!detecting ? <>{contrasts.map(group => <View key={group.key} style={styles.outer}><Text style={styles.title}>{group.title}</Text><View style={styles.contrast}><View style={styles.column}>{group.left.map(item => <WordCell key={item.word} item={enrich(item)} onPress={() => speak(item.word)} />)}</View><View style={styles.divider} /><View style={styles.column}>{group.right.map(item => <WordCell key={item.word} item={enrich(item)} onPress={() => speak(item.word)} />)}</View></View></View>)}{singles.map(group => <View key={group.key} style={styles.outer}><Text style={styles.title}>{group.title}</Text><View style={styles.twoColumns}>{group.words.map(item => <WordCell key={item.word} item={enrich(item)} onPress={() => speak(item.word)} />)}</View></View>)}</> : !results ? <>{items.map((item, index) => <View style={styles.question} key={item.uid}><Pressable onPress={() => setChoices(old => ({ ...old, [index]: 'front' }))} style={[styles.choice, choices[index] === 'front' && styles.choiceOn]}><Text style={choices[index] === 'front' && styles.choiceTextOn}>{item.leftRhyme}</Text></Pressable><View style={styles.questionWord}>{[...item.word].map((character, characterIndex) => <Text key={characterIndex} style={[styles.character, characterIndex === item.mark && styles.questionMark]}>{character}</Text>)}</View><Pressable onPress={() => setChoices(old => ({ ...old, [index]: 'back' }))} style={[styles.choice, choices[index] === 'back' && styles.choiceOn]}><Text style={choices[index] === 'back' && styles.choiceTextOn}>{item.rightRhyme}</Text></Pressable></View>)}</> : <View style={styles.results}>{sorted.map(item => <View key={item.uid} style={[styles.result, item.result === 'ok' ? styles.ok : item.result === 'bad' ? styles.bad : styles.skip]}><View style={styles.characters}>{[...item.word].map((character, index) => <Text key={index} style={[styles.character, index === item.mark && styles.mark]}>{character}</Text>)}</View><View style={styles.pinyin}>{item.pyArr.map((syllable, index) => <Text key={index} style={[styles.syllable, index === item.mark && styles.mark]}>{syllable}</Text>)}</View></View>)}</View>}
-  </ScrollView><View style={styles.bottom}>{detecting && <Text style={styles.hint}>{results ? <>检测完成：答对 <Text style={styles.num}>{score}</Text> / <Text style={styles.num}>{items.length}</Text> 题</> : '请根据每行左右韵母，选择该词更接近哪一侧'}</Text>}<Pressable style={[styles.bottomButton, results && styles.resetButton, detecting && !results && styles.doneButton]} onPress={!detecting ? start : !results ? complete : () => { setDetecting(false); setResults(false); }}><Text style={[styles.bottomButtonText, results && styles.resetText]}>{!detecting ? '韵母拼音检测' : !results ? '完成检测' : '重新检测'}</Text></Pressable></View>
-    <Modal transparent visible={scoreOpen} onRequestClose={() => setScoreOpen(false)}><Pressable style={styles.modalMask} onPress={() => setScoreOpen(false)}><Pressable style={styles.modal} onPress={() => undefined}><Text style={styles.modalTitle}>检测完成</Text><Text style={styles.modalScore}>得分 <Text style={styles.modalNumber}>{scorePercent}</Text> 分</Text><Pressable style={styles.modalButton} onPress={() => setScoreOpen(false)}><Text style={styles.bottomButtonText}>知道了</Text></Pressable></Pressable></Pressable></Modal>
-  </SafeAreaView>;
+
+  const handleBottomPress = () => {
+    if (!detecting) start();
+    else if (!results) complete();
+    else { setDetecting(false); setResults(false); }
+  };
+
+  return (
+    <SafeAreaView style={styles.page}>
+      <ScrollView contentContainerStyle={styles.content}>
+        {!detecting ? (
+          <>
+            {contrasts.map(group => (
+              <View key={group.key} style={styles.outer}>
+                <Text style={styles.title}>{group.title}</Text>
+                <View style={styles.contrast}>
+                  <View style={styles.column}>
+                    {group.left.map(item => (
+                      <WordCell key={item.word} item={enrich(item)} onPress={() => speak(item.word)} />
+                    ))}
+                  </View>
+                  <View style={styles.divider} />
+                  <View style={styles.column}>
+                    {group.right.map(item => (
+                      <WordCell key={item.word} item={enrich(item)} onPress={() => speak(item.word)} />
+                    ))}
+                  </View>
+                </View>
+              </View>
+            ))}
+            {singles.map(group => (
+              <View key={group.key} style={styles.outer}>
+                <Text style={styles.title}>{group.title}</Text>
+                <View style={styles.twoColumns}>
+                  {group.words.map(item => (
+                    <WordCell key={item.word} item={enrich(item)} onPress={() => speak(item.word)} />
+                  ))}
+                </View>
+              </View>
+            ))}
+          </>
+        ) : !results ? (
+          <>
+            {items.map((item, index) => (
+              <View style={styles.question} key={item.uid}>
+                <Pressable
+                  onPress={() => setChoices(old => ({ ...old, [index]: 'front' }))}
+                  style={[styles.choice, choices[index] === 'front' && styles.choiceOn]}
+                >
+                  <Text style={choices[index] === 'front' && styles.choiceTextOn}>{item.leftRhyme}</Text>
+                </Pressable>
+                <View style={styles.questionWord}>
+                  {[...item.word].map((character, characterIndex) => (
+                    <Text key={characterIndex} style={[styles.character, characterIndex === item.mark && styles.questionMark]}>
+                      {character}
+                    </Text>
+                  ))}
+                </View>
+                <Pressable
+                  onPress={() => setChoices(old => ({ ...old, [index]: 'back' }))}
+                  style={[styles.choice, choices[index] === 'back' && styles.choiceOn]}
+                >
+                  <Text style={choices[index] === 'back' && styles.choiceTextOn}>{item.rightRhyme}</Text>
+                </Pressable>
+              </View>
+            ))}
+          </>
+        ) : (
+          <View style={styles.results}>
+            {sorted.map(item => (
+              <View
+                key={item.uid}
+                style={[styles.result, item.result === 'ok' ? styles.ok : item.result === 'bad' ? styles.bad : styles.skip]}
+              >
+                <View style={styles.characters}>
+                  {[...item.word].map((character, index) => (
+                    <Text key={index} style={[styles.character, index === item.mark && styles.mark]}>{character}</Text>
+                  ))}
+                </View>
+                <View style={styles.pinyin}>
+                  {item.pyArr.map((syllable, index) => (
+                    <Text key={index} style={[styles.syllable, index === item.mark && styles.mark]}>{syllable}</Text>
+                  ))}
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+      <View style={styles.bottom}>
+        {detecting && (
+          <Text style={styles.hint}>
+            {results ? (
+              <>检测完成：答对 <Text style={styles.num}>{score}</Text> / <Text style={styles.num}>{items.length}</Text> 题</>
+            ) : '请根据每行左右韵母，选择该词更接近哪一侧'}
+          </Text>
+        )}
+        <Pressable
+          style={[styles.bottomButton, results && styles.resetButton, detecting && !results && styles.doneButton]}
+          onPress={handleBottomPress}
+        >
+          <Text style={[styles.bottomButtonText, results && styles.resetText]}>
+            {!detecting ? '韵母拼音检测' : !results ? '完成检测' : '重新检测'}
+          </Text>
+        </Pressable>
+      </View>
+      <Modal transparent visible={scoreOpen} onRequestClose={() => setScoreOpen(false)}>
+        <Pressable style={styles.modalMask} onPress={() => setScoreOpen(false)}>
+          <Pressable style={styles.modal} onPress={() => undefined}>
+            <Text style={styles.modalTitle}>检测完成</Text>
+            <Text style={styles.modalScore}>
+              得分 <Text style={styles.modalNumber}>{scorePercent}</Text> 分
+            </Text>
+            <Pressable style={styles.modalButton} onPress={() => setScoreOpen(false)}>
+              <Text style={styles.bottomButtonText}>知道了</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </SafeAreaView>
+  );
 }

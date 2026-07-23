@@ -14,10 +14,16 @@ export default function DebugScreen() {
       .finally(() => setLoading(false));
   };
 
-  return <View style={styles.page}>
-    <Text style={styles.title}>测试页面</Text>
-    <Text style={styles.description}>验证应用能否连接服务端。</Text>
-    <Pressable onPress={testConnection} style={styles.button}><Text style={styles.buttonText}>{loading ? '测试中…' : '测试接口连接'}</Text></Pressable>
-    <ScrollView style={styles.result}><Text selectable style={styles.resultText}>{result}</Text></ScrollView>
-  </View>;
+  return (
+    <View style={styles.page}>
+      <Text style={styles.title}>测试页面</Text>
+      <Text style={styles.description}>验证应用能否连接服务端。</Text>
+      <Pressable onPress={testConnection} style={styles.button}>
+        <Text style={styles.buttonText}>{loading ? '测试中…' : '测试接口连接'}</Text>
+      </Pressable>
+      <ScrollView style={styles.result}>
+        <Text selectable style={styles.resultText}>{result}</Text>
+      </ScrollView>
+    </View>
+  );
 }

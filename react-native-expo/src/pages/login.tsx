@@ -31,18 +31,36 @@ export default function LoginScreen() {
     }).catch(error => Alert.alert('提示', error instanceof Error ? error.message : '登录失败')).finally(() => setSubmitting(false));
   };
 
-  return <View style={styles.page}>
-    <Image source={{ uri: banner }} style={styles.banner} />
-    <View style={styles.form}>
-      <Field label="账号" value={account} onChangeText={setAccount} placeholder="请输入手机号" keyboardType="phone-pad" maxLength={11} />
-      <Field label="密码" value={password} onChangeText={setPassword} placeholder="请输入密码" secureTextEntry maxLength={12} />
-      <Pressable onPress={() => setAgreed(value => !value)} style={styles.agreement}><View style={[styles.checkbox, agreed && styles.checkboxActive]}>{agreed && <Text style={styles.check}>✓</Text>}</View><Text style={styles.agreementText}>我已阅读并同意《用户协议》</Text></Pressable>
+  return (
+    <View style={styles.page}>
+      <Image source={{ uri: banner }} style={styles.banner} />
+      <View style={styles.form}>
+        <Field label="账号" value={account} onChangeText={setAccount} placeholder="请输入手机号" keyboardType="phone-pad" maxLength={11} />
+        <Field label="密码" value={password} onChangeText={setPassword} placeholder="请输入密码" secureTextEntry maxLength={12} />
+        <Pressable onPress={() => setAgreed(value => !value)} style={styles.agreement}>
+          <View style={[styles.checkbox, agreed && styles.checkboxActive]}>
+            {agreed && <Text style={styles.check}>✓</Text>}
+          </View>
+          <Text style={styles.agreementText}>我已阅读并同意《用户协议》</Text>
+        </Pressable>
+      </View>
+      <View style={styles.submit}>
+        <Pressable onPress={login} style={[styles.button, (!valid || submitting) && styles.disabled]}>
+          <Text style={styles.buttonText}>{submitting ? '登录中…' : '登录'}</Text>
+        </Pressable>
+      </View>
+      <Pressable onPress={() => router.replace('/')}>
+        <Text style={styles.mock}>暂不登录</Text>
+      </Pressable>
     </View>
-    <View style={styles.submit}><Pressable onPress={login} style={[styles.button, (!valid || submitting) && styles.disabled]}><Text style={styles.buttonText}>{submitting ? '登录中…' : '登录'}</Text></Pressable></View>
-    <Pressable onPress={() => router.replace('/')}><Text style={styles.mock}>暂不登录</Text></Pressable>
-  </View>;
+  );
 }
 
 function Field({ label, ...props }: { label: string } & ComponentProps<typeof TextInput>) {
-  return <View style={styles.field}><Text style={styles.label}>{label}</Text><TextInput {...props} style={styles.input} placeholderTextColor="#b3b3b3" /></View>;
+  return (
+    <View style={styles.field}>
+      <Text style={styles.label}>{label}</Text>
+      <TextInput {...props} style={styles.input} placeholderTextColor="#b3b3b3" />
+    </View>
+  );
 }

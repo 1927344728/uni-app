@@ -26,17 +26,28 @@ export default function PasswordScreen() {
     }).catch(error => Alert.alert('提示', error instanceof Error ? error.message : '密码修改失败')).finally(() => setSubmitting(false));
   };
 
-  return <View style={styles.page}>
-    <Image source={{ uri: banner }} style={styles.banner} />
-    <View style={styles.form}>
-      <Field label="旧密码" value={password} onChangeText={setPassword} placeholder="请输入旧密码" />
-      <Field label="新密码" value={newPassword} onChangeText={setNewPassword} placeholder="请输入新密码" />
-      <Field label="确认新密码" value={confirmPassword} onChangeText={setConfirmPassword} placeholder="请再次输入新密码" />
+  return (
+    <View style={styles.page}>
+      <Image source={{ uri: banner }} style={styles.banner} />
+      <View style={styles.form}>
+        <Field label="旧密码" value={password} onChangeText={setPassword} placeholder="请输入旧密码" />
+        <Field label="新密码" value={newPassword} onChangeText={setNewPassword} placeholder="请输入新密码" />
+        <Field label="确认新密码" value={confirmPassword} onChangeText={setConfirmPassword} placeholder="请再次输入新密码" />
+      </View>
+      <View style={styles.submit}>
+        <Pressable onPress={updatePassword} style={[styles.button, (!valid || submitting) && styles.disabled]}>
+          <Text style={styles.buttonText}>{submitting ? '提交中…' : '提交'}</Text>
+        </Pressable>
+      </View>
     </View>
-    <View style={styles.submit}><Pressable onPress={updatePassword} style={[styles.button, (!valid || submitting) && styles.disabled]}><Text style={styles.buttonText}>{submitting ? '提交中…' : '提交'}</Text></Pressable></View>
-  </View>;
+  );
 }
 
 function Field({ label, ...props }: { label: string } & ComponentProps<typeof TextInput>) {
-  return <View style={styles.field}><Text style={styles.label}>{label}</Text><TextInput {...props} secureTextEntry style={styles.input} placeholderTextColor="#b3b3b3" maxLength={12} /></View>;
+  return (
+    <View style={styles.field}>
+      <Text style={styles.label}>{label}</Text>
+      <TextInput {...props} secureTextEntry style={styles.input} placeholderTextColor="#b3b3b3" maxLength={12} />
+    </View>
+  );
 }

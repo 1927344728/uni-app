@@ -1,6 +1,7 @@
 import { styles } from './gen-dictation.styles';
 import { useState } from 'react';
-import { Alert, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 
@@ -46,19 +47,68 @@ export default function GenerateDictationScreen() {
     router.push(route as never);
   };
 
-  return <SafeAreaView style={styles.page}>
-    <ScrollView contentContainerStyle={styles.form} keyboardShouldPersistTaps="handled">
-      <View style={styles.field}>
-        <Text style={styles.label}>温馨提示</Text>
-        <TextInput value={note} onChangeText={setNote} multiline maxLength={100} textAlignVertical="top" style={styles.textarea} placeholder="请输入温馨提示（选填）。比如注意事项、书写要求、时间限制等" placeholderTextColor="#9ca3af" />
-        <Pressable style={styles.tipButton} onPress={() => { const next = (tipIndex + 1) % DEFAULT_TIPS.length; setTipIndex(next); setNote(DEFAULT_TIPS[next]); }}><Text style={styles.tipText}>换一条默认文案</Text></Pressable>
+  return (
+    <SafeAreaView style={styles.page}>
+      <ScrollView contentContainerStyle={styles.form} keyboardShouldPersistTaps="handled">
+        <View style={styles.field}>
+          <Text style={styles.label}>温馨提示</Text>
+          <TextInput
+            value={note}
+            onChangeText={setNote}
+            multiline
+            maxLength={100}
+            textAlignVertical="top"
+            style={styles.textarea}
+            placeholder="请输入温馨提示（选填）。比如注意事项、书写要求、时间限制等"
+            placeholderTextColor="#9ca3af"
+          />
+          <Pressable
+            style={styles.tipButton}
+            onPress={() => {
+              const next = (tipIndex + 1) % DEFAULT_TIPS.length;
+              setTipIndex(next);
+              setNote(DEFAULT_TIPS[next]);
+            }}
+          >
+            <Text style={styles.tipText}>换一条默认文案</Text>
+          </Pressable>
+        </View>
+        <View style={styles.field}>
+          <Text style={styles.label}>听写词语</Text>
+          <TextInput
+            value={wordsInput}
+            onChangeText={setWordsInput}
+            multiline
+            maxLength={500}
+            textAlignVertical="top"
+            style={[styles.textarea, styles.words]}
+            placeholder="请输入听写词语，总字数不超过 500。词语用逗号、顿号（中英均可）或空格分隔。例如：苹果,香蕉 书包、橡皮。"
+            placeholderTextColor="#9ca3af"
+          />
+        </View>
+        {!!generatedUrl && (
+          <Pressable onPress={() => copy(generatedUrl)} style={styles.preview}>
+            <Text style={styles.previewTitle}>听写小助手链接（点击复制）</Text>
+            <Text numberOfLines={3} style={styles.previewText}>{generatedUrl}</Text>
+          </Pressable>
+        )}
+      </ScrollView>
+      <View style={styles.bottom}>
+        <Text style={styles.hint}>
+          输入听写词语，一键生成听写链接。转发给同学或家长，打开后就能按设置开始朗读听写，适合课堂小测与家庭练习。
+        </Text>
+        <View style={styles.actions}>
+          <Pressable style={styles.clear} onPress={() => { setNote(''); setWordsInput(''); setGeneratedUrl(''); }}>
+            <Text style={styles.clearText}>清空</Text>
+          </Pressable>
+          <Pressable style={styles.go} onPress={goDictation}>
+            <Text style={styles.buttonText}>去听写</Text>
+          </Pressable>
+          <Pressable style={styles.generate} onPress={generate}>
+            <Text style={styles.buttonText}>生成链接并复制</Text>
+          </Pressable>
+        </View>
       </View>
-      <View style={styles.field}>
-        <Text style={styles.label}>听写词语</Text>
-        <TextInput value={wordsInput} onChangeText={setWordsInput} multiline maxLength={500} textAlignVertical="top" style={[styles.textarea, styles.words]} placeholder="请输入听写词语，总字数不超过 500。词语用逗号、顿号（中英均可）或空格分隔。例如：苹果,香蕉 书包、橡皮。" placeholderTextColor="#9ca3af" />
-      </View>
-      {!!generatedUrl && <Pressable onPress={() => copy(generatedUrl)} style={styles.preview}><Text style={styles.previewTitle}>听写小助手链接（点击复制）</Text><Text numberOfLines={3} style={styles.previewText}>{generatedUrl}</Text></Pressable>}
-    </ScrollView>
-    <View style={styles.bottom}><Text style={styles.hint}>输入听写词语，一键生成听写链接。转发给同学或家长，打开后就能按设置开始朗读听写，适合课堂小测与家庭练习。</Text><View style={styles.actions}><Pressable style={styles.clear} onPress={() => { setNote(''); setWordsInput(''); setGeneratedUrl(''); }}><Text style={styles.clearText}>清空</Text></Pressable><Pressable style={styles.go} onPress={goDictation}><Text style={styles.buttonText}>去听写</Text></Pressable><Pressable style={styles.generate} onPress={generate}><Text style={styles.buttonText}>生成链接并复制</Text></Pressable></View></View>
-  </SafeAreaView>;
+    </SafeAreaView>
+  );
 }

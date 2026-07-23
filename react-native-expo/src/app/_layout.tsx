@@ -1,6 +1,7 @@
 import { Stack, usePathname } from 'expo-router';
 import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { APP_NAME } from '@/config/app';
 import { colors } from '@/common/theme/colors';
 
@@ -32,9 +33,12 @@ const pageTitles: Array<[string, string]> = [
 export default function RootLayout() {
   const pathname = usePathname();
   const title = pageTitles.find(([path]) => pathname === path || pathname.startsWith(`${path}/`))?.[1] ?? APP_NAME;
-  return <>
-    <Head><title>{title}</title></Head>
-    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.backgroundMinor } }} />
-    <StatusBar style="dark" />
-  </>;
+
+  return (
+    <SafeAreaProvider>
+      <Head><title>{title}</title></Head>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.backgroundMinor } }} />
+      <StatusBar style="dark" />
+    </SafeAreaProvider>
+  );
 }

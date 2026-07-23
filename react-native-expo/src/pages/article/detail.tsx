@@ -35,17 +35,85 @@ function ContentBlocks({ content }: { content: unknown }) {
     Speech.speak(parts(item.content).map(plain).join(''), { language: 'zh-CN', rate: Number(item.rate ?? .5), onDone: () => setSpeakingIndex(null), onStopped: () => setSpeakingIndex(null), onError: () => setSpeakingIndex(null) });
   };
 
-  return <View style={styles.modules}>{blocks.map((item, index) => {
-    const values = parts(item.content);
-    const fullWidth = item.className === 'full_width';
-    if (['title', 'author', 'text', 'subTitle', 'richText'].includes(String(item.type))) return <View key={index} style={[styles.module, fullWidth && styles.fullWidth, item.type === 'title' && styles.moduleTitle, (item.type === 'author' || item.type === 'subTitle') && styles.centerMuted]}>{values.map((value, valueIndex) => <Text key={valueIndex} style={[styles.moduleText, item.type === 'richText' && styles.justify]}>{plain(value)}</Text>)}</View>;
-    if (item.type === 'readText') return <Pressable key={index} onPress={() => speak(item, index)} style={[styles.module, styles.readCard, fullWidth && styles.fullWidth]}><View><Text style={styles.readIcon}>{speakingIndex === index ? '🔊' : '🔇'}</Text>{values.map((value, valueIndex) => <Text key={valueIndex} style={styles.moduleText}>{plain(value)}</Text>)}</View></Pressable>;
-    if (item.type === 'image') return <View key={index} style={[styles.module, fullWidth && styles.fullWidth]}>{values.map((value, valueIndex) => typeof value === 'string' && <Image key={valueIndex} source={{ uri: imageUrl(value) }} style={styles.image} resizeMode="contain" />)}{!!item.description && <Text style={styles.caption}>{plain(item.description)}</Text>}</View>;
-    if (item.type === 'video' && typeof values[0] === 'string') return <View key={index} style={[styles.module, fullWidth && styles.fullWidth]}><VideoBlock uri={String(values[0])} fullWidth={fullWidth} />}{!!item.description && <Text style={styles.caption}>{plain(item.description)}</Text>}</View>;
-    if (item.type === 'videoPopup') return <View key={index} style={[styles.module, fullWidth && styles.fullWidth]}>{typeof item.poster === 'string' && <Image source={{ uri: imageUrl(item.poster) }} style={styles.popupCover} />}{typeof values[0] === 'string' && <VideoBlock uri={String(values[0])} fullWidth={fullWidth} />}{!!item.description && <Text style={styles.caption}>{plain(item.description)}</Text>}</View>;
-    if (item.type === 'card') return <View key={index} style={[styles.card, fullWidth && styles.fullWidth]}>{typeof values[0] === 'string' && <Image source={{ uri: imageUrl(values[0]) }} style={styles.cardImage} resizeMode="contain" />}{values[1] !== undefined && <Text style={styles.cardText}>{plain(values[1])}</Text>}</View>;
-    return null;
-  })}</View>;
+  return (
+    <View style={styles.modules}>
+      {blocks.map((item, index) => {
+        const values = parts(item.content);
+        const fullWidth = item.className === 'full_width';
+        if (['title', 'author', 'text', 'subTitle', 'richText'].includes(String(item.type))) {
+          return (
+            <View
+              key={index}
+              style={[
+                styles.module,
+                fullWidth && styles.fullWidth,
+                item.type === 'title' && styles.moduleTitle,
+                (item.type === 'author' || item.type === 'subTitle') && styles.centerMuted,
+              ]}
+            >
+              {values.map((value, valueIndex) => (
+                <Text key={valueIndex} style={[styles.moduleText, item.type === 'richText' && styles.justify]}>
+                  {plain(value)}
+                </Text>
+              ))}
+            </View>
+          );
+        }
+        if (item.type === 'readText') {
+          return (
+            <Pressable key={index} onPress={() => speak(item, index)} style={[styles.module, styles.readCard, fullWidth && styles.fullWidth]}>
+              <View>
+                <Text style={styles.readIcon}>{speakingIndex === index ? '🔊' : '🔇'}</Text>
+                {values.map((value, valueIndex) => (
+                  <Text key={valueIndex} style={styles.moduleText}>{plain(value)}</Text>
+                ))}
+              </View>
+            </Pressable>
+          );
+        }
+        if (item.type === 'image') {
+          return (
+            <View key={index} style={[styles.module, fullWidth && styles.fullWidth]}>
+              {values.map((value, valueIndex) => typeof value === 'string' && (
+                <Image key={valueIndex} source={{ uri: imageUrl(value) }} style={styles.image} resizeMode="contain" />
+              ))}
+              {!!item.description && <Text style={styles.caption}>{plain(item.description)}</Text>}
+            </View>
+          );
+        }
+        if (item.type === 'video' && typeof values[0] === 'string') {
+          return (
+            <View key={index} style={[styles.module, fullWidth && styles.fullWidth]}>
+              <VideoBlock uri={String(values[0])} fullWidth={fullWidth} />
+              {!!item.description && <Text style={styles.caption}>{plain(item.description)}</Text>}
+            </View>
+          );
+        }
+        if (item.type === 'videoPopup') {
+          return (
+            <View key={index} style={[styles.module, fullWidth && styles.fullWidth]}>
+              {typeof item.poster === 'string' && (
+                <Image source={{ uri: imageUrl(item.poster) }} style={styles.popupCover} />
+              )}
+              {typeof values[0] === 'string' && <VideoBlock uri={String(values[0])} fullWidth={fullWidth} />}
+              {!!item.description && <Text style={styles.caption}>{plain(item.description)}</Text>}
+            </View>
+          );
+        }
+        if (item.type === 'card') {
+          return (
+            <View key={index} style={[styles.card, fullWidth && styles.fullWidth]}>
+              {typeof values[0] === 'string' && (
+                <Image source={{ uri: imageUrl(values[0]) }} style={styles.cardImage} resizeMode="contain" />
+              )}
+              {values[1] !== undefined && <Text style={styles.cardText}>{plain(values[1])}</Text>}
+            </View>
+          );
+        }
+        return null;
+      })}
+    </View>
+  );
 }
 
 export default function ArticleDetailScreen() {
@@ -53,5 +121,10 @@ export default function ArticleDetailScreen() {
   const [article, setArticle] = useState<ApiItem | null>(null);
   useEffect(() => { const articleIdValue = id ?? articleId; if (articleIdValue) api.article(articleIdValue).then(value => setArticle(value ?? null)).catch(() => setArticle(null)); }, [id, articleId]);
   if (!article) return <View style={styles.loading}><Text style={styles.loadingText}>加载中…</Text></View>;
-  return <ScrollView style={styles.page} contentContainerStyle={styles.content}><ContentBlocks content={article.content} /></ScrollView>;
+
+  return (
+    <ScrollView style={styles.page} contentContainerStyle={styles.content}>
+      <ContentBlocks content={article.content} />
+    </ScrollView>
+  );
 }

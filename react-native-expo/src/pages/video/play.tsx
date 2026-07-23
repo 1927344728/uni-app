@@ -2,7 +2,8 @@ import { styles } from './play.styles';
 import { useEffect, useMemo, useState } from 'react';
 import { useEvent } from 'expo';
 import { VideoView, useVideoPlayer } from 'expo-video';
-import { Image, PanResponder, Pressable, SafeAreaView, Text, View } from 'react-native';
+import { Image, PanResponder, Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { api, type ApiItem } from '@/lib/api';
 
@@ -53,15 +54,39 @@ export default function VideoPlayScreen() {
   if (!current) return <View style={styles.loading}><Text>正在加载视频…</Text></View>;
   const cover = typeof current.cover === 'string' ? current.cover : undefined;
   const description = plainText((current as Record<string, unknown>).desc);
-  return <View style={styles.page} {...gestures.panHandlers}>
-    {cover && <Image source={{ uri: cover }} blurRadius={28} style={styles.background} />}
-    <View style={styles.mask} />
-    <VideoView player={player} style={styles.video} contentFit={(current as Record<string, unknown>).objectFit === 'contain' ? 'contain' : 'cover'} nativeControls={false} />
-    <SafeAreaView style={styles.overlay}>
-      <Pressable style={styles.back} onPress={() => router.back()}><Text style={styles.backText}>‹</Text></Pressable>
-      <Pressable style={styles.tapArea} onPress={() => isPlaying ? player.pause() : player.play()}>{!isPlaying && <Text style={styles.play}>▶</Text>}</Pressable>
-      <Pressable style={styles.caption} onPress={() => setExpanded(old => !old)}><Text style={styles.publisher}>@{String((current as Record<string, unknown>).publisher ?? '未知')}</Text><Text style={styles.description} numberOfLines={expanded ? 7 : 2}>{description}</Text><Text style={styles.hint}>{expanded ? '收起' : '点击展开'} · 上滑下一条</Text></Pressable>
-      <Pressable style={styles.progress} onPress={event => { const duration = player.duration || 0; if (duration) player.currentTime = duration * event.nativeEvent.locationX / 360; }}><View style={[styles.progressValue, { width: `${Math.min(100, currentTime / (player.duration || 1) * 100)}%` }]} /></Pressable>
-    </SafeAreaView>
-  </View>;
+
+  return (
+    <View style={styles.page} {...gestures.panHandlers}>
+      {cover && <Image source={{ uri: cover }} blurRadius={28} style={styles.background} />}
+      <View style={styles.mask} />
+      <VideoView
+        player={player}
+        style={styles.video}
+        contentFit={(current as Record<string, unknown>).objectFit === 'contain' ? 'contain' : 'cover'}
+        nativeControls={false}
+      />
+      <SafeAreaView style={styles.overlay}>
+        <Pressable style={styles.back} onPress={() => router.back()}>
+          <Text style={styles.backText}>‹</Text>
+        </Pressable>
+        <Pressable style={styles.tapArea} onPress={() => isPlaying ? player.pause() : player.play()}>
+          {!isPlaying && <Text style={styles.play}>▶</Text>}
+        </Pressable>
+        <Pressable style={styles.caption} onPress={() => setExpanded(old => !old)}>
+          <Text style={styles.publisher}>@{String((current as Record<string, unknown>).publisher ?? '未知')}</Text>
+          <Text style={styles.description} numberOfLines={expanded ? 7 : 2}>{description}</Text>
+          <Text style={styles.hint}>{expanded ? '收起' : '点击展开'} · 上滑下一条</Text>
+        </Pressable>
+        <Pressable
+          style={styles.progress}
+          onPress={event => {
+            const duration = player.duration || 0;
+            if (duration) player.currentTime = duration * event.nativeEvent.locationX / 360;
+          }}
+        >
+          <View style={[styles.progressValue, { width: `${Math.min(100, currentTime / (player.duration || 1) * 100)}%` }]} />
+        </Pressable>
+      </SafeAreaView>
+    </View>
+  );
 }

@@ -75,22 +75,59 @@ export default function LifeScreen() {
     router.push(path as never);
   };
 
-  return <View style={styles.page}>
-    {tabs.length > 1 && <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabs} contentContainerStyle={styles.tabsContent}>
-      {tabs.map(item => <Pressable key={item.key} onPress={() => selectTab(item.key)} style={styles.tab}><Text style={[styles.tabText, active === item.key && styles.tabTextActive]}>{item.name}</Text>{active === item.key && <View style={styles.underline} />}</Pressable>)}
-    </ScrollView>}
-    <View style={styles.searchArea}>
-      {subtypeOptions.length > 1 && <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.subtypes}>{subtypeOptions.map(option => <Pressable key={option.value} onPress={() => setSubType(subType === option.value ? null : option.value)}><Text style={[styles.subtype, subType === option.value && styles.subtypeActive]}>{option.name}</Text></Pressable>)}</ScrollView>}
-      <TextInput value={keyword} onChangeText={setKeyword} placeholder="请输入搜索词" placeholderTextColor="#b3b3b3" style={styles.search} />
+  return (
+    <View style={styles.page}>
+      {tabs.length > 1 && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabs} contentContainerStyle={styles.tabsContent}>
+          {tabs.map(item => (
+            <Pressable key={item.key} onPress={() => selectTab(item.key)} style={styles.tab}>
+              <Text style={[styles.tabText, active === item.key && styles.tabTextActive]}>{item.name}</Text>
+              {active === item.key && <View style={styles.underline} />}
+            </Pressable>
+          ))}
+        </ScrollView>
+      )}
+      <View style={styles.searchArea}>
+        {subtypeOptions.length > 1 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.subtypes}>
+            {subtypeOptions.map(option => (
+              <Pressable key={option.value} onPress={() => setSubType(subType === option.value ? null : option.value)}>
+                <Text style={[styles.subtype, subType === option.value && styles.subtypeActive]}>{option.name}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        )}
+        <TextInput
+          value={keyword}
+          onChangeText={setKeyword}
+          placeholder="请输入搜索词"
+          placeholderTextColor="#b3b3b3"
+          style={styles.search}
+        />
+      </View>
+      <ScrollView contentContainerStyle={styles.list}>
+        {items.map(item => (
+          <Pressable key={String(item.id)} onPress={() => openItem(item)} style={styles.item}>
+            <Image source={{ uri: thumbnail(item.thumb ?? item.cover ?? item.image) }} style={styles.image} />
+            <View style={styles.itemContent}>
+              <Text numberOfLines={1} style={[styles.title, item.className === 'active' && styles.activeText]}>
+                {String(item.title ?? item.name ?? '')}
+              </Text>
+              <Text numberOfLines={2} style={[styles.note, item.className === 'active' && styles.activeText]}>
+                {String(item.note ?? item.description ?? '')}
+              </Text>
+              {item.badgeText ? <Text style={styles.badge}>{String(item.badgeText)}</Text> : null}
+            </View>
+          </Pressable>
+        ))}
+        {!items.length && <Text style={styles.empty}>~什么都没有哦~</Text>}
+        {items.length > 0 && (
+          <Pressable onPress={loadMore}>
+            <Text style={styles.empty}>{isLast ? '~没有更多了哦~' : '加载更多'}</Text>
+          </Pressable>
+        )}
+      </ScrollView>
+      <AppFooter active="life" />
     </View>
-    <ScrollView contentContainerStyle={styles.list}>
-      {items.map(item => <Pressable key={String(item.id)} onPress={() => openItem(item)} style={styles.item}>
-        <Image source={{ uri: thumbnail(item.thumb ?? item.cover ?? item.image) }} style={styles.image} />
-        <View style={styles.itemContent}><Text numberOfLines={1} style={[styles.title, item.className === 'active' && styles.activeText]}>{String(item.title ?? item.name ?? '')}</Text><Text numberOfLines={2} style={[styles.note, item.className === 'active' && styles.activeText]}>{String(item.note ?? item.description ?? '')}</Text>{item.badgeText ? <Text style={styles.badge}>{String(item.badgeText)}</Text> : null}</View>
-      </Pressable>)}
-      {!items.length && <Text style={styles.empty}>~什么都没有哦~</Text>}
-      {items.length > 0 && <Pressable onPress={loadMore}><Text style={styles.empty}>{isLast ? '~没有更多了哦~' : '加载更多'}</Text></Pressable>}
-    </ScrollView>
-    <AppFooter active="life" />
-  </View>;
+  );
 }

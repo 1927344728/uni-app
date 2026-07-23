@@ -27,18 +27,57 @@ export default function ArticleScreen() {
   }).catch(() => { if (!append) setItems([]); setIsLast(true); });
   useEffect(() => { const timer = setTimeout(() => load(0), 200); return () => clearTimeout(timer); }, [type, keyword]);
 
-  return <View style={styles.page}>
-    <View style={styles.toolbar}>
-      {options.length > 1 && <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.types}><Pressable onPress={() => setType(undefined)}><Text style={[styles.type, !type && styles.typeActive]}>全部</Text></Pressable>{options.map(option => <Pressable key={String(option.typeId)} onPress={() => setType(String(option.typeId))}><Text style={[styles.type, type === String(option.typeId) && styles.typeActive]}>{String(option.typeName ?? '')}</Text></Pressable>)}</ScrollView>}
-      <TextInput value={keyword} onChangeText={setKeyword} placeholder="请输入搜索词" placeholderTextColor="#b3b3b3" style={styles.search} />
+  return (
+    <View style={styles.page}>
+      <View style={styles.toolbar}>
+        {options.length > 1 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.types}>
+            <Pressable onPress={() => setType(undefined)}>
+              <Text style={[styles.type, !type && styles.typeActive]}>全部</Text>
+            </Pressable>
+            {options.map(option => (
+              <Pressable key={String(option.typeId)} onPress={() => setType(String(option.typeId))}>
+                <Text style={[styles.type, type === String(option.typeId) && styles.typeActive]}>
+                  {String(option.typeName ?? '')}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        )}
+        <TextInput
+          value={keyword}
+          onChangeText={setKeyword}
+          placeholder="请输入搜索词"
+          placeholderTextColor="#b3b3b3"
+          style={styles.search}
+        />
+      </View>
+      <ScrollView contentContainerStyle={styles.list}>
+        {items.map(item => (
+          <Pressable
+            key={String(item.id)}
+            onPress={() => router.push(`/article/detail?id=${item.id}`)}
+            style={styles.item}
+          >
+            <Image source={{ uri: thumbnail(item.thumb) }} style={styles.thumb} />
+            <View style={styles.itemInfo}>
+              <Text numberOfLines={1} style={[styles.itemTitle, item.className === 'active' && styles.itemActive]}>
+                {String(item.title ?? '')}
+              </Text>
+              <Text numberOfLines={2} style={[styles.note, item.className === 'active' && styles.itemActive]}>
+                {String(item.note ?? '')}
+              </Text>
+            </View>
+            <Text style={styles.chevron}>›</Text>
+          </Pressable>
+        ))}
+        {!items.length && isLast && <Text style={styles.empty}>~什么都没有哦~</Text>}
+        {!!items.length && (
+          <Pressable onPress={() => !isLast && load(pageNum + 1, true)}>
+            <Text style={styles.more}>{isLast ? '~没有更多了哦~' : '加载更多'}</Text>
+          </Pressable>
+        )}
+      </ScrollView>
     </View>
-    <ScrollView contentContainerStyle={styles.list}>
-      {items.map(item => <Pressable key={String(item.id)} onPress={() => router.push(`/article/detail?id=${item.id}`)} style={styles.item}>
-        <Image source={{ uri: thumbnail(item.thumb) }} style={styles.thumb} />
-        <View style={styles.itemInfo}><Text numberOfLines={1} style={[styles.itemTitle, item.className === 'active' && styles.itemActive]}>{String(item.title ?? '')}</Text><Text numberOfLines={2} style={[styles.note, item.className === 'active' && styles.itemActive]}>{String(item.note ?? '')}</Text></View><Text style={styles.chevron}>›</Text>
-      </Pressable>)}
-      {!items.length && isLast && <Text style={styles.empty}>~什么都没有哦~</Text>}
-      {!!items.length && <Pressable onPress={() => !isLast && load(pageNum + 1, true)}><Text style={styles.more}>{isLast ? '~没有更多了哦~' : '加载更多'}</Text></Pressable>}
-    </ScrollView>
-  </View>;
+  );
 }

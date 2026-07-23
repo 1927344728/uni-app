@@ -39,25 +39,67 @@ export default function MeScreen() {
     }).catch(() => Alert.alert('提示', '登出失败'));
   };
 
-  return <View style={styles.page}>
-    <ScrollView contentContainerStyle={styles.content}>
-      {user ? <ImageBackground source={{ uri: background }} style={styles.profileBackground}>
-        <View style={styles.userInfo}>
-          <View style={styles.avatarWrap}><Image source={{ uri: avatar }} style={styles.avatar} /></View>
-          <View><View style={styles.nameRow}><Text style={styles.name}>{String(user.nickname ?? user.name ?? '')}</Text><Text style={styles.role}>{roleLabel(user.role)}</Text></View><Pressable onPress={() => Linking.openURL(`tel:${String(user.phone_number ?? '')}`)}><Text style={styles.phone}>{String(user.phone_number ?? '')}</Text></Pressable></View>
-        </View>
-      </ImageBackground> : <ImageBackground source={{ uri: loginBackground }} style={styles.loginBackground}><Pressable onPress={() => router.push('/login')} style={styles.loginButton}><Text style={styles.loginText}>登录</Text></Pressable></ImageBackground>}
+  return (
+    <View style={styles.page}>
+      <ScrollView contentContainerStyle={styles.content}>
+        {user ? (
+          <ImageBackground source={{ uri: background }} style={styles.profileBackground}>
+            <View style={styles.userInfo}>
+              <View style={styles.avatarWrap}>
+                <Image source={{ uri: avatar }} style={styles.avatar} />
+              </View>
+              <View>
+                <View style={styles.nameRow}>
+                  <Text style={styles.name}>{String(user.nickname ?? user.name ?? '')}</Text>
+                  <Text style={styles.role}>{roleLabel(user.role)}</Text>
+                </View>
+                <Pressable onPress={() => Linking.openURL(`tel:${String(user.phone_number ?? '')}`)}>
+                  <Text style={styles.phone}>{String(user.phone_number ?? '')}</Text>
+                </Pressable>
+              </View>
+            </View>
+          </ImageBackground>
+        ) : (
+          <ImageBackground source={{ uri: loginBackground }} style={styles.loginBackground}>
+            <Pressable onPress={() => router.push('/login')} style={styles.loginButton}>
+              <Text style={styles.loginText}>登录</Text>
+            </Pressable>
+          </ImageBackground>
+        )}
 
-      <View style={styles.main}>
-        <View style={styles.group}>{features.map(item => <Row key={item.name} label={item.name} onPress={() => router.push(item.href as never)} />)}</View>
-        <View style={styles.group}><Row label="清除缓存" onPress={clearCache} /><Row label="关于" onPress={() => router.push('/me/about')} /></View>
-      </View>
-      {user && <View style={styles.actions}><Pressable onPress={() => router.push('/login/password')}><Text style={styles.action}>修改密码</Text></Pressable><Text style={styles.separator}>|</Text><Pressable onPress={logout}><Text style={styles.action}>退出登录</Text></Pressable></View>}
-    </ScrollView>
-    <AppFooter active="me" />
-  </View>;
+        <View style={styles.main}>
+          <View style={styles.group}>
+            {features.map(item => (
+              <Row key={item.name} label={item.name} onPress={() => router.push(item.href as never)} />
+            ))}
+          </View>
+          <View style={styles.group}>
+            <Row label="清除缓存" onPress={clearCache} />
+            <Row label="关于" onPress={() => router.push('/me/about')} />
+          </View>
+        </View>
+        {user && (
+          <View style={styles.actions}>
+            <Pressable onPress={() => router.push('/login/password')}>
+              <Text style={styles.action}>修改密码</Text>
+            </Pressable>
+            <Text style={styles.separator}>|</Text>
+            <Pressable onPress={logout}>
+              <Text style={styles.action}>退出登录</Text>
+            </Pressable>
+          </View>
+        )}
+      </ScrollView>
+      <AppFooter active="me" />
+    </View>
+  );
 }
 
 function Row({ label, onPress }: { label: string; onPress: () => void }) {
-  return <Pressable onPress={onPress} style={styles.row}><Text style={styles.rowText}>{label}</Text><Text style={styles.chevron}>›</Text></Pressable>;
+  return (
+    <Pressable onPress={onPress} style={styles.row}>
+      <Text style={styles.rowText}>{label}</Text>
+      <Text style={styles.chevron}>›</Text>
+    </Pressable>
+  );
 }
