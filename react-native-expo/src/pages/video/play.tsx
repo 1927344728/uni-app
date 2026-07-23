@@ -1,109 +1,356 @@
-import { styles } from './play.styles';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { CAPTION_BOTTOM_GAP, PROGRESS_TRACK_HEIGHT, styles } from './play.styles';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useEvent } from 'expo';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { Image, PanResponder, Pressable, Text, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from 'expo-router';
+import { VerticalSwipePager, type VerticalSwipePagerHandle } from '@/components/VerticalSwipePager';
+import { goBackOrReplace } from '@/common/utils/goBack';
 import { api, type ApiItem } from '@/lib/api';
 
 type InlineVideo = ApiItem & { url?: string; desc?: unknown; publisher?: unknown; objectFit?: string };
 
-const asIds = (value?: string) => { try { const ids = JSON.parse(value ?? '[]'); return Array.isArray(ids) ? ids.map(String) : []; } catch { return []; } };
-const asInline = (value?: string) => { try { const list = JSON.parse(value ?? '[]'); return Array.isArray(list) ? list as InlineVideo[] : []; } catch { return []; } };
+const asIds = (value?: string) => {
+  try {
+    const parsed = JSON.parse(value ?? '[]');
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+};
+
+const asInline = (value?: string) => {
+  try {
+    const list = JSON.parse(value ?? '[]');
+    return Array.isArray(list) ? list as InlineVideo[] : [];
+  } catch {
+    return [];
+  }
+};
+
 const plainText = (value: unknown) => String(value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+const textEllipsis = (value: string, max: number) => (value.length > max ? `${value.slice(0, max)}...` : value);
+const isQueueMode = (value: string) => ['auto', 'menu', 'inline'].includes(value);
+
+const findPrevVideo = (list: InlineVideo[], played: (string | number)[], mode: string) => {
+  if (!isQueueMode(mode) || played.length === 0) return null;
+  const prevId = played[played.length - 1];
+  return list.find(item => String(item.id) === String(prevId)) ?? null;
+};
 
 export default function VideoPlayScreen() {
-  const { mode = 'auto', id, ids } = useLocalSearchParams<{ mode?: string; id?: string; ids?: string; type?: string }>();
-  const [queue, setQueue] = useState<InlineVideo[]>([]);
-  const [index, setIndex] = useState(0);
+  const { mode = 'auto', id, ids, type } = useLocalSearchParams<{ mode?: string; id?: string; ids?: string; type?: string }>();
+  const [allVideoList, setAllVideoList] = useState<InlineVideo[]>([]);
+  const [playedIds, setPlayedIds] = useState<(string | number)[]>([]);
+  const [currentVideo, setCurrentVideo] = useState<InlineVideo | null>(null);
+  const [prevVideo, setPrevVideo] = useState<InlineVideo | null>(null);
+  const [nextVideo, setNextVideo] = useState<InlineVideo | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [isDraggingProgress, setIsDraggingProgress] = useState(false);
+  const [progressOverrideTime, setProgressOverrideTime] = useState<number | null>(null);
   const [progressWidth, setProgressWidth] = useState(0);
   const insets = useSafeAreaInsets();
-  const player = useVideoPlayer(null, player => { player.timeUpdateEventInterval = 0.25; });
+  const switchingRef = useRef(false);
+  const pagerRef = useRef<VerticalSwipePagerHandle>(null);
+  const videoUrl = currentVideo?.url ? String(currentVideo.url) : null;
+  const player = useVideoPlayer(videoUrl, instance => { instance.timeUpdateEventInterval = 0.25; });
   const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: false });
   const timeUpdate = useEvent(player, 'timeUpdate', { currentTime: 0, currentLiveTimestamp: 0, currentOffsetFromLive: 0, bufferedPosition: 0 });
-  const currentTime = timeUpdate?.currentTime ?? 0;
-  const current = queue[index];
+  const reportedTime = timeUpdate?.currentTime ?? 0;
 
   useEffect(() => {
-    const load = async () => {
+    if (progressOverrideTime == null || isDraggingProgress) return;
+    if (Math.abs(reportedTime - progressOverrideTime) < 0.5) {
+      setProgressOverrideTime(null);
+    }
+  }, [reportedTime, progressOverrideTime, isDraggingProgress]);
+
+  const currentTime = progressOverrideTime ?? reportedTime;
+  const duration = player.duration || 0;
+  const progress = Math.min(100, currentTime / (duration || 1) * 100);
+  const footerHeight = PROGRESS_TRACK_HEIGHT + Math.max(insets.bottom, 0);
+  const captionBottom = footerHeight + CAPTION_BOTTOM_GAP;
+  const isAuto = mode === 'auto';
+
+  const collectPlayingIds = useCallback((prev: InlineVideo | null, current: InlineVideo | null, next: InlineVideo | null) => {
+    const playing: (string | number)[] = [];
+    if (prev?.id != null) playing.push(prev.id);
+    if (current?.id != null) playing.push(current.id);
+    if (next?.id != null) playing.push(next.id);
+    return playing;
+  }, []);
+
+  const fetchNextVideo = useCallback(async (
+    list: InlineVideo[],
+    played: (string | number)[],
+    current: InlineVideo | null,
+    playingIds: (string | number)[],
+    playMode: string,
+  ) => {
+    if (!current) return null;
+    if (playMode === 'auto') {
+      const video = await api.videoRandom({ type: type ?? undefined, playingIds, playedIds: played }).catch(() => null);
+      if (video?.url) {
+        setAllVideoList(prev => (prev.some(item => String(item.id) === String(video.id)) ? prev : [...prev, video as InlineVideo]));
+        return video as InlineVideo;
+      }
+      return null;
+    }
+    if ((playMode === 'menu' || playMode === 'inline') && list.length > 1) {
+      const currentIndex = list.findIndex(item => String(item.id) === String(current.id));
+      if (currentIndex !== -1) {
+        const nextIndex = (currentIndex + 1) % list.length;
+        if (nextIndex !== currentIndex) return list[nextIndex];
+      }
+    }
+    return null;
+  }, [type]);
+
+  const prefetchNext = useCallback(async (
+    list: InlineVideo[],
+    played: (string | number)[],
+    current: InlineVideo | null,
+    prev: InlineVideo | null,
+    playMode: string,
+  ) => {
+    if (!current || playMode !== 'auto') return;
+    const playingIds = collectPlayingIds(prev, current, null);
+    const next = await fetchNextVideo(list, played, current, playingIds, playMode);
+    if (next) setNextVideo(next);
+  }, [collectPlayingIds, fetchNextVideo]);
+
+  useEffect(() => {
+    const init = async () => {
       try {
+        let list: InlineVideo[] = [];
+        let current: InlineVideo | null = null;
+        let played: (string | number)[] = [];
+
         if (mode === 'inline') {
-          const list = asInline(ids);
-          const target = list.findIndex(item => String(item.id) === String(id));
-          setQueue(list);
-          setIndex(Math.max(target, 0));
+          list = asInline(ids);
+          const currentIndex = Math.max(list.findIndex(item => String(item.id) === String(id)), 0);
+          current = list[currentIndex] ?? null;
+          played = list.slice(0, currentIndex).map(item => item.id!).filter(idValue => idValue != null);
         } else if (mode === 'menu') {
-          const list = await api.videoByIds(asIds(ids));
-          const target = list.findIndex(item => String(item.id) === String(id));
-          setQueue(list ?? []);
-          setIndex(Math.max(target, 0));
+          list = (await api.videoByIds(asIds(ids))) ?? [];
+          const currentIndex = Math.max(list.findIndex(item => String(item.id) === String(id)), 0);
+          current = list[currentIndex] ?? null;
+          played = list.slice(0, currentIndex).map(item => item.id!).filter(idValue => idValue != null);
         } else {
-          const video = id ? await api.video(id) : undefined;
-          setQueue(video ? [video] : []);
-          setIndex(0);
+          current = id ? await api.video(id) as InlineVideo : null;
+          list = current ? [current] : [];
         }
-      } catch { setQueue([]); }
+
+        if (!current?.url) {
+          setCurrentVideo(null);
+          return;
+        }
+
+        const prev = findPrevVideo(list, played, mode);
+        const next = await fetchNextVideo(list, played, current, collectPlayingIds(prev, current, null), mode);
+        setAllVideoList(list);
+        setPlayedIds(played);
+        setPrevVideo(prev);
+        setCurrentVideo(current);
+        setNextVideo(next);
+        if (!next && mode === 'auto') void prefetchNext(list, played, current, prev, mode);
+      } catch {
+        setCurrentVideo(null);
+      }
     };
-    load();
-  }, [mode, id, ids]);
+    void init();
+  }, [collectPlayingIds, fetchNextVideo, id, ids, mode, prefetchNext]);
 
   useEffect(() => {
-    const url = current?.url;
-    if (!url) return;
+    if (!videoUrl) return;
     setExpanded(false);
-    player.replace(String(url));
-    player.play();
-  }, [current?.id, current?.url]);
+    setIsDraggingProgress(false);
+    setProgressOverrideTime(null);
+    const subscription = player.addListener('statusChange', ({ status }) => {
+      if (status === 'readyToPlay' && !player.playing) player.play();
+    });
+    return () => subscription.remove();
+  }, [player, videoUrl]);
 
-  const move = (direction: -1 | 1) => {
-    if (queue.length > 1) setIndex(old => (old + direction + queue.length) % queue.length);
-  };
-  const gestures = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dy) > 25 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
-    onPanResponderRelease: (_, gesture) => { if (gesture.dy < -50) move(1); if (gesture.dy > 50) move(-1); },
-  }), [queue.length]);
+  const goNextVideo = useCallback(async () => {
+    if (switchingRef.current || !currentVideo) return;
+    if (!nextVideo && !isAuto) return;
+    switchingRef.current = true;
+    try {
+      let target = nextVideo;
+      if (!target && isAuto) {
+        target = await fetchNextVideo(allVideoList, playedIds, currentVideo, collectPlayingIds(prevVideo, currentVideo, null), mode);
+      }
+      if (!target) return;
 
-  if (!current) return <View style={styles.loading}><Text style={styles.loadingText}>正在加载视频…</Text></View>;
+      const newPlayed = currentVideo.id != null ? [...playedIds, currentVideo.id] : playedIds;
+      const newPrev = currentVideo;
+      const newCurrent = target;
+      setPlayedIds(newPlayed);
+      setPrevVideo(newPrev);
+      setCurrentVideo(newCurrent);
+      setNextVideo(null);
+      const playingIds = collectPlayingIds(newPrev, newCurrent, null);
+      const next = await fetchNextVideo(allVideoList, newPlayed, newCurrent, playingIds, mode);
+      setNextVideo(next);
+      if (!next && isAuto) void prefetchNext(allVideoList, newPlayed, newCurrent, newPrev, mode);
+    } finally {
+      switchingRef.current = false;
+    }
+  }, [allVideoList, collectPlayingIds, currentVideo, fetchNextVideo, isAuto, mode, nextVideo, playedIds, prevVideo, prefetchNext]);
 
-  const cover = typeof current.cover === 'string' ? current.cover : undefined;
-  const description = plainText((current as Record<string, unknown>).desc ?? current.desc);
-  const objectFit = (current as Record<string, unknown>).objectFit === 'contain' || current.objectFit === 'contain' ? 'contain' : 'cover';
-  const progress = Math.min(100, currentTime / (player.duration || 1) * 100);
+  const goPrevVideo = useCallback(() => {
+    if (switchingRef.current || !prevVideo || !currentVideo) return;
+    switchingRef.current = true;
+    try {
+      const newPlayed = playedIds.slice(0, -1);
+      const newCurrent = prevVideo;
+      const newNext = currentVideo;
+      setPlayedIds(newPlayed);
+      setCurrentVideo(newCurrent);
+      setNextVideo(newNext);
+      setPrevVideo(findPrevVideo(allVideoList, newPlayed, mode));
+    } finally {
+      switchingRef.current = false;
+    }
+  }, [allVideoList, currentVideo, mode, playedIds, prevVideo]);
+
+  useEffect(() => {
+    const subscription = player.addListener('playToEnd', () => {
+      void pagerRef.current?.animateToNext();
+    });
+    return () => subscription.remove();
+  }, [player]);
+
+  const canGoPrev = !!prevVideo;
+  const canGoNext = isAuto ? true : !!nextVideo;
+
+  const togglePlay = useCallback(() => {
+    if (isPlaying) player.pause();
+    else player.play();
+  }, [isPlaying, player]);
+
+  const applySeek = useCallback((locationX: number) => {
+    if (!duration || !Number.isFinite(duration) || progressWidth <= 0) return;
+    const time = Math.max(0, Math.min(duration, duration * locationX / progressWidth));
+    setProgressOverrideTime(time);
+    player.currentTime = time;
+  }, [duration, player, progressWidth]);
+
+  const sliderPanResponder = useMemo(() => PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderGrant: event => {
+      setIsDraggingProgress(true);
+      applySeek(event.nativeEvent.locationX);
+    },
+    onPanResponderMove: event => {
+      applySeek(event.nativeEvent.locationX);
+    },
+    onPanResponderRelease: event => {
+      applySeek(event.nativeEvent.locationX);
+      setIsDraggingProgress(false);
+      if (!isPlaying) player.play();
+    },
+    onPanResponderTerminate: () => {
+      setIsDraggingProgress(false);
+    },
+  }), [applySeek, isPlaying, player]);
+
+  const renderSlide = useCallback((video: InlineVideo, role: 'prev' | 'current' | 'next') => {
+    const cover = typeof video.cover === 'string' ? video.cover : undefined;
+    const description = plainText((video as Record<string, unknown>).desc ?? video.desc);
+    const publisher = String((video as Record<string, unknown>).publisher ?? video.publisher ?? '未知');
+    const objectFit = (video as Record<string, unknown>).objectFit === 'contain' || video.objectFit === 'contain' ? 'contain' : 'cover';
+    const isCurrent = role === 'current';
+    const hint = role === 'prev' ? '下滑返回上一个' : role === 'next' ? '上滑切换到下一个' : undefined;
+
+    return (
+      <View style={styles.slidePage}>
+        {cover && <Image source={{ uri: cover }} blurRadius={25} style={styles.background} />}
+        <View style={styles.mask} />
+        {isCurrent && (
+          <>
+            <View style={styles.videoStage}>
+              <VideoView
+                key={String(video.id)}
+                player={player}
+                style={styles.video}
+                contentFit={objectFit}
+                nativeControls={false}
+                playsInline
+              />
+            </View>
+            <Pressable style={styles.tapArea} onPress={togglePlay}>
+              {!isPlaying && <Text style={styles.play}>▶</Text>}
+            </Pressable>
+          </>
+        )}
+        {!isCurrent && hint && <Text style={styles.swipeHint}>{hint}</Text>}
+        <Pressable
+          style={[styles.caption, { bottom: captionBottom }]}
+          onPress={() => isCurrent && setExpanded(old => !old)}
+        >
+          <Text style={styles.publisher}>@{publisher}</Text>
+          {!!description && (
+            <Text style={styles.description} numberOfLines={isCurrent && expanded ? 12 : 2}>
+              #{textEllipsis(description, isCurrent && expanded ? 240 : 64)}
+            </Text>
+          )}
+        </Pressable>
+      </View>
+    );
+  }, [captionBottom, expanded, isPlaying, player, togglePlay]);
+
+  const swipePages = useMemo(() => {
+    if (!currentVideo) return [];
+    const pages = [];
+    if (prevVideo && canGoPrev) {
+      pages.push({ key: `prev-${prevVideo.id}`, content: renderSlide(prevVideo, 'prev') });
+    }
+    pages.push({ key: `current-${currentVideo.id}`, content: renderSlide(currentVideo, 'current') });
+    if (nextVideo && canGoNext) {
+      pages.push({ key: `next-${nextVideo.id}`, content: renderSlide(nextVideo, 'next') });
+    } else if (canGoNext) {
+      pages.push({ key: `next-placeholder-${currentVideo.id}`, content: renderSlide(nextVideo ?? currentVideo, 'next') });
+    }
+    return pages;
+  }, [canGoNext, canGoPrev, currentVideo, nextVideo, prevVideo, renderSlide]);
+
+  const swipeIndex = prevVideo && canGoPrev ? 1 : 0;
+
+  if (!currentVideo) {
+    return <View style={styles.loading}><Text style={styles.loadingText}>正在加载视频…</Text></View>;
+  }
 
   return (
-    <View style={styles.page} {...gestures.panHandlers}>
-      {cover && <Image source={{ uri: cover }} blurRadius={25} style={styles.background} />}
-      <View style={styles.mask} />
-      <VideoView player={player} style={styles.video} contentFit={objectFit} nativeControls={false} />
-      <SafeAreaView style={styles.overlay} edges={['top', 'bottom']}>
-        <View style={styles.header}>
-          <Pressable style={styles.back} onPress={() => router.back()}>
-            <Text style={styles.backText}>‹</Text>
-          </Pressable>
-        </View>
-        <Pressable style={styles.tapArea} onPress={() => isPlaying ? player.pause() : player.play()}>
-          {!isPlaying && <Text style={styles.play}>▶</Text>}
-        </Pressable>
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 8) }]}>
-          <Pressable style={styles.caption} onPress={() => setExpanded(old => !old)}>
-            <Text style={styles.publisher}>@{String((current as Record<string, unknown>).publisher ?? current.publisher ?? '未知')}</Text>
-            <Text style={styles.description} numberOfLines={expanded ? 7 : 2}>{description}</Text>
-            <Text style={styles.hint}>{expanded ? '收起' : '点击展开'} · 上滑下一条</Text>
-          </Pressable>
-          <Pressable
-            style={styles.progress}
-            onLayout={event => setProgressWidth(event.nativeEvent.layout.width)}
-            onPress={event => {
-              const duration = player.duration || 0;
-              if (duration && progressWidth) player.currentTime = duration * event.nativeEvent.locationX / progressWidth;
-            }}
-          >
+    <View style={styles.page}>
+      <Pressable style={[styles.back, { top: insets.top + 4 }]} onPress={() => goBackOrReplace('/video')}>
+        <Text style={styles.backText}>‹</Text>
+      </Pressable>
+      <VerticalSwipePager
+        ref={pagerRef}
+        style={{ flex: 1, marginBottom: footerHeight }}
+        pages={swipePages}
+        currentIndex={swipeIndex}
+        canGoPrev={canGoPrev}
+        canGoNext={canGoNext}
+        onGoPrev={goPrevVideo}
+        onGoNext={() => void goNextVideo()}
+      />
+
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 0) }]}>
+        <View
+          style={styles.progressTrack}
+          onLayout={event => setProgressWidth(event.nativeEvent.layout.width)}
+          {...sliderPanResponder.panHandlers}
+        >
+          <View style={styles.progress}>
             <View style={[styles.progressValue, { width: `${progress}%` }]} />
-          </Pressable>
+          </View>
         </View>
-      </SafeAreaView>
+      </View>
     </View>
   );
 }

@@ -1,23 +1,45 @@
 import { StyleSheet } from 'react-native';
 
+export const PROGRESS_HEIGHT = 4;
+export const PROGRESS_TRACK_HEIGHT = 20;
+export const CAPTION_BOTTOM_GAP = 30;
+
 export const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#0f0f0f' },
+  page: { flex: 1, backgroundColor: '#0f0f0f', overflow: 'hidden' },
+  slidePage: { flex: 1, overflow: 'hidden', backgroundColor: '#0f0f0f' },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0f0f0f' },
   loadingText: { color: '#fff' },
   background: { ...StyleSheet.absoluteFill, width: '100%', height: '100%', transform: [{ scale: 1.2 }] },
   mask: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,.45)' },
-  video: { ...StyleSheet.absoluteFill },
-  overlay: { flex: 1 },
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingBottom: 8 },
-  back: { padding: 6 },
+  videoStage: {
+    ...StyleSheet.absoluteFill,
+    zIndex: 2,
+    overflow: 'hidden',
+  },
+  video: {
+    width: '100%',
+    height: '100%',
+  },
+  back: { position: 'absolute', left: 12, zIndex: 20, padding: 6 },
   backText: { color: '#fff', fontSize: 36, lineHeight: 36 },
-  tapArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  tapArea: { ...StyleSheet.absoluteFill, zIndex: 3, alignItems: 'center', justifyContent: 'center' },
   play: { color: 'rgba(255,255,255,.7)', fontSize: 72 },
-  caption: { paddingHorizontal: 16, paddingBottom: 12 },
+  swipeHint: {
+    position: 'absolute',
+    top: '40%',
+    left: 0,
+    right: 0,
+    zIndex: 15,
+    color: 'rgba(255,255,255,.7)',
+    fontSize: 13,
+    textAlign: 'center',
+    paddingHorizontal: 24,
+  },
+  caption: { position: 'absolute', left: 0, right: 0, zIndex: 8, paddingHorizontal: 12 },
   publisher: { color: '#fff', fontWeight: '600', fontSize: 18, marginBottom: 6 },
   description: { color: '#fff', fontSize: 14, lineHeight: 22 },
-  hint: { marginTop: 6, color: 'rgba(255,255,255,.65)', fontSize: 12 },
-  footer: { paddingHorizontal: 0, paddingBottom: 0 },
-  progress: { height: 4, backgroundColor: 'rgba(255,255,255,.25)' },
-  progressValue: { height: 4, backgroundColor: '#fff' },
+  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 12 },
+  progressTrack: { height: 20, justifyContent: 'center' },
+  progress: { height: PROGRESS_HEIGHT, backgroundColor: 'rgba(255,255,255,.25)', borderRadius: 2, overflow: 'hidden' },
+  progressValue: { height: PROGRESS_HEIGHT, backgroundColor: '#fff', borderRadius: 2 },
 });

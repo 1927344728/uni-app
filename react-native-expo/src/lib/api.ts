@@ -13,9 +13,15 @@ export type ApiItem = Record<string, unknown> & {
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://app.izhao.com.cn:9443';
 
 export async function request<T>(path: string, params: Record<string, unknown> = {}, method: 'GET' | 'POST' = 'GET'): Promise<T> {
-  const query = new URLSearchParams(
-    Object.entries(params).filter(([, value]) => value !== undefined && value !== null).map(([key, value]) => [key, String(value)]),
-  );
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (Array.isArray(value)) {
+      value.forEach(item => query.append(key, String(item)));
+      return;
+    }
+    query.append(key, String(value));
+  });
   const response = await fetch(`${API_URL}/${path}${method === 'GET' && query.size ? `?${query}` : ''}`, {
     method,
     credentials: 'include',
@@ -48,8 +54,10 @@ export const api = {
   musicMenus: () => request<ApiItem[]>('api/music/getMusicMenuList'),
   music: (id: string) => request<ApiItem>('api/music/getMusicById', { id }),
   musicByIds: (ids: string[]) => request<ApiItem[]>('api/music/getMusicByIds', { ids }),
+  musicRandom: (params: Record<string, unknown> = {}) => request<ApiItem>('api/music/getMusicByRandom', params),
   videoPage: (params: Record<string, unknown> = {}) => request<{ content?: ApiItem[] }>('api/video/getVideoPageList', params),
   videoMenus: () => request<ApiItem[]>('api/video/getVideoMenuList'),
   video: (id: string) => request<ApiItem>('api/video/getVideoById', { id }),
   videoByIds: (ids: string[]) => request<ApiItem[]>('api/video/getVideoByIds', { ids }),
+  videoRandom: (params: Record<string, unknown> = {}) => request<ApiItem>('api/video/getVideoByRandom', params),
 };
