@@ -1,6 +1,7 @@
 import { styles, FOOTER_HEIGHT, SETTINGS_BAR_HEIGHT } from './play.styles';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Modal, PanResponder, Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
@@ -54,7 +55,7 @@ export default function MusicPlayScreen() {
   const current = isAuto ? autoCurrent : menuQueue[menuIndex];
   const activeLyric = activeLyricIndex(parsedLyrics, status.currentTime);
   const footerOffset = FOOTER_HEIGHT + insets.bottom;
-  const settingsBottom = footerOffset + 8;
+  const settingsBottom = footerOffset + 4;
   const canGoPrev = isMenu ? playedIds.length > 0 : autoHistory.length > 0;
   const canGoNext = isMenu ? menuQueue.length > 1 : true;
 
@@ -317,8 +318,13 @@ export default function MusicPlayScreen() {
   return (
     <View style={styles.page}>
       <SafeAreaView style={styles.body} edges={['top']}>
-        <Pressable style={styles.back} onPress={() => goBackOrReplace('/music')}>
-          <Text style={styles.backText}>‹</Text>
+        <Pressable
+          style={styles.back}
+          accessibilityRole="button"
+          accessibilityLabel="返回"
+          onPress={() => goBackOrReplace('/music')}
+        >
+          <Ionicons name="chevron-back" size={28} color="#fff" />
         </Pressable>
         <VerticalSwipePager
           ref={pagerRef}
@@ -335,7 +341,7 @@ export default function MusicPlayScreen() {
 
       <View style={[styles.overlay, styles.settingBar, { bottom: settingsBottom }]}>
         <Pressable style={styles.settings} onPress={() => setTimerVisible(true)}>
-          <Text style={styles.settingsText}>⚙</Text>
+          <Ionicons name="settings-outline" size={22} color="#fff" />
         </Pressable>
       </View>
 
@@ -359,7 +365,7 @@ export default function MusicPlayScreen() {
             <Text style={styles.controlText}>上一曲</Text>
           </Pressable>
           <Pressable onPress={() => status.playing ? player.pause() : player.play()} style={styles.play}>
-            <Text style={styles.playText}>{status.playing ? 'Ⅱ' : '▶'}</Text>
+            <Ionicons name={status.playing ? 'pause' : 'play'} size={24} color="#fff" />
           </Pressable>
           <Pressable disabled={!canGoNext} onPress={() => void pagerRef.current?.animateToNext()} style={[styles.skip, !canGoNext && styles.skipDisabled]}>
             <Text style={styles.controlText}>下一曲</Text>

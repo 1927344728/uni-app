@@ -79,7 +79,7 @@ export default function RhymeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.page}>
+    <SafeAreaView style={styles.page} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
         {!detecting ? (
           <>

@@ -6,10 +6,12 @@ import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-nati
 import { router, useLocalSearchParams } from 'expo-router';
 import { AppFooter } from '@/components/AppFooter';
 import { AppRefreshControl } from '@/components/AppRefreshControl';
+import { TabSwipeContainer } from '@/components/TabSwipeContainer';
 import { useScrollToLower } from '@/common/hooks/useScrollToLower';
 import { SearchBar } from '@/components/SearchBar';
 import { api, type ApiItem } from '@/lib/api';
 import { mergeUniqueById, uniqueTypeTabs, uniqueValueOptions } from '@/common/utils/categoryTabs';
+import { openUrl } from '@/common/utils/openUrl';
 
 type Tab = { key: string; id: number; name: string; source: 'music' | 'video' | 'article' };
 type Category = ApiItem & { categoryId?: number; typeId?: number; typeName?: string; categoryName?: string };
@@ -192,6 +194,7 @@ export default function LifeScreen() {
       : !videoLast;
 
   const onScrollToLower = useScrollToLower(loadMore, !!canLoadMore);
+  const tabKeys = useMemo(() => tabs.map(item => item.key), [tabs]);
 
   const openVideoQueue = (queue: ApiItem[], start?: ApiItem) => router.push({
     pathname: '/video/play',
@@ -201,7 +204,14 @@ export default function LifeScreen() {
   const renderArticleList = () => (
     <>
       {items.map(item => (
-        <Pressable key={String(item.id)} onPress={() => router.push(`/article/detail?id=${item.id}` as never)} style={styles.item}>
+        <Pressable
+          key={String(item.id)}
+          onPress={() => {
+            if (openUrl(item)) return;
+            router.push(`/article/detail?id=${item.id}` as never);
+          }}
+          style={styles.item}
+        >
           <Image source={{ uri: thumbnail(item.thumb) }} style={styles.image} />
           <View style={styles.itemContent}>
             <Text numberOfLines={1} style={[styles.title, item.className === 'active' && styles.activeText]}>
@@ -352,8 +362,11 @@ export default function LifeScreen() {
         )}
         {current?.source === 'article' && subtypeOptions.length > 1 && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subtypesRow} contentContainerStyle={styles.subtypes}>
+            <Pressable onPress={() => setSubType(null)}>
+              <Text style={[styles.subtype, !subType && styles.subtypeActive]}>全部</Text>
+            </Pressable>
             {subtypeOptions.map(option => (
-              <Pressable key={option.value} onPress={() => setSubType(subType === option.value ? null : option.value)}>
+              <Pressable key={option.value} onPress={() => setSubType(option.value)}>
                 <Text style={[styles.subtype, subType === option.value && styles.subtypeActive]}>{option.name}</Text>
               </Pressable>
             ))}
@@ -363,17 +376,19 @@ export default function LifeScreen() {
           <SearchBar value={keyword} onChangeText={setKeyword} placeholder="请输入搜索词" />
         </View>
       </View>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.list}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={() => void refreshList()} />}
-        onScroll={onScrollToLower}
-        scrollEventThrottle={16}
-      >
-        {current?.source === 'music' && renderMusicPanel()}
-        {current?.source === 'video' && renderVideoPanel()}
-        {current?.source === 'article' && renderArticleList()}
-      </ScrollView>
+      <TabSwipeContainer tabKeys={tabKeys} activeKey={active} onChange={selectTab}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.list}
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={() => void refreshList()} />}
+          onScroll={onScrollToLower}
+          scrollEventThrottle={16}
+        >
+          {current?.source === 'music' && renderMusicPanel()}
+          {current?.source === 'video' && renderVideoPanel()}
+          {current?.source === 'article' && renderArticleList()}
+        </ScrollView>
+      </TabSwipeContainer>
       <AppFooter active="life" />
     </View>
   );

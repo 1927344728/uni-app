@@ -7,6 +7,7 @@ import { AppRefreshControl } from '@/components/AppRefreshControl';
 import { APP_NAME, APP_VERSION } from '@/config/app';
 import { HOME_FEATURES } from '@/config/features';
 import { scaleCosImage } from '@/common/utils/cos';
+import { openUrl } from '@/common/utils/openUrl';
 import { api, type ApiItem } from '@/lib/api';
 
 const { width } = Dimensions.get('window');
@@ -31,19 +32,8 @@ export default function HomeScreen() {
   const userName = String(user?.name ?? '欢迎来到');
   const bannerWidth = useMemo(() => width - 24, []);
   const openItem = (item: ApiItem, fallback?: string) => {
-    const href = String(item.url ?? fallback ?? '');
-    if (href.includes('hanyupinyin')) {
-      router.push(`/recommend/hanyupinyin` as never);
-      return;
-    }
-    if (href.startsWith('/static/')) {
-      router.push(`/webview?url=${encodeURIComponent(href)}` as never);
-      return;
-    }
-    if (href.startsWith('/pages/')) {
-      const [path, query] = href.replace('/pages/', '/').split('?');
-      router.push(`${path.replace(/\/index$/, '')}${query ? `?${query}` : ''}` as never);
-    } else if (href.startsWith('/')) router.push(href as never);
+    if (openUrl(item, fallback)) return;
+    if (fallback) router.push(fallback as never);
   };
 
   return (

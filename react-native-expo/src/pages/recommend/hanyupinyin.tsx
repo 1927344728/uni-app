@@ -56,7 +56,7 @@ export default function HanyuPinyinScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.page}>
+    <SafeAreaView style={styles.page} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.header}>
           <Text style={styles.heading}>汉语拼音发音学习</Text>

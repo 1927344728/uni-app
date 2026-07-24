@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   itemTitle: { color: '#333', fontSize: 16 },
   note: { marginTop: 4, color: '#999', fontSize: 13, lineHeight: 19 },
   itemActive: { color: '#59c2ad', fontWeight: '700' },
-  chevron: { marginLeft: 8, color: '#bbb', fontSize: 25 },
+  chevron: { marginLeft: 8, color: '#bbb', fontSize: 22, lineHeight: 22 },
   more: { paddingVertical: 16, color: '#999', textAlign: 'center' },
   empty: { paddingVertical: 80, color: '#999', textAlign: 'center' },
 });

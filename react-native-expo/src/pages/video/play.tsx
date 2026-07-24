@@ -1,8 +1,10 @@
 import { CAPTION_BOTTOM_GAP, PROGRESS_TRACK_HEIGHT, styles } from './play.styles';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useEvent } from 'expo';
-import { VideoView, useVideoPlayer } from 'expo-video';
+import { AppVideoView } from '@/components/video/AppVideoView';
+import { useAppVideoPlayer } from '@/components/video/useAppVideoPlayer';
 import { Image, PanResponder, Pressable, Text, View } from 'react-native';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { VerticalSwipePager, type VerticalSwipePagerHandle } from '@/components/VerticalSwipePager';
@@ -54,7 +56,7 @@ export default function VideoPlayScreen() {
   const switchingRef = useRef(false);
   const pagerRef = useRef<VerticalSwipePagerHandle>(null);
   const videoUrl = currentVideo?.url ? String(currentVideo.url) : null;
-  const player = useVideoPlayer(videoUrl, instance => { instance.timeUpdateEventInterval = 0.25; });
+  const player = useAppVideoPlayer(videoUrl, instance => { instance.timeUpdateEventInterval = 0.25; });
   const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: false });
   const timeUpdate = useEvent(player, 'timeUpdate', { currentTime: 0, currentLiveTimestamp: 0, currentOffsetFromLive: 0, bufferedPosition: 0 });
   const reportedTime = timeUpdate?.currentTime ?? 0;
@@ -273,7 +275,7 @@ export default function VideoPlayScreen() {
         {isCurrent && (
           <>
             <View style={styles.videoStage}>
-              <VideoView
+              <AppVideoView
                 key={String(video.id)}
                 player={player}
                 style={styles.video}
@@ -283,7 +285,7 @@ export default function VideoPlayScreen() {
               />
             </View>
             <Pressable style={styles.tapArea} onPress={togglePlay}>
-              {!isPlaying && <Text style={styles.play}>▶</Text>}
+              {!isPlaying && <Ionicons name="play" size={50} color="rgba(255,255,255,.7)" />}
             </Pressable>
           </>
         )}
@@ -326,8 +328,13 @@ export default function VideoPlayScreen() {
 
   return (
     <View style={styles.page}>
-      <Pressable style={[styles.back, { top: insets.top + 4 }]} onPress={() => goBackOrReplace('/video')}>
-        <Text style={styles.backText}>‹</Text>
+      <Pressable
+        style={[styles.back, { top: insets.top + 4 }]}
+        accessibilityRole="button"
+        accessibilityLabel="返回"
+        onPress={() => goBackOrReplace('/video')}
+      >
+        <Ionicons name="chevron-back" size={28} color="#fff" />
       </Pressable>
       <VerticalSwipePager
         ref={pagerRef}

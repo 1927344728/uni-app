@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { styles } from './DataPicker.styles';
+import { colors } from '@/common/theme/colors';
 
 export type PickerOption = { value: string; label: string };
 
@@ -22,7 +24,7 @@ export function DataPicker({ value, options, placeholder, title, onChange }: Dat
         <Text style={[styles.triggerText, active && styles.triggerTextActive]} numberOfLines={1}>
           {active?.label ?? placeholder}
         </Text>
-        <Text style={[styles.caret, active && styles.triggerTextActive]}>⌄</Text>
+        <Ionicons name="chevron-down" size={14} color={active ? colors.primary : '#999'} />
       </Pressable>
       <Modal visible={visible} transparent animationType="slide" onRequestClose={() => setVisible(false)}>
         <Pressable style={styles.mask} onPress={() => setVisible(false)}>

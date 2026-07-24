@@ -47,33 +47,50 @@ export const VerticalSwipePager = forwardRef<VerticalSwipePagerHandle, VerticalS
   const offsetY = useSharedValue(0);
   const startY = useSharedValue(0);
   const switching = useSharedValue(false);
+  const pageHeightSV = useSharedValue(0);
+  const currentIndexSV = useSharedValue(0);
+  const pagesLengthSV = useSharedValue(1);
+  const canGoPrevSV = useSharedValue(false);
+  const canGoNextSV = useSharedValue(false);
   const pageKeys = pages.map(page => page.key).join('|');
-  const canGoPrevRef = useRef(canGoPrev);
-  const canGoNextRef = useRef(canGoNext);
-  const currentIndexRef = useRef(currentIndex);
-  const heightRef = useRef(height);
-  const pagesLengthRef = useRef(pages.length);
+
+  // JS-only refs: never read inside worklets.
   const onGoPrevRef = useRef(onGoPrev);
   const onGoNextRef = useRef(onGoNext);
-
-  canGoPrevRef.current = canGoPrev;
-  canGoNextRef.current = canGoNext;
-  currentIndexRef.current = currentIndex;
-  heightRef.current = height;
-  pagesLengthRef.current = pages.length;
+  const pendingResolveRef = useRef<(() => void) | null>(null);
   onGoPrevRef.current = onGoPrev;
   onGoNextRef.current = onGoNext;
 
+  useEffect(() => {
+    pageHeightSV.value = height;
+  }, [height, pageHeightSV]);
+
+  useEffect(() => {
+    currentIndexSV.value = currentIndex;
+  }, [currentIndex, currentIndexSV]);
+
+  useEffect(() => {
+    pagesLengthSV.value = pages.length;
+  }, [pages.length, pagesLengthSV]);
+
+  useEffect(() => {
+    canGoPrevSV.value = canGoPrev;
+  }, [canGoPrev, canGoPrevSV]);
+
+  useEffect(() => {
+    canGoNextSV.value = canGoNext;
+  }, [canGoNext, canGoNextSV]);
+
   const syncOffset = useCallback((animated = false) => {
-    if (heightRef.current <= 0) return;
-    const target = -currentIndexRef.current * heightRef.current;
+    if (height <= 0) return;
+    const target = -currentIndex * height;
     cancelAnimation(offsetY);
     if (animated) {
       offsetY.value = withSpring(target, { damping: 22, stiffness: 220 });
     } else {
       offsetY.value = target;
     }
-  }, [offsetY]);
+  }, [currentIndex, height, offsetY]);
 
   useEffect(() => {
     if (height <= 0) return;
@@ -85,65 +102,75 @@ export const VerticalSwipePager = forwardRef<VerticalSwipePagerHandle, VerticalS
     syncOffset(false);
   }, [switching, syncOffset]);
 
-  const triggerNext = useCallback(async () => {
-    try {
-      await onGoNextRef.current();
-    } finally {
-      finishSwitch();
-    }
-  }, [finishSwitch]);
+  const settlePending = useCallback(() => {
+    const resolve = pendingResolveRef.current;
+    pendingResolveRef.current = null;
+    resolve?.();
+  }, []);
 
-  const triggerPrev = useCallback(async () => {
-    try {
-      await onGoPrevRef.current();
-    } finally {
+  const handleNextAnimationEnd = useCallback((finished: boolean) => {
+    if (!finished) {
       finishSwitch();
+      settlePending();
+      return;
     }
-  }, [finishSwitch]);
+    void (async () => {
+      try {
+        await onGoNextRef.current();
+      } finally {
+        finishSwitch();
+        settlePending();
+      }
+    })();
+  }, [finishSwitch, settlePending]);
+
+  const handlePrevAnimationEnd = useCallback((finished: boolean) => {
+    if (!finished) {
+      finishSwitch();
+      settlePending();
+      return;
+    }
+    void (async () => {
+      try {
+        await onGoPrevRef.current();
+      } finally {
+        finishSwitch();
+        settlePending();
+      }
+    })();
+  }, [finishSwitch, settlePending]);
 
   const animateToNext = useCallback(() => new Promise<void>(resolve => {
-    const pageHeight = heightRef.current;
-    const index = currentIndexRef.current;
-    if (pageHeight <= 0 || !canGoNextRef.current) {
+    const pageHeight = pageHeightSV.value;
+    const index = currentIndexSV.value;
+    if (pageHeight <= 0 || !canGoNextSV.value) {
       resolve();
       return;
     }
     switching.value = true;
+    pendingResolveRef.current = resolve;
     const target = -(index + 1) * pageHeight;
     offsetY.value = withTiming(target, { duration: 280 }, finished => {
-      if (!finished) {
-        runOnJS(finishSwitch)();
-        runOnJS(resolve)();
-        return;
-      }
-      runOnJS(async () => {
-        await triggerNext();
-        resolve();
-      })();
+      'worklet';
+      runOnJS(handleNextAnimationEnd)(!!finished);
     });
-  }), [finishSwitch, offsetY, switching, triggerNext]);
+  }), [canGoNextSV, currentIndexSV, handleNextAnimationEnd, offsetY, pageHeightSV, switching]);
 
   const animateToPrev = useCallback(() => new Promise<void>(resolve => {
-    const pageHeight = heightRef.current;
-    const index = currentIndexRef.current;
-    if (pageHeight <= 0 || !canGoPrevRef.current) {
+    const pageHeight = pageHeightSV.value;
+    const index = currentIndexSV.value;
+    if (pageHeight <= 0 || !canGoPrevSV.value) {
       resolve();
       return;
     }
     switching.value = true;
+    pendingResolveRef.current = resolve;
     const target = -(index - 1) * pageHeight;
     offsetY.value = withTiming(target, { duration: 280 }, finished => {
-      if (!finished) {
-        runOnJS(finishSwitch)();
-        runOnJS(resolve)();
-        return;
-      }
-      runOnJS(async () => {
-        await triggerPrev();
-        resolve();
-      })();
+      'worklet';
+      runOnJS(handlePrevAnimationEnd)(!!finished);
     });
-  }), [finishSwitch, offsetY, switching, triggerPrev]);
+  }), [canGoPrevSV, currentIndexSV, handlePrevAnimationEnd, offsetY, pageHeightSV, switching]);
 
   useImperativeHandle(ref, () => ({
     animateToNext,
@@ -155,52 +182,67 @@ export const VerticalSwipePager = forwardRef<VerticalSwipePagerHandle, VerticalS
 
   const panGesture = useMemo(() => {
     let gesture = Gesture.Pan()
-    .activeOffsetY([-15, 15])
-    .failOffsetX([-25, 25])
-    .onBegin(() => {
-      startY.value = offsetY.value;
-    })
-    .onUpdate(event => {
-      if (switching.value) return;
-      const pageHeight = heightRef.current;
-      if (pageHeight <= 0) return;
+      .activeOffsetY([-15, 15])
+      .failOffsetX([-25, 25])
+      .onBegin(() => {
+        'worklet';
+        startY.value = offsetY.value;
+      })
+      .onUpdate(event => {
+        'worklet';
+        if (switching.value) return;
+        const pageHeight = pageHeightSV.value;
+        if (pageHeight <= 0) return;
 
-      let dy = event.translationY;
-      const index = currentIndexRef.current;
-      const pageCount = pagesLengthRef.current;
-      const minOffset = -(pageCount - 1) * pageHeight;
+        let dy = event.translationY;
+        const index = currentIndexSV.value;
+        const pageCount = pagesLengthSV.value;
+        const minOffset = -(pageCount - 1) * pageHeight;
 
-      if (index === 0 && dy > 0 && !canGoPrevRef.current) dy = Math.min(dy * 0.3, 50);
-      if (index === pageCount - 1 && dy < 0 && !canGoNextRef.current) dy = Math.max(dy * 0.3, -50);
+        if (index === 0 && dy > 0 && !canGoPrevSV.value) dy = Math.min(dy * 0.3, 50);
+        if (index === pageCount - 1 && dy < 0 && !canGoNextSV.value) dy = Math.max(dy * 0.3, -50);
 
-      let next = startY.value + dy;
-      if (next > 0) next = canGoPrevRef.current ? next : Math.min(next, 50);
-      if (next < minOffset) next = canGoNextRef.current ? next : Math.max(next, minOffset - 50);
-      offsetY.value = next;
-    })
-    .onEnd(event => {
-      if (switching.value) return;
-      const pageHeight = heightRef.current;
-      const index = currentIndexRef.current;
-      if (pageHeight <= 0) return;
+        let next = startY.value + dy;
+        if (next > 0) next = canGoPrevSV.value ? next : Math.min(next, 50);
+        if (next < minOffset) next = canGoNextSV.value ? next : Math.max(next, minOffset - 50);
+        offsetY.value = next;
+      })
+      .onEnd(event => {
+        'worklet';
+        if (switching.value) return;
+        const pageHeight = pageHeightSV.value;
+        const index = currentIndexSV.value;
+        if (pageHeight <= 0) return;
 
-      const dy = event.translationY;
-      if (dy < -SWIPE_THRESHOLD && canGoNextRef.current) {
-        runOnJS(startNextAnimation)();
-        return;
-      }
-      if (dy > SWIPE_THRESHOLD && canGoPrevRef.current) {
-        runOnJS(startPrevAnimation)();
-        return;
-      }
-      offsetY.value = withSpring(-index * pageHeight, { damping: 22, stiffness: 220 });
-    });
+        const dy = event.translationY;
+        if (dy < -SWIPE_THRESHOLD && canGoNextSV.value) {
+          runOnJS(startNextAnimation)();
+          return;
+        }
+        if (dy > SWIPE_THRESHOLD && canGoPrevSV.value) {
+          runOnJS(startPrevAnimation)();
+          return;
+        }
+        offsetY.value = withSpring(-index * pageHeight, { damping: 22, stiffness: 220 });
+      });
 
     simultaneousGestures.forEach(externalGesture => {
       gesture = gesture.simultaneousWithExternalGesture(externalGesture);
     });
     return gesture;
-  }, [animateToNext, animateToPrev, offsetY, simultaneousGestures, startNextAnimation, startPrevAnimation, startY, switching]);
+  }, [
+    canGoNextSV,
+    canGoPrevSV,
+    currentIndexSV,
+    offsetY,
+    pageHeightSV,
+    pagesLengthSV,
+    simultaneousGestures,
+    startNextAnimation,
+    startPrevAnimation,
+    startY,
+    switching,
+  ]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: offsetY.value }],

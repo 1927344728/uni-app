@@ -1,6 +1,7 @@
 import { styles } from './detail.styles';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import { api, type ApiItem } from '@/lib/api';
 
@@ -37,9 +38,16 @@ export default function BookDetailScreen() {
             <View style={styles.rating}>
               <Text style={styles.ratingLabel}>评分：</Text>
               <Text style={styles.ratingNumber}>{score.toFixed(1)}</Text>
-              <Text style={styles.stars}>
-                {[1, 2, 3, 4, 5].map(n => n <= Math.round(score / 2) ? '★' : '☆').join('')}
-              </Text>
+              <View style={styles.stars}>
+                {[1, 2, 3, 4, 5].map(n => (
+                  <Ionicons
+                    key={n}
+                    name={n <= Math.round(score / 2) ? 'star' : 'star-outline'}
+                    size={14}
+                    color="#ffb400"
+                  />
+                ))}
+              </View>
             </View>
           )}
           <View style={styles.tags}>

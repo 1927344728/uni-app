@@ -4,6 +4,7 @@ import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { AppFooter } from '@/components/AppFooter';
 import { AppRefreshControl } from '@/components/AppRefreshControl';
+import { TabSwipeContainer } from '@/components/TabSwipeContainer';
 import { useScrollToLower } from '@/common/hooks/useScrollToLower';
 import { SearchBar } from '@/components/SearchBar';
 import { api, type ApiItem } from '@/lib/api';
@@ -66,6 +67,7 @@ export default function StudyScreen() {
   };
 
   const onScrollToLower = useScrollToLower(loadMore, !isLast);
+  const tabKeys = useMemo(() => tabs.map(tab => tab.key), [tabs]);
 
   return (
     <View style={[styles.page, current?.isBook && styles.bookPage]}>
@@ -82,8 +84,11 @@ export default function StudyScreen() {
         )}
         {subtypeOptions.length > 1 && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subtypesRow} contentContainerStyle={styles.subtypes}>
+            <Pressable onPress={() => setSubType(null)}>
+              <Text style={[styles.subtype, !subType && styles.subtypeActive]}>全部</Text>
+            </Pressable>
             {subtypeOptions.map(option => (
-              <Pressable key={option.value} onPress={() => setSubType(option.value === subType ? null : option.value)}>
+              <Pressable key={option.value} onPress={() => setSubType(option.value)}>
                 <Text style={[styles.subtype, subType === option.value && styles.subtypeActive]}>{option.name}</Text>
               </Pressable>
             ))}
@@ -93,36 +98,38 @@ export default function StudyScreen() {
           <SearchBar value={keyword} onChangeText={setKeyword} placeholder="请输入搜索词" />
         </View>
       </View>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.list}
-        refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={() => void refreshList()} />}
-        onScroll={onScrollToLower}
-        scrollEventThrottle={16}
-      >
-        {items.map(item => (
-          <Pressable
-            key={String(item.id)}
-            onPress={() => router.push(current?.isBook ? `/book/detail?id=${item.id}` : `/article/detail?id=${item.id}`)}
-            style={styles.item}
-          >
-            <Image source={{ uri: imageUri(item.thumb ?? item.cover) }} style={styles.imageBox} />
-            <View style={styles.itemContent}>
-              <Text numberOfLines={1} style={[styles.title, item.className === 'active' && styles.activeText]}>
-                {String(item.title ?? '')}
-              </Text>
-              <Text numberOfLines={2} style={[styles.note, item.className === 'active' && styles.activeText]}>
-                {String(item.note ?? item.description ?? '')}
-              </Text>
-              {item.badgeText ? <Text style={styles.badge}>{String(item.badgeText)}</Text> : null}
-            </View>
-          </Pressable>
-        ))}
-        {!items.length && <Text style={styles.empty}>~什么都没有哦~</Text>}
-        {items.length > 0 && (
-          <Text style={styles.empty}>{isLast ? '~没有更多了哦~' : '加载中...'}</Text>
-        )}
-      </ScrollView>
+      <TabSwipeContainer tabKeys={tabKeys} activeKey={active} onChange={selectTab}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.list}
+          refreshControl={<AppRefreshControl refreshing={refreshing} onRefresh={() => void refreshList()} />}
+          onScroll={onScrollToLower}
+          scrollEventThrottle={16}
+        >
+          {items.map(item => (
+            <Pressable
+              key={String(item.id)}
+              onPress={() => router.push(current?.isBook ? `/book/detail?id=${item.id}` : `/article/detail?id=${item.id}`)}
+              style={styles.item}
+            >
+              <Image source={{ uri: imageUri(item.thumb ?? item.cover) }} style={styles.imageBox} />
+              <View style={styles.itemContent}>
+                <Text numberOfLines={1} style={[styles.title, item.className === 'active' && styles.activeText]}>
+                  {String(item.title ?? '')}
+                </Text>
+                <Text numberOfLines={2} style={[styles.note, item.className === 'active' && styles.activeText]}>
+                  {String(item.note ?? item.description ?? '')}
+                </Text>
+                {item.badgeText ? <Text style={styles.badge}>{String(item.badgeText)}</Text> : null}
+              </View>
+            </Pressable>
+          ))}
+          {!items.length && <Text style={styles.empty}>~什么都没有哦~</Text>}
+          {items.length > 0 && (
+            <Text style={styles.empty}>{isLast ? '~没有更多了哦~' : '加载中...'}</Text>
+          )}
+        </ScrollView>
+      </TabSwipeContainer>
       <AppFooter active="study" />
     </View>
   );

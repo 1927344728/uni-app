@@ -78,7 +78,7 @@ export default function DictationScreen() {
   const visible = status === 'active' ? chosen.filter((_, index) => completed.has(index)) : chosen;
 
   return (
-    <SafeAreaView style={styles.page}>
+    <SafeAreaView style={styles.page} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
         {note ? (
           <View style={styles.note}>

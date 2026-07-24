@@ -6,7 +6,7 @@
 
 - Expo SDK 57、React 19、React Native 0.86、Expo Router
 - TypeScript 与 React Native `StyleSheet`
-- `@react-native-vector-icons/ionicons`：底部导航等 UI 图标
+- `@react-native-vector-icons/ionicons`：底部导航等 UI 图标（[图标列表](https://oblador.github.io/react-native-vector-icons/)）
 - `expo-audio`、`expo-video`、`expo-speech`、`expo-clipboard`
 - `react-native-webview`、AsyncStorage、`pinyin-pro`
 
@@ -32,28 +32,26 @@ src/pages/article/detail.styles.ts     # 页面样式
 
 ```bash
 npm install
-npm run start        # Web / 默认 HTTPS
-npm run start:http   # 手机 Expo Go（HTTP）
+npm run start      # Metro 开发服务（:9000）
+npm run web        # Web
+npm run android    # 构建调试包并安装到 Android 设备 / 模拟器
 ```
 
-| 命令 | 协议 | 用途 |
-| --- | --- | --- |
-| `npm run start` | HTTPS | 浏览器 Web 开发（`https://dev.izhao.com.cn:9000`，需 hosts） |
-| `npm run start:http` | HTTP | 手机 Expo Go 真机调试 |
-| `npm run web` | HTTPS | 打开 Web 开发服务 |
-| `npm run android` | HTTPS | 连接 Android 设备 / 模拟器 |
-| `npm run ios` | HTTPS | 连接 iOS 模拟器（macOS） |
+| 命令 | 用途 |
+| --- | --- |
+| `npm run start` | 启动 Metro（改 JS 后热更新；手机需已安装调试包） |
+| `npm run web` | 浏览器 Web 开发 |
+| `npm run android` | 原生构建 + 安装 APK + 启动 Metro（`expo run:android`） |
+| `npm run ios` | 原生构建并安装到 iOS 模拟器（需 macOS） |
+| `npm run lint` | 代码检查 |
 
-HTTPS 说明：
+端口统一为 **9000**（与 `android/gradle.properties` 中 `reactNativeDevServerPort` 一致）。
 
-- `metro.config.js` 在存在 `certs/` 证书时默认启用 TLS；`start:http` 通过 `EXPO_USE_HTTP=1` 关闭 TLS。
-- 证书由 `mkcert` 生成，位于 `certs/`，不提交到 Git。
+Android 说明：
 
-其他命令：
-
-```bash
-npm run lint
-```
+- 首次或原生依赖变更：`npm run android`
+- 日常只改 JS：保持 `npm run android` 的 Metro，或另开 `npm start`，再打开手机 App
+- 手机与电脑需同一局域网；USB 调试时可先执行：`adb reverse tcp:9000 tcp:9000`
 
 ## Expo Go 联调
 
@@ -61,39 +59,50 @@ npm run lint
 
 ### 启动方式
 
-Expo Go 通过 `exp://` 连接本地 Metro，**只支持 HTTP**，与业务 API 的 HTTPS（`https://app.izhao.com.cn:9443`）无关——接口仍可正常走 HTTPS。
+Expo Go 通过 `exp://` 连接本地 Metro（HTTP）。业务 API 的 HTTPS（`https://app.izhao.com.cn:9443`）不受影响。
 
 ```bash
-npm run start:http
+npm start
 ```
 
-启动后日志应出现 `Waiting on http://localhost:9000`（注意是 **http**）。在 Expo Go 中选择「输入地址」，填入局域网地址，例如：
+启动后日志应出现 `Waiting on http://localhost:9000`。在 Expo Go 中选择「输入地址」，填入局域网地址，例如：
 
 ```text
 exp://192.168.31.157:9000
 ```
 
-将 `192.168.31.157` 换成你电脑在 WiFi 下的真实 IP（在 Windows 中查看 WLAN 网卡地址）。不要使用代理/VPN 虚拟网卡地址（如 `198.18.0.1`）。
+将 `192.168.31.157` 换成你电脑在 WiFi 下的真实 IP（在 Windows 中查看 **WLAN** 网卡地址）。
+
+**代理虚拟网卡：** Clash / Clash Verge 等开启「虚拟网卡 / TUN」模式后，本机会多出 `198.18.x.x`、`192.168.137.x` 等虚拟网卡。Expo 可能把二维码生成到这些 IP 上（日志里类似 `Metro: exp://192.168.137.1:9000`），手机扫码后无法连通，Expo Go 报 **Something went wrong**。处理：关闭代理的虚拟网卡/TUN，或在 Expo Go 里手动输入 WLAN IP（如 `exp://192.168.31.157:9000`），也可用 `REACT_NATIVE_PACKAGER_HOSTNAME=你的WLAN_IP` 强制指定。
 
 ### 常见问题
 
 | 现象 | 原因 | 处理 |
 | --- | --- | --- |
 | `incompatible with this version of Expo Go` | 手机 Expo Go 版本低于 SDK 57 | 升级 Expo Go 到支持 SDK 57 的版本 |
-| 扫码 / 输入地址无法连接 | 使用了 `npm run start`（HTTPS Metro） | 改用 `npm run start:http` |
-| 地址用了 `198.18.x.x` 连不上 | 代理软件（如 Clash）虚拟网卡 IP | 改用 WLAN 的 `192.168.x.x` |
+| 扫码报 Something went wrong；Metro 为 `198.18.x.x` / `192.168.137.x` | 代理软件开启了虚拟网卡（TUN）模式，Expo 选错网卡 | 关闭 TUN / 虚拟网卡，或手动输入 WLAN IP；必要时设 `REACT_NATIVE_PACKAGER_HOSTNAME` |
+| 地址用了 `198.18.x.x` 连不上 | 代理软件虚拟网卡 IP | 改用 WLAN 的 `192.168.x.x` |
 | 终端没有二维码 | Git Bash 等非 TTY 终端 | 用 PowerShell / Windows Terminal，或手动输入 `exp://` 地址 |
 | 手机与电脑已同 WiFi 仍连不上 | Windows 防火墙拦截入站 | 放行 TCP 9000，或临时关闭防火墙测试 |
-| `npm run start` 能开 Web，Expo Go 不行 | HTTPS 与 `exp://` 不兼容 | 属预期行为；Web 用 `start`，手机用 `start:http` |
+| 调试包打开白屏 | 未启动 Metro，或手机连不上电脑 | 运行 `npm start` 或 `npm run android`；USB 可执行 `adb reverse tcp:9000 tcp:9000` |
+
+### Android / iOS 原生构建
+
+```bash
+npm run android   # expo run:android --port 9000
+npm run ios       # expo run:ios --port 9000（需 macOS）
+```
+
+首次执行会生成本地 `android/` / `ios/` 工程并编译安装。之后日常改 JS 可只开 `npm start`，再打开已安装的调试 App。
 
 ### Android USB 安装 Expo Go
 
 若商店版本暂时不支持 SDK 57，可用 USB 调试，由 Expo CLI 安装匹配版本的 APK：
 
 ```bash
-npm run start:http
+npm start
 # 另开终端，或启动后按 a
-set EXPO_USE_HTTP=1&& npx expo start --port 9000 --android
+npx expo start --port 9000 --android
 ```
 
 ### iOS 说明

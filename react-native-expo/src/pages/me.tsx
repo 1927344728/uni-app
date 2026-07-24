@@ -1,6 +1,7 @@
 import { styles } from './me.styles';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, Image, ImageBackground, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useFocusEffect } from 'expo-router';
 import { AppFooter } from '@/components/AppFooter';
@@ -99,7 +100,7 @@ function Row({ label, onPress }: { label: string; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={styles.row}>
       <Text style={styles.rowText}>{label}</Text>
-      <Text style={styles.chevron}>›</Text>
+      <Ionicons name="chevron-forward" size={18} color="#ccc" />
     </Pressable>
   );
 }

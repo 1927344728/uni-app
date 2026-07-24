@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   rating: { flexDirection: 'row', alignItems: 'center' },
   ratingLabel: { fontSize: 12 },
   ratingNumber: { marginRight: 6, fontSize: 24, fontWeight: '600' },
-  stars: { color: '#ffb400', fontSize: 14, letterSpacing: 1 },
+  stars: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   tag: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 15, color: '#7a5be1', fontSize: 11, backgroundColor: 'rgba(143,109,236,.12)' },
   body: { padding: 16, gap: 16 },

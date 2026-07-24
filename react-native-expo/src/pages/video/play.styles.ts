@@ -20,10 +20,8 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  back: { position: 'absolute', left: 12, zIndex: 20, padding: 6 },
-  backText: { color: '#fff', fontSize: 36, lineHeight: 36 },
+  back: { position: 'absolute', left: 4, zIndex: 20, padding: 6 },
   tapArea: { ...StyleSheet.absoluteFill, zIndex: 3, alignItems: 'center', justifyContent: 'center' },
-  play: { color: 'rgba(255,255,255,.7)', fontSize: 72 },
   swipeHint: {
     position: 'absolute',
     top: '40%',

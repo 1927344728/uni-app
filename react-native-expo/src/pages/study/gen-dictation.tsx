@@ -48,7 +48,7 @@ export default function GenerateDictationScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.page}>
+    <SafeAreaView style={styles.page} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.form} keyboardShouldPersistTaps="handled">
         <View style={styles.field}>
           <Text style={styles.label}>温馨提示</Text>

@@ -1,10 +1,12 @@
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Platform } from 'react-native';
 import { Stack, usePathname } from 'expo-router';
 import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { APP_NAME } from '@/config/app';
 import { colors } from '@/common/theme/colors';
 
@@ -33,16 +35,44 @@ const pageTitles: Array<[string, string]> = [
   ['/debug', '测试页面'],
 ];
 
+const immersiveRoutes = ['/music/play', '/video/play'];
+
 export default function RootLayout() {
   const pathname = usePathname();
   const title = pageTitles.find(([path]) => pathname === path || pathname.startsWith(`${path}/`))?.[1] ?? APP_NAME;
+  const immersive = immersiveRoutes.some(route => pathname === route || pathname.startsWith(`${route}?`));
+
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    const active = document.activeElement as HTMLElement | null;
+    if (!active) return;
+    let node: HTMLElement | null = active;
+    while (node) {
+      if (node.hasAttribute('hidden') || node.getAttribute('aria-hidden') === 'true') {
+        active.blur();
+        break;
+      }
+      node = node.parentElement;
+    }
+  }, [pathname]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: colors.backgroundMinor }}
+          edges={immersive ? [] : ['top']}
+        >
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: colors.backgroundMinor },
+              ...(Platform.OS === 'web' ? { detachInactiveScreens: false } : {}),
+            }}
+          />
+        </SafeAreaView>
         <Head><title>{title}</title></Head>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.backgroundMinor } }} />
-        <StatusBar style="dark" />
+        <StatusBar style={immersive ? 'light' : 'dark'} />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
