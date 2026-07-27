@@ -87,9 +87,20 @@ export default function MusicPlayScreen() {
   }, [fetchAutoSong, isAuto]);
 
   useEffect(() => {
-    setAudioModeAsync({ playsInSilentMode: true, interruptionMode: 'doNotMix' }).catch(() => undefined);
-    return () => { if (timer.current) clearTimeout(timer.current); };
-  }, []);
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: 'doNotMix',
+    }).catch(() => undefined);
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+      try {
+        player.setActiveForLockScreen(false);
+      } catch {
+        // ignore
+      }
+    };
+  }, [player]);
 
   useEffect(() => {
     const load = async () => {
@@ -118,10 +129,15 @@ export default function MusicPlayScreen() {
 
   useEffect(() => {
     const url = current?.url;
-    if (!url) return;
+    if (!url || !current) return;
     setSliderOverrideTime(null);
     setIsDraggingSlider(false);
     player.replace(String(url));
+    player.setActiveForLockScreen(true, {
+      title: String(current.title ?? ''),
+      artist: String((current as Record<string, unknown>).singer ?? '未知歌手'),
+      artworkUrl: imageUri(current.cover),
+    });
     player.play();
   }, [current?.id]);
 
@@ -364,7 +380,21 @@ export default function MusicPlayScreen() {
           <Pressable disabled={!canGoPrev} onPress={() => void pagerRef.current?.animateToPrev()} style={[styles.skip, !canGoPrev && styles.skipDisabled]}>
             <Text style={styles.controlText}>上一曲</Text>
           </Pressable>
-          <Pressable onPress={() => status.playing ? player.pause() : player.play()} style={styles.play}>
+          <Pressable
+            onPress={() => {
+              if (status.playing) {
+                player.pause();
+                return;
+              }
+              player.setActiveForLockScreen(true, {
+                title: String(current.title ?? ''),
+                artist: String((current as Record<string, unknown>).singer ?? '未知歌手'),
+                artworkUrl: imageUri(current.cover),
+              });
+              player.play();
+            }}
+            style={styles.play}
+          >
             <Ionicons name={status.playing ? 'pause' : 'play'} size={24} color="#fff" />
           </Pressable>
           <Pressable disabled={!canGoNext} onPress={() => void pagerRef.current?.animateToNext()} style={[styles.skip, !canGoNext && styles.skipDisabled]}>
