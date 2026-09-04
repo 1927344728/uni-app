@@ -1,0 +1,8 @@
+{
+  "name": "uni-app",
+  "private": true,
+  "scripts": {
+    "convert-p12": "bash ssl/convert-p12.sh",
+    "upload-ssl": "bash ssl/upload-ssl.sh"
+  }
+}
