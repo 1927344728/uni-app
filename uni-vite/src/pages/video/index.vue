@@ -33,7 +33,7 @@
     </scroll-view>
 
     <view v-if="videoTypeEnum.length > 1" class="navigation_bar">
-      <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchstart.stop @touchmove.stop @touchend.stop>
+      <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchmove.stop>
         <view
           v-for="m in videoTypeEnum"
           :key="m.typeId"
@@ -41,7 +41,7 @@
           :class="{
             active: type === m.typeId
           }"
-          @click="onClickTab(m)"
+          @tap.stop="onClickTab(m)"
         >
           {{ m.name }}
         </view>
@@ -75,10 +75,8 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
-import qs from 'qs'
-import { get as _get, cloneDeep } from 'lodash'
-import { convert as convertHtmlToText } from 'html-to-text'
-import { scaleImageWidthInCOS } from '@/utils/common.js'
+import { getValue as _get, cloneDeep } from '@/common/js/common.js'
+import { scaleImageWidthInCOS, stringifyQuery, stripHtml } from '@/common/js/common.js'
 import { getVideoMenuList, getVideoByIds, getVideoPageList } from '@/api'
 
 const initPagination = () => ({
@@ -154,7 +152,7 @@ export default {
   },
   methods: {
     ...mapActions(['getCategoryEnum']),
-    convertHtmlToText,
+    convertHtmlToText: stripHtml,
     scaleImageWidthInCOS,
     getVideoPageList () {
       const { queryParams, type, videoList, pagination } = this
@@ -204,7 +202,7 @@ export default {
       }
       if (item && item.id) {
         uni.navigateTo({
-          url: `/pages/video/play?${qs.stringify(params)}`,
+          url: `/pages/video/play?${stringifyQuery(params)}`,
         })
         return
       }
@@ -221,6 +219,4 @@ export default {
   }
 }
 </script>
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

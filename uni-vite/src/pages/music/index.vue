@@ -22,7 +22,7 @@
     </view>
 
     <view v-if="musicTypeEnum.length > 1" class="navigation_bar">
-      <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchstart.stop @touchmove.stop @touchend.stop>
+      <view class="tabs" :class="[isFixedNavBar ? 'fixed' : '']" @touchmove.stop>
         <view
           v-for="m in musicTypeEnum"
           :key="m.typeId"
@@ -30,7 +30,7 @@
           :class="{
             active: type === m.typeId
           }"
-          @click="onClickTab(m)"
+          @tap.stop="onClickTab(m)"
         >
           {{ m.name }}
         </view>
@@ -66,10 +66,9 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
-import qs from 'qs'
-import { get as _get, cloneDeep } from 'lodash'
-import { scaleImageWidthInCOS } from '@/utils'
-import { unlockAudio } from '@/utils/audioUnlock.js'
+import { getValue as _get, cloneDeep } from '@/common/js/common.js'
+import { scaleImageWidthInCOS, stringifyQuery } from '@/common/js/common.js'
+import { unlockAudio } from '@/common/js/audioUnlock.js'
 import { getMusicMenuList, getMusicPageList } from '@/api'
 
 const initPagination = () => ({
@@ -176,7 +175,7 @@ export default {
           type: this.type || undefined
         }
         uni.navigateTo({
-          url: `/pages/music/play?${qs.stringify(params)}`
+          url: `/pages/music/play?${stringifyQuery(params)}`
         })
       }
     },
@@ -191,6 +190,4 @@ export default {
   }
 }
 </script>
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

@@ -4,7 +4,7 @@
 @import '@/common/css/apply.less';
 
 .life_video_page {
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
   & ::v-deep.uni-scroll-view-content {
     width: auto;
@@ -127,13 +127,15 @@
   }
 
   .video_playlist_list {
-    display: grid;
-    grid-template-columns: 48% 48%;
-    gap: 24rpx;
-    align-items: start;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
     padding: 24rpx;
     overflow: hidden;
     & .movie_card {
+      width: 48%;
+      margin-bottom: 24rpx;
       & .movie_cover {
         display: block;
         width: 100%;
@@ -170,5 +172,7 @@
   }
 }
 .life_video_page.with_padding_top {
-  height: calc(100vh - 64rpx - 144rpx);
+  height: 100%;
+  padding-top: 64rpx;
+  box-sizing: border-box;
 }

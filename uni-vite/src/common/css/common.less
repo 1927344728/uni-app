@@ -1,13 +1,10 @@
 @import '@/common/css/variable.less';
+@import '@/common/css/color.less';
 
 @font-face {
   font-family: 'iconfont';
-  src: url('https://assets.izhao.com.cn/font/font_5075020_dvsb5eed4rh.ttf?t=1764604111574') format('truetype');
-}
-
-body {
-  line-height: 1.5;
-	box-sizing: border-box;
+  /* 小程序优先本地字体，避免远程 @font-face 不显示 */
+  src: url('/static/font/iconfont.ttf') format('truetype');
 }
 
 .iconfont {
@@ -72,12 +69,3 @@ body {
   text-align: center;
 }
 
-::v-deep .uni-swiper-wrapper {
-  & .uni-swiper-slides {
-    & .uni-swiper-slide-frame {
-      & img {
-        max-height: none!important;
-      }
-    }
-  }
-}

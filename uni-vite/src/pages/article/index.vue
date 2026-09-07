@@ -74,7 +74,7 @@ export default {
 	},
 }
 </script>
-<style>
+<style lang="less">
   .article_page {
     padding-top: 112rpx;
     .common_list_module {

@@ -3,24 +3,32 @@
     mode="bottom"
     ref="uniPopup"
     class="video_play_popup"
-    :is-mask-click="true"
-    :show="visible"
+    :is-mask-click="maskClosable"
+    :show="value"
     :style="{ zIndex: zIndex, height: '100vh' }"
-    @maskClick="maskClosable"
+    @maskClick="onMaskClick"
     @close="close"
   >
     <view class="video_play_main" @click.stop>
+      <!-- 未打开时不挂载，避免空数据 init 弹「没有视频」 -->
       <VideoPlayer
+        v-if="value"
         :mode="mode"
+        :id="id"
+        :ids="ids"
         :type="type"
         :video="video"
         :videos="videos"
-        v-bind="$attrs"
-        v-on="forwardedListeners"
+        @play="$emit('play', $event)"
+        @pause="$emit('pause', $event)"
+        @next="$emit('next', $event)"
+        @prev="$emit('prev', $event)"
+        @ended="$emit('ended', $event)"
+        @error="$emit('error', $event)"
       />
-      <cover-view class="video_close_icon" @click.stop="close">
+      <view class="video_close_icon" @click.stop="close">
         ✕
-      </cover-view>
+      </view>
     </view>
   </UniPopup>
 </template>
@@ -36,7 +44,7 @@ export default {
     UniPopup
   },
   inheritAttrs: false,
-  emits: ['update:value', 'open', 'close', 'play', 'pause', 'next', 'prev'],
+  emits: ['update:value', 'open', 'close', 'play', 'pause', 'next', 'prev', 'ended', 'error'],
   props: {
     value: {
       type: Boolean,
@@ -46,8 +54,16 @@ export default {
       type: String,
       default: 'auto'
     },
+    id: {
+      type: [String, Number],
+      default: null
+    },
+    ids: {
+      type: [String, Array],
+      default: null
+    },
     type: {
-      type: Number,
+      type: [String, Number],
       default: null
     },
     video: {
@@ -67,31 +83,11 @@ export default {
       default: 2000
     }
   },
-  computed: {
-    visible: {
-      get () {
-        if (this.value) {
-          this.open()
-        } else {
-          this.close()
-        }
-        return this.value
-      },
-      set (v) {
-        this.$emit('update:value', v)
-      }
-    },
-    forwardedListeners () {
-      const map = {};
-      ['play', 'pause', 'next', 'prev', 'ended', 'error'].forEach(k => {
-        if (this.$attrs && this.$attrs[`on${k.charAt(0).toUpperCase() + k.slice(1)}`]) {
-          map[k] = (...args) => this.$emit(k, ...args);
-        }
-      });
-      return map;
-    }
-  },
   methods: {
+    onMaskClick () {
+      if (!this.maskClosable) return;
+      this.close();
+    },
     close () {
       const popup = this.$refs.uniPopup;
       if (popup && typeof popup.close === 'function') {

@@ -14,10 +14,10 @@
               {{ getRoleLabel(userInfo.role)}}
             </text>
           </view>
-          <view class="user_phone">
-            <a class="phone" :href="`tel:${userInfo.phone_number}`">
+          <view v-if="userInfo.phone_number" class="user_phone">
+            <text class="phone" @click="makePhoneCall(userInfo.phone_number)">
               {{ userInfo.phone_number }}
-            </a>
+            </text>
           </view>
         </view>
       </view>
@@ -62,10 +62,10 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash'
+import { getValue as _get } from '@/common/js/common.js'
 import store from '@/store/index'
-import { replaceCosDomainName  } from '@/utils/variables.js'
-import { COS_DOMAIN_NAME, openUrl, scaleImageWidthInCOS } from '@/utils'
+import { replaceCosDomainName  } from '@/common/js/variables.js'
+import { COS_DOMAIN_NAME, openUrl, scaleImageWidthInCOS } from '@/common/js/common.js'
 import { getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 
@@ -147,6 +147,11 @@ export default {
       };
       return map[role] || '未知角色';
     },
+    makePhoneCall (phoneNumber) {
+      uni.makePhoneCall({
+        phoneNumber: String(phoneNumber)
+      })
+    },
     onClickOther (item) {
       if (item.key === 'cache') {
         uni.clearStorageSync();
@@ -198,6 +203,4 @@ export default {
 };
 </script>
 
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

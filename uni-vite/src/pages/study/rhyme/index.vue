@@ -35,7 +35,7 @@
               </view>
             </view>
           </view>
-          <view class="vbar" />
+          <view class="vbar"></view>
           <view class="contrast_col">
             <view class="mini_grid">
               <view
@@ -205,7 +205,7 @@
 
 <script>
 import { pinyin } from 'pinyin-pro'
-import { TTSService } from '@/common/js/TTSManager.js'
+import { TTSService } from '@/common/tts'
 import { CONTRAST_STATIC, SINGLE_STATIC } from './constant.js'
 
 const tts = new TTSService()
@@ -396,6 +396,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-@import './index.less';
-</style>
+<style lang="less" src="./index.less" scoped></style>

@@ -8,11 +8,30 @@
     />
     <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper v-if="isSupportSwiper" :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
-      <swiper-item v-for="item in filteredItems" :key="item.key">
-        <component
-          :key="item.component"
+      <swiper-item v-for="(item, index) in filteredItems" :key="item.key">
+        <MusicList
+          v-if="item.component === 'MusicList' && shouldMountTab(index)"
           :ref="item.component + item.id"
-          :is="item.component"
+          :class="classObject"
+          :request="getArticlePageList"
+          :queryParams="{
+            ...queryParams,
+            type: item.id || null
+          }"
+        />
+        <VideoList
+          v-else-if="item.component === 'VideoList' && shouldMountTab(index)"
+          :ref="item.component + item.id"
+          :class="classObject"
+          :request="getArticlePageList"
+          :queryParams="{
+            ...queryParams,
+            type: item.id || null
+          }"
+        />
+        <ScrollList
+          v-else-if="item.component === 'ScrollList' && shouldMountTab(index)"
+          :ref="item.component + item.id"
           :class="classObject"
           :request="getArticlePageList"
           :queryParams="{
@@ -23,18 +42,36 @@
       </swiper-item>
     </swiper>
 		<view v-else>
-			<template v-for="item in filteredItems">
-				<component
-					v-if="currentTabKey === item.key"
-          :key="item.key"
-          :ref="item.component + item.id"
-          :is="item.component"
-          :class="classObject"
-          :request="getArticlePageList"
-          :queryParams="{
-            ...queryParams,
-            type: item.id || null
-          }"
+			<template v-for="item in filteredItems" :key="item.key">
+				<MusicList
+					v-if="currentTabKey === item.key && item.component === 'MusicList'"
+					:ref="item.component + item.id"
+					:class="classObject"
+					:request="getArticlePageList"
+					:queryParams="{
+						...queryParams,
+						type: item.id || null
+					}"
+				/>
+				<VideoList
+					v-else-if="currentTabKey === item.key && item.component === 'VideoList'"
+					:ref="item.component + item.id"
+					:class="classObject"
+					:request="getArticlePageList"
+					:queryParams="{
+						...queryParams,
+						type: item.id || null
+					}"
+				/>
+				<ScrollList
+					v-else-if="currentTabKey === item.key && item.component === 'ScrollList'"
+					:ref="item.component + item.id"
+					:class="classObject"
+					:request="getArticlePageList"
+					:queryParams="{
+						...queryParams,
+						type: item.id || null
+					}"
 				/>
 			</template>
 		</view>
@@ -43,10 +80,10 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
-import semver from 'semver'
-import { get as _get, cloneDeep } from 'lodash'
+import { getValue as _get, cloneDeep } from '@/common/js/common.js'
+import { isVersionLt } from '@/common/js/common.js'
 import { getArticlePageList } from '@/api'
-import { textEllipsis } from '@/utils/common.js'
+import { textEllipsis } from '@/common/js/common.js'
 import HeaderBar from '@/components/header_bar/index.vue'
 import SearchBar from '@/components/search_bar/index.vue'
 import ScrollList from '@/components/scroll_list/index.vue'
@@ -135,7 +172,7 @@ export default {
 			let bool = true
 			const systemInfo = uni.getSystemInfoSync()
 			const { osName, osVersion } = systemInfo
-			if (osName === 'android' && semver.valid(osVersion) && semver.lt(osVersion, '10.0.0')) {
+			if (osName === 'android' && isVersionLt(osVersion, '10.0.0')) {
 				bool = false
 			}
 			return bool
@@ -179,15 +216,17 @@ export default {
   methods: {
     ...mapActions(['getCategoryEnum']),
     getArticlePageList,
+    shouldMountTab (index) {
+      return Math.abs(Number(index) - Number(this.currentTabIndex)) <= 1
+    },
     onChangeTab (tab) {
       this.currentTabIndex = Math.max(this.filteredItems.findIndex(e => e.key === tab), 0)
     },
     onChangeSwiper (data) {
       this.currentTabKey = _get(this, `filteredItems[${data.detail.current}].key`) || ''
+      this.currentTabIndex = data.detail.current
     }
   }
 }
 </script>
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

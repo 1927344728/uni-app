@@ -1,9 +1,9 @@
 <template>
   <view class="pingyin_page">
-    <header>
-      <h1>汉语拼音发音学习</h1>
+    <view class="pinyin_header">
+      <text class="pinyin_title">汉语拼音发音学习</text>
       <view class="description">点击任意拼音即可播放发音</view>
-    </header>
+    </view>
     
     <view class="pingyin_card">
       <view class="pingyin_category">
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { COS_DOMAIN_NAME, replaceCosDomainName } from '@/utils'
+import { COS_DOMAIN_NAME, replaceCosDomainName } from '@/common/js/common.js'
 const PINYIN_TYPE_OPTIONS = [
   { value: 'all', name: '全部（63）' },
   { value: 'shengmu', name: '声母（23）' },
@@ -256,180 +256,6 @@ export default {
 }
 </script>
 
-<style>
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  font-size: 100%;
-  vertical-align: baseline;
-}
-
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
-ol,
-ul {
-  list-style: none;
-}
-
-blockquote,
-q {
-  quotes: none;
-}
-
-blockquote::before,
-blockquote::after,
-q::before,
-q::after {
-  content: '';
-  content: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-html {
-  font-family: sans-serif;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-
-body {
-  font-family: 'Helvetica Neue', Helvetica, 'microsoft yahei', STHeiTi, sans-serif;
-}
-
-textarea {
-  overflow: auto;
-  vertical-align: top;
-  resize: none;
-}
-
-:focus {
-  outline: none;
-}
-
-:link,
-:visited {
-  text-decoration: none;
-}
-
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-a:focus {
-  outline: thin dotted;
-}
-
-a:active,
-a:hover {
-  outline: 0;
-}
-</style>
-
 <style lang="less">
 .pingyin_page {
   max-width: 1200px;
@@ -439,20 +265,21 @@ a:hover {
   background: linear-gradient(135deg, #3494e6, #ec6ead);
 }
 
-.pingyin_page header {
+.pingyin_page .pinyin_header {
   text-align: center;
   margin-bottom: 24px;
   color: white;
 }
 
-.pingyin_page header h1 {
+.pingyin_page .pinyin_header .pinyin_title {
+  display: block;
   margin-bottom: 12px;
   font-size: 40px;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.pingyin_page header .description {
+.pingyin_page .pinyin_header .description {
   font-size: 1.2rem;
   max-width: 800px;
   margin: 0 auto;
@@ -508,7 +335,7 @@ a:hover {
   height: 36px;
 }
 
-.pingyin_page .pingyin_card .pingyin_search input {
+.pingyin_page .pingyin_card .pingyin_search .search_key {
   flex: 1;
   height: 34px;
   padding: 0 12px;
@@ -517,11 +344,6 @@ a:hover {
   border-radius: 8px 0 0 8px;
   font-size: 16px;
   transition: border-color 0.3s;
-}
-
-.pingyin_page .pingyin_card .pingyin_search input:focus {
-  outline: none;
-  border-color: #3494e6;
 }
 
 .pingyin_page .pingyin_card .pingyin_search .search_button {
@@ -623,10 +445,6 @@ a:hover {
 
 .pingyin_page .pinyin_controls .button:hover {
   background: #2980b9;
-}
-
-.pingyin_page .pinyin_controls .button i {
-  margin-right: 8px;
 }
 
 .pingyin_page .pinyin_controls .button.control_stop {

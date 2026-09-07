@@ -1,8 +1,0 @@
-{
-  "projectDescription": "这是一个 Android Studio 创建的项目，用于基于 HBuilder 4.75 生成的本地 App 资源，生成安卓端应用程序。",
-  "chatPrompts": [
-    "uniapp + spring boot + Android Studio 本地打包，开发一款安卓端应用程序。",
-    "这是其中的 Android Studio 创建的项目，基于 Android 离线 SDK 4.75 和 HBuilder 4.75 生成的本地打包 App 资源，生成 apk 文件",
-    "请始终用中文回答"
-  ]
-}

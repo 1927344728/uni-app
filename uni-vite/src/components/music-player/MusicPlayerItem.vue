@@ -18,7 +18,7 @@
         :style="{
           backgroundImage: coverUrl ? `url('${coverUrl}')` : 'none'
         }"
-      />
+      ></view>
 
       <view class="music_play_titles">
         <text class="music_play_song">
@@ -55,8 +55,8 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash';
-import { scaleImageWidthInCOS } from '@/utils/common.js';
+import { getValue as _get } from '@/common/js/common.js';
+import { scaleImageWidthInCOS } from '@/common/js/common.js';
 
 export default {
   name: 'MusicPlayerItem',

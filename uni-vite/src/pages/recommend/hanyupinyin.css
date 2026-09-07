@@ -11,20 +11,21 @@
 	background: linear-gradient(135deg, #3494e6, #ec6ead);
 }
 
-.pingyin_page header {
+.pingyin_page .pinyin_header {
 	text-align: center;
 	margin-bottom: 24px;
 	color: white;
 }
 
-.pingyin_page header h1 {
+.pingyin_page .pinyin_header .pinyin_title {
+	display: block;
 	margin-bottom: 12px;
 	font-size: 40px;
 	font-weight: bold;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.pingyin_page header .description {
+.pingyin_page .pinyin_header .description {
 	font-size: 1.2rem;
 	max-width: 800px;
 	margin: 0 auto;
@@ -80,7 +81,7 @@
 	height: 36px;
 }
 
-.pingyin_page .pingyin_card .pingyin_search input {
+.pingyin_page .pingyin_card .pingyin_search .search_key {
 	flex: 1;
 	height: 34px;
 	padding: 0 12px;
@@ -89,11 +90,6 @@
 	border-radius: 8px 0 0 8px;
 	font-size: 16px;
 	transition: border-color 0.3s;
-}
-
-.pingyin_page .pingyin_card .pingyin_search input:focus {
-	outline: none;
-	border-color: #3494e6;
 }
 
 .pingyin_page .pingyin_card .pingyin_search .search_button {
@@ -195,10 +191,6 @@
 
 .pingyin_page .pinyin_controls .button:hover {
 	background: #2980b9;
-}
-
-.pingyin_page .pinyin_controls .button i {
-	margin-right: 8px;
 }
 
 .pingyin_page .pinyin_controls .button.control_stop {

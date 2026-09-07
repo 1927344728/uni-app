@@ -15,40 +15,61 @@
 
   & .form {
     padding: 24rpx;
-    & .uni-forms {
+
+    & .form_card {
       display: flex;
       flex-direction: column;
-      gap: 20px;
       padding: 30rpx 30rpx 12rpx;
       border-radius: 16rpx;
       background: white;
       overflow: hidden;
-      & .uni-forms-item {
-        & ::v-deep .uni-easyinput__content {
-          border-radius: 16rpx;
-          & .uni-easyinput__content-input {
-            background: transparent!important;
-          }
-        }
-        & .uni-label-pointer {
-          display: flex;
-          align-items: center;
-          font-size: 28rpx;
-          line-height: 32rpx;
-          color: @text-patch1-color;
-          vertical-align: middle;
-          & ::v-deep .uni-checkbox-input {
-            width: 36rpx;
-            height: 36rpx;
-            margin-right: 12rpx;
-          }
-          & uni-text {
-            vertical-align: middle;
-          }
-        }
+    }
+
+    & .form_item {
+      display: flex;
+      align-items: center;
+      min-height: 88rpx;
+      margin-bottom: 20rpx;
+      border-bottom: 1px solid @border-primary-color;
+
+      & .label {
+        width: 120rpx;
+        flex-shrink: 0;
+        font-size: 28rpx;
+        color: @text-patch1-color;
       }
-      & .uni-forms-item:last-child {
-        margin-bottom: 0;
+
+      & .input {
+        flex: 1;
+        height: 72rpx;
+        font-size: 28rpx;
+        color: @text-primary-color;
+      }
+    }
+
+    & .form_item.agree {
+      margin-bottom: 12rpx;
+      border-bottom: none;
+      min-height: 64rpx;
+
+      & .checkbox {
+        width: 36rpx;
+        height: 36rpx;
+        margin-right: 12rpx;
+        border: 2rpx solid @text-patch1-color;
+        border-radius: 6rpx;
+        box-sizing: border-box;
+      }
+
+      & .checkbox.checked {
+        border-color: @primary-color;
+        background: @primary-color;
+      }
+
+      & .agree_text {
+        font-size: 28rpx;
+        line-height: 32rpx;
+        color: @text-patch1-color;
       }
     }
   }
@@ -60,21 +81,23 @@
     font-size: 32rpx;
     font-weight: bold;
     text-align: center;
+
     & .button {
       padding: 20rpx 24rpx;
       background: @primary-color;
       border-radius: 100rpx;
       overflow: hidden;
     }
+
     & .button.disabled {
       background: @text-patch1-color;
     }
   }
-	
-	& .mock {
-		padding: 6rpx 24rpx 12rpx;
-		font-size: 14px;
-		text-align: center;
-		color: @text-patch1-color;
-	}
+
+  & .mock {
+    padding: 6rpx 24rpx 12rpx;
+    font-size: 14px;
+    text-align: center;
+    color: @text-patch1-color;
+  }
 }

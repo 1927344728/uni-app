@@ -47,8 +47,8 @@
   </scroll-view>
 </template>
 <script>
-import { get as _get } from 'lodash'
-import { textEllipsis, scaleImageWidthInCOS } from '@/utils/common.js'
+import { getValue as _get } from '@/common/js/common.js'
+import { textEllipsis, scaleImageWidthInCOS } from '@/common/js/common.js'
 import { getBookPageList } from '@/api/book.js'
 
 const initPagination = () => ({
@@ -122,6 +122,4 @@ export default {
 	}
 }
 </script>
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

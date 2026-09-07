@@ -5,29 +5,43 @@
       with_banner: !!(bannerList && bannerList.length)
     }"
   >
-    <uni-swiper-dot
-      v-if="bannerList && bannerList.length"
-      class="home_banner"
-      :info="bannerList"
-      :current="currentBanner"
-      field="content"
-      :dotsStyles="{
-        bottom: 15
-      }"
-    >
-      <swiper class="swiper_box" @change="e => (currentBanner = e.detail.current)">
-        <swiper-item v-for="item in bannerList" :key="item.id">
-          <view class="swiper_item">
-            <image class="banner_img" :src="scaleImageWidthInCOS(item.image)" mode="aspectFill" @click="openUrl(item)"></image>
+    <view v-if="bannerList && bannerList.length" class="home_banner">
+      <!-- 不用 uni-swiper-dot：其默认 backgroundColor 会被当成 wx:key，小程序会报重复 key 并引发 FLOW_MINIPULATE_CHILD -->
+      <swiper
+        class="swiper_box"
+        :current="currentBanner"
+        :indicator-dots="bannerList.length > 1"
+        indicator-color="rgba(0, 0, 0, .3)"
+        indicator-active-color="#333333"
+        :autoplay="bannerList.length > 1"
+        :interval="4000"
+        :circular="bannerList.length > 1"
+        @change="onBannerChange"
+      >
+        <swiper-item v-for="item in bannerList" :key="'banner-' + item.id">
+          <view class="swiper_item" @click="openUrl(item)">
+            <image
+              class="banner_img"
+              :src="scaleImageWidthInCOS(item.image)"
+              mode="aspectFill"
+              :style="{ width: '100%', height: '360rpx' }"
+            />
           </view>
         </swiper-item>
       </swiper>
-    </uni-swiper-dot>
+    </view>
 
     <view class="home_feature">
       <view class="wrapper">
         <view v-for="f in featureIcons" :key="f.key" class="item" @click="openUrl(f)">
-          <image class="icon" :src="scaleImageWidthInCOS(f.image, 120)" mode="aspectFill"></image>
+          <view class="icon_wrap">
+            <image
+              class="icon"
+              :src="scaleImageWidthInCOS(f.image, 120)"
+              mode="aspectFill"
+              :style="{ width: '112rpx', height: '112rpx' }"
+            />
+          </view>
           <text class="text">{{ f.name }}</text>
         </view>
       </view>
@@ -42,7 +56,12 @@
       </view>
       <view class="list">
         <view v-for="a in recommendArticles" :key="a.id" class="item" @click="openUrl(a)">
-          <image class="image" :src="scaleImageWidthInCOS(a.thumb, 120)" mode="aspectFill"></image>
+          <image
+            class="image"
+            :src="scaleImageWidthInCOS(a.thumb, 120)"
+            mode="aspectFill"
+            :style="{ width: '132rpx', height: '132rpx' }"
+          />
           <view class="content">
             <view class="title">{{ a.title }}</view>
             <view class="desc">{{ a.note }}</view>
@@ -62,8 +81,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import { get as _get } from 'lodash'
-import { openUrl, scaleImageWidthInCOS } from '@/utils'
+import { getValue as _get } from '@/common/js/common.js'
+import { openUrl, scaleImageWidthInCOS } from '@/common/js/common.js'
 import { APP_NAME, APP_VERSION, FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
 import { welcome, getUserInfo, getBannerList, getArticlePageList } from '@/api'
@@ -93,9 +112,9 @@ export default {
     if (this.isUseMock) {
       this.init()
     } else {
-      welcome().then((data) => {
+      welcome().then(() => {
         store.commit('setIsUseMock', false)
-      }).catch((err) => {
+      }).catch(() => {
         uni.hideToast()
         store.commit('setIsUseMock', true)
       }).finally(() => {
@@ -108,16 +127,19 @@ export default {
   },
   methods: {
     scaleImageWidthInCOS,
+    onBannerChange (e) {
+      this.currentBanner = e.detail.current
+    },
     init () {
       getUserInfo().then((data) => {
         store.commit('setUserInfo', data)
-      })
+      }).catch(() => {})
       getBannerList().then((data) => {
         this.bannerList = data || []
-      })
+      }).catch(() => {})
       getArticlePageList({ type: '2' }).then((data) => {
         this.recommendArticles = _get(data, 'content') || []
-      })
+      }).catch(() => {})
     },
     openUrl (item) {
 			if (item && item) {
@@ -131,6 +153,4 @@ export default {
 }
 </script>
 
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

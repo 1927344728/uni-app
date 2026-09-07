@@ -20,16 +20,43 @@
     z-index: 10;
     & .task_toolbar_select {
       display: flex;
-      gap: 8px;
       padding: 12rpx 24rpx;
       background: white;
       z-index: 1;
   
+      // 小程序里自定义组件会多出一层节点，flex 项是 <uni-data-picker> 本身，
+      // 而非组件内部的 .uni-data-tree，尺寸相关的声明必须挂在组件标签的 class 上
+      & .task_picker {
+        flex: 1 1 0;
+        min-width: 0;
+        margin-right: 8px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
       & .uni-data-tree {
-        flex: 1;
+        width: 100%;
         & ::v-deep {
+          & .input-value,
           & .input-value-border {
+            width: auto !important;
+            max-width: 100%;
             border-radius: 60px;
+          }
+          & .selected-area {
+            display: flex;
+            flex: 0 1 auto;
+            max-width: 100%;
+            overflow: hidden;
+          }
+          & .selected-list,
+          & .selected-item,
+          & .text-color {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
           & .placeholder {
             font-size: 14px;

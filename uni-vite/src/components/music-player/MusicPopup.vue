@@ -13,20 +13,23 @@
     <view
       class="music_play_popup__content"
       @click.stop
-      tabindex="0"
-      role="dialog"
-      aria-modal="true"
     >
       <MusicPlayer
         ref="player"
         :mode="mode"
+        :id="id"
+        :ids="ids"
         :type="type"
         :song="song"
         :songs="songs"
-        v-bind="$attrs"
-        v-on="forwardedListeners"
+        @play="$emit('play', $event)"
+        @pause="$emit('pause', $event)"
+        @next="$emit('next', $event)"
+        @prev="$emit('prev', $event)"
+        @ended="$emit('ended', $event)"
+        @error="$emit('error', $event)"
       />
-      <view class="music_play_popup__close" aria-label="关闭播放窗口" @click.stop="close">
+      <view class="music_play_popup__close" @click.stop="close">
         &#xe60e;
       </view>
     </view>
@@ -36,7 +39,7 @@
 <script>
 import MusicPlayer from './MusicPlayer.vue';
 import UniPopup from '@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue';
-import { unlockAudio } from '@/utils/audioUnlock.js';
+import { unlockAudio } from '@/common/js/audioUnlock.js';
 
 export default {
   name: 'MusicPopup',
@@ -45,7 +48,7 @@ export default {
     UniPopup
   },
   inheritAttrs: false,
-  emits: ['update:modelValue', 'open', 'close', 'play', 'pause', 'next', 'prev'],
+  emits: ['update:modelValue', 'open', 'close', 'play', 'pause', 'next', 'prev', 'ended', 'error'],
   props: {
     modelValue: {
       type: Boolean,
@@ -55,8 +58,16 @@ export default {
       type: String,
       default: 'auto'
     },
+    id: {
+      type: [String, Number],
+      default: null
+    },
+    ids: {
+      type: [String, Array],
+      default: null
+    },
     type: {
-      type: Number,
+      type: [String, Number],
       default: null
     },
     song: {
@@ -74,17 +85,6 @@ export default {
     zIndex: {
       type: [Number, String],
       default: 2000
-    }
-  },
-  computed: {
-    forwardedListeners () {
-      const map = {};
-      ['play', 'pause', 'next', 'prev', 'ended', 'error'].forEach(k => {
-        if (this.$attrs && this.$attrs[`on${k.charAt(0).toUpperCase() + k.slice(1)}`]) {
-          map[k] = (...args) => this.$emit(k, ...args);
-        }
-      });
-      return map;
     }
   },
   methods: {

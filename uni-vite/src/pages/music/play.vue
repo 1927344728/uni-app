@@ -13,11 +13,9 @@
 </template>
 
 <script>
-import qs from 'qs';
-import { getMusicByIds } from '@/api/music.js';
-import MusicPlayer from './componets/MusicPlayer.vue';
+import MusicPlayer from '@/components/music-player/MusicPlayer.vue';
 
-// 跳转示例：
+// ?????
 // url: `/pages/music/play?mode=auto&id=${item.id}`,
 // url: `/pages/music/play?mode=auto&id=91&type=4`,
 // url: `/pages/music/play?mode=single&id=${item.id}`

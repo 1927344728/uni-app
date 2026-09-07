@@ -21,7 +21,7 @@
 
 <script>
 import { APP_NAME, APP_VERSION, APP_LOGO } from '@/config/index'
-import { scaleImageWidthInCOS } from '@/utils'
+import { scaleImageWidthInCOS } from '@/common/js/common.js'
 export default {
   data() {
     return {

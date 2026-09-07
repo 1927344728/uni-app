@@ -1,2 +1,1 @@
-export * from './common'
-export * from './variables'
+export * from '@/common/js/index.js'

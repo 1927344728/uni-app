@@ -100,8 +100,8 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash';
-import { unlockAudio, adoptUnlockedAudio, clearUnlockedAudio, playInnerAudio } from '@/utils/audioUnlock.js';
+import { getValue as _get } from '@/common/js/common.js';
+import { unlockAudio, adoptUnlockedAudio, clearUnlockedAudio, playInnerAudio } from '@/common/js/audioUnlock.js';
 import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
 import MusicPlayerItem from './MusicPlayerItem.vue';
@@ -210,7 +210,13 @@ export default {
     this.clearSlideTimer();
     clearUnlockedAudio();
     if (this.audioCtx) {
-      this.audioCtx.destroy();
+      try {
+        if (this.audioCtx.__isBgAudio) {
+          this.audioCtx.stop();
+        } else if (typeof this.audioCtx.destroy === 'function') {
+          this.audioCtx.destroy();
+        }
+      } catch (e) {}
       this.audioCtx = null;
     }
   },
@@ -555,9 +561,21 @@ export default {
     },
     createAudio () {
       if (this.audioCtx) {
-        this.audioCtx.destroy();
+        try {
+          if (this.audioCtx.__isBgAudio) {
+            this.audioCtx.stop();
+          } else if (typeof this.audioCtx.destroy === 'function') {
+            this.audioCtx.destroy();
+          }
+        } catch (e) {}
         this.audioCtx = null;
       }
+
+      // #ifdef MP-WEIXIN
+      // 后台音频：息屏/切应用后继续播放（需在微信公众平台开通「背景音频」）
+      this.createBackgroundAudio();
+      return;
+      // #endif
 
       // H5：优先接管列表点击手势内已 play 过的同一 Audio 实例
       const reused = adoptUnlockedAudio();
@@ -568,6 +586,39 @@ export default {
         // obeyMuteSwitch 在某些版本中可能是只读属性，忽略设置错误
       }
       ctx.autoplay = false;
+      this.bindAudioEvents(ctx);
+      this.audioCtx = ctx;
+      this.loadCurrentSong({ reuse: !!reused });
+    },
+    createBackgroundAudio () {
+      // 清掉可能残留的解锁实例，避免与后台播放器同时出声
+      clearUnlockedAudio();
+      const bg = uni.getBackgroundAudioManager();
+      const ctx = {
+        __isBgAudio: true,
+        _bg: bg,
+        get src () { return bg.src; },
+        set src (v) { bg.src = v; },
+        get currentTime () { return bg.currentTime || 0; },
+        get duration () { return bg.duration || 0; },
+        play () { bg.play(); },
+        pause () { bg.pause(); },
+        stop () { try { bg.stop(); } catch (e) {} },
+        seek (t) { bg.seek(t); },
+        destroy () { try { bg.stop(); } catch (e) {} },
+        onCanplay (fn) { bg.onCanplay(fn); },
+        onPlay (fn) { bg.onPlay(fn); },
+        onPause (fn) { bg.onPause(fn); },
+        onStop (fn) { bg.onStop(fn); },
+        onEnded (fn) { bg.onEnded(fn); },
+        onError (fn) { bg.onError(fn); },
+        onTimeUpdate (fn) { bg.onTimeUpdate(fn); }
+      };
+      this.bindAudioEvents(ctx);
+      this.audioCtx = ctx;
+      this.loadCurrentSong({ reuse: false });
+    },
+    bindAudioEvents (ctx) {
       ctx.onCanplay(() => {
         setTimeout(() => {
           this.duration = ctx.duration || this.duration;
@@ -611,24 +662,38 @@ export default {
         }
         this.updateLyricByTime(ctx.currentTime);
       });
-      this.audioCtx = ctx;
-      this.loadCurrentSong({ reuse: !!reused });
     },
     playAudio () {
       if (!this.audioCtx) return;
       try {
-        playInnerAudio(this.audioCtx);
+        if (this.audioCtx.__isBgAudio) {
+          this.audioCtx.play();
+        } else {
+          playInnerAudio(this.audioCtx);
+        }
       } catch (err) {
         this.isPlaying = false;
         this.autoplayBlocked = true;
       }
     },
     async loadCurrentSong ({ reuse = false } = {}) {
-      const { lyric, url, title } = this.currentSong;
+      const { lyric, url, title, singer, cover } = this.currentSong || {};
       this.activeLyricIndex = 0;
       this.currentLyricAnchor = '';
 
-      if (reuse) {
+      if (this.audioCtx && this.audioCtx.__isBgAudio) {
+        const bg = this.audioCtx._bg;
+        bg.title = title || '音乐';
+        bg.epname = title || '';
+        bg.singer = singer || '';
+        bg.coverImgUrl = cover || '';
+        this.currentTime = 0;
+        this.duration = 0;
+        // 设置 src 后会自动开始播放
+        bg.src = url;
+        this.isPlaying = true;
+        this.autoplayBlocked = false;
+      } else if (reuse) {
         // 同一 Audio 实例已在手势内解锁，勿 stop() 打断
         const needRetarget = this.audioCtx.src !== url;
         if (needRetarget) {

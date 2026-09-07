@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { scaleImageWidthInCOS } from '@/utils/common.js'
+import { scaleImageWidthInCOS } from '@/common/js/common.js'
 import { getBookById } from '@/api/book.js'
 export default {
   data () {

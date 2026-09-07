@@ -1,4 +1,4 @@
-import { ArrayBufferToGBK } from '@/utils/platform.js';
+import { ArrayBufferToGBK } from '@/common/js/platform.js';
 
 export function fetchFileTextByUrl (url = '') {
   if (!url) return '';

@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash'
-import { COS_DOMAIN_NAME, scaleImageWidthInCOS } from '@/utils'
+import { getValue as _get } from '@/common/js/common.js'
+import { COS_DOMAIN_NAME, scaleImageWidthInCOS } from '@/common/js/common.js'
 import { updatePassword } from '@/api'
 
 export default {

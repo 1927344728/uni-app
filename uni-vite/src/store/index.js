@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
-import { get as _get } from 'lodash'
-import { USE_MOCK_KEY } from '@/utils'
-import { getCategoryEnum } from '@/api'
+import { getValue as _get } from '@/common/js/common.js'
+import { USE_MOCK_KEY } from '@/common/js/common.js'
+import { getCategoryEnum as fetchCategoryEnum } from '@/api/common.js'
 
 const mockState = uni.getStorageSync(USE_MOCK_KEY)
 const isUseMock = mockState && (_get(mockState, 'value') === 1 && new Date().getTime() - _get(mockState, 'timestamp') <= 3 * 24 * 60 * 60 * 1000)
@@ -41,8 +41,10 @@ export default createStore({
       if (state.categoryEnum) {
         return Promise.resolve(state.categoryEnum)
       }
-      return getCategoryEnum(categoryId).then(data => {
+      // 注意：小程序不支持动态 import()，必须静态引用 API
+      return fetchCategoryEnum(categoryId).then((data) => {
         commit('setCategoryEnum', data)
+        return data
       })
     }
   }

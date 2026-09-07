@@ -46,10 +46,14 @@ const getVideoById = (params) => {
 }
 
 const getVideoByIds = (params) => {
-  const ids = (params.ids || []).map(id => String(id))
+  let ids = params.ids || []
+  if (typeof ids === 'string') {
+    ids = ids.replace(/^\[|\]$/g, '').split(',').map(s => s.trim()).filter(Boolean)
+  }
+  ids = (ids || []).map(id => String(id))
   const list = VIDEO_LIST
     .filter(item => ids.includes(String(item.id)))
-    .sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    .sort((a, b) => ids.indexOf(String(a.id)) - ids.indexOf(String(b.id)));
 
   const data = initResponseData()
   data.data = list
@@ -59,8 +63,15 @@ const getVideoByIds = (params) => {
 const getVideoByRandom = (params) => {
   let { type, playingIds, playedIds } = params || {}
   type = type ? String(type) : ''
-  playingIds = (playingIds || []).map(id => String(id))
-  playedIds = (playedIds || []).map(id => String(id))
+  const toIdList = (val) => {
+    if (!val) return []
+    if (typeof val === 'string') {
+      return val.replace(/^\[|\]$/g, '').split(',').map(s => s.trim()).filter(Boolean).map(String)
+    }
+    return (val || []).map(id => String(id))
+  }
+  playingIds = toIdList(playingIds)
+  playedIds = toIdList(playedIds)
   
   let list = cloneDeep(videoList)
   if (type) {

@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import { PUBLIC_WEB_DOMAIN } from '@/utils/variables.js'
-import { splitWords, joinWordsParam } from '@/utils/dictation.js'
+import { PUBLIC_WEB_DOMAIN } from '@/common/js/variables.js'
+import { splitWords, joinWordsParam } from '@/common/js/dictation.js'
 
 const DEFAULT_TIPS = [
   '听写前请先准备好铅笔与田字格本，保持桌面整洁，书写时坐姿端正，注意笔顺与占格。',
@@ -142,6 +142,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-@import './index.less';
-</style>
+<style lang="less" src="./index.less" scoped></style>

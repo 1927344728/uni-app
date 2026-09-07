@@ -7,14 +7,13 @@
       :ids="ids"
       :type="type"
       :video="video"
+      :videos="videos"
     />
   </view>
 </template>
 
 <script>
-import qs from 'qs';
-import { getVideoById } from '@/api'
-import VideoPlayer from './componets/VideoPlayer.vue';
+import VideoPlayer from '@/components/video-player/VideoPlayer.vue';
 
 export default {
   components: {
@@ -27,7 +26,8 @@ export default {
       id: null,
       ids: null,
       type: null,
-      video: null
+      video: null,
+      videos: null
     };
   },
   async onLoad (options) {
@@ -38,18 +38,17 @@ export default {
       const { mode, id, ids, type, video, key } = options
 
       let videos = null
-      if (mode === 'menu') {
-        videos = uni.getStorageSync(key) || [] 
+      if (mode === 'menu' && key) {
+        videos = uni.getStorageSync(key) || []
       }
 
       this.mode = mode || 'auto'
       this.id = id || null
       this.ids = ids || null
       this.type = type || null
-      this.video = video
+      this.video = video || (videos && videos[0]) || null
       this.videos = videos
       this.isLoaded = true
-      console.log('video_player_page')
     }
   }
 };

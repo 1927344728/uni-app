@@ -1,0 +1,43 @@
+---
+description: 仓库整体结构与各子项目职责，前端三端兼容约束
+alwaysApply: true
+---
+
+# 项目总览
+
+这是一个完整应用「一兆窗含」的单仓多项目，根目录下四个子项目互相配合，不要孤立地看待其中任何一个。请始终用中文回答。
+
+| 目录 | 角色 | 技术栈 |
+|------|------|--------|
+| `uni-vite/` | 主前端 | uni-app + Vue3 + Vite，一套代码发 H5 / 安卓 App / 微信小程序 |
+| `uni-spring-boot/` | 服务端 | Spring Boot 3 + JDK 17 + JPA + MySQL + JWT，为所有客户端提供接口 |
+| `uni-android/` | 安卓壳工程 | Android Studio + uni-app 离线 SDK 4.75，把 HBuilderX 生成的本地打包资源打成 apk |
+| `react-native-expo/` | React 版前端 | Expo 57 + React Native 0.86 + expo-router，与 `uni-vite` 功能对齐的另一实现 |
+| `ssl/` | 证书脚本 | 根 `package.json` 里的 `convert-p12` / `upload-ssl` |
+
+## 前端三端兼容（`uni-vite/`）
+
+`uni-vite` 必须同时跑在 **H5、安卓 App、微信小程序**。改动前先确认三端行为，平台差异一律用条件编译隔离，不要用运行时嗅探代替：
+
+```js
+// #ifdef H5
+window.speechSynthesis.speak(utterance)
+// #endif
+// #ifdef APP-PLUS
+plus.runtime.openURL(url)
+// #endif
+// #ifdef MP-WEIXIN
+wx.setEnableDebug({ enableDebug: true })
+// #endif
+```
+
+小程序端最容易踩的几条：
+
+- **没有 DOM/BOM**：`window`、`document`、`speechSynthesis`、`Blob`、`FileReader`、`atob` 都不存在，需走 `uni.*` 等价 API。
+- **不支持动态 `import()`**：模块一律静态引入，动态导入在小程序上会直接报错。
+- **自定义组件样式隔离**：父级样式穿不进 `uni-ui` 组件内部，颜色/字号等要通过 props 传，`::v-deep` + `!important` 只在 H5 生效。
+- **本项目小程序主体是个人**：不能使用 `web-view`，遇到外链改为复制链接并提示用户在浏览器打开。
+- **域名白名单**：所有 request / socket / downloadFile 域名都要在小程序后台配置，真机体验版不能跳过校验。
+- **`plus.*` 仅 App 可用**，务必包在 `#ifdef APP-PLUS` 内。
+
+改完前端后，涉及接口的改动要同步检查 `uni-spring-boot` 的 controller 与 `react-native-expo` 是否需要对齐。

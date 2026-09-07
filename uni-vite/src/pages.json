@@ -14,16 +14,16 @@
     },
     {
       "path": "pages/task/index",
-      "style":  {
-        "navigationBarTitleText" : "任务",
-        "enablePullDownRefresh" : false
+      "style": {
+        "navigationBarTitleText": "任务",
+        "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/study/index",
       "style": {
-        "navigationBarTitleText" : "学习",
-        "enablePullDownRefresh" : false
+        "navigationBarTitleText": "学习",
+        "enablePullDownRefresh": false
       }
     },
     {
@@ -50,23 +50,23 @@
     {
       "path": "pages/life/index",
       "style": {
-        "navigationBarTitleText" : "生活",
-        "enablePullDownRefresh" : false
+        "navigationBarTitleText": "生活",
+        "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/me/index",
       "style": {
-          "navigationBarTitleText" : "我",
-          "enablePullDownRefresh" : false
-        }
+        "navigationBarTitleText": "我",
+        "enablePullDownRefresh": false
+      }
     },
     {
       "path": "pages/me/about",
       "style": {
-          "navigationBarTitleText" : "关于",
-          "enablePullDownRefresh" : false
-        }
+        "navigationBarTitleText": "关于",
+        "enablePullDownRefresh": false
+      }
     },
     {
       "path": "pages/login/index",
@@ -82,47 +82,47 @@
     },
     {
       "path": "pages/task/detail",
-      "style":  {
-        "navigationBarTitleText" : "任务详情",
-        "enablePullDownRefresh" : false
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
       }
     },
-		{
-		  "path": "pages/recommend/hanyupinyin",
-		  "style": {
-		    "navigationBarTitleText": "汉语拼音发音学习"
-		  }
-		},
-		{
-		  "path": "pages/webview/index",
-		  "style": {
-		    "navigationBarTitleText": "webview"
-		  }
-		},
     {
-		  "path": "pages/book/index",
-		  "style": {
-		    "navigationBarTitleText": "书籍列表"
-		  }
-		},
-		{
-		  "path": "pages/book/detail",
-		  "style": {
-		    "navigationBarTitleText": "书籍简介"
-		  }
-		},
-		{
-		  "path": "pages/music/index",
-		  "style": {
-		    "navigationBarTitleText": "音乐"
-		  }
-		},
-		{
-		  "path": "pages/music/play",
-		  "style": {
-		    "navigationBarTitleText": "音乐"
-		  }
-		},
+      "path": "pages/recommend/hanyupinyin",
+      "style": {
+        "navigationBarTitleText": "汉语拼音发音学习"
+      }
+    },
+    {
+      "path": "pages/webview/index",
+      "style": {
+        "navigationBarTitleText": "webview"
+      }
+    },
+    {
+      "path": "pages/book/index",
+      "style": {
+        "navigationBarTitleText": "书籍列表"
+      }
+    },
+    {
+      "path": "pages/book/detail",
+      "style": {
+        "navigationBarTitleText": "书籍简介"
+      }
+    },
+    {
+      "path": "pages/music/index",
+      "style": {
+        "navigationBarTitleText": "音乐"
+      }
+    },
+    {
+      "path": "pages/music/play",
+      "style": {
+        "navigationBarTitleText": "音乐"
+      }
+    },
     {
       "path": "pages/video/index",
       "style": {
@@ -156,13 +156,13 @@
   ],
   "globalStyle": {
     "navigationStyle": "default",
-    "navigationBarTextStyle": "#666",
+    "navigationBarTextStyle": "black",
     "navigationBarTitleText": "一兆窗含",
-    "navigationBarBackgroundColor": "white",
+    "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f2f2f2",
     "transparentTitle": "auto",
-		"h5": {
-			"titleNView": false 
-		}
+    "h5": {
+      "titleNView": false
+    }
   }
 }

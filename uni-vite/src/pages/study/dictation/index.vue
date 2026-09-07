@@ -134,10 +134,10 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash'
-import { TTSService } from '@/common/js/TTSManager.js'
+import { getValue as _get } from '@/common/js/common.js'
+import { TTSService } from '@/common/tts'
 import { getChineseWordList } from '@/api'
-import { clampNumber, splitWords, toPinyinSymbol } from '@/utils/dictation.js'
+import { clampNumber, splitWords, toPinyinSymbol } from '@/common/js/dictation.js'
 
 const tts = new TTSService()
 
@@ -471,6 +471,4 @@ function decodeURIComponentSafe (s) {
 }
 </script>
 
-<style lang="less" scoped>
-@import './index.less';
-</style>
+<style lang="less" src="./index.less" scoped></style>

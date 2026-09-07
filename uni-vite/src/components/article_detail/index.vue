@@ -8,26 +8,21 @@
       </view>
 
       <view v-if="['subTitle', 'richText'].includes(item.type)" :class="['detail_module', item.type, item.className]">
-        <view
+        <rich-text
           v-for="(rtx, i) in [item.content].flat()"
           :key="rtx + i"
           class="detail_module_item"
-          v-html="rtx"
+          :nodes="rtx"
         />
       </view>
 
       <view
         v-if="item.type === 'readText'"
-        :class="{
-          detail_module: true,
-          [item.type]: true,
-          [item.className || '']: true,
-          loading: speakingIndex === idx && isLoading,
-        }"
+        :class="['detail_module', item.type, item.className, { loading: speakingIndex === idx && isLoading }]"
         @click="onClickReadText(item, idx)"
       >
         <view class="detail_module_wrapper">
-          <view v-for="(rtx, i) in [item.content].flat()" :key="rtx + i" v-html="rtx" />
+          <rich-text v-for="(rtx, i) in [item.content].flat()" :key="rtx + i" :nodes="rtx" />
           <view v-if="!isPaused && speakingIndex === idx" class="iconfont voice">&#xe612;</view>
           <view v-else class="iconfont mute">&#xe60f;</view>
         </view>
@@ -51,7 +46,7 @@
         <view v-for="(v, i) in [item.content].flat()" :key="v + i"  class="detail_module_item">
           <video
             :src="replaceCosDomainName(v)"
-            :id="`video_${idx}`"
+            :id="'video_' + idx"
             class="uni_video"
             controls
             :object-fit="item.objectFit || 'contain'"
@@ -98,7 +93,7 @@
             class="uni_image"
             mode="widthFix"
           />
-          <view v-if="item.content[1]" class="desc" v-html="item.content[1]" />
+          <rich-text v-if="item.content[1]" class="desc" :nodes="item.content[1]" />
         </view>
       </view>
     </block>
@@ -112,12 +107,12 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash'
-import { convert as convertHtmlToText } from 'html-to-text'
-import { getUrlParams, replaceCosDomainName  } from '@/utils/variables.js'
-import { scaleImageWidthInCOS } from '@/utils/common.js'
-import { TTSService } from '@/common/js/TTSManager.js'
-import VideoPopup from '@/pages/video/componets/VideoPopup.vue'
+import { getValue as _get } from '@/common/js/common.js'
+import { stripHtml as convertHtmlToText } from '@/common/js/common.js'
+import { getUrlParams, replaceCosDomainName  } from '@/common/js/variables.js'
+import { scaleImageWidthInCOS } from '@/common/js/common.js'
+import { TTSService } from '@/common/tts'
+import VideoPopup from '@/components/video-player/VideoPopup.vue'
 
 const ttsService = new TTSService()
 
@@ -254,14 +249,19 @@ export default {
           objectFit: e.objectFit || 'cover'
         }))
       const video = videos.find(e => e.url === item.content)
-      // #ifdef APP-PLUS
+      if (!video) {
+        uni.showToast({ title: '没有视频', icon: 'none' })
+        return
+      }
+      // App / 小程序：全屏播放页更稳（弹层内 video 在 MP 上易失败）
+      // #ifdef APP-PLUS || MP
       uni.setStorageSync('tempVideoCache', videos)
       uni.navigateTo({
         url: `/pages/video/play?mode=menu&id=${video.id}&key=tempVideoCache`
       })
       // #endif
 
-      // #ifndef APP-PLUS
+      // #ifdef H5
       this.videoPopupConfig = {
         visbile: true,
         video,
@@ -273,7 +273,4 @@ export default {
 };
 </script>
 
-<style lang="less">
-@import '@/common/css/common.less';
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

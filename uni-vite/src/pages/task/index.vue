@@ -3,6 +3,7 @@
 		<view class="task_toolbar">
       <view class="task_toolbar_select">
         <uni-data-picker
+          class="task_picker"
           v-model="queryParam.targeter"
           :localdata="targeterList"
           :clear="true"
@@ -11,6 +12,7 @@
           @clear="queryParam.targeter = null"
         />
         <uni-data-picker
+          class="task_picker"
           v-model="queryParam.status"
           :localdata="statusList"
           :clear="true"
@@ -65,7 +67,7 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash'
+import { getValue as _get } from '@/common/js/common.js'
 import { getTaskTargeterList, getTaskPageList } from '@/api'
 import { TASK_STATUS_ENUM } from './constant.js'
 import FooterBar from '@/components/footer_bar/index.vue'
@@ -160,6 +162,4 @@ export default {
 }
 </script>
 
-<style lang="less">
-@import './index.less';
-</style>
+<style lang="less" src="./index.less"></style>

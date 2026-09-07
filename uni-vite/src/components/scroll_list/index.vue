@@ -1,28 +1,27 @@
 <template>
   <scroll-view class="common_list_module" scroll-y :lower-threshold="50" @scrolltolower="scrolltolower">
-    <uni-list v-if="isLoaded && list.length">
-      <uni-list-item
+    <view v-if="isLoaded && list.length" class="list_wrap">
+      <view
         v-for="item in list"
         :key="item.id"
+        class="list_item"
         :class="[item.className]"
-        :title="item.title"
-        :note="item.note"
-        :thumb="scaleImageWidthInCOS(item.thumb, 120)"
-        :showBadge="!!item.badgeText"
-        :badgeText="item.badgeText"
-        :badgeStyle="{
-          background: 'red',
-          fontSize: '14px'
-        }"
-        thumbSize="lg"
-        link
-        @click="openUrl(item)"
+        hover-class="list_item--hover"
+        @tap="openUrl(item)"
       >
-        <template v-slot:header>
-          <image class="slot-image" :src="scaleImageWidthInCOS(item.thumb, 120)" mode="aspectFill" />
-        </template>
-      </uni-list-item>
-    </uni-list>
+        <image
+          class="thumb"
+          :src="scaleImageWidthInCOS(item.thumb, 120)"
+          mode="aspectFill"
+          :style="{ width: '120rpx', height: '120rpx' }"
+        />
+        <view class="content">
+          <view class="title">{{ item.title }}</view>
+          <view v-if="item.note" class="note">{{ item.note }}</view>
+        </view>
+        <view v-if="item.badgeText" class="badge">{{ item.badgeText }}</view>
+      </view>
+    </view>
     <view v-if="list.length && pagination.isLast" class="nomore_load_tips">
       ~没有更多了哦~
     </view>
@@ -33,8 +32,7 @@
 </template>
 
 <script>
-import qs from 'qs'
-import { openUrl, scaleImageWidthInCOS } from '@/utils'
+import { openUrl, scaleImageWidthInCOS, stringifyQuery } from '@/common/js/common.js'
 
 export default {
   props: {
@@ -77,7 +75,7 @@ export default {
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize,
       }
-      const cacheKey = qs.stringify(params)
+      const cacheKey = stringifyQuery(params)
       let data = cacheMap[cacheKey]
       if (!data) {
         data = await this.request(params).catch(() => {})
@@ -99,7 +97,6 @@ export default {
       this.getList()
     },
 		scrolltolower () {
-      console.log('scrollList: scrolltolower')
 			if (!this.pagination.isLast)  {
         this.pagination.pageNum ++
         this.getList()
@@ -109,33 +106,79 @@ export default {
 }
 </script>
 <style lang="less">
-@import '@/common/css/reset.less';
 @import '@/common/css/common.less';
 @import '@/common/css/color.less';
 @import '@/common/css/apply.less';
 .common_list_module {
-  height: calc(100vh - constant(safe-area-inset-bottom));
-  height: calc(100vh - env(safe-area-inset-bottom));
-  & .uni-list {
-    & ::v-deep .uni-list--border-top {
-      display: none;
+  height: 100%;
+  box-sizing: border-box;
+
+  & .list_wrap {
+    background: #fff;
+  }
+
+  & .list_item {
+    display: flex;
+    align-items: center;
+    padding: 24rpx;
+    border-bottom: 1px solid @border-primary-color;
+    box-sizing: border-box;
+
+    & .thumb {
+      flex-shrink: 0;
+      width: 120rpx;
+      height: 120rpx;
+      margin-right: 24rpx;
+      border-radius: 12rpx;
+      background: #f5f5f5;
     }
-    & .uni-list-item {
-      & .slot-image {
-        width: 60px;
-        height: 60px;
-        margin-right: 24rpx;
-        border-radius: 12rpx;
+
+    & .content {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+
+      & .title {
+        font-size: 30rpx;
+        line-height: 42rpx;
+        color: @text-primary-color;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      & .note {
+        margin-top: 8rpx;
+        font-size: 26rpx;
+        line-height: 36rpx;
+        color: @text-patch1-color;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
-    & .uni-list-item.active {
-      & ::v-deep .uni-list-item__content-title {
-        font-weight: bold;
-        color: #59c2ad;
-      }
-      & ::v-deep .uni-list-item__content-note {
-        color: #59c2ad;
-      }
+
+    & .badge {
+      flex-shrink: 0;
+      margin-left: 12rpx;
+      padding: 2rpx 10rpx;
+      font-size: 22rpx;
+      line-height: 32rpx;
+      color: #fff;
+      background: red;
+      border-radius: 20rpx;
+    }
+  }
+
+  & .list_item--hover {
+    background: #f8f8f8;
+  }
+
+  & .list_item.active {
+    & .title,
+    & .note {
+      color: @primary-color;
+      font-weight: bold;
     }
   }
 }

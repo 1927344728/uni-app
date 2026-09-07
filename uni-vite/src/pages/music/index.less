@@ -5,23 +5,25 @@
 
 .music_page {
   background: @bg-patch-color;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
   
   & .music_menu {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20rpx;
-    padding: 24rpx;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24rpx 14rpx 4rpx;
 
     .card {
       display: flex;
-      align-items: start;
+      align-items: flex-start;
+      width: calc(50% - 20rpx);
+      margin: 0 10rpx 20rpx;
       padding: 24rpx 12rpx;
       background: #fff;
       border-radius: 24rpx;
       box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.04);
       position: relative;
+      box-sizing: border-box;
       .icon {
         width: 80rpx;
         height: 80rpx;

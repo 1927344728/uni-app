@@ -83,7 +83,7 @@
 
 <script>
 import { getTaskById } from '@/api/index.js'
-import { parseTime } from '@/utils/index.js'
+import { parseTime } from '@/common/js/index.js'
 import { TASK_STATUS_ENUM } from './constant.js'
 import ArticleDetail from '@/components/article_detail/index.vue'
 
