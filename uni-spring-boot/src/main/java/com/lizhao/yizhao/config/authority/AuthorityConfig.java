@@ -45,7 +45,12 @@ public class AuthorityConfig {
        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
        .authenticationProvider(authenticationProvider())
       .addFilterBefore(authorityFilter, UsernamePasswordAuthenticationFilter.class)
-      .cors(withDefaults());
+      .cors(withDefaults())
+      .headers(headers -> {
+        if (!securityConfig.isHstsEnabled()) {
+          headers.httpStrictTransportSecurity(hsts -> hsts.disable());
+        }
+      });
 
     return http.build();
   }

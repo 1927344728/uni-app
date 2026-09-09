@@ -33,5 +33,6 @@ build/
 ### VS Code ###
 .vscode/
 
-### 生产环境配置（勿提交敏感信息）###
+### 本地/生产环境配置（勿提交敏感信息）###
+src/main/resources/application-local.properties
 src/main/resources/application-prod.properties

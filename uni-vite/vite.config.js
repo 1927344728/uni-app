@@ -1,12 +1,27 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 
+const DEV_SSL_DIR = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../ssl/dev.izhao.com.cn_nginx'
+)
+
+function loadDevHttpsOptions() {
+  const keyPath = path.join(DEV_SSL_DIR, 'dev.izhao.com.cn.key')
+  const certPath = path.join(DEV_SSL_DIR, 'dev.izhao.com.cn_bundle.crt')
+  if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
+    throw new Error(`找不到本地 HTTPS 证书: ${keyPath} / ${certPath}`)
+  }
+  return {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath),
+  }
+}
+
 export default defineConfig(async ({ mode }) => {
-  const selfsigned = (await import('selfsigned')).default
-  const attrs = [
-    { name: 'commonName', value: 'localhost' }
-  ]
-  const pems = selfsigned.generate(attrs, { days: 365 })
   const env = loadEnv(mode, process.cwd())
   const protocol = env.VITE_SERVER_PROTOCOL
 
@@ -85,10 +100,7 @@ export default defineConfig(async ({ mode }) => {
     plugins: [uni(), fixIifeCodeSplittingForApp()],
     server: {
       port: 9000,
-      https: protocol === 'http' ? false : {
-        key: pems.private,
-        cert: pems.cert,
-      },
+      https: protocol === 'http' ? false : loadDevHttpsOptions(),
     },
   }
 })

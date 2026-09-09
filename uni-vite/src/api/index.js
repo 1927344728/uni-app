@@ -8,3 +8,5 @@ export * from './article.js'
 export * from './task.js';
 export * from './book.js';
 export * from './study.js';
+export * from './tts.js';
+export * from './cos.js';

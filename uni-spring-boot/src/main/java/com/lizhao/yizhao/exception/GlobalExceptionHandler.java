@@ -38,6 +38,20 @@ public class GlobalExceptionHandler {
     return CommonResponse.fail(400, "参数错误");
   }
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public CommonResponse<Void> handleIllegalArgumentException(IllegalArgumentException e) {
+    logger.error("请求参数错误", e);
+    return CommonResponse.fail(400, e.getMessage() != null ? e.getMessage() : "参数错误");
+  }
+
+  @ExceptionHandler(CosException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public CommonResponse<Void> handleCosException(CosException e) {
+    logger.error("COS 错误", e);
+    return CommonResponse.fail(500, e.getMessage() != null ? e.getMessage() : "对象存储错误");
+  }
+
   @ExceptionHandler(AsyncRequestTimeoutException.class)
   @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
   public CommonResponse<Void> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {

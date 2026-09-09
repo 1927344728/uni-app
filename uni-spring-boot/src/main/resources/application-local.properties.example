@@ -1,0 +1,11 @@
+# 复制本文件为 application-local.properties 后填写真实值。
+# application-local.properties 已被 gitignore，不要提交。
+
+# 讯飞在线语音合成
+xfyun.tts.app-id=
+xfyun.tts.api-key=
+xfyun.tts.api-secret=
+
+# 腾讯云 COS
+tencent.cos.secret-id=
+tencent.cos.secret-key=

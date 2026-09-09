@@ -15,6 +15,9 @@ public class AuthorityConfigProperties {
     "/api/test/**"
   );
 
+  // 生产可保持开启；本地必须关掉，否则 Chrome 会把整个 dev.izhao.com.cn（含 Vite 9000）锁死
+  private boolean hstsEnabled = true;
+
   // Getter & Setter
   public List<String> getPublicPaths() {
     return publicPaths;
@@ -22,6 +25,14 @@ public class AuthorityConfigProperties {
 
   public void setPublicPaths(List<String> publicPaths) {
     this.publicPaths = publicPaths;
+  }
+
+  public boolean isHstsEnabled() {
+    return hstsEnabled;
+  }
+
+  public void setHstsEnabled(boolean hstsEnabled) {
+    this.hstsEnabled = hstsEnabled;
   }
 
   public boolean isPublicPath(String requestPath) {

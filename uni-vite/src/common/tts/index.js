@@ -1,8 +1,9 @@
 import { H5TTSService } from './H5TTSService.js'
 import { AppTTSService } from './AppTTSService.js'
 import { XfTTSService } from './XfTTSService.js'
+import { XfServerTTSService } from './XfServerTTSService.js'
 
-export { H5TTSService, AppTTSService, XfTTSService }
+export { H5TTSService, AppTTSService, XfTTSService, XfServerTTSService }
 
 export class TTSService {
   constructor(config = {}) {
@@ -13,21 +14,21 @@ export class TTSService {
     // #endif
 
     // #ifdef H5
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      this.ttsService = new H5TTSService(config)
-      console.log('TTSService', 'H5TTSService')
-    }
+    // if (typeof window !== 'undefined' && window.speechSynthesis) {
+    //   this.ttsService = new H5TTSService(config)
+    //   console.log('TTSService', 'H5TTSService')
+    // }
     // #endif
 
-    // 小程序无 speechSynthesis，使用讯飞 TTS + InnerAudioContext
+    // 小程序无 speechSynthesis，走服务端讯飞 TTS（COS 缓存）+ InnerAudioContext
     // #ifdef MP
-    this.ttsService = new XfTTSService(config)
-    console.log('TTSService', 'XfTTSService')
+    this.ttsService = new XfServerTTSService(config)
+    console.log('TTSService', 'XfServerTTSService')
     // #endif
 
     if (!this.ttsService) {
-      this.ttsService = new XfTTSService(config)
-      console.log('TTSService', 'XfTTSService')
+      this.ttsService = new XfServerTTSService(config)
+      console.log('TTSService', 'XfServerTTSService')
     }
   }
 
