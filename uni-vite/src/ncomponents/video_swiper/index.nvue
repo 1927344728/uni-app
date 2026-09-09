@@ -1,16 +1,19 @@
 <!-- https://ext.dcloud.net.cn/plugin?id=4847 -->
 <template>
   <view
-    v-if="currentVideo"
     class="video_player_module3"
-    :class="[`${currentVideo.index + 1}`]"
     :style="{
-      height: `${videoListLength * wHeight}px`,
+      width: `${wWidth}px`,
+      height: `${Math.max(videoListLength, 1) * wHeight}px`,
       top: `${realSwiperTop}px`
     }"
   >
+    <cover-view v-if="!currentVideo" class="empty_hint">
+      <text class="empty_hint_text">{{ emptyText }}</text>
+    </cover-view>
     <SwiperItem
       v-for="(item, i ) in swiperItems"
+      :key="`video_id_${i}`"
       :index="i"
       :ref="`video_id_${i}`"
       :video="swiperItems[i]"
@@ -53,10 +56,9 @@
 </template>
 
 <script>
-import { get as _get } from 'lodash'
-import { COS_DOMAIN_NAME } from '@/utils/variables.js'
-import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
-import SwiperItem from './swiper_item'
+import { get as _get } from './nvue-utils.js'
+import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from './nvue-api.js'
+import SwiperItem from './swiper_item.nvue'
 
 const MAX_SWIPER_ITEM_SIZE = 5
 let startTime = 0
@@ -64,6 +66,7 @@ let endTime = 0
 let startPageY = 0
 let endPageY = 0
 let pointStart = 0
+let hasTouchStart = false
 
 const initVideoInfo = () => ({
   id: null,
@@ -75,7 +78,7 @@ const initVideoInfo = () => ({
   desc: "",
   publisher: '',
   isPlaying: false,
-  isShowCover: true,
+  isShowCover: false,
   objectFit: 'cover',
   ratio: null
 })
@@ -114,23 +117,31 @@ export default {
       progressBarMargin: 24,
       moveHandleLeft: 0,
       tempHandleLeft: 0,
-      isHandleMoving: false
+      isHandleMoving: false,
+      emptyText: '正在加载视频'
     };
   },
   beforeCreate() {
-    // #ifdef APP-PLUS
-    const domModule = weex.requireModule('dom');
-    domModule.addRule('fontFace', {
-      'fontFamily': "iconfont",
-      'src': `url('${COS_DOMAIN_NAME}/font/font_5075020_dvsb5eed4rh.ttf?t=1764604111574') format('truetype')`
-    });
-    // #endif
+    try {
+      const domModule = weex.requireModule('dom')
+      if (domModule && typeof domModule.addRule === 'function') {
+        domModule.addRule('fontFace', {
+          'fontFamily': 'iconfont',
+          'src': "url('https://assets.izhao.com.cn/font/font_5075020_dvsb5eed4rh.ttf') format('truetype')"
+        })
+      }
+    } catch (e) {}
   },
   created() {
-    // #ifdef APP-PLUS
-    plus.screen.lockOrientation("portrait-primary")
-    // #endif
-    this.init()
+    try {
+      if (typeof plus !== 'undefined' && plus.screen && plus.screen.lockOrientation) {
+        plus.screen.lockOrientation('portrait-primary')
+      }
+    } catch (e) {}
+    this.init().catch((err) => {
+      console.log('[video_swiper] init fail', err && err.message)
+      this.emptyText = '加载失败'
+    })
   },
   computed: {
     videoListLength () {
@@ -165,8 +176,10 @@ export default {
   },
   methods: {
     async init () {
+      console.log('[video_swiper] init start')
       let { mode, id, ids, type, video, videos } = this
-      this.getSystemInfo()
+      this.initViewport()
+      console.log('[video_swiper] viewport', this.wWidth, this.wHeight)
       let currentVideo = null
       let allVideoList = []
 
@@ -207,6 +220,7 @@ export default {
       }
 
       if (!_get(allVideoList, 'length')) {
+        this.emptyText = '没有视频'
         uni.showToast({
           title: '没有视频',
           icon: "none"
@@ -228,17 +242,29 @@ export default {
       this.getVideosByRandom()
       this.previewVideo()
       uni.setNavigationBarTitle({ title: _get(this, 'currentVideo.title') || '视频' });
+      console.log('[video_swiper] init done', this.videoListLength, _get(this, 'currentVideo.url'))
     },
-    getSystemInfo() {
-      return new Promise((resolve) => {
-        uni.getSystemInfo({
-          success: (res) => {
-            this.wWidth = res.windowWidth;
-            this.wHeight = res.windowHeight;
-            resolve()
-          },
-        })
-      })
+    initViewport() {
+      let width = 0
+      let height = 0
+      try {
+        const sys = uni.getSystemInfoSync()
+        width = Number(sys && (sys.windowWidth || sys.screenWidth)) || 0
+        height = Number(sys && (sys.windowHeight || sys.screenHeight)) || 0
+      } catch (e) {}
+      if (!(width > 1 && height > 1)) {
+        try {
+          const env = weex.config.env
+          const dw = Number(env && env.deviceWidth) || 0
+          const dh = Number(env && env.deviceHeight) || 0
+          if (dw > 1 && dh > 1) {
+            width = 750
+            height = Math.round(750 * dh / dw)
+          }
+        } catch (e) {}
+      }
+      this.wWidth = width > 1 ? width : 750
+      this.wHeight = height > 1 ? height : 1334
     },
     async getVideosByRandom () {
       const { mode, type, videoIndex, videoListLength, swiperItems } = this
@@ -337,26 +363,27 @@ export default {
         this.play()
       }
     },
+    getTouchY (e) {
+      const touch = (e && e.changedTouches && e.changedTouches[0])
+        || (e && e.touches && e.touches[0])
+        || {}
+      return Number(touch.screenY || touch.pageY || 0)
+    },
     ontouchstart(e) {
       const { isSliding, videoListLength } = this
       if (isSliding) return
       if (videoListLength <= 1) return
-
-      const timestamp = e.timeStamp || e.timestamp
-      if((timestamp - startTime) >= 500) {
-        startPageY = e.changedTouches[0].screenY;
-      }
-      endTime = startTime
-      startTime = timestamp
+      startPageY = this.getTouchY(e)
+      startTime = Date.now()
+      hasTouchStart = true
     },
     ontochmove(e) {
       const { videoIndex, isSliding, swiperTop, videoListLength } = this
-      const isIgnoreEvent = startTime - endTime < 500
-      if (isIgnoreEvent) return
       if (isSliding) return
       if (videoListLength <= 1) return
+      if (!hasTouchStart) return
 
-      endPageY = e.changedTouches[0].screenY;
+      endPageY = this.getTouchY(e)
       const distance = endPageY - startPageY
       if (videoIndex == 0 && distance > 50) {
         this.realSwiperTop = 50
@@ -368,20 +395,20 @@ export default {
     },
     ontouchend(e) {
       const { videoIndex, isSliding, videoListLength } = this
-      const isIgnoreEvent = startTime - endTime < 500
-      if (isIgnoreEvent) return
       if (isSliding) return
       if (videoListLength <= 1) return
+      if (!hasTouchStart) return
+      hasTouchStart = false
 
       this.isSliding = true
-      endPageY = e.changedTouches[0].screenY;
+      endPageY = this.getTouchY(e)
       const distance = endPageY - startPageY
-      if ((distance >= -40 && distance < 0) || (distance <= 40 && distance > 0)) {
+      if (Math.abs(distance) < 40) {
         this.resetSlidePosition()
         return
       }
-      //上滑
-      if (distance < -30) {
+      //上滑切下一个
+      if (distance < 0) {
         if (videoIndex === videoListLength - 1) {
           this.resetSlidePosition()
           uni.showToast({
@@ -393,15 +420,13 @@ export default {
         this.slidingToTop(distance)
         return
       }
-      //下滑
-      if (distance > 30) {
-        if (videoIndex === 0) {
-          this.resetSlidePosition()
-          this.previewVideo()
-          return
-        }
-        this.slidingToBottom(distance)
+      //下滑切上一个
+      if (videoIndex === 0) {
+        this.resetSlidePosition()
+        this.previewVideo()
+        return
       }
+      this.slidingToBottom(distance)
     },
     // 向上滑动动画
     slidingToTop(distance) {
@@ -466,51 +491,64 @@ export default {
       }, s)
     },
     resetSlidePosition() {
-      this.realSwiperTop = this.viewTopPostion
+      this.realSwiperTop = this.swiperTop
       this.isSliding = false
+      hasTouchStart = false
     },
-
+    getItemRef (i) {
+      const ref = this.$refs[`video_id_${i}`]
+      if (!ref) return null
+      return Array.isArray(ref) ? ref[0] : ref
+    },
     play() {
-      const swiperItem = this.swiperItems[this.swiperItemIndex]
-      if (swiperItem) {
-        const videoContext = uni.createVideoContext(`video_id_${this.swiperItemIndex}`, this)
-        videoContext.play()
-        swiperItem.isPlaying = true
+      const i = this.swiperItemIndex
+      const swiperItem = this.swiperItems[i]
+      const comp = this.getItemRef(i)
+      if (comp && typeof comp.playVideo === 'function') {
+        comp.playVideo()
+      } else {
+        try {
+          const ctx = uni.createVideoContext(`video_id_${i}`, this)
+          if (ctx && typeof ctx.play === 'function') ctx.play()
+        } catch (e) {}
       }
+      if (swiperItem) swiperItem.isPlaying = true
       this.isPlaying = true
     },
     seek (s) {
-      const videoContext = uni.createVideoContext(`video_id_${this.swiperItemIndex}`, this)
-      if (videoContext) {
-        videoContext.seek(s)
-        videoContext.play()
+      const comp = this.getItemRef(this.swiperItemIndex)
+      if (comp && typeof comp.seekVideo === 'function') {
+        comp.seekVideo(s)
       }
     },
     stop() {
-      const swiperItem = this.swiperItems[this.swiperItemIndex]
+      const i = this.swiperItemIndex
+      const swiperItem = this.swiperItems[i]
+      const comp = this.getItemRef(i)
+      if (comp && typeof comp.stopVideo === 'function') {
+        comp.stopVideo()
+      }
       if (swiperItem) {
-        const videoContext = uni.createVideoContext(`video_id_${this.swiperItemIndex}`, this)
-        videoContext.stop()
-        this.swiperItems[this.swiperItemIndex].isShowCover = true
-        this.swiperItems[this.swiperItemIndex].isPlaying = false
+        swiperItem.isPlaying = false
       }
       this.isPlaying = false
     },
     pause () {
-      const swiperItem = this.swiperItems[this.swiperItemIndex]
-      if (swiperItem) {
-        const videoContext = uni.createVideoContext(`video_id_${this.swiperItemIndex}`, this)
-        videoContext.pause()
-        this.swiperItems[this.swiperItemIndex].isPlaying = false
+      const i = this.swiperItemIndex
+      const swiperItem = this.swiperItems[i]
+      const comp = this.getItemRef(i)
+      if (comp && typeof comp.pauseVideo === 'function') {
+        comp.pauseVideo()
       }
+      if (swiperItem) swiperItem.isPlaying = false
       this.isPlaying = false
     },
     onPlay(i) {
-      setTimeout(() => {
-        this.swiperItems[i].isShowCover = false
-        this.isPlaying = true
-        this.isSliding = false
-      }, 600)
+      if (this.swiperItems[i]) {
+        this.swiperItems[i].isPlaying = true
+      }
+      this.isPlaying = true
+      this.isSliding = false
     },
     onTimeupdate(e) {
       this.isSliding = false

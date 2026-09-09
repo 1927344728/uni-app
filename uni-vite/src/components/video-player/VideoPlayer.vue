@@ -41,16 +41,16 @@
           <block v-if="page.key === 'current'">
             <view class="video_player_area">
               <video
-                v-if="currentVideo && currentVideo.url"
+                v-if="currentVideoSrc"
                 id="playerVideo"
                 class="video_element"
-                :src="replaceCosDomainName(currentVideo.url)"
+                :src="currentVideoSrc"
                 :show-progress="false"
                 :controls="false"
-                :autoplay="true"
+                :autoplay="false"
                 :show-center-play-btn="false"
                 :object-fit="currentVideo.objectFit || 'cover'"
-                :poster="replaceCosDomainName(currentVideo.cover)"
+                :poster="currentVideoCover"
                 @timeupdate="onTimeUpdate"
                 @ended="onEnded"
                 @error="onError"
@@ -85,11 +85,11 @@
         <slider
           class="video_play_slider"
           min="0"
-          :max="Math.floor(duration)"
-          :value="Math.floor(currentTime)"
+          :max="sliderMax"
+          :value="sliderValue"
           step="1"
           block-size="12"
-          :disabled="!duration"
+          :disabled="!canSeek"
           @changing="handleSliderChanging"
           @change="handleSliderChange"
         />
@@ -101,7 +101,7 @@
 <script>
 import { getValue as _get } from '@/common/js/common.js';
 import { getVideoById, getVideoByIds, getVideoPageList, getVideoByRandom } from '@/api'
-import { textEllipsis, scaleImageWidthInCOS, replaceCosDomainName } from '@/common/js/common.js';
+import { textEllipsis, scaleImageWidthInCOS, replaceCosDomainName, encodeMediaUrl, getWindowSize } from '@/common/js/common.js';
 
 export default {
   name: 'VideoPlayer',
@@ -142,6 +142,25 @@ export default {
     currentVideo () {
       return this.playList[this.currentIndex] || null;
     },
+    currentVideoSrc () {
+      const url = _get(this, 'currentVideo.url');
+      return typeof url === 'string' && url ? encodeMediaUrl(url) : '';
+    },
+    currentVideoCover () {
+      const cover = _get(this, 'currentVideo.cover');
+      return typeof cover === 'string' && cover ? encodeMediaUrl(cover) : '';
+    },
+    // 微信 slider 在 max=0 时会把进度画满、圆点停在中间
+    canSeek () {
+      return Number(this.duration) > 0;
+    },
+    sliderMax () {
+      return this.canSeek ? Math.max(1, Math.floor(this.duration)) : 1;
+    },
+    sliderValue () {
+      if (!this.canSeek) return 0;
+      return Math.min(Math.floor(this.currentTime) || 0, this.sliderMax);
+    },
     swiperPages () {
       const { playList, currentIndex } = this;
       return playList.map((item, index) => ({
@@ -170,15 +189,15 @@ export default {
       uni.setNavigationBarTitle({ title: title || '视频' });
       // 当前页的 video 元素是新挂载的，需要重新拿上下文
       this.$nextTick(() => {
-        this.videoCtx = uni.createVideoContext('playerVideo', this);
+        this.bindVideoCtx(true);
       });
     }
   },
   async mounted () {
-    await this.getSystemInfo();
+    this.initPageHeight();
     await this.init();
     this.$nextTick(() => {
-      this.videoCtx = uni.createVideoContext('playerVideo', this);
+      this.bindVideoCtx(true);
     });
   },
   unmounted () {
@@ -188,16 +207,18 @@ export default {
     textEllipsis,
     scaleImageWidthInCOS,
     replaceCosDomainName,
-    getSystemInfo () {
-      return new Promise(resolve => {
-        uni.getSystemInfo({
-          success: res => {
-            this.pageHeight = res.windowHeight || 1;
-            resolve();
-          },
-          fail: () => resolve()
-        });
-      });
+    initPageHeight () {
+      const { height } = getWindowSize();
+      this.pageHeight = height || 1;
+    },
+    bindVideoCtx (autoPlay) {
+      this.videoCtx = uni.createVideoContext('playerVideo', this);
+      // App 端 loadedmetadata 不一定触发，挂载后主动播，避免一直黑屏
+      if (autoPlay) {
+        // #ifdef APP-PLUS
+        this.safePlay();
+        // #endif
+      }
     },
     withUid (item) {
       this.uidSeed += 1;
@@ -300,7 +321,22 @@ export default {
       }
     },
     onLoadedMeta (e) {
-      this.duration = e?.detail?.duration || 0;
+      const d = Number(e?.detail?.duration);
+      this.duration = Number.isFinite(d) && d > 0 ? d : 0;
+      if (!this.videoCtx) {
+        this.videoCtx = uni.createVideoContext('playerVideo', this);
+      }
+      this.safePlay();
+    },
+    safePlay () {
+      const { videoCtx } = this;
+      if (!videoCtx || typeof videoCtx.play !== 'function') return;
+      try {
+        const ret = videoCtx.play();
+        if (ret && typeof ret.catch === 'function') {
+          ret.catch(() => {});
+        }
+      } catch (e) {}
     },
     onTimeUpdate (e) {
       if (this.isSeeking) return;
@@ -319,6 +355,7 @@ export default {
       this.goNextVideo();
     },
     onError (err) {
+      console.log('[VideoPlayer] error', err && (err.detail || err));
       uni.showToast({ title: '播放失败', icon: 'none' });
       this.$emit('error', err);
     },
@@ -329,19 +366,24 @@ export default {
       if (isPlaying) {
         videoCtx.pause();
       } else {
-        videoCtx.play();
+        this.safePlay();
       }
     },
     handleSliderChanging (e) {
+      if (!this.canSeek) return;
       this.isSeeking = true;
       this.currentTime = e.detail.value;
     },
     handleSliderChange (e) {
+      if (!this.canSeek) {
+        this.isSeeking = false;
+        return;
+      }
       const { videoCtx, isPlaying } = this
       if (videoCtx) {
         videoCtx.seek(e.detail.value);
         if (!isPlaying) {
-          videoCtx.play();
+          this.safePlay();
         }
       }
       this.isSeeking = false;

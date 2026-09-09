@@ -18,12 +18,12 @@
 
       <view
         v-if="item.type === 'readText'"
-        :class="['detail_module', item.type, item.className, { loading: speakingIndex === idx && isLoading }]"
+        :class="['detail_module', item.type, item.className, { loading: speakingIndex === idx && ttsLoading }]"
         @click="onClickReadText(item, idx)"
       >
         <view class="detail_module_wrapper">
           <rich-text v-for="(rtx, i) in [item.content].flat()" :key="rtx + i" :nodes="rtx" />
-          <view v-if="!isPaused && speakingIndex === idx" class="iconfont voice">&#xe612;</view>
+          <view v-if="!ttsPaused && speakingIndex === idx" class="iconfont voice">&#xe612;</view>
           <view v-else class="iconfont mute">&#xe60f;</view>
         </view>
       </view>
@@ -45,16 +45,22 @@
       <view v-if="item.type === 'video'" :class="['detail_module', item.type, item.className]">
         <view v-for="(v, i) in [item.content].flat()" :key="v + i"  class="detail_module_item">
           <video
-            :src="replaceCosDomainName(v)"
+            v-if="getVideoSrc(v)"
+            :src="getVideoSrc(v)"
             :id="'video_' + idx"
             class="uni_video"
             controls
             :object-fit="item.objectFit || 'contain'"
-            :poster="item.poster"
+            :poster="item.poster ? encodeMediaUrl(item.poster) : ''"
             :style="{
               height: getVideoHeight(v, item) + 'px'
             }"
+            // #ifdef APP-PLUS
+            codec="software"
+            http-cache="true"
+            // #endif
             @play="onPlay(idx)"
+            @error="onVideoError"
           ></video>					
           <view v-if="item.description && i + 1 === [item.content].flat().length" class="desc">
             {{ item.description }}
@@ -100,6 +106,7 @@
     <VideoPopup
       v-model:value="videoPopupConfig.visbile"
       mode="menu"
+      :id="videoPopupConfig.video && videoPopupConfig.video.id"
       :video="videoPopupConfig.video"
       :videos="videoPopupConfig.videos"
     />
@@ -109,7 +116,7 @@
 <script>
 import { getValue as _get } from '@/common/js/common.js'
 import { stripHtml as convertHtmlToText } from '@/common/js/common.js'
-import { getUrlParams, replaceCosDomainName  } from '@/common/js/variables.js'
+import { getUrlParams, replaceCosDomainName, encodeMediaUrl  } from '@/common/js/variables.js'
 import { scaleImageWidthInCOS } from '@/common/js/common.js'
 import { TTSService } from '@/common/tts'
 import VideoPopup from '@/components/video-player/VideoPopup.vue'
@@ -129,6 +136,10 @@ export default {
   data () {
     return {
       speakingIndex: null,
+      // ttsService 是普通对象，模板不能直接依赖它的 isPaused / isLoading，需要在组件内同步一份响应式状态
+      ttsPaused: false,
+      ttsLoading: false,
+      speakToken: 0,
       videoContexts: {},
       currentVideoIndex: null,
       videoPopupConfig: {
@@ -139,12 +150,6 @@ export default {
     }
   },
   computed: {
-    isLoading () {
-      return ttsService.isLoading
-    },
-    isPaused () {
-      return ttsService.isPaused
-    },
     cArticleData () {
       return (this.articleData || []).map(item => {
         if (item.type === 'readText') {
@@ -178,18 +183,31 @@ export default {
   },
   methods: {
     scaleImageWidthInCOS,
+    replaceCosDomainName,
+    encodeMediaUrl,
     onClickReadText (item, i) {
-      const { speakingIndex } = this
-      ttsService.stop()
-      if (speakingIndex === i) {
-        if (ttsService.isPaused) {
-          ttsService.resume()
-        } else {
-          ttsService.pause()
-        }
+      // 点同一段是暂停/继续，此时不能先 stop()，否则小程序端的音频实例已被销毁，pause / resume 都会失效
+      if (this.speakingIndex === i) {
+        this.toggleReadText()
         return
       }
+      this.startReadText(item, i)
+    },
+    toggleReadText () {
+      if (this.ttsPaused) {
+        ttsService.resume()
+      } else {
+        ttsService.pause()
+      }
+      this.ttsPaused = ttsService.isPaused
+    },
+    startReadText (item, i) {
+      // stop() 会让上一段抛出中断的 onEnded / onError，用 token 忽略这些过期回调，避免它们清掉新段落的状态
+      ttsService.stop()
+      const token = ++this.speakToken
       this.speakingIndex = i
+      this.ttsPaused = false
+      this.ttsLoading = true
       const text = (item.content || []).map(e => e).join('')
       let rate = item.rate || 0.5
       // #ifdef H5
@@ -198,13 +216,33 @@ export default {
       ttsService.speak(convertHtmlToText(text), {
         vcn: 'aisjinger',
         rate,
+        onPlay: () => {
+          if (token !== this.speakToken) return
+          this.ttsLoading = false
+        },
         onEnded: () => {
-          this.speakingIndex = null
+          this.finishReadText(token)
+        },
+        onError: () => {
+          this.finishReadText(token)
         }
+      }).catch(() => {
+        this.finishReadText(token)
       })
     },
+    finishReadText (token) {
+      if (token !== this.speakToken) return
+      this.resetReadTextState()
+    },
+    resetReadTextState () {
+      this.speakingIndex = null
+      this.ttsPaused = false
+      this.ttsLoading = false
+    },
     stop () {
+      this.speakToken ++
       ttsService.stop()
+      this.resetReadTextState()
     },
     previewImage(url) {
       const { articleData } = this
@@ -233,31 +271,40 @@ export default {
       }
       return height
     },
+    getVideoSrc (url) {
+      if (!url || typeof url !== 'string') return ''
+      return encodeMediaUrl(url)
+    },
+    onVideoError () {
+      uni.showToast({ title: '播放失败', icon: 'none' })
+    },
     openVideoPopup (item) {
       const { cArticleData } = this
       const authorItem = cArticleData.find(e => e.type === 'author')
       const videos = (cArticleData || [])
         .filter(e => e.type === 'videoPopup')
-        .map(e => ({
-          id: Number(Math.random().toString().substring(2)),
+        .map((e, index) => ({
+          id: `popup-${index}`,
           type: null,
           title: e.description,
           desc: e.description,
           publisher: _get(authorItem, 'content') || '',
-          url: e.content,
+          url: Array.isArray(e.content) ? e.content[0] : e.content,
           cover: e.poster,
           objectFit: e.objectFit || 'cover'
         }))
-      const video = videos.find(e => e.url === item.content)
+        .filter(e => e.url)
+      const currentUrl = Array.isArray(item.content) ? item.content[0] : item.content
+      const video = videos.find(e => e.url === currentUrl)
       if (!video) {
         uni.showToast({ title: '没有视频', icon: 'none' })
         return
       }
-      // App / 小程序：全屏播放页更稳（弹层内 video 在 MP 上易失败）
+      // App / 小程序：全屏播放页。App 同路径走 play.nvue，文案才能叠在原生 video 上
       // #ifdef APP-PLUS || MP
       uni.setStorageSync('tempVideoCache', videos)
       uni.navigateTo({
-        url: `/pages/video/play?mode=menu&id=${video.id}&key=tempVideoCache`
+        url: `/pages/video/play?mode=menu&id=${encodeURIComponent(video.id)}&key=tempVideoCache`
       })
       // #endif
 

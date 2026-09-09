@@ -104,10 +104,11 @@
     & .uni_video {
       display: block;
       width: 100%;
+      /* #ifndef APP-PLUS */
       border-radius: 6px;
       overflow: hidden;
       object-fit: cover;
-      transform: translateZ(0);
+      /* #endif */
     }
     & .desc {
       margin: 24rpx 0;

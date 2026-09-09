@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# 将当前目录下所有 *.izhao.com.cn_nginx 中的证书与私钥转为 PKCS12
-# 用法: ./convert-pkcs12.sh
+# 将 ssl 目录下所有 *.izhao.com.cn_nginx 中的证书与私钥转为 PKCS12
+# 用法: npm run convert-p12，或 ./scripts/convert-p12.sh
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SSL_DIR="$(cd "${SCRIPT_DIR}/../ssl" && pwd)"
 
 shopt -s nullglob
-dirs=("$SCRIPT_DIR"/*.izhao.com.cn_nginx)
+dirs=("$SSL_DIR"/*.izhao.com.cn_nginx)
 [[ ${#dirs[@]} -gt 0 ]] || { echo "错误: 未找到 *.izhao.com.cn_nginx 目录" >&2; exit 1; }
 
 for dir_path in "${dirs[@]}"; do

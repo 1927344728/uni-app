@@ -1,18 +1,17 @@
 <template>
   <UniPopup
-    mode="bottom"
     ref="uniPopup"
+    type="bottom"
     class="video_play_popup"
     :is-mask-click="maskClosable"
-    :show="value"
     :style="{ zIndex: zIndex, height: '100vh' }"
     @maskClick="onMaskClick"
-    @close="close"
+    @change="onChange"
   >
     <view class="video_play_main" @click.stop>
-      <!-- 未打开时不挂载，避免空数据 init 弹「没有视频」 -->
+      <!-- 弹层真正打开后再挂载，避免在 display:none 里 autoplay 报 no supported sources -->
       <VideoPlayer
-        v-if="value"
+        v-if="playerReady"
         :mode="mode"
         :id="id"
         :ids="ids"
@@ -83,27 +82,56 @@ export default {
       default: 2000
     }
   },
+  data () {
+    return {
+      playerReady: false
+    }
+  },
+  watch: {
+    value (val) {
+      if (val) {
+        this.$nextTick(() => this.open())
+      } else {
+        this.playerReady = false
+        const popup = this.$refs.uniPopup
+        if (popup && popup.showPopup && typeof popup.close === 'function') {
+          popup.close()
+        }
+      }
+    }
+  },
   methods: {
+    onChange (e) {
+      const show = !!(e && e.show)
+      this.playerReady = show
+      if (!show) {
+        this.$emit('update:value', false)
+        this.$emit('close')
+      }
+    },
     onMaskClick () {
-      if (!this.maskClosable) return;
-      this.close();
+      if (!this.maskClosable) return
+      this.close()
     },
     close () {
-      const popup = this.$refs.uniPopup;
+      this.playerReady = false
+      const popup = this.$refs.uniPopup
       if (popup && typeof popup.close === 'function') {
-        popup.close();
+        popup.close()
       }
-      this.$emit('update:value', false);
-      this.$emit('close');
+      this.$emit('update:value', false)
+      this.$emit('close')
     },
     open (position = 'bottom') {
-      const popup = this.$refs.uniPopup;
+      const popup = this.$refs.uniPopup
       if (popup && typeof popup.open === 'function') {
-        popup.open(position);
-      } else {
-        this.$emit('update:value', true);
-        this.$emit('open');
+        popup.open(position)
+        this.$emit('open')
+        return
       }
+      this.playerReady = true
+      this.$emit('update:value', true)
+      this.$emit('open')
     }
   }
 };

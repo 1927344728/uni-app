@@ -1,30 +1,19 @@
 <template>
-  <VideoSwiper
-    v-if="isLoaded"
-    ref="swiper"
-    class="video_player_npage"
-    :mode="mode"
-    :id="id"
-    :ids="ids"
-    :type="type"
-    :video="video"
-    :videos="videos"
-  />
+  <view class="video_player_npage">
+    <VideoSwiper
+      v-if="isLoaded"
+      ref="swiper"
+      :mode="mode"
+      :id="id"
+      :ids="ids"
+      :type="type"
+      :video="video"
+      :videos="videos"
+    />
+  </view>
 </template>
 <script>
-import qs from 'qs'
-import { cloneDeep } from 'lodash'
-import VideoSwiper from '@/components/kai_video_swiper/index.nvue'
-
-/**
- * 链接跳转示例：
- * /pages/video/play?mode=single&video=${encodeURIComponent(JSON.stringify(video))}
- * /pages/video/play?mode=single&id=2
- * /pages/video/play?mode=menu&id=${video.id}&key=tempVideoCache
- * /pages/video/play?mode=menu&id=${video.id}&type=2
- * /pages/video/play?mode=auto&id=1
- * /pages/video/play?mode=auto&id=1&type=2
-*/
+import VideoSwiper from '@/ncomponents/video_swiper/index.nvue'
 
 export default {
   components: {
@@ -42,22 +31,25 @@ export default {
     }
   },
   onLoad (options = {}) {
+    console.log('[play.nvue] onLoad', JSON.stringify(options || {}))
     this.init(options)
   },
   onHide() {
-    if (this.$refs.swiper) {
+    if (this.$refs.swiper && typeof this.$refs.swiper.stop === 'function') {
       this.$refs.swiper.stop()
     }
   },
   methods: {
-    async init (options = {}) {
+    init (options = {}) {
       const { mode, id, ids, type, video, key } = options
-
       let videos = null
-      if (mode === 'menu') {
-        videos = uni.getStorageSync(key) || [] 
+      if (mode === 'menu' && key) {
+        try {
+          videos = uni.getStorageSync(key) || []
+        } catch (e) {
+          videos = []
+        }
       }
-
       this.mode = mode || 'auto'
       this.id = id || null
       this.ids = ids || null
@@ -65,8 +57,13 @@ export default {
       this.video = video
       this.videos = videos
       this.isLoaded = true
-      console.log('video_player_npage')
-    },
+    }
   }
 }
 </script>
+<style>
+.video_player_npage {
+  flex: 1;
+  background-color: #000000;
+}
+</style>

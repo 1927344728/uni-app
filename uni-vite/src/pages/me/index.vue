@@ -70,11 +70,13 @@ import { getUserInfo, logout } from '@/api'
 import FooterBar from '@/components/footer_bar/index.vue'
 
 const FEATURE_OPTIONS = [
+  // #ifndef MP-WEIXIN
   {
     name: '我的音乐',
     url: '/pages/music/index?type=3',
     jumpTo: 'navigate'
   },
+  // #endif
   {
     name: '我的视频',
     url: '/pages/video/index?type=3',

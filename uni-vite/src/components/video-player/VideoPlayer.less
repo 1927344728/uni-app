@@ -12,6 +12,7 @@
     left: 0;
     right: 0;
     width: 100%;
+    z-index: 3;
   }
 
   & .video_play_track--transition {
@@ -31,10 +32,19 @@
     background-size: cover;
     background-position: center;
     color: #fff;
+    /* #ifndef APP-PLUS */
     overflow: hidden;
+    /* #endif */
     display: flex;
     flex-direction: column;
   }
+
+  /* #ifdef APP-PLUS */
+  & .video_play_swiper_item--current {
+    background: transparent;
+    background-image: none;
+  }
+  /* #endif */
 
   & .video_play_hint {
     margin-top: 40rpx;
@@ -43,10 +53,19 @@
     color: rgba(255, 255, 255, 0.7);
   }
 
+  /* #ifdef APP-PLUS */
+  & .video_play_swiper_item--current.video_play_switch--next,
+  & .video_play_swiper_item--current.video_play_switch--prev {
+    animation: none;
+  }
+  /* #endif */
+
+  /* #ifndef APP-PLUS */
   & .video_play_swiper_item--current.video_play_switch--next,
   & .video_play_swiper_item--current.video_play_switch--prev {
     animation: video_play_switch_fade 320ms ease-out;
   }
+  /* #endif */
 
   @keyframes video_play_switch_fade {
     from {
@@ -115,16 +134,15 @@
     pointer-events: none;
     & .video_element {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      min-width: 100%;
-      min-height: 100%;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: auto;
-      object-fit: cover;
-      background: none;
+      height: 100%;
+      background: #000;
       pointer-events: none;
+      /* #ifndef APP-PLUS */
+      object-fit: cover;
+      /* #endif */
       & ::v-deep.uni-video-container {
         background: none;
       }

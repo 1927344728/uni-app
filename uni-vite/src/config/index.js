@@ -1,7 +1,7 @@
 import { COS_DOMAIN_NAME } from '@/common/js/variables'
 
 export const APP_NAME = '一兆窗含'
-export const APP_VERSION = '1.0.4'
+export const APP_VERSION = '1.0.5'
 export const APP_LOGO = `${COS_DOMAIN_NAME}/images/logo.png`
 export const DEFAULT_AVATAR_IMAGE = `${COS_DOMAIN_NAME}/images/default.png`
 export const FEATURE_ICON_ENUM = [
@@ -19,6 +19,7 @@ export const FEATURE_ICON_ENUM = [
     url: '/pages/book/index',
     jumpTo: 'navigate'
   },
+  // #ifndef MP-WEIXIN
   {
     key: 'audio',
     name: '音乐收藏',
@@ -26,6 +27,7 @@ export const FEATURE_ICON_ENUM = [
     url: '/pages/music/index',
     jumpTo: 'navigate'
   },
+  // #endif
   {
     key: 'video',
     name: '视频订阅',

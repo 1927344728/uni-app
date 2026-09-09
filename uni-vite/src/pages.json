@@ -111,6 +111,7 @@
         "navigationBarTitleText": "书籍简介"
       }
     },
+    // #ifndef MP-WEIXIN
     {
       "path": "pages/music/index",
       "style": {
@@ -123,6 +124,7 @@
         "navigationBarTitleText": "音乐"
       }
     },
+    // #endif
     {
       "path": "pages/video/index",
       "style": {
@@ -132,7 +134,13 @@
     {
       "path": "pages/video/play",
       "style": {
-        "navigationBarTitleText": "视频"
+        "navigationBarTitleText": "视频",
+        "disableScroll": true,
+        "app-plus": {
+          "bounce": "none",
+          "scrollIndicator": "none",
+          "disableScroll": true
+        }
       }
     },
     {

@@ -49,6 +49,7 @@
     "android:release": "android\\gradlew.bat -p android assembleRelease",
     "ios": "expo run:ios --port 9000",
     "web": "expo start --port 9000 --web",
+    "build:web": "expo export --platform web",
     "lint": "expo lint"
   },
   "private": true

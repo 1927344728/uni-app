@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# 将 dist/build/h5 上传到腾讯云轻量服务器 /opt/www/yizhao/
-# 用法: npm run upload
+# 将 react-native-expo/dist 上传到腾讯云轻量服务器 /opt/www/uni-react
+# 用法: npm run upload-expo-h5，或 ./scripts/upload-expo-h5.sh（Git Bash / WSL / Linux）
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-BUILD_DIR="${PROJECT_DIR}/dist/build/h5"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/../react-native-expo" && pwd)"
+BUILD_DIR="${PROJECT_DIR}/dist"
 ENV_FILE="/d/tencent-cloud-credentials.env"
-REMOTE_DIR="/opt/www/yizhao"
+REMOTE_DIR="/opt/www/uni-react"
 
 if [[ -f "$ENV_FILE" ]]; then
   set -a
@@ -32,7 +32,7 @@ fi
 REMOTE="${SERVER_USER}@${SERVER_HOST}"
 
 if [[ ! -d "$BUILD_DIR" ]]; then
-  echo "错误: 找不到构建目录 ${BUILD_DIR}，请先执行 npm run build:h5" >&2
+  echo "错误: 找不到构建目录 ${BUILD_DIR}，请先在 react-native-expo 下执行 npm run build:web" >&2
   exit 1
 fi
 

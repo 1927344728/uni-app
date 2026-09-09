@@ -31,6 +31,7 @@ export default {
     };
   },
   async onLoad (options) {
+    console.log('[play.vue] onLoad', JSON.stringify(options || {}))
     await this.init(options);
   },
   methods: {

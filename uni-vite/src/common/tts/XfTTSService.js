@@ -85,13 +85,14 @@ export class XfTTSService extends TTSBaseService {
   }
 
   pause () {
-    if (!this.audio || this.audio.paused) return
+    // 各端 InnerAudioContext 的 paused 属性并不都可靠，以服务自身状态为准
+    if (!this.audio || this.isPaused) return
     this.audio.pause()
     this.setState({ paused: true })
   }
 
   resume () {
-    if (!this.audio || !this.audio.paused) return
+    if (!this.audio || !this.isPaused) return
     this.audio.play()
     this.setState({ speaking: true })
   }

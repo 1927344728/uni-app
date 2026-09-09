@@ -9,6 +9,7 @@
     <SearchBar v-model:value="queryParams" :subTypeOptions="subTypeOptions" />
     <swiper v-if="isSupportSwiper" :current="currentTabIndex" class="swiper" @change="onChangeSwiper">
       <swiper-item v-for="(item, index) in filteredItems" :key="item.key">
+        <!-- #ifndef MP-WEIXIN -->
         <MusicList
           v-if="item.component === 'MusicList' && shouldMountTab(index)"
           :ref="item.component + item.id"
@@ -19,8 +20,9 @@
             type: item.id || null
           }"
         />
+        <!-- #endif -->
         <VideoList
-          v-else-if="item.component === 'VideoList' && shouldMountTab(index)"
+          v-if="item.component === 'VideoList' && shouldMountTab(index)"
           :ref="item.component + item.id"
           :class="classObject"
           :request="getArticlePageList"
@@ -30,7 +32,7 @@
           }"
         />
         <ScrollList
-          v-else-if="item.component === 'ScrollList' && shouldMountTab(index)"
+          v-if="item.component === 'ScrollList' && shouldMountTab(index)"
           :ref="item.component + item.id"
           :class="classObject"
           :request="getArticlePageList"
@@ -43,6 +45,7 @@
     </swiper>
 		<view v-else>
 			<template v-for="item in filteredItems" :key="item.key">
+				<!-- #ifndef MP-WEIXIN -->
 				<MusicList
 					v-if="currentTabKey === item.key && item.component === 'MusicList'"
 					:ref="item.component + item.id"
@@ -53,8 +56,9 @@
 						type: item.id || null
 					}"
 				/>
+				<!-- #endif -->
 				<VideoList
-					v-else-if="currentTabKey === item.key && item.component === 'VideoList'"
+					v-if="currentTabKey === item.key && item.component === 'VideoList'"
 					:ref="item.component + item.id"
 					:class="classObject"
 					:request="getArticlePageList"
@@ -64,7 +68,7 @@
 					}"
 				/>
 				<ScrollList
-					v-else-if="currentTabKey === item.key && item.component === 'ScrollList'"
+					v-if="currentTabKey === item.key && item.component === 'ScrollList'"
 					:ref="item.component + item.id"
 					:class="classObject"
 					:request="getArticlePageList"
@@ -88,11 +92,15 @@ import HeaderBar from '@/components/header_bar/index.vue'
 import SearchBar from '@/components/search_bar/index.vue'
 import ScrollList from '@/components/scroll_list/index.vue'
 import FooterBar from '@/components/footer_bar/index.vue'
+// #ifndef MP-WEIXIN
 import MusicList from '../music/index.vue'
+// #endif
 import VideoList from '../video/index.vue'
 
 const items = [
+  // #ifndef MP-WEIXIN
   { id: 1, key: 'music', component: 'MusicList' },
+  // #endif
   { id: 2, key: 'video', component: 'VideoList' },
   { id: 5, key: 'travel', component: 'ScrollList' },
   { id: 6, key: 'ana', component: 'ScrollList' },
@@ -109,13 +117,20 @@ export default {
     HeaderBar,
     SearchBar,
     FooterBar,
+    // #ifndef MP-WEIXIN
     MusicList,
+    // #endif
     VideoList,
     ScrollList
   },
   data () {
     return {
+      // #ifdef MP-WEIXIN
+      currentTabKey: 'video',
+      // #endif
+      // #ifndef MP-WEIXIN
       currentTabKey: 'music',
+      // #endif
       currentTabIndex: 0,
       queryParams: initQueryParam()
     }
@@ -170,8 +185,7 @@ export default {
     },
 		isSupportSwiper () {
 			let bool = true
-			const systemInfo = uni.getSystemInfoSync()
-			const { osName, osVersion } = systemInfo
+			const { osName, osVersion } = uni.getDeviceInfo()
 			if (osName === 'android' && isVersionLt(osVersion, '10.0.0')) {
 				bool = false
 			}

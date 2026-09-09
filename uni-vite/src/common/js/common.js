@@ -43,11 +43,52 @@ export function cloneDeep (value) {
   return JSON.parse(JSON.stringify(value))
 }
 
+export function getWindowSize () {
+  const pick = (info) => ({
+    width: Number(info && (info.windowWidth || info.screenWidth)) || 0,
+    height: Number(info && (info.windowHeight || info.screenHeight)) || 0
+  })
+  try {
+    if (typeof uni.getWindowInfo === 'function') {
+      const size = pick(uni.getWindowInfo())
+      if (size.width > 0 && size.height > 0) return size
+    }
+  } catch (e) {}
+  try {
+    if (typeof uni.getSystemInfoSync === 'function') {
+      const size = pick(uni.getSystemInfoSync())
+      if (size.width > 0 && size.height > 0) return size
+    }
+  } catch (e) {}
+  return { width: 0, height: 0 }
+}
+
 export function stringifyQuery (params = {}) {
   return Object.keys(params)
     .filter(key => params[key] !== undefined && params[key] !== null)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
     .join('&')
+}
+
+export function openVideoPlayPage (query) {
+  const q = typeof query === 'string' ? String(query).replace(/^\?/, '') : stringifyQuery(query || {})
+  let path = '/pages/video/play'
+  const url = q ? `${path}?${q}` : path
+  console.log('[openVideoPlayPage]', url)
+  uni.navigateTo({
+    url,
+    success () {
+      console.log('[openVideoPlayPage] success')
+    },
+    fail (err) {
+      console.log('[openVideoPlayPage] fail', err)
+      uni.showToast({
+        title: (err && (err.errMsg || err.message)) || '打开播放页失败',
+        icon: 'none',
+        duration: 3000
+      })
+    }
+  })
 }
 
 export function stripHtml (value = '') {

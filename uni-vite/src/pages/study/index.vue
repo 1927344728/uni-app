@@ -150,8 +150,7 @@ export default {
     },
 		isSupportSwiper () {
 			let bool = true
-			const systemInfo = uni.getSystemInfoSync()
-			const { osName, osVersion } = systemInfo
+			const { osName, osVersion } = uni.getDeviceInfo()
 			if (osName === 'android' && isVersionLt(osVersion, '10.0.0')) {
 				bool = false
 			}

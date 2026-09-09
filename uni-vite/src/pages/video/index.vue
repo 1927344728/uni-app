@@ -76,7 +76,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getValue as _get, cloneDeep } from '@/common/js/common.js'
-import { scaleImageWidthInCOS, stringifyQuery, stripHtml } from '@/common/js/common.js'
+import { scaleImageWidthInCOS, stringifyQuery, stripHtml, openVideoPlayPage } from '@/common/js/common.js'
 import { getVideoMenuList, getVideoByIds, getVideoPageList } from '@/api'
 
 const initPagination = () => ({
@@ -180,15 +180,11 @@ export default {
     },
     onClickBanner (item) {
       const ids = (this.bannerList || []).map(e => e.id)
-      uni.navigateTo({
-        url: `/pages/video/play?mode=menu&ids=${encodeURIComponent(JSON.stringify(ids))}`
-      })
+      openVideoPlayPage(`mode=menu&ids=${encodeURIComponent(JSON.stringify(ids))}`)
     },
     onClickMenu (item) {
       const ids = (this.recommendedList || []).map(e => e.id)
-      uni.navigateTo({
-        url: `/pages/video/play?mode=menu&ids=${encodeURIComponent(JSON.stringify(ids))}`
-      })
+      openVideoPlayPage(`mode=menu&ids=${encodeURIComponent(JSON.stringify(ids))}`)
     },
     onClickTab (item) {
       this.type = item.typeId
@@ -201,9 +197,7 @@ export default {
         type: this.type || undefined
       }
       if (item && item.id) {
-        uni.navigateTo({
-          url: `/pages/video/play?${stringifyQuery(params)}`,
-        })
+        openVideoPlayPage(params)
         return
       }
     },

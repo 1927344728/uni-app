@@ -13,7 +13,8 @@ alwaysApply: true
 | `uni-spring-boot/` | 服务端 | Spring Boot 3 + JDK 17 + JPA + MySQL + JWT，为所有客户端提供接口 |
 | `uni-android/` | 安卓壳工程 | Android Studio + uni-app 离线 SDK 4.75，把 HBuilderX 生成的本地打包资源打成 apk |
 | `react-native-expo/` | React 版前端 | Expo 57 + React Native 0.86 + expo-router，与 `uni-vite` 功能对齐的另一实现 |
-| `ssl/` | 证书脚本 | 根 `package.json` 里的 `convert-p12` / `upload-ssl` |
+| `ssl/` | 证书文件 | 各域名的 `*_nginx` 证书目录与 `nginx.conf` |
+| `scripts/` | 运维脚本 | 根 `package.json` 里的 `convert-p12` / `upload-ssl`（操作 `ssl/` 下的证书）、`upload-vite-h5`（上传 `uni-vite` 的 H5 构建产物）、`copy-android-resources`（把 `uni-vite` 本地打包资源复制进 `uni-android`） |
 
 ## 前端三端兼容（`uni-vite/`）
 

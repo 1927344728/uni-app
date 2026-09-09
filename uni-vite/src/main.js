@@ -11,9 +11,9 @@ export function createApp() {
   }
 
   // #ifdef MP-WEIXIN
-  // 微信自带 vConsole 面板：体验版/正式版也能打开，便于自测
+  // 仅开发构建打开微信 vConsole；build:mp-weixin 正式包必须关掉
   try {
-    wx.setEnableDebug({ enableDebug: true })
+    wx.setEnableDebug({ enableDebug: !!import.meta.env.DEV })
   } catch (e) {}
   // #endif
 

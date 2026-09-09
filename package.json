@@ -2,7 +2,10 @@
   "name": "uni-app",
   "private": true,
   "scripts": {
-    "convert-p12": "bash ssl/convert-p12.sh",
-    "upload-ssl": "bash ssl/upload-ssl.sh"
+    "convert-p12": "bash scripts/convert-p12.sh",
+    "upload-ssl": "bash scripts/upload-ssl.sh",
+    "upload-vite-h5": "bash scripts/upload-vite-h5.sh",
+    "upload-expo-h5": "bash scripts/upload-expo-h5.sh",
+    "copy-android-resources": "bash scripts/copy-android-resources.sh"
   }
 }

@@ -8,7 +8,6 @@
 
 .page_no_scroll {
   overflow: hidden;
-  height: 100vh;
 }
 
 .note {
@@ -67,7 +66,7 @@
 
 .footer {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 24rpx;
   height: 120rpx;
   box-sizing: border-box;
@@ -75,11 +74,17 @@
 }
 
 .btn {
+  height: 80rpx;
+  margin: 0;
+  padding: 0;
+  line-height: 80rpx;
   border-radius: 48rpx;
-  padding: 20rpx;
   font-size: 28rpx;
-  line-height: 1.2;
   box-sizing: border-box;
+}
+
+.btn::after {
+  border: none;
 }
 
 .btn_sm {
@@ -223,7 +228,7 @@
 }
 
 .sheet {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
@@ -351,22 +356,36 @@
 
 .btn_cancel_sheet {
   flex: 1;
+  height: 80rpx;
+  margin: 0;
+  padding: 0;
   border-radius: 48rpx;
   font-size: 30rpx;
   background: #ffffff;
   color: #6b7280;
-  line-height: 76rpx;
+  line-height: 80rpx;
   border: 1px solid #e5e5e5;
+}
+
+.btn_cancel_sheet::after {
+  border: none;
 }
 
 .btn_ok_sheet {
   flex: 3;
+  height: 80rpx;
+  margin: 0;
+  padding: 0;
   border-radius: 48rpx;
   font-size: 30rpx;
   font-weight: 700;
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
   color: #ffffff;
-  line-height: 76rpx;
+  line-height: 80rpx;
+  border: none;
+}
+
+.btn_ok_sheet::after {
   border: none;
 }
 

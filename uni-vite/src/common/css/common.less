@@ -15,8 +15,12 @@
 .navigation_bar {
   height: 100rpx;
   & .tabs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
     padding: 24rpx 24rpx;
-    font-size: 0;
+    font-size: 24rpx;
     white-space: nowrap;
     background: @bg-patch-color;
     border-bottom: 1px solid @border-primary-color;
@@ -26,7 +30,7 @@
     }
 
     .tab {
-      display: inline-block;
+      flex-shrink: 0;
       min-width: 4em;
       margin-right: 16rpx;
       height: 48rpx;
@@ -68,4 +72,3 @@
   color: #999;
   text-align: center;
 }
-

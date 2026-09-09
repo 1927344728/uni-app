@@ -1,0 +1,135 @@
+<template>
+  <div
+    class="swiper_item"
+    :style="{
+      width: `${width}px`,
+      height: `${height}px`,
+      top: `${height * video.index}px`
+    }"
+  >
+    <video
+      ref="video"
+      :id="`video_id_${index}`"
+      :src="videoSrc"
+      :poster="coverSrc"
+      :style="fillScreenStyle"
+      :autoplay="false"
+      :loop="true"
+      :controls="false"
+      :show-fullscreen-btn="false"
+      :show-progress="false"
+      :show-play-btn="false"
+      :show-center-play-btn="false"
+      :enable-progress-gesture="false"
+      object-fit="contain"
+      @play="onVideoPlay"
+      @timeupdate="timeupdate"
+      @ended="ended"
+      @error="onVideoError"
+    />
+
+    <cover-view v-if="!video.isPlaying" class="cover_view_stop" :style="fillScreenStyle">
+      <text class="cover_view_stop_iconfont">▶</text>
+    </cover-view>
+
+    <cover-view
+      class="video_action"
+      :style="fillScreenStyle"
+      @touchstart="touchstart"
+      @touchmove="touchmove"
+      @touchend="touchend"
+      @click="click"
+    />
+
+    <cover-view class="video_content">
+      <text class="video_content_name">@{{ video.publisher }}</text>
+      <text v-if="descText" class="video_content_description_text">{{ descText }}</text>
+    </cover-view>
+  </div>
+</template>
+<script>
+import { encodeMediaUrl, stripHtml, textEllipsis } from './nvue-utils.js'
+
+export default {
+  props: {
+    index: Number,
+    video: {
+      type: Object,
+      required: true
+    },
+    width: Number,
+    height: Number
+  },
+  computed: {
+    fillScreenStyle () {
+      return {
+        width: `${this.width}px`,
+        height: `${this.height}px`
+      }
+    },
+    videoSrc () {
+      return encodeMediaUrl(this.video && this.video.url)
+    },
+    coverSrc () {
+      return encodeMediaUrl(this.video && this.video.cover)
+    },
+    descText () {
+      return textEllipsis(stripHtml(this.video && this.video.desc), 64)
+    }
+  },
+  methods: {
+    getCtx () {
+      try {
+        return uni.createVideoContext(`video_id_${this.index}`, this)
+      } catch (e) {
+        return null
+      }
+    },
+    playVideo () {
+      const ctx = this.getCtx()
+      if (ctx && typeof ctx.play === 'function') ctx.play()
+    },
+    pauseVideo () {
+      const ctx = this.getCtx()
+      if (ctx && typeof ctx.pause === 'function') ctx.pause()
+    },
+    stopVideo () {
+      const ctx = this.getCtx()
+      if (ctx && typeof ctx.stop === 'function') ctx.stop()
+    },
+    seekVideo (s) {
+      const ctx = this.getCtx()
+      if (!ctx) return
+      if (typeof ctx.seek === 'function') ctx.seek(s)
+      if (typeof ctx.play === 'function') ctx.play()
+    },
+    timeupdate (event) {
+      this.$emit('timeupdate', event)
+    },
+    onVideoPlay () {
+      this.$emit('play')
+    },
+    onVideoError () {
+      uni.showToast({ title: '播放失败', icon: 'none' })
+    },
+    ended () {
+      this.$emit('ended')
+    },
+    touchstart (event) {
+      this.$emit('touchstart', event)
+    },
+    touchmove (event) {
+      this.$emit('touchmove', event)
+    },
+    touchend (event) {
+      this.$emit('touchend', event)
+    },
+    click () {
+      this.$emit('click')
+    }
+  }
+}
+</script>
+<style scoped>
+@import './swiper_item.less'
+</style>

@@ -224,7 +224,7 @@ export default {
     formatTime,
     initViewport () {
       try {
-        const res = uni.getSystemInfoSync();
+        const res = uni.getWindowInfo();
         this.wWidth = res.windowWidth || 1;
         this.wHeight = res.windowHeight || 1;
       } catch (e) {}

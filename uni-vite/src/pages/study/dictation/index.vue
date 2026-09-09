@@ -58,7 +58,7 @@
     </view>
 
     <view v-if="settingsVisible" class="mask" @click.self="closeSettings" @touchmove.stop.prevent>
-      <view class="sheet" @touchmove.stop>
+      <view class="sheet" @click.stop @touchmove.stop>
         <view class="sheet_hd">
           <view class="sheet_title">设置</view>
         </view>
@@ -71,6 +71,9 @@
                 class="input"
                 type="number"
                 :value="settings.intervalTime"
+                :adjust-position="false"
+                confirm-type="done"
+                :hold-keyboard="true"
                 @input="onInputInterval"
                 placeholder="请输入词语听写的间隔时间（秒）"
               />
@@ -101,6 +104,9 @@
                 class="input"
                 type="number"
                 :value="settings.wordCount"
+                :adjust-position="false"
+                confirm-type="done"
+                :hold-keyboard="true"
                 @input="onInputWordCount"
                 @blur="onBlurWordCount"
                 placeholder="请输入随机抽取的词语数量"

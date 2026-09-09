@@ -29,7 +29,9 @@ wx.setEnableDebug({ enableDebug: true })
 
 `window`、`document`、`localStorage`、`speechSynthesis`、`Blob`、`FileReader`、`atob` / `btoa`、`XMLHttpRequest`
 
-一律改走 `uni.*` 等价 API（`uni.setStorageSync`、`uni.request`、`uni.getSystemInfoSync` 等）。
+一律改走 `uni.*` 等价 API（`uni.setStorageSync`、`uni.request`、`uni.getWindowInfo` 等）。
+
+注意 `uni.getSystemInfo` / `uni.getSystemInfoSync` 在小程序端已被微信标记废弃，控制台会打印 deprecated 警告。按需改用拆分后的接口：窗口尺寸用 `uni.getWindowInfo()`，系统/机型用 `uni.getDeviceInfo()`，宿主 App 信息用 `uni.getAppBaseInfo()`。
 
 ### 2. 调试面板：用 `wx.setEnableDebug` 代替 vconsole
 
@@ -359,7 +361,7 @@ App 端使用 `uni.createInnerAudioContext()`。小程序专用的 `getBackgroun
 
 ### 6. nvue 组件走独立编译管线
 
-`src/components/kai_video_swiper/` 下是 `.nvue` 文件，样式与编译规则和 vue 页面不同（例如不支持部分 CSS 选择器）。改动时不要照搬 vue 页面的写法，`<style>` 也不要套用第四章的 `src` 引入结论。
+`src/ncomponents/video_swiper/` 下是 `.nvue` 文件，样式与编译规则和 vue 页面不同（例如不支持部分 CSS 选择器）。改动时不要照搬 vue 页面的写法，`<style>` 也不要套用第四章的 `src` 引入结论。
 
 ### 7. 离线打包
 
@@ -381,7 +383,7 @@ App 的最终产物由仓库根目录的 `uni-android/` 壳工程完成：HBuild
 
 带 `scoped` 时写成 `<style lang="less" src="./index.less" scoped></style>`。
 
-目前除 `src/components/kai_video_swiper/index.nvue`（nvue 走另一套编译管线）外，其余页面与组件均已转换。
+目前除 `src/ncomponents/video_swiper/index.nvue`（nvue 走另一套编译管线）外，其余页面与组件均已转换。
 
 **排查手法**：怀疑样式没生效时，先去 `dist/dev/mp-weixin/` 下找对应的 `.wxss`，确认规则是否真的编译进去了，再怀疑选择器写法。必要时停掉 dev server，删掉 `dist/dev/mp-weixin` 重新编译。
 
@@ -393,7 +395,7 @@ App 的最终产物由仓库根目录的 `uni-android/` 壳工程完成：HBuild
 export * from '@/common/js/common.js'
 ```
 
-目前仍有三处 nvue 文件引用旧路径（`components/kai_video_swiper/index.nvue`、`swiper_item.nvue`），靠转发桩维持可用。**新代码请一律从 `@/common/js/` 引入**，旧引用待后续清理。
+目前仍有三处 nvue 文件引用旧路径（`ncomponents/video_swiper/index.nvue`、`swiper_item.nvue`），靠转发桩维持可用。**新代码请一律从 `@/common/js/` 引入**，旧引用待后续清理。
 
 ### 3. 请求参数会被全局改写，注意 POST body
 
