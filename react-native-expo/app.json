@@ -2,13 +2,14 @@
   "expo": {
     "name": "一兆窗含",
     "slug": "yizhao",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "yizhao",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "buildNumber": "10005"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.yizhao"
+      "package": "com.anonymous.yizhao",
+      "versionCode": 10005
     },
     "web": {
       "output": "static",

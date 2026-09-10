@@ -1,5 +1,5 @@
 #!/bin/bash
-APP_NAME="yizhao-spring-boot-0.0.1.jar"
+APP_NAME="yizhao-spring-boot-1.0.5.jar"
 APP_PORT="9443"
 JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -Dspring.profiles.active=prod -Dserver.port=$APP_PORT"
 LOG_FILE="/opt/yizhao/logs/app.log"

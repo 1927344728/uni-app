@@ -1,5 +1,5 @@
 #!/bin/bash
-APP_NAME="yizhao-spring-boot-0.0.1.jar"
+APP_NAME="yizhao-spring-boot-1.0.5.jar"
 PID_FILE="/opt/yizhao/app.pid"
 
 echo "停止 Spring Boot 应用..."

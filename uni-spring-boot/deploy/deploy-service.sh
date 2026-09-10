@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 用法: ./deploy-service.sh yizhao-spring-boot-0.0.1.jar
+# 用法: ./deploy-service.sh yizhao-spring-boot-1.0.5.jar
 # 作用:
 # 1. 自动识别当前使用的 JAR 名
 # 2. 在 start.sh / stop.sh / yizhao-app.service 中替换为新的 JAR 名
@@ -16,7 +16,7 @@ SYSTEMD_DIR="/etc/systemd/system"
 NEW_JAR_NAME="$1"
 
 if [ -z "$NEW_JAR_NAME" ]; then
-  echo "用法: $0 <新JAR文件名，例如: yizhao-spring-boot-0.0.1.jar>"
+  echo "用法: $0 <新JAR文件名，例如: yizhao-spring-boot-1.0.5.jar>"
   exit 1
 fi
 

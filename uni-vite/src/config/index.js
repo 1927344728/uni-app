@@ -1,7 +1,8 @@
+import { version } from '../../package.json'
 import { COS_DOMAIN_NAME } from '@/common/js/variables'
 
 export const APP_NAME = '一兆窗含'
-export const APP_VERSION = '1.0.5'
+export const APP_VERSION = version
 export const APP_LOGO = `${COS_DOMAIN_NAME}/images/logo.png`
 export const DEFAULT_AVATAR_IMAGE = `${COS_DOMAIN_NAME}/images/default.png`
 export const FEATURE_ICON_ENUM = [

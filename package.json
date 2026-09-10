@@ -1,7 +1,9 @@
 {
   "name": "uni-app",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
+    "version": "node scripts/set-version.mjs",
     "convert-p12": "bash scripts/convert-p12.sh",
     "upload-ssl": "bash scripts/upload-ssl.sh",
     "upload-vite-h5": "bash scripts/upload-vite-h5.sh",
