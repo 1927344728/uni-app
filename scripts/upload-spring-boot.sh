@@ -127,6 +127,5 @@ echo "  配置:   ${REMOTE_BASE}/application-prod.properties"
 echo "  说明:   ${REMOTE_BASE}/README.md"
 echo
 echo "服务器上请执行（换 JAR 文件名或更新过 unit 时必须跑）："
-echo "  ssh ${REMOTE} 'cd /opt/yizhao/deploy && ./deploy-service.sh <jar文件名>'"
-echo "例如:"
-echo "  ssh ${REMOTE} 'cd /opt/yizhao/deploy && ./deploy-service.sh yizhao-spring-boot-1.0.5.jar'"
+echo "  ssh ${REMOTE} 'cd /opt/yizhao/deploy && ./deploy-service.sh'"
+echo "无参数时会自动选用 /opt/yizhao/jars 下版本最高的 jar。"

@@ -22,7 +22,7 @@ npm run upload-spring-boot
 
 会把 JAR 传到 `/opt/yizhao/jars/`，脚本传到 `/opt/yizhao/deploy/`，配置和本说明传到 `/opt/yizhao/`。
 
-注意：上传**不会**改 `/etc/systemd/system/yizhao-app.service`。换 JAR 文件名、或刚改过 unit 文件后，必须在服务器上再跑一次 `deploy-service.sh`，只执行 `systemctl restart` 仍会用旧路径。
+注意：上传**不会**改 `/etc/systemd/system/yizhao-app.service`。换 JAR 文件名、或刚改过 unit 文件后，必须在服务器上再跑一次 `deploy-service.sh`（无参数即可，会自动选最新 jar），只执行 `systemctl restart` 仍会用旧路径。
 
 ---
 
@@ -33,10 +33,10 @@ SSH 登录服务器后：
 ```bash
 cd /opt/yizhao/deploy
 chmod +x *.sh
-./deploy-service.sh yizhao-spring-boot-1.0.5.jar
+./deploy-service.sh
 ```
 
-脚本会：核对 `jars/` 下已有该 JAR → 写入 `yizhao-app.service` → 安装到 systemd → `enable` 并 `restart`。
+脚本会：在 `jars/` 里按 semver 选最新的 `yizhao-spring-boot-x.y.z.jar` → 写入 `start.sh` / `stop.sh` / `yizhao-app.service` → 安装到 systemd → `enable` 并 `restart`。也可显式传入文件名：`./deploy-service.sh yizhao-spring-boot-1.0.6.jar`。
 
 之后开机自动拉起。查看状态：
 
@@ -51,16 +51,16 @@ journalctl -u yizhao-app -f
 
 先在本地上传新包，再 SSH 到服务器操作。分两种情况。
 
-### 1. 文件名变了（换版本，例如 `1.0.3` → `1.0.5`）
+### 1. 文件名变了（换版本，例如 `1.0.5` → `1.0.6`）
 
 必须跑 `deploy-service.sh`，否则 systemd 仍指向旧 JAR：
 
 ```bash
 cd /opt/yizhao/deploy
-./deploy-service.sh yizhao-spring-boot-1.0.5.jar
+./deploy-service.sh
 ```
 
-把参数换成实际上传到 `/opt/yizhao/jars/` 的文件名。
+无参数时自动选 `jars/` 下版本最高的包。要钉死某一个文件时再传文件名。
 
 ### 2. 文件名没变（覆盖同一个 JAR）
 

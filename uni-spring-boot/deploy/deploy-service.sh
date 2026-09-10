@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# 用法: ./deploy-service.sh yizhao-spring-boot-1.0.5.jar
+# 用法:
+#   ./deploy-service.sh                              # 自动选用 jars/ 下版本最高的 jar
+#   ./deploy-service.sh yizhao-spring-boot-1.0.6.jar  # 指定 jar
 # 作用:
-# 1. 自动识别当前使用的 JAR 名
-# 2. 在 start.sh / stop.sh / yizhao-app.service 中替换为新的 JAR 名
+# 1. 确定要启用的 JAR（无参数时按 semver 选最新）
+# 2. 在 start.sh / stop.sh / yizhao-app.service 中替换 JAR 名
 # 3. 拷贝 yizhao-app.service 到 /etc/systemd/system 并重启服务
 
 set -e
@@ -14,11 +16,30 @@ DEPLOY_DIR="/opt/yizhao/deploy"
 JAR_DIR="/opt/yizhao/jars"
 SYSTEMD_DIR="/etc/systemd/system"
 
+pick_latest_jar() {
+  local f base
+  local candidates=()
+  for f in "$JAR_DIR"/yizhao-spring-boot-*.jar; do
+    [ -e "$f" ] || continue
+    base=$(basename "$f")
+    if [[ "$base" =~ ^yizhao-spring-boot-[0-9]+\.[0-9]+\.[0-9]+\.jar$ ]]; then
+      candidates+=("$base")
+    fi
+  done
+  if [ ${#candidates[@]} -eq 0 ]; then
+    echo "错误: $JAR_DIR 下没有 yizhao-spring-boot-x.y.z.jar"
+    exit 1
+  fi
+  printf '%s\n' "${candidates[@]}" | sort -V | tail -1
+}
+
 NEW_JAR_NAME="$1"
 
 if [ -z "$NEW_JAR_NAME" ]; then
-  echo "用法: $0 <新JAR文件名，例如: yizhao-spring-boot-1.0.5.jar>"
-  exit 1
+  NEW_JAR_NAME=$(pick_latest_jar)
+  echo "未指定 JAR，自动选用最新: $NEW_JAR_NAME"
+else
+  NEW_JAR_NAME=$(basename "$NEW_JAR_NAME")
 fi
 
 cd "$DEPLOY_DIR"
@@ -53,12 +74,12 @@ fi
 for f in start.sh stop.sh; do
   if [ -f "$f" ]; then
     echo "更新 $f 中的 APP_NAME..."
-    sed -i "s#APP_NAME=\"$OLD_JAR_NAME\"#APP_NAME=\"$NEW_JAR_NAME\"#g" "$f"
+    sed -i "s#^APP_NAME=.*#APP_NAME=\"$NEW_JAR_NAME\"#g" "$f"
   fi
 done
 
 echo "更新 $SERVICE_FILE 中的 JAR 路径..."
-sed -i "s#$OLD_JAR_PATH#$NEW_JAR_PATH#g" "$SERVICE_FILE"
+sed -i -E "s#(-jar[[:space:]]+)[^[:space:]]+#\1$NEW_JAR_PATH#" "$SERVICE_FILE"
 
 echo "拷贝 systemd 服务文件到 $SYSTEMD_DIR..."
 cp "$SERVICE_FILE" "$SYSTEMD_DIR/$SERVICE_FILE"

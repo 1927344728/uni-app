@@ -171,19 +171,6 @@ updated.push(replaceOnce(
   `$1${version}$2`,
   'project version',
 ))
-for (const deployFile of [
-  'uni-spring-boot/deploy/start.sh',
-  'uni-spring-boot/deploy/stop.sh',
-  'uni-spring-boot/deploy/deploy-service.sh',
-  'uni-spring-boot/deploy/yizhao-app.service',
-]) {
-  updated.push(replaceAll(
-    path.join(rootDir, deployFile),
-    /yizhao-spring-boot-\d+\.\d+\.\d+\.jar/g,
-    `yizhao-spring-boot-${version}.jar`,
-    'jar 文件名',
-  ))
-}
 
 updated.push(replaceOnce(
   path.join(rootDir, 'uni-android/app/build.gradle'),
