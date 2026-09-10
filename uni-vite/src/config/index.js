@@ -1,7 +1,12 @@
 import { version } from '../../package.json'
 import { COS_DOMAIN_NAME } from '@/common/js/variables'
 
+// #ifdef MP-WEIXIN
+export const APP_NAME = '一兆轻知'
+// #endif
+// #ifndef MP-WEIXIN
 export const APP_NAME = '一兆窗含'
+// #endif
 export const APP_VERSION = version
 export const APP_LOGO = `${COS_DOMAIN_NAME}/images/logo.png`
 export const DEFAULT_AVATAR_IMAGE = `${COS_DOMAIN_NAME}/images/default.png`

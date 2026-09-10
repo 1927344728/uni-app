@@ -105,6 +105,10 @@ const BASE_OPTIONS = [
     name: '清除缓存',
   },
   {
+    key: 'agreement',
+    name: '用户协议',
+  },
+  {
     key: 'about',
     name: '关于',
   },
@@ -162,6 +166,12 @@ export default {
           duration: 3000,
           icon: 'success'
         });
+        return
+      }
+      if (item.key === 'agreement') {
+        uni.navigateTo({
+          url: '/pages/me/agreement'
+        })
         return
       }
       if (item.key === 'about') {

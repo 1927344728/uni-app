@@ -9,7 +9,12 @@
     {
       "path": "pages/index/index",
       "style": {
+        // #ifdef MP-WEIXIN
+        "navigationBarTitleText": "一兆轻知"
+        // #endif
+        // #ifndef MP-WEIXIN
         "navigationBarTitleText": "一兆窗含"
+        // #endif
       }
     },
     {
@@ -65,6 +70,13 @@
       "path": "pages/me/about",
       "style": {
         "navigationBarTitleText": "关于",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/me/agreement",
+      "style": {
+        "navigationBarTitleText": "用户协议",
         "enablePullDownRefresh": false
       }
     },
@@ -165,7 +177,12 @@
   "globalStyle": {
     "navigationStyle": "default",
     "navigationBarTextStyle": "black",
+    // #ifdef MP-WEIXIN
+    "navigationBarTitleText": "一兆轻知",
+    // #endif
+    // #ifndef MP-WEIXIN
     "navigationBarTitleText": "一兆窗含",
+    // #endif
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f2f2f2",
     "transparentTitle": "auto",

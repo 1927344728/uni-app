@@ -4,6 +4,7 @@
       <image class="logo" :src="scaleImageWidthInCOS(appInfo.logo, 120)" mode="aspectFit"/>
       <text class="name">{{ appInfo.name }}</text>
       <text class="version">版本 {{ appInfo.version }}</text>
+      <text class="agreement_link" @click="gotoAgreement">《用户协议》</text>
     </view>
     <view class="copyright">
       <view v-if="recordInfo.websiteRecord" class="text" @click="gotoBeian()">
@@ -39,6 +40,11 @@ export default {
   },
   methods: {
     scaleImageWidthInCOS,
+    gotoAgreement () {
+      uni.navigateTo({
+        url: '/pages/me/agreement'
+      })
+    },
     gotoBeian () {
       uni.navigateTo({
 				url: `/pages/webview/index?url=${encodeURIComponent('https://beian.miit.gov.cn/#/Integrated/index')}`
@@ -76,6 +82,12 @@ export default {
     & .version {
       font-size: 28rpx;
       color: #666;
+    }
+
+    & .agreement_link {
+      margin-top: 24rpx;
+      font-size: 28rpx;
+      color: rgb(89, 194, 173);
     }
   }
   .copyright {

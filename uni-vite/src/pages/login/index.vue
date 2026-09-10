@@ -32,9 +32,16 @@
 						@blur="onChange"
 					/>
 				</view>
-				<view class="form_item agree" @click="toggleAgree">
-					<view :class="['checkbox', loginData.agree ? 'checked' : '']"></view>
-					<text class="agree_text">我已阅读并同意《用户协议》</text>
+				<view class="form_item agree">
+					<view class="checkbox_wrap" @click="toggleAgree">
+						<view :class="['checkbox', loginData.agree ? 'checked' : '']">
+							<view v-if="loginData.agree" class="tick"></view>
+						</view>
+					</view>
+					<view class="agree_text">
+						<text @click="toggleAgree">我已阅读并同意</text>
+						<text class="agree_link" @click.stop="gotoAgreement">《用户协议》</text>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -87,6 +94,11 @@ export default {
     toggleAgree () {
       this.loginData.agree = !this.loginData.agree
       this.onChange()
+    },
+    gotoAgreement () {
+      uni.navigateTo({
+        url: '/pages/me/agreement'
+      })
     },
     onLogin () {
       const errMsg = this.validateForm()

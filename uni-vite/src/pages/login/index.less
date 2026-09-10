@@ -53,12 +53,26 @@
       min-height: 64rpx;
 
       & .checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 36rpx;
         height: 36rpx;
         margin-right: 12rpx;
+        flex-shrink: 0;
         border: 2rpx solid @text-patch1-color;
         border-radius: 6rpx;
         box-sizing: border-box;
+        overflow: hidden;
+
+        & .tick {
+          width: 8rpx;
+          height: 16rpx;
+          margin-bottom: 4rpx;
+          border-right: 3rpx solid #fff;
+          border-bottom: 3rpx solid #fff;
+          transform: rotate(45deg);
+        }
       }
 
       & .checkbox.checked {
@@ -66,10 +80,20 @@
         background: @primary-color;
       }
 
+      & .checkbox_wrap {
+        display: flex;
+        align-items: center;
+        padding: 8rpx 0;
+      }
+
       & .agree_text {
         font-size: 28rpx;
-        line-height: 32rpx;
+        line-height: 40rpx;
         color: @text-patch1-color;
+      }
+
+      & .agree_link {
+        color: @primary-color;
       }
     }
   }
