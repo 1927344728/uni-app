@@ -1,14 +1,17 @@
 #!/bin/bash
 APP_NAME="yizhao-spring-boot-1.0.5.jar"
+APP_HOME="/opt/yizhao"
+JAR_DIR="$APP_HOME/jars"
+APP_JAR="$JAR_DIR/$APP_NAME"
 APP_PORT="9443"
-JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -Dspring.profiles.active=prod -Dserver.port=$APP_PORT"
-LOG_FILE="/opt/yizhao/logs/app.log"
-PID_FILE="/opt/yizhao/app.pid"
-KEYSTORE_FILE="/opt/yizhao/ssl/keystore.p12"
+JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC"
+LOG_FILE="$APP_HOME/logs/app.log"
+PID_FILE="$APP_HOME/app.pid"
+KEYSTORE_FILE="/opt/ssl/app.izhao.com.cn_nginx/app.izhao.com.cn.p12"
 
 echo "========================================"
 echo "🔐 启动 Spring Boot HTTPS 应用"
-echo "应用: $APP_NAME"
+echo "应用: $APP_JAR"
 echo "端口: $APP_PORT (HTTPS)"
 echo "时间: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "========================================"
@@ -22,6 +25,12 @@ if [ -f "$PID_FILE" ]; then
     fi
 fi
 
+# 检查 JAR
+if [ ! -f "$APP_JAR" ]; then
+    echo "❌ 错误: 未找到 JAR 文件 $APP_JAR"
+    exit 1
+fi
+
 # 检查证书文件
 if [ ! -f "$KEYSTORE_FILE" ]; then
     echo "❌ 错误: 未找到证书文件 $KEYSTORE_FILE"
@@ -31,7 +40,7 @@ fi
 echo "✅ 证书文件存在: $(ls -lh "$KEYSTORE_FILE")"
 
 # 创建日志目录
-mkdir -p /opt/yizhao/logs
+mkdir -p "$APP_HOME/logs"
 
 # 备份旧日志
 if [ -f "$LOG_FILE" ]; then
@@ -39,10 +48,14 @@ if [ -f "$LOG_FILE" ]; then
 fi
 
 echo "🚀 启动应用..."
-cd /opt/yizhao/deploy
+cd "$APP_HOME"
 
 # 启动命令
-nohup $sudo_cmd java $JAVA_OPTS -jar $APP_NAME > "$LOG_FILE" 2>&1 &
+nohup java $JAVA_OPTS -jar "$APP_JAR" \
+    --spring.profiles.active=prod \
+    --spring.config.additional-location="file:$APP_HOME/" \
+    --server.port="$APP_PORT" \
+    > "$LOG_FILE" 2>&1 &
 
 # 等待并获取进程 ID
 sleep 3

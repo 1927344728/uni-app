@@ -30,7 +30,7 @@ else
         echo "停止进程: $PIDS"
         kill -15 $PIDS 2>/dev/null
         sleep 2
-        kill -9 $PIDS 2>/dev/null 2>/dev/null
+        kill -9 $PIDS 2>/dev/null
         echo "✅ 应用已停止"
     fi
 fi

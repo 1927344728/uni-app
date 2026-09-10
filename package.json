@@ -8,6 +8,7 @@
     "upload-ssl": "bash scripts/upload-ssl.sh",
     "upload-vite-h5": "bash scripts/upload-vite-h5.sh",
     "upload-expo-h5": "bash scripts/upload-expo-h5.sh",
+    "upload-spring-boot": "bash scripts/upload-spring-boot.sh",
     "copy-android-resources": "bash scripts/copy-android-resources.sh"
   }
 }

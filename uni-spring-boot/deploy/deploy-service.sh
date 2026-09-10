@@ -10,7 +10,8 @@ set -e
 
 SERVICE_NAME="yizhao-app"
 SERVICE_FILE="yizhao-app.service"
-BASE_DIR="/opt/yizhao/deploy"
+DEPLOY_DIR="/opt/yizhao/deploy"
+JAR_DIR="/opt/yizhao/jars"
 SYSTEMD_DIR="/etc/systemd/system"
 
 NEW_JAR_NAME="$1"
@@ -20,13 +21,13 @@ if [ -z "$NEW_JAR_NAME" ]; then
   exit 1
 fi
 
-cd "$BASE_DIR"
+cd "$DEPLOY_DIR"
 
 if [ ! -f "$SERVICE_FILE" ]; then
-  echo "错误: 找不到 $BASE_DIR/$SERVICE_FILE"
+  echo "错误: 找不到 $DEPLOY_DIR/$SERVICE_FILE"
   exit 1
 fi
- 
+
 # 从 ExecStart 行中解析当前 JAR 的完整路径和文件名
 EXEC_LINE=$(grep '^ExecStart=' "$SERVICE_FILE")
 OLD_JAR_PATH=$(echo "$EXEC_LINE" | sed -E 's/.*-jar[[:space:]]+([^[:space:]]+).*/\1/')
@@ -37,13 +38,16 @@ if [ -z "$OLD_JAR_NAME" ] || [ -z "$OLD_JAR_PATH" ]; then
   exit 1
 fi
 
+NEW_JAR_PATH="$JAR_DIR/$NEW_JAR_NAME"
+
 echo "当前 JAR 路径: $OLD_JAR_PATH"
 echo "当前 JAR 名: $OLD_JAR_NAME"
-echo "新的 JAR 名: $NEW_JAR_NAME"
+echo "新的 JAR 路径: $NEW_JAR_PATH"
 
-if [ ! -f "$BASE_DIR/$NEW_JAR_NAME" ]; then
-  echo "警告: 未在 $BASE_DIR 下找到 $NEW_JAR_NAME"
+if [ ! -f "$NEW_JAR_PATH" ]; then
+  echo "错误: 未在 $JAR_DIR 下找到 $NEW_JAR_NAME"
   echo "请确认已上传新 JAR 文件后再运行本脚本。"
+  exit 1
 fi
 
 for f in start.sh stop.sh; do
@@ -53,13 +57,11 @@ for f in start.sh stop.sh; do
   fi
 done
 
-echo "更新 $SERVICE_FILE 中的 JAR 名..."
-NEW_JAR_PATH="$BASE_DIR/$NEW_JAR_NAME"
+echo "更新 $SERVICE_FILE 中的 JAR 路径..."
 sed -i "s#$OLD_JAR_PATH#$NEW_JAR_PATH#g" "$SERVICE_FILE"
 
 echo "拷贝 systemd 服务文件到 $SYSTEMD_DIR..."
 cp "$SERVICE_FILE" "$SYSTEMD_DIR/$SERVICE_FILE"
-
 
 echo "重新加载 systemd 配置并重启服务 $SERVICE_NAME..."
 systemctl daemon-reload
