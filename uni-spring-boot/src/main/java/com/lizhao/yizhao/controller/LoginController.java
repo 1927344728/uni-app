@@ -73,8 +73,9 @@ public class LoginController {
   public CommonResponse<String> logout(HttpServletRequest request, HttpServletResponse response) {
     try {
       CommonResponse<UserResponse> userInfo = userService.getUserByCookieToken(request);
-      Long id = userInfo.getData().id;
-      userRepository.updateTokenById(id, null);
+      if (userInfo.isSuccess() && userInfo.getData() != null && userInfo.getData().id != null) {
+        userRepository.updateTokenById(userInfo.getData().id, null);
+      }
 
       ResponseCookie cleared = ResponseCookie.from("token", "")
           .maxAge(0)

@@ -1,7 +1,6 @@
 export default [
   {
     id: 38,
-    uuid: '',
     type: '4',
     subType: 1,
     title: '洛神赋',
@@ -54,7 +53,6 @@ export default [
   },
   {
     id: 39,
-    uuid: '',
     type: '4',
     subType: 2,
     title: '古代千古名联（一）',
@@ -103,7 +101,6 @@ export default [
   },
   {
     id: 40,
-    uuid: '',
     type: '4',
     subType: 2,
     title: '古代千古名联（二）',

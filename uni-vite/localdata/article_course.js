@@ -1,7 +1,6 @@
 export default [
   {
     id: 8,
-    uuid: '',
     type: '1',
     subType: 1,
     title: '语文课程24-32页（一年级上）',
@@ -58,7 +57,6 @@ export default [
   },
   {
     id: 9,
-    uuid: '',
     type: '1',
     subType: 1,
     title: '语文课程39-55页（一年级上）',
@@ -121,7 +119,6 @@ export default [
   },
   {
     id: 41,
-    uuid: '',
     type: '1,2',
     subType: 1,
     title: '语文高频考点知识梳理（图片）',

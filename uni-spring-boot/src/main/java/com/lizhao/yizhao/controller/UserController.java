@@ -37,8 +37,11 @@ public class UserController {
   @ResponseBody
   public CommonResponse<UserResponse> user(@RequestParam String uuid) {
     Optional<UserEntity> user = userRepository.findByUuid(uuid);
+    if (user.isEmpty()) {
+      return CommonResponse.fail(404, "用户不存在");
+    }
     UserResponse userResponse = new UserResponse();
-    user.ifPresent(userResponse::setUser);
+    userResponse.setUser(user.get());
     return CommonResponse.success(userResponse);
   }
 }

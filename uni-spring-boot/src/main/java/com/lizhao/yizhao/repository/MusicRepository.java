@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MusicRepository extends JpaRepository<MusicEntity, Long> {
-  Optional<MusicEntity> findByUuid(String uuid);
-
   @Query("SELECT COUNT(m) FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%'))")
   long countByTypeAndIsDeletedFalse(@Param("type") String type);
 

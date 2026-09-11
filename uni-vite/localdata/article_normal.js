@@ -1,7 +1,6 @@
 export default [
   {
     id: 1,
-    uuid: '',
     type: '2,7',
     subType: null,
     title: '李若小画家绘画作品展',

@@ -1,7 +1,6 @@
 export default [
   {
     id: 24,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第1-10篇（第一册）',
@@ -74,7 +73,6 @@ export default [
   },
 	{
     id: 25,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第11-20篇（第一册）',
@@ -147,7 +145,6 @@ export default [
   },
 	{
     id: 26,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第21-28篇（第一册）',
@@ -208,7 +205,6 @@ export default [
   },
 	{
     id: 27,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第1-10篇（第二册）',
@@ -281,7 +277,6 @@ export default [
   },
 	{
     id: 28,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第11-20篇（第二册）',
@@ -354,7 +349,6 @@ export default [
   },
 	{
     id: 29,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第21-31篇（第二册）',
@@ -433,7 +427,6 @@ export default [
   },
 	{
     id: 30,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第1-10篇（第三册）',
@@ -506,7 +499,6 @@ export default [
   },
 	{
     id: 31,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第11-20篇（第三册）',
@@ -582,7 +574,6 @@ export default [
   },
 	{
     id: 32,
-    uuid: '',
     type: '3',
     subType: 1,
     title: '《和大人一起读》第21-29篇（第三册）',

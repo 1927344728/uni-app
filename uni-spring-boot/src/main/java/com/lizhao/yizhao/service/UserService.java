@@ -26,10 +26,12 @@ public class UserService {
         if ("token".equals(cookie.getName())) {
           String token = cookie.getValue();
           Optional<UserEntity> userInfo = userInfoRepository.findByToken(token);
+          if (userInfo.isEmpty()) {
+            return CommonResponse.fail(401, "请登录");
+          }
 
           UserResponse user = new UserResponse();
-          userInfo.ifPresent(user::setUser);
-
+          user.setUser(userInfo.get());
           return CommonResponse.success(user);
         }
       }

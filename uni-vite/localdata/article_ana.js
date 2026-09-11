@@ -1,7 +1,6 @@
 export default [
   {
     id: 4,
-    uuid: '',
     type: '6',
     subType: '',
     title: '我期待的不是雪',
@@ -21,7 +20,6 @@ export default [
   },
   {
     id: 36,
-    uuid: '',
     type: '6',
     subType: '',
     title: '这个世上最廉价的是',
@@ -41,7 +39,6 @@ export default [
   },
   {
     id: 37,
-    uuid: '',
     type: '6',
     subType: '',
     title: '林深时见鹿',

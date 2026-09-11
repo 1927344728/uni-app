@@ -1,7 +1,6 @@
 export default [
   {
     id: 33,
-    uuid: '',
     type: '5',
     subType: '',
     title: '春游',
@@ -38,7 +37,6 @@ export default [
   },
   {
     id: 34,
-    uuid: '',
     type: '5',
     subType: '',
     title: '兮兮若若杭州游',
@@ -81,7 +79,6 @@ export default [
   },
   {
     id: 35,
-    uuid: '',
     type: '5',
     subType: '',
     title: '兮小宝署假再游杭州',

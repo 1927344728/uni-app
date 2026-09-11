@@ -10,7 +10,6 @@ import ARTICLE_CULTURE from './article_culture'
 const ARTICLE_OTHER = [
   {
     id: 5,
-    uuid: '',
     type: '1,2',
     subType: 3,
     title: '汉语拼音发音学习',
@@ -22,7 +21,6 @@ const ARTICLE_OTHER = [
   },
   {
     id: 53,
-    uuid: '',
     type: '1,2',
     subType: 3,
     title: '听写链接生成器',
@@ -34,7 +32,6 @@ const ARTICLE_OTHER = [
   },
   {
     id: 54,
-    uuid: '',
     type: '1,2',
     subType: 3,
     title: '听写小助手',
@@ -46,7 +43,6 @@ const ARTICLE_OTHER = [
   },
   {
     id: 55,
-    uuid: '',
     type: '1,2',
     subType: 3,
     title: '前后鼻韵母强化练习',
@@ -58,7 +54,6 @@ const ARTICLE_OTHER = [
   },
   {
     id: 6,
-    uuid: '',
     type: '2,7',
     subType: null,
     title: '中国地方特色水果图鉴',
@@ -70,7 +65,6 @@ const ARTICLE_OTHER = [
   },
   {
     id: 7,
-    uuid: '',
     type: '7',
     subType: null,
     title: '摄影笔记深度解析',
@@ -98,7 +92,6 @@ export const ARTICLE_DETAIL_LIST = [
 export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
   .map(e => ({
     id: e.id,
-    uuid: e.uuid,
     type: e.type,
     subType: e.subType,
     title: e.title,
@@ -113,7 +106,6 @@ export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
 
 // const jsonString = JSON.stringify(ARTICLE_DETAIL_LIST
 //   .map(e => {
-//     delete e.uuid
 //     e.content = e.content || null
 // 		e.url = e.url || `/pages/article/detail?id=${e.id}`,
 //     e.jumpTo = e.jumpTo || 'navigate'

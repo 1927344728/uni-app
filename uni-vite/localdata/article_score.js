@@ -1,7 +1,6 @@
 export default [
   {
     id: 2,
-    uuid: '',
     type: '1',
     subType: 2,
     title: '李兮一年级考试成绩单（上）',

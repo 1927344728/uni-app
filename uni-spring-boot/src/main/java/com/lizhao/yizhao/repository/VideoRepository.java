@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface VideoRepository extends JpaRepository<VideoEntity, Long> {
-  Optional<VideoEntity> findByUuid(String uuid);
-
   @Query("SELECT COUNT(v) FROM VideoEntity v WHERE v.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', v.type, ',') LIKE CONCAT('%,', :type, ',%'))")
   long countByTypeAndIsDeletedFalse(@Param("type") String type);
 

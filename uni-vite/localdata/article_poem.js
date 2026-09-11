@@ -1,7 +1,6 @@
 export default [
   {
     id: 3,
-    uuid: '',
     type: '2,3',
     subType: 2,
     title: '诗词大会必背古诗词（一年级上）',
@@ -82,7 +81,6 @@ export default [
   },
   {
     id: 10,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（一年级下）',
@@ -171,7 +169,6 @@ export default [
   },
   {
     id: 11,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（二年级上）',
@@ -260,7 +257,6 @@ export default [
   },
   {
     id: 12,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（二年级下）',
@@ -358,7 +354,6 @@ export default [
   },
   {
     id: 13,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（三年级上）',
@@ -465,7 +460,6 @@ export default [
   },
   {
     id: 14,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（三年级下）',
@@ -572,7 +566,6 @@ export default [
   },
   {
     id: 15,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（四年级上）',
@@ -688,7 +681,6 @@ export default [
   },
   {
     id: 16,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（四年级下）',
@@ -804,7 +796,6 @@ export default [
   },
   {
     id: 17,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（五年级上）',
@@ -929,7 +920,6 @@ export default [
   },
   {
     id: 18,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（五年级下）',
@@ -1054,7 +1044,6 @@ export default [
   },
   {
     id: 19,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（六年级上）',
@@ -1179,7 +1168,6 @@ export default [
   },
   {
     id: 20,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（六年级下）',
@@ -1358,7 +1346,6 @@ export default [
   },
   {
     id: 21,
-    uuid: '',
     type: '3',
     subType: 2,
     title: '诗词大会必背古诗词（初中）',
@@ -1654,7 +1641,6 @@ export default [
   },
   {
     id: 22,
-    uuid: '',
     type: '3',
     subType: 3,
     title: '大班口才训练（1-7篇）',
@@ -1743,7 +1729,6 @@ export default [
   },
   {
     id: 23,
-    uuid: '',
     type: '3',
     subType: 3,
     title: '大班口才训练（8-15篇）',

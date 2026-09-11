@@ -7,16 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
 @Entity
-@Table(name = "article", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "uuid")
-})
+@Table(name = "article")
 public class ArticleEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false, unique = true, length = 32)
-  private String uuid;
 
   @Column(nullable = true, length = 50)
   private String type;
@@ -71,13 +66,6 @@ public class ArticleEntity {
   }
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getUuid() {
-    return uuid;
-  }
-  public void setUuid(String uuid) {
-    this.uuid = uuid;
   }
 
   public String getType() {

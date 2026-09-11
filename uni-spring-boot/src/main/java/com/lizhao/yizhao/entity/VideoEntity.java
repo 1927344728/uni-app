@@ -7,16 +7,11 @@ import java.time.Instant;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "video", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "uuid")
-})
+@Table(name = "video")
 public class VideoEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false, unique = true, length = 32)
-  private String uuid;
 
   @Column(nullable = true, length = 50)
   private String type;
@@ -67,13 +62,6 @@ public class VideoEntity {
   }
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getUuid() {
-    return uuid;
-  }
-  public void setUuid(String uuid) {
-    this.uuid = uuid;
   }
 
   public String getType() {

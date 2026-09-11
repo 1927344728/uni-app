@@ -7,16 +7,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "music", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "uuid"),
     @UniqueConstraint(columnNames = "url")
 })
 public class MusicEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(nullable = false, unique = true, length = 32)
-  private String uuid;
 
   @Column(nullable = true, length = 50)
   private String type;
@@ -64,13 +60,6 @@ public class MusicEntity {
   }
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getUuid() {
-    return uuid;
-  }
-  public void setUuid(String uuid) {
-    this.uuid = uuid;
   }
 
   public String getType() {
