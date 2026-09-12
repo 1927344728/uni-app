@@ -7,8 +7,10 @@
     "convert-p12": "bash scripts/convert-p12.sh",
     "upload-ssl": "bash scripts/upload-ssl.sh",
     "upload-vite-h5": "bash scripts/upload-vite-h5.sh",
+    "upload-arco-admin": "bash scripts/upload-arco-admin.sh",
     "upload-expo-h5": "bash scripts/upload-expo-h5.sh",
     "upload-spring-boot": "bash scripts/upload-spring-boot.sh",
-    "copy-android-resources": "bash scripts/copy-android-resources.sh"
+    "copy-android-resources": "bash scripts/copy-android-resources.sh",
+    "upload": "npm run upload-vite-h5 && npm run upload-arco-admin && npm run upload-expo-h5 && npm run upload-spring-boot && npm run copy-android-resources"
   }
 }

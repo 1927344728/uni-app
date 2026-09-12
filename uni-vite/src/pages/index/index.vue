@@ -85,7 +85,7 @@ import { getValue as _get } from '@/common/js/common.js'
 import { openUrl, scaleImageWidthInCOS } from '@/common/js/common.js'
 import { APP_NAME, APP_VERSION, FEATURE_ICON_ENUM } from '@/config/index.js'
 import store from '@/store/index.js'
-import { welcome, getUserInfo, getBannerList, getArticlePageList } from '@/api'
+import { welcome, getUserInfo, getBannerList, getHomeEntryList, getArticlePageList } from '@/api'
 
 import FooterBar from '@/components/footer_bar/index.vue'
 export default {
@@ -137,6 +137,11 @@ export default {
       getBannerList().then((data) => {
         this.bannerList = data || []
       }).catch(() => {})
+      getHomeEntryList({ limit: 4 }).then((data) => {
+        this.featureIcons = data && data.length ? data : FEATURE_ICON_ENUM
+      }).catch(() => {
+        this.featureIcons = FEATURE_ICON_ENUM
+      })
       getArticlePageList({ type: '2' }).then((data) => {
         this.recommendArticles = _get(data, 'content') || []
       }).catch(() => {})

@@ -33,17 +33,18 @@ public class TaskController {
       @RequestParam (required = false) Integer status,
       @RequestParam(required = false) String publisher,
       @RequestParam(required = false) String targeter,
+      @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
-    Page<TaskRepository.TaskSummary> tasks = taskRepository.findTasks(title, status, publisher, targeter, pageable);
+    Page<TaskRepository.TaskSummary> tasks = taskRepository.findTasks(title, status, publisher, targeter, platform, pageable);
     return CommonResponse.success(tasks);
   }
 
   @GetMapping("/getTaskById")
   @ResponseBody
-  public CommonResponse<TaskEntity> getTaskById(@RequestParam Long id) {
-    Optional<TaskEntity> task = taskRepository.findById(id);
+  public CommonResponse<TaskEntity> getTaskById(@RequestParam Long id, @RequestParam(required = false) String platform) {
+    Optional<TaskEntity> task = taskRepository.findVisibleById(id, platform);
     if (task.isPresent()) {
       return CommonResponse.success(task.get());
     } else {

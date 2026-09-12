@@ -26,6 +26,9 @@ public class MusicMenuEntity {
   @JsonRawValue
   private Object songIds;
 
+  @Column(nullable = true, length = 100)
+  private String platform;
+
   @Column(name = "created_time", nullable = true, updatable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Instant createdTime;
@@ -73,6 +76,13 @@ public class MusicMenuEntity {
   }
   public void setSongIds(Object songIds) {
     this.songIds = songIds;
+  }
+
+  public String getPlatform() {
+    return platform;
+  }
+  public void setPlatform(String platform) {
+    this.platform = platform;
   }
 
   public Instant getCreatedTime() {

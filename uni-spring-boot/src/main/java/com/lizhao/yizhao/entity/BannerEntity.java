@@ -31,6 +31,9 @@ public class BannerEntity {
     @Column(name = "jump_to", length = 50)
     private String jumpTo;
 
+    @Column(name = "platform", length = 100)
+    private String platform;
+
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     @Column(name = "created_time")
     private Instant createdTime;
@@ -98,6 +101,14 @@ public class BannerEntity {
 
     public void setJumpTo(String jumpTo) {
         this.jumpTo = jumpTo;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public Instant getCreatedTime() {

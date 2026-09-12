@@ -1,4 +1,4 @@
-# 一兆窗含 · Expo
+# 一兆轻知 · Expo
 
 `react-native-expo` 是将 `uni-vite`（uni-app + Vue）迁移至 Expo React Native 的跨平台项目，支持 Android、iOS 与 Web。
 

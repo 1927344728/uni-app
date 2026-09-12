@@ -26,10 +26,11 @@ public class StudyController {
   @ResponseBody
   public CommonResponse<Page<WordLibraryEntity>> getChineseWordList(
       @RequestParam(required = false) Integer id,
+      @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
-    Page<WordLibraryEntity> page = wordLibraryRepository.findPageByOptionalId(id, pageable);
+    Page<WordLibraryEntity> page = wordLibraryRepository.findPageByOptionalId(id, platform, pageable);
     return CommonResponse.success(page);
   }
 }

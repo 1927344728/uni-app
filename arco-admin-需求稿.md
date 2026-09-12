@@ -1,4 +1,4 @@
-# 「一兆窗含」管理后台需求稿
+# 「一兆轻知」管理后台需求稿
 
 > 日期：2026-09-11  
 > 范围：后台前端 `arco-admin`；服务端在 `uni-spring-boot` 增加 `/api/admin/**`。
@@ -9,7 +9,7 @@
 
 ## 1. 概述
 
-管理后台供运营在浏览器中维护「一兆窗含」的内容与用户。改完后，H5 / App / 微信小程序读取同一份数据。
+管理后台供运营在浏览器中维护「一兆轻知」的内容与用户。改完后，H5 / App / 微信小程序读取同一份数据。
 
 客户端现有查询接口保持只读；后台增删改走 `/api/admin/**`，不混在客户端接口上。
 
@@ -23,7 +23,7 @@
 | 本地开发 | 端口 **9010**，origin `http://localhost:9010` |
 | 生产地址 | nginx 静态托管，路径 **`/admin/`**（例如 `https://app.izhao.com.cn/admin/`） |
 | 后台后端 | 不新开 Spring Boot 项目。在现有 `uni-spring-boot` 增加 `/api/admin/**` |
-| 用户 | 与客户端共用 `user` 表，用 `role` 区分 |
+| 用户 | 与客户端共用 `user` 表；`role` 管客户端身份，`admin_role` 管后台身份 |
 | 密码 | 明文存储、明文校验，与现网一致，不做哈希或其他变换 |
 | 素材上传 | 继续用现有 `POST /api/cos/upload`。请求方授权成功即可调用，不限管理员 |
 | 文章类型 | `article.type` 继续用逗号拼接字符串（如 `"2,7"`） |
@@ -39,32 +39,43 @@ CORS 增加 `http://localhost:9010`，以及生产环境后台所在 origin（`h
 
 ## 3. 角色
 
-`user.role`：
+客户端身份与后台身份拆分，互不影响：
 
-| role | 名称 | 客户端 | 管理后台 |
-|------|------|--------|----------|
-| 1 | 超级管理员 | 可登录 | 可登录，全部页面与按钮 |
-| 4 | 管理员 | 可登录 | 可登录，仅已授权的页面与按钮 |
-| 2 | 家长 | 可登录 | 不可登录 |
-| 3 | 学生 | 可登录 | 不可登录 |
+`user.role`（客户端）：
 
-客户端「我的」页角色文案与上表一致。
+| role | 名称 | 客户端 |
+|------|------|--------|
+| 1 | 超级管理员 | 可登录 |
+| 2 | 家长 | 可登录 |
+| 3 | 学生 | 可登录 |
+
+`user.admin_role`（管理后台，可为空）：
+
+| admin_role | 名称 | 管理后台 |
+|------------|------|----------|
+| NULL | 无后台权限 | 不可登录 |
+| 1 | 超级管理员 | 可登录，全部页面与按钮 |
+| 2 | 管理员 | 可登录，仅已授权的页面与按钮 |
+
+同一用户可同时是「家长 + 管理员」，例如 `role=2` 且 `admin_role=2`。
+
+客户端「我的」页只展示 `role`（超级管理员/家长/学生）。
 
 约束：
 
-- 后台登录：`role` 为 `1` 或 `4`，否则失败。
+- 后台登录：`admin_role` 为 `1` 或 `2`，否则失败；与 `role` 无关。
 - 仅超级管理员可把用户设为超级管理员或管理员，可改他人的页面/按钮权限。
 - 管理员不可把用户提为超级管理员，不可进入权限管理。
-- 库中至少保留一名未删除的超级管理员；不可删除或降权「当前登录的自己」。
+- 库中至少保留一名未删除的超级管理员（按 `admin_role=1` 计）；不可删除或降权「当前登录的自己」。
 
 ---
 
 ## 4. 登录与鉴权
 
-- 登录页；`POST /api/admin/login`（公开）。账号为手机号或姓名，密码明文比对，且 `role ∈ {1, 4}`。
-- 不提供后台注册。新管理员由已有超级管理员在用户管理中指定角色。
-- `POST /api/admin/logout`；`GET /api/admin/me` 返回当前用户、角色、页面与按钮权限。
-- `/api/admin/**`（登录除外）校验后台 JWT，且 `role ∈ {1, 4}`。客户端 token 调用管理接口一律拒绝。
+- 登录页；`POST /api/admin/login`（公开）。账号为 11 位手机号，密码明文比对，且 `admin_role ∈ {1, 2}`。
+- 不提供后台注册。新管理员由已有超级管理员在用户管理中指定 `admin_role`。
+- `POST /api/admin/logout`；`GET /api/admin/me` 返回当前用户、客户端角色、后台角色、页面与按钮权限。
+- `/api/admin/**`（登录除外）校验后台 JWT，且 `admin_role ∈ {1, 2}`。客户端 token 调用管理接口一律拒绝。
 - 前端按权限隐藏菜单和按钮；后端按权限拦截，无权限返回 403。
 
 ---
@@ -104,7 +115,7 @@ CORS 增加 `http://localhost:9010`，以及生产环境后台所在 origin（`h
 
 **默认为 `null`，表示所有平台可用。** 未勾选任何端时存 `null`，不要写成空字符串。现有数据保持 `null`，三端继续可见。
 
-适用表：`article`、`book`、`music`、`music_menu`、`video`、`video_menu`、`banner`、`task`、`category`、`word_library`，以及首页快捷入口表。
+适用表：`article`、`book`、`music`、`music_menu`、`video`、`video_menu`、`banner`、`task`、`category`、`word_library`，以及快捷入口表。
 
 客户端拉列表/详情时带上当前平台。取值：
 
@@ -129,7 +140,7 @@ const platform = __UNI_PLATFORM__ || uni.getSystemInfoSync().uniPlatform
   └ 任务
 运营
   ├ Banner
-  ├ 首页快捷入口
+  ├ 快捷入口
   ├ 分类
   └ 词库
 系统
@@ -167,7 +178,7 @@ const platform = __UNI_PLATFORM__ || uni.getSystemInfoSync().uniPlatform
 
 字段：标题、类型、图片、`jumpTo`、`url`、`seq`、`platform`。
 
-### 8.4 首页快捷入口
+### 8.4 快捷入口
 
 原客户端首页金刚区（`FEATURE_ICON_ENUM`）改为库表维护，客户端改为接口读取。
 
@@ -286,7 +297,7 @@ GET/POST/PUT/DELETE    /api/admin/word-libraries
 
 `DELETE` 为软删；恢复用 `PUT` 将 `is_deleted` 置回 `false`。
 
-客户端新增首页快捷入口查询（如 `GET /api/common/getHomeEntryList`），按当前 `platform` 过滤。现有 `getBannerList`、`getCategoryEnum` 及各内容分页接口增加 `platform` 查询参数。
+客户端新增快捷入口查询（如 `GET /api/common/getHomeEntryList`），按当前 `platform` 过滤。现有 `getBannerList`、`getCategoryEnum` 及各内容分页接口增加 `platform` 查询参数。
 
 ---
 
@@ -303,14 +314,14 @@ GET/POST/PUT/DELETE    /api/admin/word-libraries
 
 ## 11. 验收
 
-1. `role = 1`、`role = 4` 可登录后台；`role = 2/3` 即使用对密码也无法登录。
+1. `admin_role = 1`、`admin_role = 2` 可登录后台；`admin_role` 为空即使用对密码也无法登录（与客户端 `role` 无关）。
 2. 客户端 token 调用 `/api/admin/**` 被拒绝。
-3. 同一账号 App 与后台可同时保持登录。
+3. 同一账号 App 与后台可同时保持登录；可同时保留家长/学生身份与后台角色。
 4. 超级管理员能给某管理员勾选页面/按钮；该管理员只能看到、操作已授权项；直接调无权限接口返回 403。
 5. 新建/编辑/软删文章、Banner、分类、快捷入口后，对应端刷新可见；软删后客户端不可见。
 6. 某内容 `platform` 只含 `mp-weixin` 时，H5 / App 列表不出现，小程序出现。
 7. `platform` 为 `null` 的内容（含历史数据）在三端均可见。
-8. 不能删除或降权库中最后一个超级管理员。
+8. 不能删除或降权库中最后一个超级管理员（`admin_role = 1`）。
 9. 文章带图片的 `content` 保存后客户端详情块不丢失。
 10. 上传大于 50MB 的音视频失败并提示；`/api/cos/upload` 在登录授权成功后可用。
 11. 已登录用户调用接口后，数据统计页能按该用户看到次数增加。
@@ -324,7 +335,7 @@ GET/POST/PUT/DELETE    /api/admin/word-libraries
 uni-app/
 ├── arco-admin/              新建，后台前端（端口 9010）
 ├── uni-spring-boot/         增加 /api/admin/**，内容表增加 platform
-├── uni-vite/                首页快捷入口改接口；请求带 platform
+├── uni-vite/                快捷入口改接口；请求带 platform
 ├── react-native-expo/       与 uni-vite 对齐 platform 与快捷入口
 └── arco-admin-需求稿.md     本文
 ```

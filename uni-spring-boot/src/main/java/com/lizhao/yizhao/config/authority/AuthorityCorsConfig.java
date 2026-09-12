@@ -13,12 +13,16 @@ public class AuthorityCorsConfig implements WebMvcConfigurer {
       .allowedOrigins(
         "http://izhao.com.cn",
         "http://dev.izhao.com.cn:9000",
+        "http://dev.izhao.com.cn:9010",
         "http://localhost:9000",
+        "http://localhost:9010",
         "https://izhao.com.cn",
         "https://app.izhao.com.cn",
         "https://www.izhao.com.cn",
         "https://dev.izhao.com.cn:9000",
-        "https://localhost:9000"
+        "https://dev.izhao.com.cn:9010",
+        "https://localhost:9000",
+        "https://localhost:9010"
       )
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
       .allowedHeaders("*")

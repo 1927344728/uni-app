@@ -11,17 +11,23 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MusicRepository extends JpaRepository<MusicEntity, Long> {
-  @Query("SELECT COUNT(m) FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%'))")
-  long countByTypeAndIsDeletedFalse(@Param("type") String type);
+  @Query("SELECT COUNT(m) FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%'))")
+  long countByTypeAndIsDeletedFalse(@Param("type") String type, @Param("platform") String platform);
 
-  @Query("SELECT m FROM MusicEntity m WHERE (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR m.title LIKE %:keyword%) AND m.isDeleted = false ORDER BY m.seq DESC, m.id ASC")
-  Page<MusicEntity> findMusics(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);
+  @Query("SELECT m FROM MusicEntity m WHERE (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR m.title LIKE %:keyword%) AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%')) AND m.isDeleted = false ORDER BY m.seq DESC, m.id ASC")
+  Page<MusicEntity> findMusics(@Param("type") String type, @Param("keyword") String keyword, @Param("platform") String platform, Pageable pageable);
 
   List<MusicEntity> findByIdIn(List<Long> ids);
 
   @Query(value = "SELECT * FROM music WHERE id IN :ids ORDER BY FIND_IN_SET(id, :ids_str)", nativeQuery = true)
   List<MusicEntity> findByIdInOrder(@Param("ids") List<Long> ids, @Param("ids_str") String idsStr);
 
-  @Query("SELECT m FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND m.id NOT IN :playingIds AND (:playedIds IS NULL OR m.id NOT IN :playedIds) ORDER BY RAND() LIMIT 1")
-  Optional<MusicEntity> findRandomMusic(@Param("type") String type, @Param("playingIds") List<Long> playingIds, @Param("playedIds") List<Long> playedIds);
+  @Query(value = "SELECT * FROM music WHERE id IN :ids AND is_deleted = 0 AND (:platform IS NULL OR :platform = '' OR platform IS NULL OR platform = '' OR FIND_IN_SET(:platform, platform)) ORDER BY FIND_IN_SET(id, :ids_str)", nativeQuery = true)
+  List<MusicEntity> findVisibleByIdInOrder(@Param("ids") List<Long> ids, @Param("ids_str") String idsStr, @Param("platform") String platform);
+
+  @Query("SELECT m FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%')) AND m.id NOT IN :playingIds AND (:playedIds IS NULL OR m.id NOT IN :playedIds) ORDER BY RAND() LIMIT 1")
+  Optional<MusicEntity> findRandomMusic(@Param("type") String type, @Param("platform") String platform, @Param("playingIds") List<Long> playingIds, @Param("playedIds") List<Long> playedIds);
+
+  @Query("SELECT m FROM MusicEntity m WHERE m.id = :id AND m.isDeleted = false AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%'))")
+  Optional<MusicEntity> findVisibleById(@Param("id") Long id, @Param("platform") String platform);
 }

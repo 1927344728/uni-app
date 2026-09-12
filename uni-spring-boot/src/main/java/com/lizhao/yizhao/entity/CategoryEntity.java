@@ -39,6 +39,9 @@ public class CategoryEntity {
     @Column(name = "sub_type_name", length = 100)
     private String subTypeName;
 
+    @Column(name = "platform", length = 100)
+    private String platform;
+
     @CreationTimestamp
     @Column(name = "created_time", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
@@ -110,6 +113,14 @@ public class CategoryEntity {
 
     public void setSubTypeName(String subTypeName) {
         this.subTypeName = subTypeName;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public Instant getCreatedTime() {

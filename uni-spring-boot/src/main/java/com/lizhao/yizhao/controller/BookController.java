@@ -30,17 +30,18 @@ public class BookController {
   public CommonResponse<Page<BookRepository.BookSummary>> getBookPageList(
       @RequestParam (required = false) String keyword,
       @RequestParam (required = false) String type,
+      @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
-    Page<BookRepository.BookSummary> books = bookRepository.findBooks(keyword, type, pageable);
+    Page<BookRepository.BookSummary> books = bookRepository.findBooks(keyword, type, platform, pageable);
     return CommonResponse.success(books);
   }
 
   @GetMapping("/getBookById")
   @ResponseBody
-  public CommonResponse<BookEntity> getBookById(@RequestParam Long id) {
-    Optional<BookEntity> book = bookRepository.findById(id);
+  public CommonResponse<BookEntity> getBookById(@RequestParam Long id, @RequestParam(required = false) String platform) {
+    Optional<BookEntity> book = bookRepository.findVisibleById(id, platform);
     if (book.isPresent()) {
       return CommonResponse.success(book.get());
     } else {

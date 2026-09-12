@@ -29,6 +29,18 @@ public class JwtUtil {
       .compact();
   }
 
+  public String generateAdminToken(String phone) {
+    return Jwts.builder()
+      .subject(phone)
+      .audience()
+      .add("admin")
+      .and()
+      .issuedAt(Date.from(Instant.now()))
+      .expiration(Date.from(Instant.now().plus(EXPIRATION_HOURS, ChronoUnit.HOURS)))
+      .signWith(SECRET_KEY)
+      .compact();
+  }
+
   public Claims parseToken(String token) {
     return Jwts.parser()
       .verifyWith(SECRET_KEY)
@@ -54,5 +66,15 @@ public class JwtUtil {
       logger.error("Token 解析错误: {}", e.getMessage());
     }
     return false;
+  }
+
+  public boolean validateAdminToken(String token) {
+    try {
+      Claims claims = parseToken(token);
+      return claims.getAudience() != null && claims.getAudience().contains("admin");
+    } catch (JwtException | IllegalArgumentException e) {
+      logger.error("后台 Token 解析错误: {}", e.getMessage());
+      return false;
+    }
   }
 }

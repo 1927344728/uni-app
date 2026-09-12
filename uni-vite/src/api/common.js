@@ -23,3 +23,10 @@ export function getBannerList() {
     url: 'api/common/getBannerList',
   });
 }
+
+export function getHomeEntryList(params) {
+  return request({
+    url: 'api/common/getHomeEntryList',
+    data: params,
+  });
+}

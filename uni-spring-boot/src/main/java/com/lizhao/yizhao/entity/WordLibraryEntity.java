@@ -18,6 +18,9 @@ public class WordLibraryEntity {
   @Column(columnDefinition = "TEXT")
   private String words;
 
+  @Column(name = "platform", length = 100)
+  private String platform;
+
   @Column(name = "created_time", nullable = true, updatable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Instant createdTime;
@@ -53,6 +56,14 @@ public class WordLibraryEntity {
 
   public void setWords(String words) {
     this.words = words;
+  }
+
+  public String getPlatform() {
+    return platform;
+  }
+
+  public void setPlatform(String platform) {
+    this.platform = platform;
   }
 
   public Instant getCreatedTime() {

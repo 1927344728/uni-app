@@ -9,12 +9,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        // #ifdef MP-WEIXIN
         "navigationBarTitleText": "一兆轻知"
-        // #endif
-        // #ifndef MP-WEIXIN
-        "navigationBarTitleText": "一兆窗含"
-        // #endif
       }
     },
     {
@@ -181,7 +176,7 @@
     "navigationBarTitleText": "一兆轻知",
     // #endif
     // #ifndef MP-WEIXIN
-    "navigationBarTitleText": "一兆窗含",
+    "navigationBarTitleText": "一兆轻知",
     // #endif
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f2f2f2",

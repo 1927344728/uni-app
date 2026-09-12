@@ -33,8 +33,8 @@ public class VideoController {
 
   @GetMapping("/getVideoMenuList")
   @ResponseBody
-  public CommonResponse<List<VideoMenuEntity>> getVideoMenuList() {
-    List<VideoMenuEntity> videoMenus = videoMenuRepository.findByIsDeletedFalse();
+  public CommonResponse<List<VideoMenuEntity>> getVideoMenuList(@RequestParam(required = false) String platform) {
+    List<VideoMenuEntity> videoMenus = videoMenuRepository.findVisible(platform);
     return CommonResponse.success(videoMenus);
   }
 
@@ -43,17 +43,18 @@ public class VideoController {
   public CommonResponse<Page<VideoEntity>> getVideoPageList(
       @RequestParam(required = false) String type,
       @RequestParam(required = false) String keyword,
+      @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
-    Page<VideoEntity> videos = videoRepository.findVideos(type, keyword, pageable);
+    Page<VideoEntity> videos = videoRepository.findVideos(type, keyword, platform, pageable);
     return CommonResponse.success(videos);
   }
 
   @GetMapping("/getVideoById")
   @ResponseBody
-  public CommonResponse<VideoEntity> getVideoById(@RequestParam Long id) {
-    Optional<VideoEntity> video = videoRepository.findById(id);
+  public CommonResponse<VideoEntity> getVideoById(@RequestParam Long id, @RequestParam(required = false) String platform) {
+    Optional<VideoEntity> video = videoRepository.findVisibleById(id, platform);
     if (video.isPresent()) {
       return CommonResponse.success(video.get());
     } else {
@@ -63,9 +64,9 @@ public class VideoController {
 
   @GetMapping("/getVideoByIds")
   @ResponseBody
-  public CommonResponse<List<VideoEntity>> getVideoByIds(@RequestParam List<Long> ids) {
+  public CommonResponse<List<VideoEntity>> getVideoByIds(@RequestParam List<Long> ids, @RequestParam(required = false) String platform) {
     String idsStr = ids.stream().map(String::valueOf).collect(Collectors.joining(","));
-    List<VideoEntity> videos = videoRepository.findByIdInOrder(ids, idsStr);
+    List<VideoEntity> videos = videoRepository.findVisibleByIdInOrder(ids, idsStr, platform);
     return CommonResponse.success(videos);
   }
 
@@ -73,9 +74,10 @@ public class VideoController {
   @ResponseBody
   public CommonResponse<VideoEntity> getVideoByRandom(
       @RequestParam(required = false) String type,
+      @RequestParam(required = false) String platform,
       @RequestParam(required = false) List<Long> playingIds,
       @RequestParam(required = false) List<Long> playedIds) {
-    long totalCount = videoRepository.countByTypeAndIsDeletedFalse(type);
+    long totalCount = videoRepository.countByTypeAndIsDeletedFalse(type, platform);
     Optional<VideoEntity> video;
     int playedCount = 0;
     int playingCount = 0;
@@ -87,9 +89,9 @@ public class VideoController {
     }
     if (playedIds != null && (playedCount + playingCount) >= totalCount) {
       // 如果 playedIds + playingIds 长度等于或大于所有记录，忽略 playedIds
-      video = videoRepository.findRandomVideo(type, playingIds, null);
+      video = videoRepository.findRandomVideo(type, platform, playingIds, null);
     } else {
-      video = videoRepository.findRandomVideo(type, playingIds, playedIds);
+      video = videoRepository.findRandomVideo(type, platform, playingIds, playedIds);
     }
     if (video.isPresent()) {
       return CommonResponse.success(video.get());

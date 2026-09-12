@@ -1,5 +1,5 @@
 import { mockData } from '/mock/index.js';
-import { SERVER_API_DOMAIN, gotoLogin, USE_MOCK_KEY, getValue as _get } from '@/common/js/index.js';
+import { SERVER_API_DOMAIN, gotoLogin, USE_MOCK_KEY, getClientPlatform, getValue as _get } from '@/common/js/index.js';
 import {
   saveCookiesFromResponse,
   getCookieHeader,
@@ -82,13 +82,22 @@ function normalizeRequestParams (obj) {
   return next
 }
 
+function withClientPlatform (url, params) {
+  if (!url || !url.startsWith('api/') || url.startsWith('api/admin/')) return params
+  if (params && typeof params === 'object' && !Array.isArray(params) && params.platform !== undefined) return params
+  return {
+    ...(params && typeof params === 'object' && !Array.isArray(params) ? params : {}),
+    platform: getClientPlatform()
+  }
+}
+
 export default function (options) {
   const { baseURL, url, method, data, params, timeout, showLoading, login } = options
   const rawParams = data || params
   const httpMethod = (method || 'GET').toLocaleUpperCase()
   // GET 的 data 会被序列化成查询串，需要迁就 Spring 的参数格式；
   // POST/PUT 的 data 是 JSON body，拍平数组会让 @RequestBody 的 List 字段反序列化失败
-  const requestData = httpMethod === 'GET' ? normalizeRequestParams(rawParams) : rawParams
+  const requestData = httpMethod === 'GET' ? normalizeRequestParams(withClientPlatform(url, rawParams)) : rawParams
   if (isUseMock() && mockData?.[url]) {
     console.log(`[Mock]: ${url}`)
     return new Promise((resolve) => {

@@ -42,6 +42,10 @@ public class UserEntity {
   @Column(nullable = false)
   private Integer role;
 
+  /** 后台角色：null 无权限，1 超管，2 管理员；与客户端 role 独立 */
+  @Column(name = "admin_role", nullable = true)
+  private Integer adminRole;
+
   @Column(nullable = false, length = 36)
   private String password;
 
@@ -133,6 +137,13 @@ public class UserEntity {
   }
   public void setRole(Integer role) {
     this.role = role;
+  }
+
+  public Integer getAdminRole() {
+    return adminRole;
+  }
+  public void setAdminRole(Integer adminRole) {
+    this.adminRole = adminRole;
   }
 
   public String getPassword() {

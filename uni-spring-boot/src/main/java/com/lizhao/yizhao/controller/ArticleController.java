@@ -31,17 +31,18 @@ public class ArticleController {
       @RequestParam (required = false) String keyword,
       @RequestParam (required = false) String type,
       @RequestParam(required = false) Integer subType,
+      @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
-    Page<ArticleRepository.ArticleSummary> articles = articleRepository.findArticles(keyword, type, subType, pageable);
+    Page<ArticleRepository.ArticleSummary> articles = articleRepository.findArticles(keyword, type, subType, platform, pageable);
     return CommonResponse.success(articles);
   }
 
   @GetMapping("/getArticleById")
   @ResponseBody
-  public CommonResponse<ArticleEntity> getArticleById(@RequestParam Long id) {
-    Optional<ArticleEntity> article = articleRepository.findById(id);
+  public CommonResponse<ArticleEntity> getArticleById(@RequestParam Long id, @RequestParam(required = false) String platform) {
+    Optional<ArticleEntity> article = articleRepository.findVisibleById(id, platform);
     if (article.isPresent()) {
       return CommonResponse.success(article.get());
     } else {

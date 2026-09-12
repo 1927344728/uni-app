@@ -41,6 +41,9 @@ public class MusicEntity {
   @Column(nullable = true, length = 500)
   private String lyric;
 
+  @Column(nullable = true, length = 100)
+  private String platform;
+
   @Column(name = "created_time", nullable = true, updatable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Instant createdTime;
@@ -123,6 +126,13 @@ public class MusicEntity {
   }
   public void setLyric(String lyric) {
     this.lyric = lyric;
+  }
+
+  public String getPlatform() {
+    return platform;
+  }
+  public void setPlatform(String platform) {
+    this.platform = platform;
   }
 
   public Instant getCreatedTime() {

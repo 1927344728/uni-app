@@ -5,7 +5,7 @@ import { COS_DOMAIN_NAME } from '@/common/js/variables'
 export const APP_NAME = '一兆轻知'
 // #endif
 // #ifndef MP-WEIXIN
-export const APP_NAME = '一兆窗含'
+export const APP_NAME = '一兆轻知'
 // #endif
 export const APP_VERSION = version
 export const APP_LOGO = `${COS_DOMAIN_NAME}/images/logo.png`

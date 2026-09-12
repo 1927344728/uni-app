@@ -50,6 +50,9 @@ public class BookEntity {
   @JsonRawValue
   private Object highlights;
 
+  @Column(nullable = true, length = 100)
+  private String platform;
+
   @Column(name = "created_time", nullable = true, updatable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Instant createdTime;
@@ -146,6 +149,13 @@ public class BookEntity {
   }
   public void setHighlights(Object highlights) {
     this.highlights = highlights;
+  }
+
+  public String getPlatform() {
+    return platform;
+  }
+  public void setPlatform(String platform) {
+    this.platform = platform;
   }
 
   public Instant getCreatedTime() {

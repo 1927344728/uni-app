@@ -33,8 +33,8 @@ public class MusicController {
 
   @GetMapping("/getMusicMenuList")
   @ResponseBody
-  public CommonResponse<List<MusicMenuEntity>> getMusicMenuList() {
-    List<MusicMenuEntity> musicMenus = musicMenuRepository.findByIsDeletedFalse();
+  public CommonResponse<List<MusicMenuEntity>> getMusicMenuList(@RequestParam(required = false) String platform) {
+    List<MusicMenuEntity> musicMenus = musicMenuRepository.findVisible(platform);
     return CommonResponse.success(musicMenus);
   }
 
@@ -43,17 +43,18 @@ public class MusicController {
   public CommonResponse<Page<MusicEntity>> getMusicPageList(
       @RequestParam(required = false) String type,
       @RequestParam(required = false) String keyword,
+      @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
-    Page<MusicEntity> musics = musicRepository.findMusics(type, keyword, pageable);
+    Page<MusicEntity> musics = musicRepository.findMusics(type, keyword, platform, pageable);
     return CommonResponse.success(musics);
   }
 
   @GetMapping("/getMusicById")
   @ResponseBody
-  public CommonResponse<MusicEntity> getMusicById(@RequestParam Long id) {
-    Optional<MusicEntity> music = musicRepository.findById(id);
+  public CommonResponse<MusicEntity> getMusicById(@RequestParam Long id, @RequestParam(required = false) String platform) {
+    Optional<MusicEntity> music = musicRepository.findVisibleById(id, platform);
     if (music.isPresent()) {
       return CommonResponse.success(music.get());
     } else {
@@ -63,9 +64,9 @@ public class MusicController {
 
   @GetMapping("/getMusicByIds")
   @ResponseBody
-  public CommonResponse<List<MusicEntity>> getMusicByIds(@RequestParam List<Long> ids) {
+  public CommonResponse<List<MusicEntity>> getMusicByIds(@RequestParam List<Long> ids, @RequestParam(required = false) String platform) {
     String idsStr = ids.stream().map(String::valueOf).collect(Collectors.joining(","));
-    List<MusicEntity> musics = musicRepository.findByIdInOrder(ids, idsStr);
+    List<MusicEntity> musics = musicRepository.findVisibleByIdInOrder(ids, idsStr, platform);
     return CommonResponse.success(musics);
   }
 
@@ -73,9 +74,10 @@ public class MusicController {
   @ResponseBody
   public CommonResponse<MusicEntity> getMusicByRandom(
       @RequestParam(required = false) String type,
+      @RequestParam(required = false) String platform,
       @RequestParam(required = false) List<Long> playingIds,
       @RequestParam(required = false) List<Long> playedIds) {
-    long totalCount = musicRepository.countByTypeAndIsDeletedFalse(type);
+    long totalCount = musicRepository.countByTypeAndIsDeletedFalse(type, platform);
     Optional<MusicEntity> music;
     int playedCount = 0;
     int playingCount = 0;
@@ -87,9 +89,9 @@ public class MusicController {
     }
     if (playedIds != null && (playedCount + playingCount) >= totalCount) {
       // 如果 playedIds + playingIds 长度等于或大于所有记录，忽略 playedIds
-      music = musicRepository.findRandomMusic(type, playingIds, null);
+      music = musicRepository.findRandomMusic(type, platform, playingIds, null);
     } else {
-      music = musicRepository.findRandomMusic(type, playingIds, playedIds);
+      music = musicRepository.findRandomMusic(type, platform, playingIds, playedIds);
     }
     if (music.isPresent()) {
       return CommonResponse.success(music.get());

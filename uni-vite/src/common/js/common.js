@@ -189,6 +189,25 @@ export function scaleImageWidthInCOS (url, w = 750) {
   return `${newUrl}${_paramString}`
 }
 
+export function getClientPlatform () {
+  let platform = ''
+  try {
+    platform = typeof __UNI_PLATFORM__ !== 'undefined' ? __UNI_PLATFORM__ : ''
+  } catch (e) {}
+
+  if (!platform) {
+    try {
+      const info = uni.getSystemInfoSync()
+      platform = info && (info.uniPlatform || info.platform)
+    } catch (e) {}
+  }
+
+  if (platform === 'web') return 'h5'
+  if (platform === 'app') return 'app-plus'
+  if (platform === 'ios' || platform === 'android') return 'app-plus'
+  return platform || 'h5'
+}
+
 export function openUrl (item) {
   if (item && item.url) {
     if (item.jumpTo === 'navigate') {

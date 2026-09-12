@@ -14,6 +14,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
   Optional<UserEntity> findByUuid(String uuid);
   Optional<UserEntity> findByName(String name);
   Optional<UserEntity> findByPhone(String phone);
+  long countByRoleAndIsDeletedFalse(Integer role);
+
+  long countByAdminRoleAndIsDeletedFalse(Integer adminRole);
 
   @Modifying
   @Transactional

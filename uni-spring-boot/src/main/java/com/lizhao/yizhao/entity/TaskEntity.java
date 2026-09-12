@@ -58,6 +58,9 @@ public class TaskEntity {
   @Column(name = "end_time", nullable = true)
   private Long endTime;
 
+  @Column(nullable = true, length = 100)
+  private String platform;
+
   @Column(name = "created_time", nullable = true, updatable = false)
   @JsonFormat(shape = JsonFormat.Shape.NUMBER)
   private Instant createdTime;
@@ -175,6 +178,13 @@ public class TaskEntity {
   }
   public void setEndTime(Long endTime) {
     this.endTime = endTime;
+  }
+
+  public String getPlatform() {
+    return platform;
+  }
+  public void setPlatform(String platform) {
+    this.platform = platform;
   }
 
   public Instant getCreatedTime() {

@@ -461,7 +461,8 @@ CREATE TABLE `user`  (
   `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `role` int NOT NULL COMMENT '类型（1-100）\r\n1-管理员 \r\n2-家长 \r\n3-学生',
+  `role` int NOT NULL COMMENT '客户端身份：1-超级管理员 2-家长 3-学生',
+  `admin_role` int NULL DEFAULT NULL COMMENT '后台角色：NULL无权限 1-超管 2-管理员',
   `password` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `captcha` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '验证码',
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户token',
@@ -479,17 +480,17 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (11, 'ee8dc082fc5911f094dab4a9fc7c4063', '13023697872', '李兆', 1, NULL, 'lizhao', '李兆', NULL, 2, '123456', NULL, 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzAyMzY5Nzg3MiIsImlhdCI6MTc4ODk3MDkwMCwiZXhwIjoxNzkxNTYyOTAwfQ.JICzQCJkw-86o3sRaa4tkSBNKa8tW7UgYB806REI9Y8', '2026-01-28 22:59:23', '2026-01-28 22:59:23', 0);
-INSERT INTO `user` VALUES (10, '8d709f39fc5611f094dab4a9fc7c4063', '15824138383', '邱峰', 1, NULL, 'qiufeng', '邱峰', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:35:11', '2026-01-28 22:59:43', 0);
-INSERT INTO `user` VALUES (9, '351ff4acfc5511f094dab4a9fc7c4063', '19147051351', '李兮', 2, NULL, 'lixi', '李兮', NULL, 3, '123456', NULL, NULL, '2026-01-28 22:25:34', '2026-01-28 22:25:34', 0);
-INSERT INTO `user` VALUES (8, '351f15e1fc5511f094dab4a9fc7c4063', '13538307359', '孙小兰', 2, NULL, 'sunxiaolan', '孙小兰', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:25:34', '2026-01-28 22:25:34', 0);
-INSERT INTO `user` VALUES (7, 'b03cb836fc5411f094dab4a9fc7c4063', '15970028396', '李丹', 1, NULL, 'lidan', '李丹', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
-INSERT INTO `user` VALUES (6, 'b03c2751fc5411f094dab4a9fc7c4063', '15779004854', '高群英', 2, NULL, 'gaoqunqing', '高群英', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
-INSERT INTO `user` VALUES (5, 'b03bab84fc5411f094dab4a9fc7c4063', '18370492201', '何龙斐', 1, NULL, 'helongfei', '何龙斐', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
-INSERT INTO `user` VALUES (4, 'b03b1a6afc5411f094dab4a9fc7c4063', '15270721702', '李芳', 2, NULL, 'lifang', '李芳', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
-INSERT INTO `user` VALUES (3, 'b037f1c4fc5411f094dab4a9fc7c4063', '15579461808', '钟长香', 2, NULL, 'zhongchangxiang', '钟长香', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
-INSERT INTO `user` VALUES (2, '33f99e8ffc5311f094dab4a9fc7c4063', '13033237749', '李林元', 1, NULL, 'lilinyuan', '李林元', NULL, 2, '123456', NULL, NULL, '2026-01-28 22:11:13', '2026-01-28 22:11:13', 0);
-INSERT INTO `user` VALUES (1, '1e94b31a08c911f09ea4b4a9fc7c4063', '15857185220', '李兆', 1, NULL, 'lizhao', '人过天涯', NULL, 1, '123456', '123456', 'mubOGEVVHoxXByWUGWIWbPsn6t22RVn75yVmCbrSEBk', '2025-03-25 00:00:34', '2026-04-21 23:42:14', 0);
+INSERT INTO `user` VALUES (11, 'ee8dc082fc5911f094dab4a9fc7c4063', '13023697872', '李兆', 1, NULL, 'lizhao', '李兆', NULL, 2, NULL, '123456', NULL, 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzAyMzY5Nzg3MiIsImlhdCI6MTc4ODk3MDkwMCwiZXhwIjoxNzkxNTYyOTAwfQ.JICzQCJkw-86o3sRaa4tkSBNKa8tW7UgYB806REI9Y8', '2026-01-28 22:59:23', '2026-01-28 22:59:23', 0);
+INSERT INTO `user` VALUES (10, '8d709f39fc5611f094dab4a9fc7c4063', '15824138383', '邱峰', 1, NULL, 'qiufeng', '邱峰', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:35:11', '2026-01-28 22:59:43', 0);
+INSERT INTO `user` VALUES (9, '351ff4acfc5511f094dab4a9fc7c4063', '19147051351', '李兮', 2, NULL, 'lixi', '李兮', NULL, 3, NULL, '123456', NULL, NULL, '2026-01-28 22:25:34', '2026-01-28 22:25:34', 0);
+INSERT INTO `user` VALUES (8, '351f15e1fc5511f094dab4a9fc7c4063', '13538307359', '孙小兰', 2, NULL, 'sunxiaolan', '孙小兰', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:25:34', '2026-01-28 22:25:34', 0);
+INSERT INTO `user` VALUES (7, 'b03cb836fc5411f094dab4a9fc7c4063', '15970028396', '李丹', 1, NULL, 'lidan', '李丹', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
+INSERT INTO `user` VALUES (6, 'b03c2751fc5411f094dab4a9fc7c4063', '15779004854', '高群英', 2, NULL, 'gaoqunqing', '高群英', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
+INSERT INTO `user` VALUES (5, 'b03bab84fc5411f094dab4a9fc7c4063', '18370492201', '何龙斐', 1, NULL, 'helongfei', '何龙斐', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
+INSERT INTO `user` VALUES (4, 'b03b1a6afc5411f094dab4a9fc7c4063', '15270721702', '李芳', 2, NULL, 'lifang', '李芳', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
+INSERT INTO `user` VALUES (3, 'b037f1c4fc5411f094dab4a9fc7c4063', '15579461808', '钟长香', 2, NULL, 'zhongchangxiang', '钟长香', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:21:51', '2026-01-28 22:21:51', 0);
+INSERT INTO `user` VALUES (2, '33f99e8ffc5311f094dab4a9fc7c4063', '13033237749', '李林元', 1, NULL, 'lilinyuan', '李林元', NULL, 2, NULL, '123456', NULL, NULL, '2026-01-28 22:11:13', '2026-01-28 22:11:13', 0);
+INSERT INTO `user` VALUES (1, '1e94b31a08c911f09ea4b4a9fc7c4063', '15857185220', '李兆', 1, NULL, 'lizhao', '人过天涯', NULL, 1, 1, '123456', '123456', 'mubOGEVVHoxXByWUGWIWbPsn6t22RVn75yVmCbrSEBk', '2025-03-25 00:00:34', '2026-04-21 23:42:14', 0);
 
 -- ----------------------------
 -- Table structure for video
