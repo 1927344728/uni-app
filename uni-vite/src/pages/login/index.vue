@@ -75,10 +75,37 @@ export default {
     }
   },
   onLoad (options = {}) {
-    this.requestUrl = options.requestUrl
+    this.requestUrl = this.normalizeRequestUrl(options.requestUrl)
     this.onChange()
   },
   methods: {
+    normalizeRequestUrl (raw) {
+      if (!raw) return ''
+      let url = String(raw)
+      try {
+        url = decodeURIComponent(url)
+      } catch (e) {}
+      if (url && url.charAt(0) !== '/') url = '/' + url
+      if (url.indexOf('/pages/login/') !== -1) return ''
+      return url
+    },
+    goAfterLogin () {
+      const target = this.requestUrl || '/pages/index/index'
+      const pages = getCurrentPages()
+      const prev = pages.length >= 2 ? pages[pages.length - 2] : null
+      const prevPath = prev ? '/' + String(prev.route || '').replace(/^\//, '') : ''
+      const targetPath = String(target).split('?')[0]
+      if (prevPath && prevPath === targetPath) {
+        uni.navigateBack()
+        return
+      }
+      uni.redirectTo({
+        url: target,
+        fail () {
+          uni.reLaunch({ url: target })
+        }
+      })
+    },
     validateForm () {
       const { account, password, agree } = this.loginData
       if (!account) return '请输入手机号'
@@ -112,8 +139,7 @@ export default {
         return
       }
 
-      const { requestUrl, loginData } = this
-      const { account, password } = loginData
+      const { account, password } = this.loginData
       uni.setStorageSync('USER_MOBILE', account)
       login({
         phone: account,
@@ -125,9 +151,7 @@ export default {
         })
         setTimeout(() => {
           store.commit('setIsUseMock', false)
-          uni.redirectTo({
-            url: requestUrl || '/pages/index/index'
-          })
+          this.goAfterLogin()
         }, 2000)
       }).catch((err) => {
         const message = (err && (err.errMsg || err.message)) || (typeof err === 'string' ? err : '') || '登录失败'

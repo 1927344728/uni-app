@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# 将 uni-spring-boot 的 JAR、deploy 脚本、生产配置和 README 上传到腾讯云轻量服务器
+# 将 uni-spring-boot 的 JAR、deploy 脚本、生产配置和 README 上传到腾讯云轻量服务器，
+# 并远程执行 deploy-service.sh（切到最新 JAR 后 systemctl restart yizhao-app）。
 # 用法: npm run upload-spring-boot，或 ./scripts/upload-spring-boot.sh（Git Bash / WSL / Linux）
 #
 # 远程目录:
@@ -120,12 +121,11 @@ scp "${SCP_OPTS[@]}" "$README_FILE" "${REMOTE}:${REMOTE_BASE}/README.md"
 echo "==> 设置生产配置权限 (chmod 600)"
 ssh "${SSH_OPTS[@]}" "$REMOTE" "chmod 600 '${REMOTE_BASE}/application-prod.properties'"
 
-echo "完成。已上传至 ${REMOTE}:"
+echo "==> 远程安装并重启 yizhao-app"
+ssh "${SSH_OPTS[@]}" "$REMOTE" "chmod +x '${REMOTE_DEPLOY_DIR}'/*.sh && '${REMOTE_DEPLOY_DIR}/deploy-service.sh'"
+
+echo "完成。已上传至 ${REMOTE} 并重启 yizhao-app:"
 echo "  JAR:    ${REMOTE_JAR_DIR}/"
 echo "  deploy: ${REMOTE_DEPLOY_DIR}/"
 echo "  配置:   ${REMOTE_BASE}/application-prod.properties"
 echo "  说明:   ${REMOTE_BASE}/README.md"
-echo
-echo "服务器上请执行（换 JAR 文件名或更新过 unit 时必须跑）："
-echo "  ssh ${REMOTE} 'cd /opt/yizhao/deploy && ./deploy-service.sh'"
-echo "无参数时会自动选用 /opt/yizhao/jars 下版本最高的 jar。"

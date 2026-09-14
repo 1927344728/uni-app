@@ -48,6 +48,42 @@
       }
     },
     {
+      "path": "pages/study/arithmetic/index",
+      "style": {
+        "navigationBarTitleText": "算术小达人",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#b4eadf",
+        "backgroundColor": "#d8f4c4"
+      }
+    },
+    {
+      "path": "pages/study/arithmetic/play",
+      "style": {
+        "navigationBarTitleText": "算术小达人",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#c5ebe6",
+        "backgroundColor": "#d7f0e4"
+      }
+    },
+    {
+      "path": "pages/study/arithmetic/result",
+      "style": {
+        "navigationBarTitleText": "练习结果",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#b4eadf",
+        "backgroundColor": "#d8f4c4"
+      }
+    },
+    {
+      "path": "pages/study/arithmetic/scores",
+      "style": {
+        "navigationBarTitleText": "我的成绩",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#b4eadf",
+        "backgroundColor": "#d8f4c4"
+      }
+    },
+    {
       "path": "pages/life/index",
       "style": {
         "navigationBarTitleText": "生活",

@@ -12,6 +12,7 @@ node_modules
 dist
 unpackage
 *.local
+_tmp_kenney
 
 # Editor directories and files
 .idea

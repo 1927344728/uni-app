@@ -53,6 +53,17 @@ const ARTICLE_OTHER = [
     jumpTo: 'navigate'
   },
   {
+    id: 56,
+    type: '1,2',
+    subType: 3,
+    title: '算术小达人',
+    note: '小学算术限时练习，加减乘除四选一',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/ai-generated-8050032_1280.jpg',
+    url: '/pages/study/arithmetic/index',
+    jumpTo: 'navigate'
+  },
+  {
     id: 6,
     type: '2,7',
     subType: null,

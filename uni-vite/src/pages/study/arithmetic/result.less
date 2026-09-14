@@ -1,0 +1,108 @@
+.page {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #b4eadf 0%, #d8f4c4 52%, #ffe3a8 100%);
+  padding: 0 44rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.body {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.confetti {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti_piece {
+  position: absolute;
+  top: -24rpx;
+  border-radius: 4rpx;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.stat_ok {
+  color: #3cbf6a;
+  font-size: 44rpx;
+  font-weight: 800;
+  margin-bottom: 16rpx;
+}
+
+.stat_rate {
+  color: #f08a2a;
+  font-size: 44rpx;
+  font-weight: 800;
+  margin-bottom: 16rpx;
+}
+
+.stat_score {
+  color: #2c3a3a;
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+
+.record {
+  color: #f08a2a;
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+}
+
+.comment {
+  color: #5a6e6e;
+  font-size: 30rpx;
+  line-height: 1.7;
+  margin: 40rpx 0 56rpx;
+}
+
+.actions {
+  display: flex;
+  gap: 24rpx;
+  justify-content: center;
+}
+
+.btn {
+  margin: 0;
+  min-width: 240rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  border-radius: 20rpx;
+  color: #ffffff;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn_green {
+  background: #3cbf6a;
+}
+
+.btn_orange {
+  background: #f08a2a;
+}
+
+.share_btn {
+  padding: 0;
+}

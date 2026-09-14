@@ -128,11 +128,13 @@ export default function (options) {
         saveCookiesFromResponse(res)
         // #endif
 
-        if (login !== 0 && isUnauthorized(res)) {
-          // #ifdef MP
-          clearAuthCookies()
-          // #endif
-          gotoLogin();
+        if (isUnauthorized(res)) {
+          if (login !== 0) {
+            // #ifdef MP
+            clearAuthCookies()
+            // #endif
+            gotoLogin();
+          }
           return reject({ code: 401, silent: true, message: '未登录' });
         }
 

@@ -20,9 +20,7 @@ mvn -f uni-spring-boot/pom.xml -DskipTests package
 npm run upload-spring-boot
 ```
 
-会把 JAR 传到 `/opt/yizhao/jars/`，脚本传到 `/opt/yizhao/deploy/`，配置和本说明传到 `/opt/yizhao/`。
-
-注意：上传**不会**改 `/etc/systemd/system/yizhao-app.service`。换 JAR 文件名、或刚改过 unit 文件后，必须在服务器上再跑一次 `deploy-service.sh`（无参数即可，会自动选最新 jar），只执行 `systemctl restart` 仍会用旧路径。
+会把 JAR 传到 `/opt/yizhao/jars/`，脚本传到 `/opt/yizhao/deploy/`，配置和本说明传到 `/opt/yizhao/`，然后远程执行 `deploy-service.sh`（自动选最新 jar 并 `systemctl restart yizhao-app`）。
 
 ---
 
@@ -49,11 +47,11 @@ journalctl -u yizhao-app -f
 
 ## JAR 更新后如何重启
 
-先在本地上传新包，再 SSH 到服务器操作。分两种情况。
+本地执行 `npm run upload-spring-boot` 后会自动远程跑 `deploy-service.sh`，一般不必再 SSH。若只想在服务器上手动操作，分两种情况。
 
 ### 1. 文件名变了（换版本，例如 `1.0.5` → `1.0.6`）
 
-必须跑 `deploy-service.sh`，否则 systemd 仍指向旧 JAR：
+必须跑 `deploy-service.sh`，否则只 `systemctl restart` 仍指向旧 JAR：
 
 ```bash
 cd /opt/yizhao/deploy

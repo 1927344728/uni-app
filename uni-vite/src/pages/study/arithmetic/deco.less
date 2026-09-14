@@ -1,0 +1,181 @@
+.deco {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.b1 {
+  width: 320rpx;
+  height: 320rpx;
+  left: -120rpx;
+  top: 160rpx;
+  background: rgba(255, 211, 106, 0.55);
+}
+
+.b2 {
+  width: 240rpx;
+  height: 240rpx;
+  right: -80rpx;
+  top: 380rpx;
+  background: rgba(245, 160, 200, 0.5);
+}
+
+.b3 {
+  width: 280rpx;
+  height: 280rpx;
+  left: -90rpx;
+  bottom: 180rpx;
+  background: rgba(122, 206, 255, 0.48);
+}
+
+.b4 {
+  width: 200rpx;
+  height: 200rpx;
+  right: 48rpx;
+  bottom: 320rpx;
+  background: rgba(186, 168, 255, 0.46);
+}
+
+.gem {
+  position: absolute;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+  transform: rotate(45deg);
+}
+
+.g1 {
+  left: 88rpx;
+  top: 280rpx;
+  background: #ff9f43;
+}
+
+.g2 {
+  right: 72rpx;
+  top: 560rpx;
+  width: 28rpx;
+  height: 28rpx;
+  background: #5aa7f2;
+}
+
+.g3 {
+  left: 48%;
+  bottom: 220rpx;
+  width: 24rpx;
+  height: 24rpx;
+  background: #7ed47a;
+}
+
+.star {
+  position: absolute;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.s1 {
+  left: 48rpx;
+  top: 420rpx;
+  font-size: 56rpx;
+  color: #f2d15c;
+}
+
+.s2 {
+  right: 56rpx;
+  top: 240rpx;
+  font-size: 44rpx;
+  color: #ff7eb3;
+}
+
+.s3 {
+  right: 120rpx;
+  bottom: 480rpx;
+  font-size: 40rpx;
+  color: #7ec8ff;
+}
+
+.cloud {
+  position: absolute;
+}
+
+.cloud.tl {
+  left: -36rpx;
+  top: 96rpx;
+  width: 200rpx;
+}
+
+.cloud.tr {
+  right: -48rpx;
+  top: 28rpx;
+  width: 240rpx;
+}
+
+.cloud.bl {
+  left: -40rpx;
+  bottom: 88rpx;
+  width: 220rpx;
+}
+
+.cloud.br {
+  right: -28rpx;
+  bottom: 36rpx;
+  width: 180rpx;
+}
+
+.is-play .b1 {
+  top: 220rpx;
+  opacity: 0.7;
+}
+
+.is-play .b2 {
+  top: 520rpx;
+}
+
+.is-play .b3 {
+  bottom: 80rpx;
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.is-play .s1 {
+  top: 360rpx;
+  font-size: 40rpx;
+}
+
+.is-play .s2 {
+  top: 680rpx;
+  font-size: 36rpx;
+}
+
+.is-play .cloud.tl,
+.is-play .cloud.tr {
+  opacity: 0.85;
+}
+
+.is-play .cloud.tl {
+  width: 160rpx;
+  top: 128rpx;
+}
+
+.is-play .cloud.tr {
+  width: 180rpx;
+  top: 88rpx;
+}
+
+.is-result .cloud.tl,
+.is-result .cloud.tr {
+  top: 36rpx;
+}
+
+.is-scores .b2 {
+  top: 280rpx;
+}
