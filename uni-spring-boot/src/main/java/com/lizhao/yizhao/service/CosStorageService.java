@@ -12,6 +12,8 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.region.Region;
 import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,13 +21,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 import java.util.Locale;
-import java.util.UUID;
 
 @Service
 public class CosStorageService {
+  private static final Logger logger = LoggerFactory.getLogger(CosStorageService.class);
   private static final int MAX_KEY_BYTES = 850;
   private static final String DEFAULT_DIR = "uploads";
+  private static final String CONTENT_ADDRESSED_CACHE_CONTROL = "public, max-age=31536000, immutable";
+  private static final String DEFAULT_CACHE_CONTROL = "public, max-age=86400";
 
   private final TencentCosProperties properties;
   private volatile COSClient cosClient;
@@ -96,19 +102,22 @@ public class CosStorageService {
       throw new IllegalArgumentException("请选择要上传的文件");
     }
 
-    String objectKey = StringUtils.hasText(key)
-      ? sanitizeObjectKey(key)
-      : buildObjectKey(
+    boolean contentAddressed = !StringUtils.hasText(key);
+    String objectKey = contentAddressed
+      ? buildObjectKey(
         StringUtils.hasText(dir) ? dir : DEFAULT_DIR,
-        StringUtils.hasText(fileName) ? fileName : generateFileName(file.getOriginalFilename())
-      );
+        contentAddressedFileName(file, fileName)
+      )
+      : sanitizeObjectKey(key);
 
     if (!overwrite && exists(objectKey)) {
+      logger.info("COS skip duplicate, key={}", objectKey);
       return new CosUploadResponse(publicUrl(objectKey), objectKey, false);
     }
 
+    String cacheControl = contentAddressed ? CONTENT_ADDRESSED_CACHE_CONTROL : DEFAULT_CACHE_CONTROL;
     try (InputStream input = file.getInputStream()) {
-      upload(objectKey, input, file.getSize(), file.getContentType(), "public, max-age=86400");
+      upload(objectKey, input, file.getSize(), file.getContentType(), cacheControl);
     } catch (IOException e) {
       throw new CosException("读取上传文件失败", e);
     }
@@ -180,16 +189,43 @@ public class CosStorageService {
     return name;
   }
 
-  private String generateFileName(String originalFilename) {
-    String extension = "";
-    if (StringUtils.hasText(originalFilename)) {
+  private String contentAddressedFileName(MultipartFile file, String preferredFileName) {
+    String sourceName = StringUtils.hasText(file.getOriginalFilename())
+      ? file.getOriginalFilename()
+      : preferredFileName;
+    return md5Hex(file) + extractExtension(sourceName);
+  }
+
+  private String extractExtension(String originalFilename) {
+    if (!StringUtils.hasText(originalFilename)) {
+      return "";
+    }
+    try {
       String name = sanitizeFileName(originalFilename);
       int dot = name.lastIndexOf('.');
       if (dot > 0 && dot < name.length() - 1) {
-        extension = name.substring(dot).toLowerCase(Locale.ROOT);
+        return name.substring(dot).toLowerCase(Locale.ROOT);
       }
+    } catch (IllegalArgumentException ignored) {
+      return "";
     }
-    return UUID.randomUUID().toString().replace("-", "") + extension;
+    return "";
+  }
+
+  private String md5Hex(MultipartFile file) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("MD5");
+      try (InputStream input = file.getInputStream()) {
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = input.read(buffer)) != -1) {
+          digest.update(buffer, 0, read);
+        }
+      }
+      return HexFormat.of().formatHex(digest.digest());
+    } catch (Exception e) {
+      throw new CosException("计算文件指纹失败: " + e.getMessage(), e);
+    }
   }
 
   private COSClient getClient() {

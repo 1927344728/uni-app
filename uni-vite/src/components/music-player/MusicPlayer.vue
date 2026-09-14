@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { getValue as _get } from '@/common/js/common.js';
+import { getValue as _get, encodeMediaUrl } from '@/common/js/common.js';
 import { unlockAudio, adoptUnlockedAudio, clearUnlockedAudio, playInnerAudio } from '@/common/js/audioUnlock.js';
 import { getMusicById, getMusicByIds, getMusicPageList, getMusicByRandom } from '@/api/music.js';
 import { parseLyric, formatTime } from './MusicPlayer.js';
@@ -678,6 +678,8 @@ export default {
     },
     async loadCurrentSong ({ reuse = false } = {}) {
       const { lyric, url, title, singer, cover } = this.currentSong || {};
+      const mediaUrl = encodeMediaUrl(url);
+      const coverUrl = cover ? encodeMediaUrl(cover) : '';
       this.activeLyricIndex = 0;
       this.currentLyricAnchor = '';
 
@@ -686,18 +688,18 @@ export default {
         bg.title = title || '音乐';
         bg.epname = title || '';
         bg.singer = singer || '';
-        bg.coverImgUrl = cover || '';
+        bg.coverImgUrl = coverUrl;
         this.currentTime = 0;
         this.duration = 0;
         // 设置 src 后会自动开始播放
-        bg.src = url;
+        bg.src = mediaUrl;
         this.isPlaying = true;
         this.autoplayBlocked = false;
       } else if (reuse) {
         // 同一 Audio 实例已在手势内解锁，勿 stop() 打断
-        const needRetarget = this.audioCtx.src !== url;
+        const needRetarget = this.audioCtx.src !== mediaUrl;
         if (needRetarget) {
-          this.audioCtx.src = url;
+          this.audioCtx.src = mediaUrl;
         }
         this.currentTime = this.audioCtx.currentTime || 0;
         this.duration = this.audioCtx.duration || 0;
@@ -712,7 +714,7 @@ export default {
         this.currentTime = 0;
         this.duration = 0;
         this.audioCtx.stop();
-        this.audioCtx.src = url;
+        this.audioCtx.src = mediaUrl;
         this.audioCtx.seek(0);
         this.playAudio();
       }

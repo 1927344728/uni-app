@@ -248,10 +248,11 @@ export default {
       const { articleData } = this
       const imageItem = articleData.filter(e => e.type === 'image')
       const images = imageItem.reduce((arr, e) => arr.concat([e.content].flat().filter(Boolean)), [])
+      const urls = images.map(replaceCosDomainName)
       const current = images.findIndex(e => e === url)
       uni.previewImage({
         current,
-        urls: images
+        urls
       });
     },
     onPlay (index) {

@@ -1,10 +1,12 @@
 import { ArrayBufferToGBK } from '@/common/js/platform.js';
+import { encodeMediaUrl } from '@/common/js/variables.js';
 
 export function fetchFileTextByUrl (url = '') {
   if (!url) return '';
+  const requestUrl = encodeMediaUrl(url) || url;
   return new Promise(resolve => {
     uni.request({
-      url,
+      url: requestUrl,
       method: 'GET',
       responseType: 'arraybuffer',
       withCredentials: true,

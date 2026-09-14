@@ -22,7 +22,7 @@ public class VideoEntity {
   @Column(nullable = true, length = 500)
   private String fileName;
 
-  @Column(nullable = true, length = 500)
+  @Column(name = "`desc`", nullable = true, length = 500)
   private String desc;
 
   @Column(nullable = true, length = 100)

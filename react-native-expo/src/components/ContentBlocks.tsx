@@ -9,6 +9,7 @@ import { AppVideoView } from '@/components/video/AppVideoView';
 import { useAppVideoPlayer } from '@/components/video/useAppVideoPlayer';
 import { colors } from '@/common/theme/colors';
 import { type ApiItem } from '@/lib/api';
+import { encodeMediaUrl, replaceCosDomainName, scaleCosImage } from '@/common/utils/cos';
 
 export type ArticleBlock = ApiItem & {
   type?: string;
@@ -31,7 +32,7 @@ function parts(value: unknown) {
 const MODULE_HORIZONTAL_PADDING = 32;
 
 function imageUrl(uri: unknown, width = 750) {
-  return typeof uri === 'string' ? `${uri}${uri.includes('?') ? '&' : '?'}imageMogr2/thumbnail/${width}x` : undefined;
+  return scaleCosImage(uri, width);
 }
 
 function resolveImageNaturalSize(event: { nativeEvent: { source?: { width?: number; height?: number }; target?: { naturalWidth?: number; naturalHeight?: number; width?: number; height?: number } } }) {
@@ -46,7 +47,8 @@ function collectImageUrls(blocks: ArticleBlock[]) {
   return blocks
     .filter(block => block.type === 'image')
     .flatMap(block => parts(block.content))
-    .filter((url): url is string => typeof url === 'string');
+    .filter((url): url is string => typeof url === 'string')
+    .map(url => replaceCosDomainName(url) ?? url);
 }
 
 function ImagePreview({
@@ -274,7 +276,8 @@ export function ContentBlocks({ content }: { content: unknown }) {
   useEffect(() => () => { Speech.stop(); }, []);
 
   const openPreview = (url: string) => {
-    const index = imageUrls.findIndex(item => item === url);
+    const converted = replaceCosDomainName(url) ?? url;
+    const index = imageUrls.findIndex(item => item === converted);
     if (index < 0) return;
     setPreview({ urls: imageUrls, index });
   };
@@ -383,7 +386,7 @@ export function ContentBlocks({ content }: { content: unknown }) {
           );
         }
         if (item.type === 'video' && typeof values[0] === 'string') {
-          const videoUri = String(values[0]);
+          const videoUri = encodeMediaUrl(values[0]) ?? String(values[0]);
           return (
             <View key={index} style={[...moduleStyle, styles.videoModule]}>
               <View style={[styles.mediaCard, fullWidth && styles.fullWidthMediaCard]}>

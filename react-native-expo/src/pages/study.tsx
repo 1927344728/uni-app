@@ -9,10 +9,11 @@ import { useScrollToLower } from '@/common/hooks/useScrollToLower';
 import { SearchBar } from '@/components/SearchBar';
 import { api, type ApiItem } from '@/lib/api';
 import { mergeUniqueById, uniqueValueOptions } from '@/common/utils/categoryTabs';
+import { scaleCosImage } from '@/common/utils/cos';
 
 type Tab = { key: string; id: number; name: string; isBook?: boolean };
 const defaults: Tab[] = [{ key: 'course', id: 1, name: '课程' }, { key: 'read', id: 3, name: '阅读' }, { key: 'culture', id: 4, name: '文化' }, { key: 'book', id: 8, name: '书籍', isBook: true }];
-const imageUri = (value: unknown) => typeof value === 'string' ? `${value}${value.includes('?') ? '&' : '?'}imageMogr2/thumbnail/120x` : undefined;
+const imageUri = (value: unknown) => scaleCosImage(value, 120);
 
 export default function StudyScreen() {
   const { tab: initialTab } = useLocalSearchParams<{ tab?: string }>();

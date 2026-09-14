@@ -10,6 +10,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { VerticalSwipePager, type VerticalSwipePagerHandle } from '@/components/VerticalSwipePager';
 import { goBackOrReplace } from '@/common/utils/goBack';
 import { api, type ApiItem } from '@/lib/api';
+import { encodeMediaUrl, replaceCosDomainName } from '@/common/utils/cos';
 
 type InlineVideo = ApiItem & { url?: string; desc?: unknown; publisher?: unknown; objectFit?: string };
 
@@ -55,7 +56,7 @@ export default function VideoPlayScreen() {
   const insets = useSafeAreaInsets();
   const switchingRef = useRef(false);
   const pagerRef = useRef<VerticalSwipePagerHandle>(null);
-  const videoUrl = currentVideo?.url ? String(currentVideo.url) : null;
+  const videoUrl = currentVideo?.url ? encodeMediaUrl(currentVideo.url) ?? String(currentVideo.url) : null;
   const player = useAppVideoPlayer(videoUrl, instance => { instance.timeUpdateEventInterval = 0.25; });
   const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: false });
   const timeUpdate = useEvent(player, 'timeUpdate', { currentTime: 0, currentLiveTimestamp: 0, currentOffsetFromLive: 0, bufferedPosition: 0 });
@@ -261,7 +262,7 @@ export default function VideoPlayScreen() {
   }), [applySeek, isPlaying, player]);
 
   const renderSlide = useCallback((video: InlineVideo, role: 'prev' | 'current' | 'next') => {
-    const cover = typeof video.cover === 'string' ? video.cover : undefined;
+    const cover = replaceCosDomainName(video.cover);
     const description = plainText((video as Record<string, unknown>).desc ?? video.desc);
     const publisher = String((video as Record<string, unknown>).publisher ?? video.publisher ?? '未知');
     const objectFit = (video as Record<string, unknown>).objectFit === 'contain' || video.objectFit === 'contain' ? 'contain' : 'cover';

@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { scaleImageWidthInCOS } from '@/common/js/common.js'
+import { scaleImageWidthInCOS, replaceCosDomainName } from '@/common/js/common.js'
 import { getBookById } from '@/api/book.js'
 export default {
   data () {
@@ -75,7 +75,7 @@ export default {
     scaleImageWidthInCOS,
     onPrivewImage (url) {
       uni.previewImage({
-        urls: [url]
+        urls: [replaceCosDomainName(url)]
       })
     }
   }

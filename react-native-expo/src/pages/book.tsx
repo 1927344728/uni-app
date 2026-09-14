@@ -5,9 +5,10 @@ import { router } from 'expo-router';
 import { AppRefreshControl } from '@/components/AppRefreshControl';
 import { useScrollToLower } from '@/common/hooks/useScrollToLower';
 import { api, type ApiItem } from '@/lib/api';
+import { scaleCosImage } from '@/common/utils/cos';
 
 function thumbnail(uri: unknown) {
-  return typeof uri === 'string' ? `${uri}${uri.includes('?') ? '&' : '?'}imageMogr2/thumbnail/160x` : undefined;
+  return scaleCosImage(uri, 160);
 }
 
 function tags(value: unknown) {

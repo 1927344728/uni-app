@@ -6,9 +6,10 @@ import { AppRefreshControl } from '@/components/AppRefreshControl';
 import { useScrollToLower } from '@/common/hooks/useScrollToLower';
 import { api, type ApiItem } from '@/lib/api';
 import { mergeUniqueById, uniqueTypeTabs } from '@/common/utils/categoryTabs';
+import { scaleCosImage } from '@/common/utils/cos';
 
 type Category = ApiItem & { categoryId?: number; typeId?: number; typeName?: string };
-const imageUri = (value: unknown, width = 180) => typeof value === 'string' ? `${value}${value.includes('?') ? '&' : '?'}imageMogr2/thumbnail/${width}x` : undefined;
+const imageUri = (value: unknown, width = 180) => scaleCosImage(value, width);
 
 export default function MusicScreen() {
   const { type: initialType, keyword } = useLocalSearchParams<{ type?: string; keyword?: string }>();

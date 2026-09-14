@@ -16,7 +16,7 @@ public class VideoMenuEntity {
   @Column(nullable = false, length = 255)
   private String title;
 
-  @Column(nullable = true, length = 500)
+  @Column(name = "`desc`", nullable = true, length = 500)
   private String desc;
 
   @Column(nullable = true, columnDefinition = "JSON")

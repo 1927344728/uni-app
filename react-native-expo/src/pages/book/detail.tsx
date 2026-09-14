@@ -4,9 +4,10 @@ import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import { api, type ApiItem } from '@/lib/api';
+import { scaleCosImage } from '@/common/utils/cos';
 
 function thumbnail(uri: unknown) {
-  return typeof uri === 'string' ? `${uri}${uri.includes('?') ? '&' : '?'}imageMogr2/thumbnail/320x` : undefined;
+  return scaleCosImage(uri, 320);
 }
 function clean(value: unknown) {
   return String(value ?? '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();

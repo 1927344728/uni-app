@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import { Buffer } from 'buffer';
 import iconv from 'iconv-lite';
+import { encodeMediaUrl } from '@/common/utils/cos';
 
 export type LyricLine = { time: number; text: string };
 
@@ -75,7 +76,7 @@ export async function parseLyric(lyricSource?: unknown): Promise<LyricLine[]> {
   const source = typeof lyricSource === 'string' ? lyricSource.trim() : '';
   if (!source) return [];
   try {
-    const lyricText = source.startsWith('http') ? await fetchLyricText(source) : source;
+    const lyricText = source.startsWith('http') ? await fetchLyricText(encodeMediaUrl(source) ?? source) : source;
     return lyricText ? parseLyricText(lyricText) : [];
   } catch {
     return [];

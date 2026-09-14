@@ -12,6 +12,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { api, type ApiItem } from '@/lib/api';
 import { mergeUniqueById, uniqueTypeTabs, uniqueValueOptions } from '@/common/utils/categoryTabs';
 import { openUrl } from '@/common/utils/openUrl';
+import { scaleCosImage } from '@/common/utils/cos';
 
 type Tab = { key: string; id: number; name: string; source: 'music' | 'video' | 'article' };
 type Category = ApiItem & { categoryId?: number; typeId?: number; typeName?: string; categoryName?: string };
@@ -23,9 +24,7 @@ const fallbackTabs: Tab[] = [
   { key: 'ana', id: 6, name: '随笔', source: 'article' },
 ];
 
-const thumbnail = (value: unknown, width = 120) => typeof value === 'string'
-  ? `${value}${value.includes('?') ? '&' : '?'}imageMogr2/thumbnail/${width}x`
-  : undefined;
+const thumbnail = (value: unknown, width = 120) => scaleCosImage(value, width);
 const plainText = (value: unknown) => String(value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
 const { width: screenWidth } = Dimensions.get('window');
 

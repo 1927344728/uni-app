@@ -26,7 +26,7 @@ public class MusicEntity {
   @Column(nullable = true, length = 500)
   private String fileName;
 
-  @Column(nullable = true, columnDefinition = "TEXT")
+  @Column(name = "`desc`", nullable = true, columnDefinition = "TEXT")
   private String desc;
 
   @Column(nullable = true)

@@ -55,8 +55,7 @@
 </template>
 
 <script>
-import { getValue as _get } from '@/common/js/common.js';
-import { scaleImageWidthInCOS } from '@/common/js/common.js';
+import { getValue as _get, scaleImageWidthInCOS, replaceCosDomainName } from '@/common/js/common.js';
 
 export default {
   name: 'MusicPlayerItem',
@@ -106,7 +105,7 @@ export default {
         top: `${this.height * this.index}px`
       };
       if (cover) {
-        style['--music_play_bg'] = `url(${cover})`;
+        style['--music_play_bg'] = `url(${replaceCosDomainName(cover)})`;
       }
       return style;
     }

@@ -4,6 +4,8 @@
  * 播放页必须接管同一 InnerAudioContext（底层同一 Audio），不能 destroy 后再 new。
  */
 
+import { encodeMediaUrl } from './variables.js'
+
 const WIN_KEY = '__UNI_MUSIC_AUDIO_CTX__'
 
 const SILENT_WAV =
@@ -90,7 +92,7 @@ export function unlockAudio (url) {
       } catch (e) {}
       ctx.autoplay = false
     }
-    ctx.src = url || SILENT_WAV
+    ctx.src = url ? encodeMediaUrl(url) : SILENT_WAV
     safePlay(ctx)
     saveCtx(ctx)
   } catch (e) {}

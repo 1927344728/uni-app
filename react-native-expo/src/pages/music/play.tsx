@@ -10,9 +10,10 @@ import { VerticalSwipePager, type VerticalSwipePagerHandle } from '@/components/
 import { goBackOrReplace } from '@/common/utils/goBack';
 import { activeLyricIndex, parseLyric, type LyricLine } from '@/common/utils/lyric';
 import { api, type ApiItem } from '@/lib/api';
+import { encodeMediaUrl, replaceCosDomainName } from '@/common/utils/cos';
 
 const asIds = (value?: string) => { try { const ids = JSON.parse(value ?? '[]'); return Array.isArray(ids) ? ids.map(String) : []; } catch { return []; } };
-const imageUri = (value: unknown) => typeof value === 'string' ? value : undefined;
+const imageUri = (value: unknown) => replaceCosDomainName(value);
 const formatTime = (value: number) => {
   const seconds = Math.floor(value || 0);
   const minute = Math.floor(seconds / 60);
@@ -128,11 +129,11 @@ export default function MusicPlayScreen() {
   }, [id, ids, isMenu, prefetchAuto]);
 
   useEffect(() => {
-    const url = current?.url;
+    const url = encodeMediaUrl(current?.url);
     if (!url || !current) return;
     setSliderOverrideTime(null);
     setIsDraggingSlider(false);
-    player.replace(String(url));
+    player.replace(url);
     player.setActiveForLockScreen(true, {
       title: String(current.title ?? ''),
       artist: String((current as Record<string, unknown>).singer ?? '未知歌手'),
