@@ -24,26 +24,17 @@
       <view class="ring_conic" :style="conicStyle"></view>
       <!-- #endif -->
       <!-- #ifdef MP -->
-      <view class="ring_clip">
-        <view class="ring_track"></view>
-        <view class="ring_half ring_right">
-          <view
-            class="ring_bar"
-            :class="{ warn: remainCeil <= 3 }"
-            :style="{ transform: 'rotate(' + rightRotate + 'deg)' }"
-          ></view>
-        </view>
-        <view class="ring_half ring_left">
-          <view
-            class="ring_bar"
-            :class="{ warn: remainCeil <= 3 }"
-            :style="{ transform: 'rotate(' + leftRotate + 'deg)' }"
-          ></view>
-        </view>
-      </view>
+      <view class="ring_track"></view>
+      <view
+        v-for="(pos, i) in tickStyles"
+        :key="i"
+        class="tick"
+        :class="{ on: i < remainTicks, warn: remainCeil <= 3 }"
+        :style="pos"
+      ></view>
       <!-- #endif -->
       <view class="ring_inner">
-        <text class="timer_num" :class="{ warn: remainCeil <= 3 }">{{ remainCeil }}</text>
+        <text :key="'t-' + remainCeil" class="timer_num" :class="{ warn: remainCeil <= 3 }">{{ remainCeil }}</text>
       </view>
     </view>
 
@@ -126,13 +117,26 @@ export default {
       if (!total) return 0
       return Math.max(0, Math.min(1, this.remainMs / total))
     },
-    leftRotate () {
-      const deg = this.remainRatio * 360
-      return deg > 180 ? deg - 360 : -180
+    remainTicks () {
+      return Math.round(this.remainRatio * 48)
     },
-    rightRotate () {
-      const deg = this.remainRatio * 360
-      return deg > 180 ? 0 : deg - 180
+    tickStyles () {
+      const n = 48
+      const cx = uni.upx2px(70)
+      const cy = uni.upx2px(70)
+      const r = uni.upx2px(64)
+      const size = uni.upx2px(12)
+      const list = []
+      for (let i = 0; i < n; i++) {
+        const rad = (i / n) * Math.PI * 2 - Math.PI / 2
+        list.push({
+          left: (cx + r * Math.cos(rad) - size / 2) + 'px',
+          top: (cy + r * Math.sin(rad) - size / 2) + 'px',
+          width: size + 'px',
+          height: size + 'px'
+        })
+      }
+      return list
     },
     conicStyle () {
       const deg = this.remainRatio * 360

@@ -80,65 +80,37 @@
   position: relative;
 }
 
-.ring_conic {
+.ring_conic,
+.ring_track {
   width: 140rpx;
   height: 140rpx;
   border-radius: 50%;
-}
-
-.ring_clip {
-  width: 140rpx;
-  height: 140rpx;
-  position: relative;
+  box-sizing: border-box;
 }
 
 .ring_track {
   position: absolute;
   left: 0;
   top: 0;
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 50%;
+  z-index: 0;
   border: 12rpx solid #d7ece9;
-  box-sizing: border-box;
 }
 
-.ring_half {
+.tick {
   position: absolute;
-  top: 0;
-  width: 70rpx;
-  height: 140rpx;
-  overflow: hidden;
-}
-
-.ring_right {
-  right: 0;
-}
-
-.ring_left {
-  left: 0;
-}
-
-.ring_bar {
-  position: absolute;
-  top: 0;
-  width: 140rpx;
-  height: 140rpx;
+  z-index: 1;
+  width: 12rpx;
+  height: 12rpx;
   border-radius: 50%;
-  border: 12rpx solid #3cbf6a;
-  box-sizing: border-box;
+  background: transparent;
 }
 
-.ring_right .ring_bar {
-  right: 0;
+.tick.on {
+  background: #3cbf6a;
 }
 
-.ring_left .ring_bar {
-  left: 0;
-}
-
-.ring_bar.warn {
-  border-color: #e85d5d;
+.tick.on.warn {
+  background: #e85d5d;
 }
 
 .ring_inner {
@@ -147,16 +119,19 @@
   top: 12rpx;
   right: 12rpx;
   bottom: 12rpx;
+  z-index: 2;
   border-radius: 50%;
   background: #d7f0e4;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 .timer_num {
   font-size: 48rpx;
   font-weight: 800;
+  line-height: 116rpx;
   color: #3cbf6a;
 }
 
