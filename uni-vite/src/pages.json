@@ -50,7 +50,11 @@
     {
       "path": "pages/study/hanyupinyin/index",
       "style": {
-        "navigationBarTitleText": "汉语拼音发音学习"
+        "navigationBarTitleText": "汉语拼音发音学习",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#3494e6",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#3494e6"
       }
     },
     {

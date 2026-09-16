@@ -16,8 +16,8 @@ const ARTICLE_OTHER = [
     note: '点击任意拼音即可播放发音',
     seq: 99,
     thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg',
-    url: '/static/hanyupinyin.html',
-    jumpTo: 'webview'
+    url: '/pages/study/hanyupinyin/index',
+    jumpTo: 'navigate'
   },
   {
     id: 53,
