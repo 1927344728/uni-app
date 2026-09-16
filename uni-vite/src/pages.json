@@ -48,6 +48,12 @@
       }
     },
     {
+      "path": "pages/study/hanyupinyin/index",
+      "style": {
+        "navigationBarTitleText": "汉语拼音发音学习"
+      }
+    },
+    {
       "path": "pages/study/arithmetic/index",
       "style": {
         "navigationBarTitleText": "算术小达人",
@@ -128,12 +134,6 @@
       "style": {
         "navigationBarTitleText": "任务详情",
         "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/recommend/hanyupinyin",
-      "style": {
-        "navigationBarTitleText": "汉语拼音发音学习"
       }
     },
     {

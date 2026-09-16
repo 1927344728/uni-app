@@ -33,7 +33,7 @@ export function openUrl(
   const { replace } = options;
 
   if (href.includes('hanyupinyin')) {
-    navigate('/recommend/hanyupinyin', replace);
+    navigate('/study/hanyupinyin', replace);
     return true;
   }
 

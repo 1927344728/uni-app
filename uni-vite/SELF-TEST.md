@@ -122,7 +122,7 @@
 - [ ] 新旧密码校验规则生效
 - [ ] 修改成功后提示并跳转
 
-## 十三、汉语拼音发音学习 `pages/recommend/hanyupinyin`
+## 十三、汉语拼音发音学习 `pages/study/hanyupinyin/index`
 
 - [ ] 🔺 页面标题与头部区域布局正常（`<header>`/`<h1>` 已改为 `<view>`/`<text>`）
 - [ ] 点击拼音播放音频

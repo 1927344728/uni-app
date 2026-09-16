@@ -14,7 +14,7 @@ const pageTitles: Array<[string, string]> = [
   ['/study/dictation', '听写小助手'],
   ['/study/gen-dictation', '听写链接生成器'],
   ['/study/rhyme', '前后鼻韵母强化练习'],
-  ['/recommend/hanyupinyin', '汉语拼音发音学习'],
+  ['/study/hanyupinyin', '汉语拼音发音学习'],
   ['/login/password', '修改密码'],
   ['/login', '登录'],
   ['/task/detail', '任务详情'],

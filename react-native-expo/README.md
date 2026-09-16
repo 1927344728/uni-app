@@ -127,7 +127,7 @@ npx expo start --port 9000 --android
 | `/login` | 登录 | `pages/login/index` |
 | `/login/password` | 修改密码 | `pages/login/password` |
 | `/task/detail?id=:id` | 任务详情 | `pages/task/detail` |
-| `/recommend/hanyupinyin` | 汉语拼音发音学习 | `pages/recommend/hanyupinyin` |
+| `/study/hanyupinyin` | 汉语拼音发音学习 | `pages/study/hanyupinyin/index` |
 | `/webview?url=:url` | WebView | `pages/webview/index` |
 | `/book` | 书籍列表 | `pages/book/index` |
 | `/book/detail?id=:id` | 书籍详情 | `pages/book/detail` |
