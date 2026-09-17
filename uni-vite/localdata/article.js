@@ -20,6 +20,28 @@ const ARTICLE_OTHER = [
     jumpTo: 'navigate'
   },
   {
+    id: 57,
+    type: '1,2',
+    subType: 3,
+    title: '英文字母发音学习',
+    note: '点击任意字母即可播放发音',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg',
+    url: '/pages/study/englishletter/index',
+    jumpTo: 'navigate'
+  },
+  {
+    id: 58,
+    type: '1,2',
+    subType: 3,
+    title: '英文音标发音学习',
+    note: '点击任意音标即可播放发音',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/微信图片_20251117234041_35_2.jpg',
+    url: '/pages/study/englishphonetic/index',
+    jumpTo: 'navigate'
+  },
+  {
     id: 53,
     type: '1,2',
     subType: 3,

@@ -58,6 +58,26 @@
       }
     },
     {
+      "path": "pages/study/englishletter/index",
+      "style": {
+        "navigationBarTitleText": "英文字母发音学习",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#3494e6",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#3494e6"
+      }
+    },
+    {
+      "path": "pages/study/englishphonetic/index",
+      "style": {
+        "navigationBarTitleText": "英文音标发音学习",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#3494e6",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#3494e6"
+      }
+    },
+    {
       "path": "pages/study/arithmetic/index",
       "style": {
         "navigationBarTitleText": "算术小达人",

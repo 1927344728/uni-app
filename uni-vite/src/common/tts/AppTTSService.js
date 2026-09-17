@@ -156,6 +156,27 @@ export class AppTTSService extends TTSBaseService {
     try {
       if (this.tts && this.tts.setPitch) this.tts.setPitch(pitch)
     } catch (e) {}
+    this.applyLanguage(options.lang || this.config.lang)
+  }
+
+  applyLanguage (lang) {
+    const locale = this.toAndroidLocale(lang)
+    if (!locale || !this.tts || !this.tts.setLanguage) return
+    try {
+      this.tts.setLanguage(locale)
+    } catch (e) {}
+  }
+
+  toAndroidLocale (lang) {
+    const lower = String(lang || '').toLowerCase().replace('_', '-')
+    if (!lower) return null
+    try {
+      const Locale = plus.android.importClass('java.util.Locale')
+      if (lower === 'en-gb') return Locale.UK
+      if (lower.startsWith('en')) return Locale.US
+      if (lower.startsWith('zh')) return Locale.SIMPLIFIED_CHINESE || Locale.CHINA
+    } catch (e) {}
+    return null
   }
 
   startSpeaking (text, options, utteranceId) {

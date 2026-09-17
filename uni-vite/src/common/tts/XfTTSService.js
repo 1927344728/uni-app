@@ -35,7 +35,12 @@ export class XfTTSService extends TTSBaseService {
 
   toXfOptions (options = {}) {
     const xfOptions = {}
-    if (options.vcn) xfOptions.vcn = options.vcn
+    const lang = String(options.lang || this.config.lang || '').toLowerCase()
+    if (options.vcn) {
+      xfOptions.vcn = options.vcn
+    } else if (lang.startsWith('en')) {
+      xfOptions.vcn = 'catherine'
+    }
     if (options.rate) xfOptions.speed = options.rate * 100
     if (options.volume !== undefined) xfOptions.volume = options.volume
     return xfOptions
