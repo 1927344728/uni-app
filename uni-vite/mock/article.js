@@ -1,9 +1,9 @@
 import { get as _get, cloneDeep } from "lodash"
 import { ARTICLE_LIST, ARTICLE_DETAIL_LIST } from "/localdata/article.js"
-import { initResponseData } from './common'
+import { initResponseData, sortBySeqUpdatedId } from './common'
 
 const getArticlePageList = (params) => {
-  const { keyword, type, subType, pageNum = 0, pageSize = 10 } = params
+  const { keyword, type, subType, pageNum = 0, pageSize = 20 } = params
   let list = cloneDeep(ARTICLE_LIST)
   if (keyword) {
     list = list.filter(item => {
@@ -16,7 +16,7 @@ const getArticlePageList = (params) => {
   if (subType) {
     list = list.filter(item => !item.subType || item.subType === subType)
   }
-  list = list.splice(pageNum * pageSize, pageSize)
+  list = list.sort(sortBySeqUpdatedId).splice(pageNum * pageSize, pageSize)
   const data = initResponseData()
 
   data.data = {

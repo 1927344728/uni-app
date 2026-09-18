@@ -43,9 +43,9 @@ export default function StudyScreen() {
   useEffect(() => {
     if (!current) return;
     const timer = setTimeout(() => {
-      const params = current.isBook ? { type: subType ?? undefined, keyword, pageNum: 0, pageSize: 15 } : { type: current.id, subType: subType ?? undefined, keyword, pageNum: 0, pageSize: 15 };
+      const params = current.isBook ? { type: subType ?? undefined, keyword, pageNum: 0, pageSize: 20 } : { type: current.id, subType: subType ?? undefined, keyword, pageNum: 0, pageSize: 20 };
       const request = current.isBook ? api.bookPage(params) : api.articlePage(params);
-      request.then(value => { const next = value.content ?? []; setItems(next); setPageNum(0); setIsLast(next.length < 15); }).catch(() => { setItems([]); setIsLast(true); });
+      request.then(value => { const next = value.content ?? []; setItems(next); setPageNum(0); setIsLast(next.length < 20); }).catch(() => { setItems([]); setIsLast(true); });
     }, 150);
     return () => clearTimeout(timer);
   }, [current?.key, current?.id, current?.isBook, subType, keyword]);
@@ -54,15 +54,15 @@ export default function StudyScreen() {
   const loadMore = () => {
     if (!current || isLast) return;
     const nextPage = pageNum + 1;
-    const params = current.isBook ? { type: subType ?? undefined, keyword, pageNum: nextPage, pageSize: 15 } : { type: current.id, subType: subType ?? undefined, keyword, pageNum: nextPage, pageSize: 15 };
-    (current.isBook ? api.bookPage(params) : api.articlePage(params)).then(value => { const next = value.content ?? []; setItems(old => mergeUniqueById(old, next, true)); setPageNum(nextPage); setIsLast(next.length < 15); }).catch(() => setIsLast(true));
+    const params = current.isBook ? { type: subType ?? undefined, keyword, pageNum: nextPage, pageSize: 20 } : { type: current.id, subType: subType ?? undefined, keyword, pageNum: nextPage, pageSize: 20 };
+    (current.isBook ? api.bookPage(params) : api.articlePage(params)).then(value => { const next = value.content ?? []; setItems(old => mergeUniqueById(old, next, true)); setPageNum(nextPage); setIsLast(next.length < 20); }).catch(() => setIsLast(true));
   };
   const refreshList = () => {
     if (!current) return Promise.resolve();
     setRefreshing(true);
-    const params = current.isBook ? { type: subType ?? undefined, keyword, pageNum: 0, pageSize: 15 } : { type: current.id, subType: subType ?? undefined, keyword, pageNum: 0, pageSize: 15 };
+    const params = current.isBook ? { type: subType ?? undefined, keyword, pageNum: 0, pageSize: 20 } : { type: current.id, subType: subType ?? undefined, keyword, pageNum: 0, pageSize: 20 };
     const request = current.isBook ? api.bookPage(params) : api.articlePage(params);
-    return request.then(value => { const next = value.content ?? []; setItems(next); setPageNum(0); setIsLast(next.length < 15); })
+    return request.then(value => { const next = value.content ?? []; setItems(next); setPageNum(0); setIsLast(next.length < 20); })
       .catch(() => { setItems([]); setIsLast(true); })
       .finally(() => setRefreshing(false));
   };

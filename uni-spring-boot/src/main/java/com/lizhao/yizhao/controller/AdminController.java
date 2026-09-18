@@ -460,7 +460,7 @@ public class AdminController {
   }
 
   /**
-   * 列表默认：更新时间递减、排序字段递减、id 递增。
+   * 列表默认：排序值递减、更新时间递减、id 递增。
    * 分类表先按类型、分类、子分类聚在一起，便于后台合并单元格。
    */
   private int compareListOrder(Object left, Object right) {
@@ -472,12 +472,12 @@ public class AdminController {
       int subTypeCompare = Integer.compare(nullToZero(leftCategory.getSubTypeId()), nullToZero(rightCategory.getSubTypeId()));
       if (subTypeCompare != 0) return subTypeCompare;
     }
-    int timeCompare = Long.compare(updatedEpoch(right), updatedEpoch(left));
-    if (timeCompare != 0) return timeCompare;
     Integer leftSeq = intValue(invoke(left, "getSeq"));
     Integer rightSeq = intValue(invoke(right, "getSeq"));
     int seqCompare = Integer.compare(rightSeq == null ? 0 : rightSeq, leftSeq == null ? 0 : leftSeq);
     if (seqCompare != 0) return seqCompare;
+    int timeCompare = Long.compare(updatedEpoch(right), updatedEpoch(left));
+    if (timeCompare != 0) return timeCompare;
     Long leftId = longValue(invoke(left, "getId"));
     Long rightId = longValue(invoke(right, "getId"));
     return Long.compare(leftId == null ? 0L : leftId, rightId == null ? 0L : rightId);

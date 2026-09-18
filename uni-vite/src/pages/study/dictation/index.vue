@@ -61,6 +61,7 @@
       <view class="sheet" @click.stop @touchmove.stop>
         <view class="sheet_hd">
           <view class="sheet_title">设置</view>
+          <view class="sheet_close" hover-class="sheet_close_hover" @click="closeSettings">×</view>
         </view>
 
         <scroll-view scroll-y class="sheet_bd">

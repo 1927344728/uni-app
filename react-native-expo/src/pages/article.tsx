@@ -59,11 +59,11 @@ export default function ArticleScreen() {
   }, []);
 
   const load = useCallback((page: number, append = false) => {
-    return api.articlePage({ type, keyword, pageNum: page, pageSize: 15 }).then(value => {
+    return api.articlePage({ type, keyword, pageNum: page, pageSize: 20 }).then(value => {
       const next = Array.isArray(value?.content) ? value.content.filter(Boolean) : [];
       setItems(current => mergeUniqueById(current, next, append));
       setPageNum(page);
-      setIsLast(next.length < 15);
+      setIsLast(next.length < 20);
     }).catch(() => {
       if (!append) setItems([]);
       setIsLast(true);

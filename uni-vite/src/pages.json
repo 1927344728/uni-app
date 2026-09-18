@@ -114,6 +114,34 @@
       }
     },
     {
+      "path": "pages/study/words/index",
+      "style": {
+        "navigationBarTitleText": "字词小游戏",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#f7fbff",
+        "backgroundColor": "#f7fbff"
+      }
+    },
+    {
+      "path": "pages/study/words/listen",
+      "style": {
+        "navigationBarTitleText": "听音选词",
+        "enablePullDownRefresh": false,
+        "navigationBarBackgroundColor": "#f7fbff",
+        "backgroundColor": "#eef7f4"
+      }
+    },
+    {
+      "path": "pages/study/words/match",
+      "style": {
+        "navigationBarTitleText": "字词消消乐",
+        "enablePullDownRefresh": false,
+        "disableScroll": true,
+        "navigationBarBackgroundColor": "#fff8f0",
+        "backgroundColor": "#fff8f0"
+      }
+    },
+    {
       "path": "pages/life/index",
       "style": {
         "navigationBarTitleText": "生活",

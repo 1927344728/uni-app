@@ -32,7 +32,7 @@ public class BookController {
       @RequestParam (required = false) String type,
       @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
-      @RequestParam(defaultValue = "10") int pageSize) {
+      @RequestParam(defaultValue = "20") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
     Page<BookRepository.BookSummary> books = bookRepository.findBooks(keyword, type, platform, pageable);
     return CommonResponse.success(books);

@@ -14,7 +14,7 @@ public interface VideoRepository extends JpaRepository<VideoEntity, Long> {
   @Query("SELECT COUNT(v) FROM VideoEntity v WHERE v.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', v.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:platform IS NULL OR :platform = '' OR v.platform IS NULL OR v.platform = '' OR CONCAT(',', v.platform, ',') LIKE CONCAT('%,', :platform, ',%'))")
   long countByTypeAndIsDeletedFalse(@Param("type") String type, @Param("platform") String platform);
 
-  @Query("SELECT v FROM VideoEntity v WHERE (:type IS NULL OR :type = '' OR CONCAT(',', v.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR v.title LIKE %:keyword%) AND (:platform IS NULL OR :platform = '' OR v.platform IS NULL OR v.platform = '' OR CONCAT(',', v.platform, ',') LIKE CONCAT('%,', :platform, ',%')) AND v.isDeleted = false ORDER BY COALESCE(v.seq, 0) DESC, v.id ASC")
+  @Query("SELECT v FROM VideoEntity v WHERE (:type IS NULL OR :type = '' OR CONCAT(',', v.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR v.title LIKE %:keyword%) AND (:platform IS NULL OR :platform = '' OR v.platform IS NULL OR v.platform = '' OR CONCAT(',', v.platform, ',') LIKE CONCAT('%,', :platform, ',%')) AND v.isDeleted = false ORDER BY COALESCE(v.seq, 0) DESC, v.updatedTime DESC, v.id ASC")
   Page<VideoEntity> findVideos(@Param("type") String type, @Param("keyword") String keyword, @Param("platform") String platform, Pageable pageable);
 
   @Query(value = "SELECT * FROM video WHERE id IN :ids ORDER BY FIND_IN_SET(id, :ids_str)", nativeQuery = true)

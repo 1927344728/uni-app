@@ -1041,7 +1041,13 @@ export const NORMAL_MUSIC_LIST = [
     "cover": "https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/music/%ED%99%8D%EC%A7%84%EC%98%81-%EC%82%B0%EB%8B%A4%EB%8A%94%EA%B1%B4(CheerUp).webp",
     "lyric": "https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/music/%ED%99%8D%EC%A7%84%EC%98%81-%EC%82%B0%EB%8B%A4%EB%8A%94%EA%B1%B4(CheerUp).lrc"
   }
-].sort((a, b) => b.seq - a.seq);
+].sort((a, b) => {
+  const seq = (b.seq || 0) - (a.seq || 0)
+  if (seq !== 0) return seq
+  const time = (b.updatedTime || 0) - (a.updatedTime || 0)
+  if (time !== 0) return time
+  return (a.id || 0) - (b.id || 0)
+});
 
 export const PURE_MUSIC_LIST = [
   {
@@ -1332,7 +1338,13 @@ export const PURE_MUSIC_LIST = [
     "cover": "https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/music/%E9%AB%98%E6%95%88%E7%9D%A1%E7%9C%A0AYC-%E6%97%B6%E5%85%89%E9%9D%99%E5%A5%BD%E7%BB%86%E6%B0%B4%E6%B5%81%E5%B9%B4.jpg",
     "lyric": ""
   }
-].sort((a, b) => b.seq - a.seq);
+].sort((a, b) => {
+  const seq = (b.seq || 0) - (a.seq || 0)
+  if (seq !== 0) return seq
+  const time = (b.updatedTime || 0) - (a.updatedTime || 0)
+  if (time !== 0) return time
+  return (a.id || 0) - (b.id || 0)
+});
 
 export const MUSIC_LIST = [
   ...NORMAL_MUSIC_LIST,

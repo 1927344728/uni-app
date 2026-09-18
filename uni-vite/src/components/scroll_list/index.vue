@@ -64,7 +64,7 @@ export default {
     initPagination () {
       return {
         pageNum: this.pageNum || 0,
-        pageSize: this.pageSize || 15,
+        pageSize: this.pageSize || 20,
         isLast: false
       }
     },

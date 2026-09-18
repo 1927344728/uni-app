@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
 import { TASK_LIST } from "/localdata/task.js"
-import { initResponseData } from './common'
+import { initResponseData, sortBySeqUpdatedId } from './common'
 
 const getTaskPageList = (params) => {
   const { title, status, targeter, pageNum, pageSize } = params
@@ -9,7 +9,7 @@ const getTaskPageList = (params) => {
     const hasStatus = !status || e.status === status
     const hasTargeter = !targeter || e.targeter.split(/[,，\s]/).includes(targeter)
     return hasTitle && hasStatus && hasTargeter
-  })
+  }).sort(sortBySeqUpdatedId)
   const data = initResponseData()
   data.data = {
 		content: list.splice(pageNum * pageSize, pageSize)

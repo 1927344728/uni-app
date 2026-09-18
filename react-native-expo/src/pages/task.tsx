@@ -25,12 +25,12 @@ export default function TaskScreen() {
   useEffect(() => { api.taskTargeters().then(value => setTargeters(value ?? [])).catch(() => undefined); }, []);
 
   const fetchList = useCallback((page: number, append = false) => {
-    return api.taskPage({ title: keyword, targeter: targeter ?? undefined, status: status ?? undefined, pageNum: page, pageSize: 10 })
+    return api.taskPage({ title: keyword, targeter: targeter ?? undefined, status: status ?? undefined, pageNum: page, pageSize: 20 })
       .then(value => {
         const next = value.content ?? [];
         setItems(current => append ? [...current, ...next] : next);
         setPageNum(page);
-        setIsLast(next.length < 10);
+        setIsLast(next.length < 20);
       })
       .catch(() => {
         if (!append) setItems([]);

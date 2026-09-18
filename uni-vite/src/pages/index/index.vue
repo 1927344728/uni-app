@@ -142,7 +142,7 @@ export default {
       }).catch(() => {
         this.featureIcons = FEATURE_ICON_ENUM
       })
-      getArticlePageList({ type: '2' }).then((data) => {
+      getArticlePageList({ type: '2', pageSize: 20 }).then((data) => {
         this.recommendArticles = _get(data, 'content') || []
       }).catch(() => {})
     },

@@ -73,7 +73,7 @@ import { getMusicMenuList, getMusicPageList } from '@/api'
 
 const initPagination = () => ({
   pageNum: 0,
-  pageSize: 10,
+  pageSize: 20,
   isLast: false
 })
 export default {

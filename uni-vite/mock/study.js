@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
 import { CHINESE_WORD_LIST } from "/localdata/chinese_word.js"
-import { initResponseData } from './common'
+import { initResponseData, sortBySeqUpdatedId } from './common'
 
 const SCORE_KEY = 'arithmetic.mockScores'
 
@@ -27,14 +27,14 @@ function computeLevel (perfectCount, kingPerfectCount) {
 const LEVEL_NAMES = ['', '算术新手', '算术能手', '算术高手', '超级小达人', '算术小王者']
 
 const getChineseWordList = (params) => {
-  const { pageNum = 0, pageSize = 10 } = params
+  const { pageNum = 0, pageSize = 20 } = params
   const id = Number(params.id)
   let list = cloneDeep(CHINESE_WORD_LIST)
   if (id) {
     list = list.filter(item => item.id === id)
   }
 
-  list = list.splice(pageNum * pageSize, pageSize)
+  list = list.sort(sortBySeqUpdatedId).splice(pageNum * pageSize, pageSize)
   const data = initResponseData()
   data.data = {
     content: list,

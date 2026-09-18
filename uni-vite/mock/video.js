@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from 'lodash'
 import { VIDEO_MENU_LIST, VIDEO_LIST } from '/localdata/video.js'
-import { initResponseData } from './common'
+import { initResponseData, sortBySeqUpdatedId } from './common'
 
 const videoList = cloneDeep(VIDEO_LIST).map(e => {
   e.id = String(e.id)
@@ -24,6 +24,7 @@ const getVideoPageList = (params) => {
     list = list.filter(item => item.type.includes(String(type)))
   }
   list = list
+    .sort(sortBySeqUpdatedId)
     .splice(pageNum * pageSize, pageSize)
     .map(e => {
       e.id = Number(e.id)

@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
 import { BOOK_LIST } from "/localdata/book.js"
-import { initResponseData } from './common'
+import { initResponseData, sortBySeqUpdatedId } from './common'
 
 const getBookPageList = (params) => {
   const { keyword, type, pageNum, pageSize } = params
@@ -11,7 +11,7 @@ const getBookPageList = (params) => {
   if (keyword) {
     list = list.filter(item => item.title.includes(keyword) || item.owner.includes(keyword))
   }
-  list = list.splice(pageNum * pageSize, pageSize)
+  list = list.sort(sortBySeqUpdatedId).splice(pageNum * pageSize, pageSize)
   const data = initResponseData()
   data.data = {
 		content: list,

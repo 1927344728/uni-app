@@ -1,6 +1,6 @@
 import { get as _get, cloneDeep } from "lodash"
 import { MUSIC_MENU_LIST, MUSIC_LIST } from "/localdata/music.js"
-import { initResponseData } from './common'
+import { initResponseData, sortBySeqUpdatedId } from './common'
 
 const musicList = cloneDeep(MUSIC_LIST).map(e => {
   e.id = String(e.id)
@@ -15,7 +15,7 @@ const getMusicMenuList = () => {
 }
 
 const getMusicPageList = (params) => {
-  const { type, keyword, pageNum = 0, pageSize = 10 } = params
+  const { type, keyword, pageNum = 0, pageSize = 20 } = params
 
   let list = musicList
   if (type) {
@@ -26,7 +26,8 @@ const getMusicPageList = (params) => {
   if (keyword) {
     list = list.filter(item => item.title.includes(keyword))
   }
-  list = list
+  list = [...list]
+    .sort(sortBySeqUpdatedId)
     .splice(pageNum * pageSize, pageSize)
     .map(e => {
       e.id = Number(e.id)

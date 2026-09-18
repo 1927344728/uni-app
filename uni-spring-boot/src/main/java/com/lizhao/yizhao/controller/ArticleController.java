@@ -33,7 +33,7 @@ public class ArticleController {
       @RequestParam(required = false) Integer subType,
       @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
-      @RequestParam(defaultValue = "10") int pageSize) {
+      @RequestParam(defaultValue = "20") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
     Page<ArticleRepository.ArticleSummary> articles = articleRepository.findArticles(keyword, type, subType, platform, pageable);
     return CommonResponse.success(articles);

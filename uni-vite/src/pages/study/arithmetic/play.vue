@@ -19,24 +19,12 @@
       >{{ n }}</view>
     </view>
 
-    <view class="timer">
-      <!-- #ifndef MP -->
-      <view class="ring_conic" :style="conicStyle"></view>
-      <!-- #endif -->
-      <!-- #ifdef MP -->
-      <view class="ring_track"></view>
-      <view
-        v-for="(pos, i) in tickStyles"
-        :key="i"
-        class="tick"
-        :class="{ on: i < remainTicks, warn: remainCeil <= 3 }"
-        :style="pos"
-      ></view>
-      <!-- #endif -->
-      <view class="ring_inner">
-        <text :key="'t-' + remainCeil" class="timer_num" :class="{ warn: remainCeil <= 3 }">{{ remainCeil }}</text>
-      </view>
-    </view>
+    <countdown-ring
+      class="timer"
+      :remain-ms="remainMs"
+      :total-ms="timerTotalMs"
+      :warn-sec="3"
+    />
 
     <view class="progress_dock bottom">
       <text class="progress_text">已用时: {{ elapsedSec }}秒</text>
@@ -73,11 +61,13 @@ import {
 import store from '@/store/index'
 import { saveArithmeticScore } from '@/api/study.js'
 import CommonDialog from '@/components/common/dialog/index.vue'
+import CountdownRing from '@/components/common/countdown-ring/index.vue'
 import ArithmeticDeco from './deco.vue'
 
 export default {
   components: {
     CommonDialog,
+    CountdownRing,
     ArithmeticDeco
   },
   data () {
@@ -106,44 +96,11 @@ export default {
     total () {
       return this.paper.length
     },
-    remainCeil () {
-      return Math.ceil(this.remainMs / 1000)
-    },
     elapsedSec () {
       return Math.max(0, Math.floor(this.elapsedMs / 1000) || 0)
     },
-    remainRatio () {
-      const total = (this.settings.timeLimit || 10) * 1000
-      if (!total) return 0
-      return Math.max(0, Math.min(1, this.remainMs / total))
-    },
-    remainTicks () {
-      return Math.round(this.remainRatio * 48)
-    },
-    tickStyles () {
-      const n = 48
-      const cx = uni.upx2px(70)
-      const cy = uni.upx2px(70)
-      const r = uni.upx2px(64)
-      const size = uni.upx2px(12)
-      const list = []
-      for (let i = 0; i < n; i++) {
-        const rad = (i / n) * Math.PI * 2 - Math.PI / 2
-        list.push({
-          left: (cx + r * Math.cos(rad) - size / 2) + 'px',
-          top: (cy + r * Math.sin(rad) - size / 2) + 'px',
-          width: size + 'px',
-          height: size + 'px'
-        })
-      }
-      return list
-    },
-    conicStyle () {
-      const deg = this.remainRatio * 360
-      const color = this.remainCeil <= 3 ? '#e85d5d' : '#3cbf6a'
-      return {
-        background: `conic-gradient(${color} 0deg, ${color} ${deg}deg, #d7ece9 ${deg}deg)`
-      }
+    timerTotalMs () {
+      return (this.settings.timeLimit || 10) * 1000
     }
   },
   onLoad (query) {

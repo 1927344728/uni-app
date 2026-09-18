@@ -35,7 +35,7 @@ public class TaskController {
       @RequestParam(required = false) String targeter,
       @RequestParam(required = false) String platform,
       @RequestParam(defaultValue = "0") int pageNum,
-      @RequestParam(defaultValue = "10") int pageSize) {
+      @RequestParam(defaultValue = "20") int pageSize) {
     Pageable pageable = PageRequest.of(pageNum, pageSize);
     Page<TaskRepository.TaskSummary> tasks = taskRepository.findTasks(title, status, publisher, targeter, platform, pageable);
     return CommonResponse.success(tasks);

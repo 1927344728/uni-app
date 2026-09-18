@@ -86,6 +86,17 @@ const ARTICLE_OTHER = [
     jumpTo: 'navigate'
   },
   {
+    id: 59,
+    type: '1,2',
+    subType: 3,
+    title: '字词小游戏',
+    note: '听音选词、字词消消乐，选好词库就能玩',
+    seq: 99,
+    thumb: 'https://yizhao-1259410276.cos.ap-shanghai.myqcloud.com/images/animals-8651226_1280.jpg',
+    url: '/pages/study/words/index',
+    jumpTo: 'navigate'
+  },
+  {
     id: 6,
     type: '2,7',
     subType: null,
@@ -135,7 +146,13 @@ export const ARTICLE_LIST = ARTICLE_DETAIL_LIST
     url: e.url || `/pages/article/detail?id=${e.id}`,
     jumpTo: e.jumpTo || 'navigate'
   }))
-  .sort((a, b) => b.seq - a.seq)
+  .sort((a, b) => {
+    const seq = (b.seq || 0) - (a.seq || 0)
+    if (seq !== 0) return seq
+    const time = (b.updatedTime || 0) - (a.updatedTime || 0)
+    if (time !== 0) return time
+    return (a.id || 0) - (b.id || 0)
+  })
 
 // const jsonString = JSON.stringify(ARTICLE_DETAIL_LIST
 //   .map(e => {

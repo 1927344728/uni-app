@@ -23,12 +23,12 @@ export default function MusicScreen() {
 
   const tabs = useMemo(() => uniqueTypeTabs(categories, 3), [categories]);
 
-  const load = useCallback((nextPage: number, append = false) => api.musicPage({ type: type ?? undefined, keyword: keyword ?? '', pageNum: nextPage, pageSize: 10 })
+  const load = useCallback((nextPage: number, append = false) => api.musicPage({ type: type ?? undefined, keyword: keyword ?? '', pageNum: nextPage, pageSize: 20 })
     .then(value => {
       const next = value.content ?? [];
       setItems(old => mergeUniqueById(old, next, append));
       setPage(nextPage);
-      setLast(next.length < 10);
+      setLast(next.length < 20);
     }).catch(() => { if (!append) setItems([]); setLast(true); }), [keyword, type]);
 
   const loadMenus = useCallback(() => api.musicMenus().then(value => setMenus(value ?? [])).catch(() => setMenus([])), []);

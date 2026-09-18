@@ -86,7 +86,13 @@ export const TASK_LIST = [
     startTime: 1756684800000,
     endTime: 1767139200000
   }
-].sort((a, b) => b.seq - a.seq)
+].sort((a, b) => {
+  const seq = (b.seq || 0) - (a.seq || 0)
+  if (seq !== 0) return seq
+  const time = (b.updatedTime || 0) - (a.updatedTime || 0)
+  if (time !== 0) return time
+  return (a.id || 0) - (b.id || 0)
+})
 
 // const jsonString = JSON.stringify(TASK_LIST.sort((a,b) => a.id - b.id))
 // console.log(jsonString)

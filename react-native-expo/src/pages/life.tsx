@@ -105,12 +105,12 @@ export default function LifeScreen() {
 
   const loadArticle = useCallback((page: number, append = false) => {
     if (!current || current.source !== 'article') return Promise.resolve();
-    const params = { type: current.id, subType: subType ?? undefined, keyword, pageNum: page, pageSize: 15 };
+    const params = { type: current.id, subType: subType ?? undefined, keyword, pageNum: page, pageSize: 20 };
     return api.articlePage(params).then(value => {
       const next = value.content ?? [];
       setItems(old => mergeUniqueById(old, next, append));
       setPageNum(page);
-      setIsLast(next.length < 15);
+      setIsLast(next.length < 20);
     }).catch(() => { if (!append) setItems([]); setIsLast(true); });
   }, [current, keyword, subType]);
 
@@ -118,12 +118,12 @@ export default function LifeScreen() {
     type: musicType ?? undefined,
     keyword,
     pageNum: page,
-    pageSize: 10,
+    pageSize: 20,
   }).then(value => {
     const next = value.content ?? [];
     setMusicItems(old => mergeUniqueById(old, next, append));
     setMusicPage(page);
-    setMusicLast(next.length < 10);
+    setMusicLast(next.length < 20);
   }).catch(() => { if (!append) setMusicItems([]); setMusicLast(true); }), [keyword, musicType]);
 
   const loadVideo = useCallback((page: number, append = false) => api.videoPage({

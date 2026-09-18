@@ -9,6 +9,15 @@ export const initResponseData = () => ({
   data: null
 })
 
+/** 与前后台查询接口一致：排序值递减、更新时间递减、id 递增 */
+export const sortBySeqUpdatedId = (a, b) => {
+  const seq = (Number(b.seq) || 0) - (Number(a.seq) || 0)
+  if (seq !== 0) return seq
+  const time = (Number(b.updatedTime) || 0) - (Number(a.updatedTime) || 0)
+  if (time !== 0) return time
+  return (Number(a.id) || 0) - (Number(b.id) || 0)
+}
+
 const helloWord = () => {
   const data = initResponseData()
   data.data = 'Hello, World!'
@@ -51,7 +60,7 @@ const getBannerList = () => {
       seq: 0,
       jumpTo: 'webview'
     },
-  ].sort((a, b) => b.seq - a.seq)
+  ].sort(sortBySeqUpdatedId)
   return data
 }
 

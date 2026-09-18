@@ -10,6 +10,6 @@ import java.util.List;
 public interface MusicMenuRepository extends JpaRepository<MusicMenuEntity, Long> {
   List<MusicMenuEntity> findByIsDeletedFalse();
 
-  @Query("SELECT m FROM MusicMenuEntity m WHERE m.isDeleted = false AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%')) ORDER BY m.id ASC")
+  @Query("SELECT m FROM MusicMenuEntity m WHERE m.isDeleted = false AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%')) ORDER BY m.updatedTime DESC, m.id ASC")
   List<MusicMenuEntity> findVisible(@Param("platform") String platform);
 }

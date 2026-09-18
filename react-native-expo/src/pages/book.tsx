@@ -21,11 +21,11 @@ export default function BookScreen() {
   const [isLast, setIsLast] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const load = useCallback((page: number, append = false) => api.bookPage({ pageNum: page, pageSize: 10 }).then(value => {
+  const load = useCallback((page: number, append = false) => api.bookPage({ pageNum: page, pageSize: 20 }).then(value => {
     const next = value.content ?? [];
     setBooks(current => (append ? [...current, ...next] : next));
     setPageNum(page);
-    setIsLast(next.length < 10);
+    setIsLast(next.length < 20);
   }).catch(() => {
     if (!append) setBooks([]);
     setIsLast(true);
