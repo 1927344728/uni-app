@@ -39,6 +39,18 @@ export const CATEGORY_ENUM = [
   { id: 33, categoryId: 4, categoryName: '视频', typeId: 4, typeName: '其他', subTypeId: null, subTypeName: null },
 ];
 
+export function buildCategoryOptions() {
+  const seen = new Set();
+  return CATEGORY_ENUM.filter((item) => item.categoryId != null)
+    .filter((item) => {
+      const key = String(item.categoryId);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map((item) => ({ label: item.categoryName || String(item.categoryId), value: item.categoryId }));
+}
+
 export function buildTypeOptions(categoryId) {
   const seen = new Set();
   return CATEGORY_ENUM.filter((item) => item.categoryId === categoryId && item.typeId != null)

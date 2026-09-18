@@ -11,6 +11,6 @@ import java.util.List;
 public interface BannerRepository extends JpaRepository<BannerEntity, Integer> {
     List<BannerEntity> findByIsDeletedFalseOrderBySeqDesc();
 
-    @Query("SELECT b FROM BannerEntity b WHERE b.isDeleted = false AND (:platform IS NULL OR :platform = '' OR b.platform IS NULL OR b.platform = '' OR CONCAT(',', b.platform, ',') LIKE CONCAT('%,', :platform, ',%')) ORDER BY b.seq DESC, b.id ASC")
-    List<BannerEntity> findVisible(@Param("platform") String platform);
+    @Query("SELECT b FROM BannerEntity b WHERE b.isDeleted = false AND (:type IS NULL OR :type = '' OR b.type = :type) AND (:platform IS NULL OR :platform = '' OR b.platform IS NULL OR b.platform = '' OR CONCAT(',', b.platform, ',') LIKE CONCAT('%,', :platform, ',%')) ORDER BY COALESCE(b.seq, 0) DESC, b.id ASC")
+    List<BannerEntity> findVisible(@Param("type") String type, @Param("platform") String platform);
 }

@@ -80,20 +80,21 @@
             </view>
           </view>
 
-          <view v-if="!hasLinkParams" class="form_row">
-            <view class="form_row_label">年级</view>
+          <view v-if="!hasLinkParams && libraryOptions.length" class="form_row">
+            <view class="form_row_label">词库</view>
             <view class="form_row_field">
-              <view class="chip_row">
-                <view
-                  v-for="(opt, i) in gradeOptions"
-                  :key="opt.value"
-                  class="chip"
-                  :class="{ chip_active: settings.gradeKey === opt.value }"
-                  @click="pickGrade(opt.value, i)"
-                >
-                  {{ opt.label }}
+              <picker
+                class="picker"
+                mode="selector"
+                :range="libraryOptions"
+                range-key="label"
+                :value="libraryIndex"
+                @change="onLibraryChange"
+              >
+                <view class="input picker_value">
+                  <text class="picker_value_text">{{ libraryLabel }}</text>
                 </view>
-              </view>
+              </picker>
             </view>
           </view>
 
@@ -144,6 +145,7 @@ import { getValue as _get } from '@/common/js/common.js'
 import { TTSService } from '@/common/tts'
 import { getChineseWordList } from '@/api'
 import { clampNumber, splitWords, toPinyinSymbol } from '@/common/js/dictation.js'
+import { consumeGenDictationPayload } from '@/pages/study/gen-dictation/storage.js'
 
 const tts = new TTSService()
 
@@ -173,7 +175,7 @@ export default {
       settingsVisible: false,
       settings: {
         intervalTime: 20,
-        gradeKey: 1,
+        libraryId: null,
         availableWords: [],
         selectedWords: [],
         wordCount: 0
@@ -228,32 +230,34 @@ export default {
     pauseLabel () {
       return this.isPaused ? '继续' : '暂停'
     },
-    gradeOptions () {
-      let options = [
-        { value: 1, label: '一（上）' },
-        { value: 2, label: '一（下）' },
-        { value: 3, label: '二（上）' },
-        { value: 4, label: '二（下）' },
-        { value: 5, label: '三（上）' },
-        { value: 6, label: '三（下）' },
-        { value: 7, label: '四（上）' },
-        { value: 8, label: '四（下）' },
-        { value: 9, label: '五（上）' },
-        { value: 10, label: '五（下）' },
-        { value: 11, label: '六（上）' },
-        { value: 12, label: '六（下）' }
-      ]
-      const existGradeIds = this.allWordList.map(e => e.gradeId)
-      if (existGradeIds.length > 0) {
-        options = options.filter(e => existGradeIds.includes(e.value))
-      }
-      return options
+    libraryOptions () {
+      return (this.allWordList || [])
+        .filter(e => e && (e.title || e.id != null))
+        .map(e => ({
+          value: e.id,
+          label: e.title || `词库${e.id}`
+        }))
+    },
+    libraryIndex () {
+      const idx = this.libraryOptions.findIndex(e => Number(e.value) === Number(this.settings.libraryId))
+      return idx < 0 ? 0 : idx
+    },
+    libraryLabel () {
+      return this.libraryOptions[this.libraryIndex]?.label || '请选择词库'
     }
   },
   async onLoad (options = {}) {
     this.routeId = _get(options, 'id', '') || ''
     this.routeWordsRaw = decodeURIComponentSafe(_get(options, 'words', ''))
     this.noteText = decodeURIComponentSafe(_get(options, 'note', ''))
+
+    if (!this.routeWordsRaw && String(_get(options, 'from', '')) === 'gen') {
+      const payload = consumeGenDictationPayload()
+      if (payload) {
+        this.routeWordsRaw = payload.words
+        if (!this.noteText) this.noteText = payload.note
+      }
+    }
 
     const words = splitWords(this.routeWordsRaw)
     this.wordList = buildWordList(words)
@@ -263,6 +267,10 @@ export default {
 
     this.isLoaded = true
     this.resetSettingsAvailableWords()
+
+    if (String(_get(options, 'from', '')) !== 'gen') {
+      this.openSettings()
+    }
 
     this.$nextTick(() => {
       if (this.noteText) {
@@ -282,7 +290,9 @@ export default {
         pageSize: 20
       }).then(data => {
         this.allWordList = _get(data, 'content', [])
-        this.wordList = buildWordList(splitWords(_get(data, 'content[0].words', '')))
+        const first = this.allWordList[0] || {}
+        this.settings.libraryId = first.id == null ? null : first.id
+        this.wordList = buildWordList(splitWords(first.words || ''))
         return data
       })
     },
@@ -308,10 +318,17 @@ export default {
       const v = _get(e, 'detail.value')
       this.settings.intervalTime = clampNumber(v, 1, 120)
     },
-    pickGrade (value, i) {
-      const words = this.allWordList.find(e => e.gradeId === value)?.words || ''
-      this.settings.gradeKey = value
+    onLibraryChange (e) {
+      const idx = Number(_get(e, 'detail.value', 0))
+      const opt = this.libraryOptions[idx]
+      if (opt) this.pickLibrary(opt.value)
+    },
+    pickLibrary (value) {
+      const id = Number(value)
+      const words = this.allWordList.find(e => Number(e.id) === id)?.words || ''
+      this.settings.libraryId = id
       this.wordList = buildWordList(splitWords(words))
+      this.settings.selectedWords = []
       this.resetSettingsAvailableWords()
     },
     toggleWord (w) {

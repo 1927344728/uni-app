@@ -302,26 +302,35 @@
   background: #f9fafb;
 }
 
-.chip_row {
+.picker {
+  width: 100%;
+  display: block;
+}
+
+.picker_value {
   display: flex;
-  flex-wrap: wrap;
-  gap: 18rpx;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.chip {
-  padding: 6rpx 20rpx;
-  border-radius: 16rpx;
-  font-size: 26rpx;
-  color: #4b5563;
-  background: #f3f4f6;
-  border: 1px solid #e5e5e5;
+.picker_value_text {
+  flex: 1;
+  min-width: 0;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.chip_active {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  color: #1d4ed8;
-  font-weight: 700;
+.picker_value::after {
+  content: '';
+  flex: 0 0 auto;
+  margin-left: 12rpx;
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid transparent;
+  border-right: 10rpx solid transparent;
+  border-top: 12rpx solid #9ca3af;
 }
 
 .word_pick_title {

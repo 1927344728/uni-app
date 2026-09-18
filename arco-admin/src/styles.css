@@ -145,6 +145,10 @@ body {
   text-align: center !important;
 }
 
+.page-card .arco-table-td {
+  vertical-align: middle;
+}
+
 .arco-table-th .arco-table-th-item {
   justify-content: center;
 }

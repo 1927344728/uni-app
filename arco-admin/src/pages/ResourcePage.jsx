@@ -20,7 +20,7 @@ import { IconImage, IconQuestionCircle, IconUpload } from '@arco-design/web-reac
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { request, uploadCos } from '../api/http';
-import { PLATFORM_OPTIONS } from '../config/resources';
+import { CONTENT_CATEGORY_OPTIONS, PLATFORM_OPTIONS } from '../config/resources';
 import { buildSubTypeOptions, buildTypeOptions } from '../config/category';
 import { useAuth } from '../state/auth';
 
@@ -48,7 +48,6 @@ const COMPACT_KEYS = new Set([
   'publisher',
   'status',
   'score',
-  'gradeId',
   'categoryId',
   'categoryName',
   'typeId',
@@ -105,13 +104,7 @@ function renderValue(field, value) {
     if (isMultiSelect(field)) {
       const values = toSelectArray(value);
       if (!values.length) return '-';
-      return (
-        <Space wrap>
-          {values.map((item) => (
-            <Tag key={item}>{resolveSelectLabel(field, item)}</Tag>
-          ))}
-        </Space>
-      );
+      return values.map((item) => resolveSelectLabel(field, item)).join('、');
     }
     if (value == null || value === '') return '-';
     return resolveSelectLabel(field, value);
@@ -174,7 +167,10 @@ function fillForm(form, fields, record) {
   form.setFieldsValue(getFormValues(fields, record));
 }
 
-function getColumnProps(field) {
+function getColumnProps(field, compactIds) {
+  if (field.width) {
+    return { width: field.width, align: 'center' };
+  }
   if (field.type === 'image') {
     return { width: 72, align: 'center' };
   }
@@ -182,7 +178,7 @@ function getColumnProps(field) {
     return { width: 120, align: 'center' };
   }
   if (field.type === 'select' && field.multiple) {
-    return { width: 168, align: 'center' };
+    return { width: 168, ellipsis: true };
   }
   if (field.type === 'date') {
     return { width: 176, align: 'center' };
@@ -191,7 +187,7 @@ function getColumnProps(field) {
     return { width: 108, align: 'center' };
   }
   if (field.type === 'number' || COMPACT_KEYS.has(field.key) || /Id$/i.test(field.key)) {
-    let width = 100;
+    let width = compactIds ? 72 : 100;
     if (['author', 'publisher'].includes(field.key)) {
       width = 120;
     }
@@ -200,10 +196,45 @@ function getColumnProps(field) {
     }
     return {
       width,
-      align: 'center'
+      align: 'center',
     };
   }
   return { ellipsis: true };
+}
+
+function buildRowSpans(rows, keys) {
+  const spans = new Array(rows.length).fill(1);
+  let i = 0;
+  while (i < rows.length) {
+    let count = 1;
+    while (
+      i + count < rows.length &&
+      keys.every((key) => String(rows[i + count]?.[key] ?? '') === String(rows[i]?.[key] ?? ''))
+    ) {
+      count += 1;
+    }
+    spans[i] = count;
+    for (let j = 1; j < count; j += 1) spans[i + j] = 0;
+    i += count;
+  }
+  return spans;
+}
+
+function withRowSpan(children, rowSpan) {
+  if (rowSpan == null) return children;
+  return {
+    children,
+    props: { rowSpan },
+  };
+}
+
+function getTypeFilter(config, fields) {
+  if (config.key === 'categories') {
+    return { key: 'type', label: '类型', options: CONTENT_CATEGORY_OPTIONS };
+  }
+  const typeField = fields.find((field) => field.key === 'type' && field.options?.length);
+  if (!typeField) return null;
+  return { key: 'type', label: typeField.label || '类型', options: typeField.options };
 }
 
 function SeqCellInput({ value, disabled, saving, onCommit }) {
@@ -501,6 +532,7 @@ export default function ResourcePage({ config }) {
   const [size, setSize] = useState(50);
   const [keyword, setKeyword] = useState('');
   const [platform, setPlatform] = useState();
+  const [type, setType] = useState();
   const [editing, setEditing] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerMode, setDrawerMode] = useState('create');
@@ -508,6 +540,7 @@ export default function ResourcePage({ config }) {
   const [uploadingField, setUploadingField] = useState(null);
   const [savingSeqId, setSavingSeqId] = useState(null);
   const selectedTypes = Form.useWatch('type', form);
+  const selectedCategoryId = Form.useWatch('categoryId', form);
 
   const pagePermission = config.pagePermission;
   const can = (action) => canButton(`${pagePermission}.${action}`);
@@ -533,11 +566,20 @@ export default function ResourcePage({ config }) {
     });
   }, [config.fields, needsCategoryOptions, selectedTypes]);
 
-  const load = async (nextPage = page, nextSize = size, nextKeyword = keyword, nextPlatform = platform) => {
+  const typeFilter = useMemo(() => getTypeFilter(config, resolvedFields), [config, resolvedFields]);
+  const compactIds = Boolean(config.compactIds);
+
+  const load = async (nextPage = page, nextSize = size, nextKeyword = keyword, nextPlatform = platform, nextType = type) => {
     setLoading(true);
     try {
       const data = await request(config.endpoint, {
-        params: { page: nextPage - 1, size: nextSize, keyword: nextKeyword, platform: nextPlatform },
+        params: {
+          page: nextPage - 1,
+          size: nextSize,
+          keyword: nextKeyword,
+          platform: nextPlatform,
+          type: typeFilter ? nextType : undefined,
+        },
       });
       const normalized = normalizePage(data);
       setRows(normalized.list);
@@ -548,12 +590,16 @@ export default function ResourcePage({ config }) {
   };
 
   useEffect(() => {
+    setType(undefined);
+  }, [config.endpoint]);
+
+  useEffect(() => {
     setPage(1);
     const timer = setTimeout(() => {
-      load(1, size, keyword, platform).catch(() => undefined);
+      load(1, size, keyword, platform, type).catch(() => undefined);
     }, 300);
     return () => clearTimeout(timer);
-  }, [config.endpoint, keyword, platform]);
+  }, [config.endpoint, keyword, platform, type]);
 
   useEffect(() => {
     if (!drawerVisible || detailLoading) return;
@@ -574,6 +620,17 @@ export default function ResourcePage({ config }) {
     const stillValid = (subTypeField.options || []).some((option) => String(option.value) === String(current));
     if (!stillValid) form.setFieldValue('subType', undefined);
   }, [drawerVisible, form, resolvedFields, selectedTypes]);
+
+  useEffect(() => {
+    if (!drawerVisible || config.key !== 'categories') return;
+    const option = CONTENT_CATEGORY_OPTIONS.find((item) => String(item.value) === String(selectedCategoryId));
+    if (!option) return;
+    const currentName = form.getFieldValue('categoryName');
+    const isKnownName = !currentName || CONTENT_CATEGORY_OPTIONS.some((item) => item.label === currentName);
+    if (isKnownName && currentName !== option.label) {
+      form.setFieldValue('categoryName', option.label);
+    }
+  }, [drawerVisible, config.key, selectedCategoryId, form]);
 
   const openCreate = () => {
     setEditing(null);
@@ -667,16 +724,27 @@ export default function ResourcePage({ config }) {
     }
   };
 
+  const mergeSpans = useMemo(() => {
+    const mergeCells = config.mergeCells;
+    if (!mergeCells || !rows.length) return {};
+    const result = {};
+    Object.entries(mergeCells).forEach(([column, keys]) => {
+      result[column] = buildRowSpans(rows, keys);
+    });
+    return result;
+  }, [config.mergeCells, rows]);
+
   const columns = useMemo(() => {
     const fieldColumns = resolvedFields
       .filter((field) => field.table)
       .map((field) => ({
         title: field.label,
         dataIndex: field.key,
-        ...getColumnProps(field),
-        render: (value, row) => {
+        ...getColumnProps(field, compactIds),
+        render: (value, row, index) => {
+          let children = renderValue(field, value);
           if (field.key === 'seq') {
-            return (
+            children = (
               <SeqCellInput
                 value={value}
                 disabled={!can('edit')}
@@ -685,33 +753,33 @@ export default function ResourcePage({ config }) {
               />
             );
           }
-          return renderValue(field, value);
+          return withRowSpan(children, mergeSpans[field.key]?.[index]);
         },
       }));
     return [
       {
         title: '序号',
-        width: 64,
+        width: compactIds ? 48 : 64,
         align: 'center',
         render: (_, __, index) => (page - 1) * size + index + 1,
       },
       {
         title: 'ID',
         dataIndex: 'id',
-        width: 72,
+        width: compactIds ? 56 : 72,
         align: 'center',
       },
       ...fieldColumns,
       {
         title: '状态',
         dataIndex: 'isDeleted',
-        width: 88,
+        width: compactIds ? 72 : 88,
         align: 'center',
         render: (value) => (value ? <Tag color="red">已删除</Tag> : <Tag color="green">正常</Tag>),
       },
       {
         title: '操作',
-        width: 148,
+        width: compactIds ? 120 : 148,
         align: 'right',
         fixed: 'right',
         render: (_, row) => (
@@ -737,7 +805,7 @@ export default function ResourcePage({ config }) {
         ),
       },
     ];
-  }, [resolvedFields, pagePermission, page, size, savingSeqId]);
+  }, [resolvedFields, pagePermission, page, size, savingSeqId, compactIds, mergeSpans]);
 
   return (
     <Card className="page-card">
@@ -751,6 +819,16 @@ export default function ResourcePage({ config }) {
               style={{ width: 260 }}
               value={keyword}
               onChange={setKeyword}
+            />
+          )}
+          {typeFilter && (
+            <Select
+              allowClear
+              placeholder={`请选择${typeFilter.label}`}
+              style={{ width: 180 }}
+              value={type}
+              options={typeFilter.options}
+              onChange={setType}
             />
           )}
           <Select
@@ -773,6 +851,7 @@ export default function ResourcePage({ config }) {
         loading={loading}
         columns={columns}
         data={rows}
+        border={config.mergeCells ? { wrapper: true, cell: true } : undefined}
         scroll={{ x: true }}
         pagination={{
           current: page,

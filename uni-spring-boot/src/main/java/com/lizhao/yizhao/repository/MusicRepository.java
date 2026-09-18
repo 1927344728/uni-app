@@ -14,7 +14,7 @@ public interface MusicRepository extends JpaRepository<MusicEntity, Long> {
   @Query("SELECT COUNT(m) FROM MusicEntity m WHERE m.isDeleted = false AND (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%'))")
   long countByTypeAndIsDeletedFalse(@Param("type") String type, @Param("platform") String platform);
 
-  @Query("SELECT m FROM MusicEntity m WHERE (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR m.title LIKE %:keyword%) AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%')) AND m.isDeleted = false ORDER BY m.seq DESC, m.id ASC")
+  @Query("SELECT m FROM MusicEntity m WHERE (:type IS NULL OR :type = '' OR CONCAT(',', m.type, ',') LIKE CONCAT('%,', :type, ',%')) AND (:keyword IS NULL OR :keyword = '' OR m.title LIKE %:keyword%) AND (:platform IS NULL OR :platform = '' OR m.platform IS NULL OR m.platform = '' OR CONCAT(',', m.platform, ',') LIKE CONCAT('%,', :platform, ',%')) AND m.isDeleted = false ORDER BY COALESCE(m.seq, 0) DESC, m.id ASC")
   Page<MusicEntity> findMusics(@Param("type") String type, @Param("keyword") String keyword, @Param("platform") String platform, Pageable pageable);
 
   List<MusicEntity> findByIdIn(List<Long> ids);

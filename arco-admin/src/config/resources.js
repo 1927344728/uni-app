@@ -1,4 +1,4 @@
-import { buildTypeOptions } from './category';
+import { buildCategoryOptions, buildTypeOptions } from './category';
 
 export const CLIENT_ROLE_OPTIONS = [
   { label: '超级管理员', value: 1 },
@@ -28,6 +28,13 @@ export const JUMP_TO_OPTIONS = [
   { label: '内嵌网页 (webview)', value: 'webview' },
   { label: '外部浏览器 (web)', value: 'web' },
 ];
+
+export const BANNER_TYPE_OPTIONS = [
+  { label: '图片', value: 'image' },
+  { label: '视频', value: 'video' },
+];
+
+export const CONTENT_CATEGORY_OPTIONS = buildCategoryOptions();
 
 export const ARTICLE_TYPE_OPTIONS = buildTypeOptions(1);
 export const BOOK_TYPE_OPTIONS = buildTypeOptions(2);
@@ -268,7 +275,7 @@ export const RESOURCES = [
     searchable: true,
     fields: [
       { key: 'title', label: '标题', required: true, table: true },
-      { key: 'type', label: '类型', table: true },
+      { key: 'type', label: '类型', type: 'select', options: BANNER_TYPE_OPTIONS, table: true },
       { key: 'image', label: '图片', type: 'image', table: true },
       { key: 'jumpTo', label: '跳转类型', type: 'select', options: JUMP_TO_OPTIONS },
       { key: 'url', label: '跳转地址', type: 'link' },
@@ -300,13 +307,18 @@ export const RESOURCES = [
     endpoint: '/api/admin/categories',
     pagePermission: 'ops.categories',
     searchable: true,
+    compactIds: true,
+    mergeCells: {
+      categoryId: ['categoryId'],
+      typeName: ['categoryId', 'typeId'],
+    },
     fields: [
-      { key: 'categoryId', label: '类型ID', type: 'number', table: true },
-      { key: 'categoryName', label: '类型名称', table: true },
-      { key: 'typeId', label: '分类ID', type: 'number', table: true },
-      { key: 'typeName', label: '分类名称', table: true },
+      { key: 'categoryId', label: '类型', type: 'select', options: CONTENT_CATEGORY_OPTIONS, table: true, width: 88 },
+      { key: 'categoryName', label: '类型名称' },
+      { key: 'typeId', label: '分类ID', type: 'number' },
+      { key: 'typeName', label: '分类名称', table: true, width: 100 },
       { key: 'subTypeId', label: '子分类ID', type: 'number' },
-      { key: 'subTypeName', label: '子分类名称' },
+      { key: 'subTypeName', label: '子分类名称', table: true, width: 120 },
       { key: 'platform', label: '平台', type: 'platform', table: true },
     ],
   },
@@ -318,7 +330,7 @@ export const RESOURCES = [
     pagePermission: 'ops.wordLibraries',
     searchable: true,
     fields: [
-      { key: 'gradeId', label: '年级 ID', type: 'number', required: true, table: true },
+      { key: 'title', label: '标题', required: true, table: true },
       { key: 'words', label: '词表文本', type: 'textarea', table: true },
       { key: 'platform', label: '平台', type: 'platform', table: true },
     ],

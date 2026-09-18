@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -154,7 +155,7 @@ public class AdminController {
             || contains(item.getName(), keyword)
             || contains(item.getNickname(), keyword)
             || contains(item.getAlias(), keyword))
-        .sorted(Comparator.comparing(UserEntity::getId))
+        .sorted(this::compareListOrder)
         .toList();
     return CommonResponse.success(pageList(filtered, currentPage, currentSize));
   }
@@ -294,6 +295,7 @@ public class AdminController {
       @PathVariable String resource,
       @RequestParam(required = false) String keyword,
       @RequestParam(required = false) String platform,
+      @RequestParam(required = false) String type,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(required = false) Integer pageNum,
       @RequestParam(defaultValue = "10") int size,
@@ -305,7 +307,8 @@ public class AdminController {
     List<Object> filtered = ((List<?>) def.repository().findAll()).stream()
         .filter(item -> keywordMatch(item, keyword))
         .filter(item -> adminPlatformMatch(item, platform))
-        .sorted(this::compareSeqDesc)
+        .filter(item -> adminTypeMatch(item, type))
+        .sorted(this::compareListOrder)
         .map(item -> (Object) item)
         .toList();
     return ok(pageList(filtered, currentPage, currentSize));
@@ -446,14 +449,53 @@ public class AdminController {
     return Objects.equals(String.valueOf(value), platform) || containsCsv(String.valueOf(value), platform);
   }
 
-  private int compareSeqDesc(Object left, Object right) {
+  private boolean adminTypeMatch(Object entity, String type) {
+    if (isBlank(type)) return true;
+    if (entity instanceof CategoryEntity category) {
+      return Objects.equals(String.valueOf(category.getCategoryId()), type);
+    }
+    Object value = invoke(entity, "getType");
+    if (value == null || isBlank(String.valueOf(value))) return false;
+    return Objects.equals(String.valueOf(value), type) || containsCsv(String.valueOf(value), type);
+  }
+
+  /**
+   * 列表默认：更新时间递减、排序字段递减、id 递增。
+   * 分类表先按类型、分类、子分类聚在一起，便于后台合并单元格。
+   */
+  private int compareListOrder(Object left, Object right) {
+    if (left instanceof CategoryEntity leftCategory && right instanceof CategoryEntity rightCategory) {
+      int categoryCompare = Integer.compare(nullToZero(leftCategory.getCategoryId()), nullToZero(rightCategory.getCategoryId()));
+      if (categoryCompare != 0) return categoryCompare;
+      int typeCompare = Integer.compare(nullToZero(leftCategory.getTypeId()), nullToZero(rightCategory.getTypeId()));
+      if (typeCompare != 0) return typeCompare;
+      int subTypeCompare = Integer.compare(nullToZero(leftCategory.getSubTypeId()), nullToZero(rightCategory.getSubTypeId()));
+      if (subTypeCompare != 0) return subTypeCompare;
+    }
+    int timeCompare = Long.compare(updatedEpoch(right), updatedEpoch(left));
+    if (timeCompare != 0) return timeCompare;
     Integer leftSeq = intValue(invoke(left, "getSeq"));
     Integer rightSeq = intValue(invoke(right, "getSeq"));
     int seqCompare = Integer.compare(rightSeq == null ? 0 : rightSeq, leftSeq == null ? 0 : leftSeq);
     if (seqCompare != 0) return seqCompare;
     Long leftId = longValue(invoke(left, "getId"));
     Long rightId = longValue(invoke(right, "getId"));
-    return Long.compare(rightId == null ? 0L : rightId, leftId == null ? 0L : leftId);
+    return Long.compare(leftId == null ? 0L : leftId, rightId == null ? 0L : rightId);
+  }
+
+  private long updatedEpoch(Object entity) {
+    Object updatedTime = invoke(entity, "getUpdatedTime");
+    if (updatedTime instanceof Instant instant) return instant.toEpochMilli();
+    Object updatedAt = invoke(entity, "getUpdatedAt");
+    if (updatedAt instanceof Instant instant) return instant.toEpochMilli();
+    if (updatedAt instanceof LocalDateTime time) {
+      return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+    return 0L;
+  }
+
+  private int nullToZero(Integer value) {
+    return value == null ? 0 : value;
   }
 
   private Object convertId(Class<?> entityClass, String id) {

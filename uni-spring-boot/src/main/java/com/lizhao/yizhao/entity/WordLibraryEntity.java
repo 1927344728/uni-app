@@ -12,8 +12,8 @@ public class WordLibraryEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "grade_id")
-  private Integer gradeId;
+  @Column(name = "title", nullable = false, length = 255)
+  private String title;
 
   @Column(columnDefinition = "TEXT")
   private String words;
@@ -42,12 +42,12 @@ public class WordLibraryEntity {
     this.id = id;
   }
 
-  public Integer getGradeId() {
-    return gradeId;
+  public String getTitle() {
+    return title;
   }
 
-  public void setGradeId(Integer gradeId) {
-    this.gradeId = gradeId;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public String getWords() {

@@ -34,8 +34,10 @@ public class CommonController {
 
   @GetMapping("/getBannerList")
   @ResponseBody
-  public CommonResponse<List<BannerEntity>> getBannerList(@RequestParam(required = false) String platform) {
-    List<BannerEntity> banner = bannerRepository.findVisible(platform);
+  public CommonResponse<List<BannerEntity>> getBannerList(
+      @RequestParam(required = false) String type,
+      @RequestParam(required = false) String platform) {
+    List<BannerEntity> banner = bannerRepository.findVisible(type, platform);
     return CommonResponse.success(banner);
   }
 

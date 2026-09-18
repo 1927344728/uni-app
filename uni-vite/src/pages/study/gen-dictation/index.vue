@@ -4,7 +4,7 @@
       <view class="field">
         <text class="field_label">温馨提示</text>
         <textarea
-          class="textarea placeholder_light"
+          class="textarea"
           placeholder-class="textarea_placeholder"
           v-model="note"
           maxlength="100"
@@ -19,12 +19,12 @@
       <view class="field">
         <text class="field_label">听写词语</text>
         <textarea
-          class="textarea textarea_lg placeholder_light"
+          class="textarea textarea_lg"
           placeholder-class="textarea_placeholder"
           v-model="wordsInput"
           maxlength="500"
           :auto-height="false"
-          placeholder="请输入听写词语，总字数不超过 500。词语用逗号、顿号（中英均可）或空格分隔。例如：苹果,香蕉 书包、橡皮。"
+          placeholder="请输入听写词语，总字数不超过 500。词语用逗号、顿号（中英均可）或空格分隔。例如：苹果,香蕉 书包、橡皮"
         />
       </view>
 
@@ -50,6 +50,7 @@
 <script>
 import { PUBLIC_WEB_DOMAIN } from '@/common/js/variables.js'
 import { splitWords, joinWordsParam } from '@/common/js/dictation.js'
+import { saveGenDictationPayload } from './storage.js'
 
 const DEFAULT_TIPS = [
   '听写前请先准备好铅笔与田字格本，保持桌面整洁，书写时坐姿端正，注意笔顺与占格。',
@@ -79,6 +80,7 @@ export default {
       this.note = DEFAULT_TIPS[this.tipIndex]
     },
     clearAll () {
+      this.tipIndex = 0
       this.note = ''
       this.wordsInput = ''
       this.generatedUrl = ''
@@ -89,35 +91,46 @@ export default {
       const route = `/pages/study/dictation/index?note=${noteEncoded}&words=${wordsEncoded}`
       return `${PUBLIC_WEB_DOMAIN}${route}`
     },
-    buildDictationRoute () {
-      const wordsArr = splitWords(this.wordsInput)
-      if (!wordsArr.length) return ''
-      const words = joinWordsParam(wordsArr)
-      const noteEncoded = encodeURIComponent(String(this.note || ''))
-      const wordsEncoded = encodeURIComponent(words)
-      return `/pages/study/dictation/index?note=${noteEncoded}&words=${wordsEncoded}`
-    },
     goDictation () {
-      const route = this.buildDictationRoute()
-      if (!route) {
+      const wordsArr = splitWords(this.wordsInput)
+      if (!wordsArr.length) {
         uni.showToast({ title: '请至少输入一个词语', icon: 'none' })
         return
       }
-      uni.navigateTo({ url: route })
+      const saved = saveGenDictationPayload({
+        note: this.note,
+        words: joinWordsParam(wordsArr)
+      })
+      if (!saved) {
+        uni.showToast({ title: '打开听写页失败', icon: 'none' })
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/study/dictation/index?from=gen',
+        fail: () => {
+          uni.showToast({ title: '打开听写页失败', icon: 'none' })
+        }
+      })
     },
-    async copyGenerated () {
-      if (!this.generatedUrl) return
+    copyUrl (url) {
+      if (!url) return
       uni.setClipboardData({
-        data: this.generatedUrl,
+        data: url,
+        showToast: false,
         success: () => {
+          // #ifndef MP-WEIXIN
           uni.showToast({ title: '已复制链接', icon: 'none' })
+          // #endif
         },
         fail: () => {
           uni.showToast({ title: '复制失败', icon: 'none' })
         }
       })
     },
-    async generateAndCopy () {
+    copyGenerated () {
+      this.copyUrl(this.generatedUrl)
+    },
+    generateAndCopy () {
       const wordsArr = splitWords(this.wordsInput)
       if (!wordsArr.length) {
         uni.showToast({ title: '请至少输入一个词语', icon: 'none' })
@@ -127,19 +140,17 @@ export default {
       const words = joinWordsParam(wordsArr)
       const url = this.buildLink({ note: this.note, words })
       this.generatedUrl = url
-
-      uni.setClipboardData({
-        data: this.generatedUrl,
-        success: () => {
-          uni.showToast({ title: '已复制链接', icon: 'none' })
-        },
-        fail: () => {
-          uni.showToast({ title: '复制失败', icon: 'none' })
-        }
-      })
+      this.copyUrl(url)
     }
   }
 }
 </script>
 
 <style lang="less" src="./index.less" scoped></style>
+<style lang="less">
+/* placeholder-class 作用在原生占位节点上，必须是非 scoped 类名 */
+.textarea_placeholder {
+  color: #9ca3af;
+  font-size: 28rpx;
+}
+</style>
