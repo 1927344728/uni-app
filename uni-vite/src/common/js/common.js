@@ -63,6 +63,52 @@ export function getWindowSize () {
   return { width: 0, height: 0 }
 }
 
+function getSafeAreaBottom () {
+  try {
+    const info = typeof uni.getWindowInfo === 'function'
+      ? uni.getWindowInfo()
+      : uni.getSystemInfoSync()
+    return Number(info && info.safeAreaInsets && info.safeAreaInsets.bottom) || 0
+  } catch (e) {
+    return 0
+  }
+}
+
+export function scrollSelectorIntoView (vm, selector, options = {}) {
+  if (!selector) return
+  const duration = options.duration == null ? 300 : Number(options.duration)
+  const bottomGap = options.bottomGap == null ? 88 + getSafeAreaBottom() : Number(options.bottomGap)
+  const run = () => {
+    const query = uni.createSelectorQuery()
+    if (vm) {
+      try { query.in(vm) } catch (e) {}
+    }
+    query.select(selector).boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec((res) => {
+      const rect = res && res[0]
+      const scroll = res && res[1]
+      if (!rect || !scroll) return
+      const { height: windowHeight } = getWindowSize()
+      if (!windowHeight) return
+      const visibleBottom = windowHeight - (Number.isFinite(bottomGap) ? bottomGap : 88)
+      const visibleCenter = visibleBottom / 2
+      const itemCenter = rect.top + rect.height / 2
+      const delta = itemCenter - visibleCenter
+      if (Math.abs(delta) < 12) return
+      uni.pageScrollTo({
+        scrollTop: Math.max(0, Math.round(scroll.scrollTop + delta)),
+        duration: Number.isFinite(duration) ? duration : 300
+      })
+    })
+  }
+  if (vm && typeof vm.$nextTick === 'function') {
+    vm.$nextTick(run)
+  } else {
+    run()
+  }
+}
+
 export function stringifyQuery (params = {}) {
   return Object.keys(params)
     .filter(key => params[key] !== undefined && params[key] !== null)

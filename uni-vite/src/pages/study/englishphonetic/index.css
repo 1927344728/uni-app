@@ -4,7 +4,7 @@ page {
   background-color: #3494e6;
 }
 
-.pingyin_page {
+.englishphonetic_page {
   min-height: 100vh;
   max-width: 1200px;
   margin: 0 auto;
@@ -16,13 +16,13 @@ page {
   background: linear-gradient(135deg, #3494e6, #ec6ead);
 }
 
-.pingyin_page .pinyin_header {
+.englishphonetic_page .pinyin_header {
   text-align: center;
   margin-bottom: 24px;
   color: white;
 }
 
-.pingyin_page .pinyin_header .pinyin_title {
+.englishphonetic_page .pinyin_header .pinyin_title {
   display: block;
   margin-bottom: 12px;
   font-size: 28px;
@@ -30,21 +30,21 @@ page {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.pingyin_page .pinyin_header .description {
+.englishphonetic_page .pinyin_header .description {
   font-size: 16px;
   max-width: 800px;
   margin: 0 auto;
   opacity: 0.9;
 }
 
-.pingyin_page .pingyin_card {
+.englishphonetic_page .pingyin_card {
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   padding: 16px;
 }
 
-.pingyin_page .pingyin_card .pingyin_category {
+.englishphonetic_page .pingyin_card .pingyin_category {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -54,9 +54,8 @@ page {
   font-weight: bold;
 }
 
-.pingyin_page .pingyin_card .pingyin_category .button {
+.englishphonetic_page .pingyin_card .pingyin_category .button {
   flex: 1;
-  min-width: 72px;
   padding: 12px 6px;
   line-height: 16px;
   background: #f0f0f0;
@@ -67,27 +66,27 @@ page {
   white-space: nowrap;
 }
 
-.pingyin_page .pingyin_card .pingyin_category .button.active {
+.englishphonetic_page .pingyin_card .pingyin_category .button.active {
   background: #3494e6;
   color: white;
 }
 
-.pingyin_page .pingyin_card .pingyin_category .button:hover {
+.englishphonetic_page .pingyin_card .pingyin_category .button:hover {
   background: #ddd;
 }
 
-.pingyin_page .pingyin_card .pingyin_category .button.active:hover {
+.englishphonetic_page .pingyin_card .pingyin_category .button.active:hover {
   background: #2980b9;
 }
 
-.pingyin_page .pingyin_card .pingyin_search {
+.englishphonetic_page .pingyin_card .pingyin_search {
   display: flex;
   align-items: center;
   margin-top: 16px;
   height: 36px;
 }
 
-.pingyin_page .pingyin_card .pingyin_search .search_key {
+.englishphonetic_page .pingyin_card .pingyin_search .search_key {
   flex: 1;
   height: 34px;
   padding: 0 12px;
@@ -98,7 +97,7 @@ page {
   transition: border-color 0.3s;
 }
 
-.pingyin_page .pingyin_card .pingyin_search .search_button {
+.englishphonetic_page .pingyin_card .pingyin_search .search_button {
   width: 60px;
   height: 36px;
   font-size: 16px;
@@ -109,14 +108,14 @@ page {
   text-align: center;
 }
 
-.pingyin_page .pinyin_container {
+.englishphonetic_page .pinyin_container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
   gap: 15px;
   margin-top: 16px;
 }
 
-.pingyin_page .pinyin_container .item {
+.englishphonetic_page .pinyin_container .item {
   background: #f8f9ff;
   padding: 30px 15px;
   border-radius: 12px;
@@ -128,34 +127,34 @@ page {
   overflow: hidden;
 }
 
-.pingyin_page .pinyin_container .item .pinyin {
+.englishphonetic_page .pinyin_container .item .pinyin {
   font-size: 26px;
   font-weight: bold;
   color: #3494e6;
   margin-bottom: 8px;
 }
 
-.pingyin_page .pinyin_container .item .character {
+.englishphonetic_page .pinyin_container .item .character {
   font-size: 18px;
   font-weight: 500;
 }
 
-.pingyin_page .pinyin_container .item:hover {
+.englishphonetic_page .pinyin_container .item:hover {
   background: #e0e7ff;
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.pingyin_page .pinyin_container .item.active {
+.englishphonetic_page .pinyin_container .item.active {
   background: linear-gradient(135deg, #3494e6, #ec6ead);
 }
 
-.pingyin_page .pinyin_container .item.active .pinyin,
-.pingyin_page .pinyin_container .item.active .character {
+.englishphonetic_page .pinyin_container .item.active .pinyin,
+.englishphonetic_page .pinyin_container .item.active .character {
   color: white;
 }
 
-.pingyin_page .pinyin_controls {
+.englishphonetic_page .pinyin_controls {
   position: fixed;
   left: 0;
   right: 0;
@@ -170,7 +169,7 @@ page {
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.pingyin_page .pinyin_controls .button {
+.englishphonetic_page .pinyin_controls .button {
   flex: 2;
   background: #3494e6;
   border: none;
@@ -187,48 +186,48 @@ page {
   justify-content: center;
 }
 
-.pingyin_page .pinyin_controls .button:last-child {
+.englishphonetic_page .pinyin_controls .button:last-child {
   margin-right: 0;
 }
 
-.pingyin_page .pinyin_controls .button:hover {
+.englishphonetic_page .pinyin_controls .button:hover {
   background: #2980b9;
 }
 
-.pingyin_page .pinyin_controls .button.control_stop {
+.englishphonetic_page .pinyin_controls .button.control_stop {
   flex: 1;
   background: #e74c3c;
 }
 
-.pingyin_page .pinyin_controls .button.control_stop:hover {
+.englishphonetic_page .pinyin_controls .button.control_stop:hover {
   background: #c0392b;
 }
 
-.pingyin_page .pinyin_controls .button.control_all {
+.englishphonetic_page .pinyin_controls .button.control_all {
   background: #9b59b6;
 }
 
-.pingyin_page .pinyin_controls .button.control_all:hover {
+.englishphonetic_page .pinyin_controls .button.control_all:hover {
   background: #8e44ad;
 }
 
-.pingyin_page .pinyin_controls .button.disabled,
-.pingyin_page .pinyin_controls .button.disabled:hover {
+.englishphonetic_page .pinyin_controls .button.disabled,
+.englishphonetic_page .pinyin_controls .button.disabled:hover {
   color: white;
   background: #ccc;
 }
 
-.pingyin_page .pinyin_empty,
-.pingyin_page .pinyin_tips {
+.englishphonetic_page .pinyin_empty,
+.englishphonetic_page .pinyin_tips {
   padding: 4px 16px;
   color: #999;
   text-align: center;
 }
 
-.pingyin_page .pinyin_empty {
+.englishphonetic_page .pinyin_empty {
   margin-top: 24px;
 }
 
-.pingyin_page .pinyin_tips {
+.englishphonetic_page .pinyin_tips {
   margin-top: 24px;
 }

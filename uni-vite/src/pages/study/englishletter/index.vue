@@ -1,5 +1,5 @@
 <template>
-  <view class="pingyin_page">
+  <view class="englishletter_page">
     <view class="pinyin_header">
       <text class="pinyin_title">英文字母发音学习</text>
       <view class="description">点击任意字母即可播放发音</view>
@@ -24,7 +24,8 @@
       
       <view v-if="shownItems.length" class="pinyin_container">
         <view
-          v-for="item in shownItems"
+          v-for="(item, index) in shownItems"
+          :id="'study-item-' + index"
           :key="item.value"
           class="item"
           :class="{
@@ -73,6 +74,7 @@
 </template>
 
 <script>
+import { scrollSelectorIntoView } from '@/common/js/common.js'
 import { TTSService } from '@/common/tts'
 import { LETTERS } from './constant.js'
 
@@ -210,6 +212,10 @@ export default {
     isPlaySession (session) {
       return this.playingAll && session === this.playSession
     },
+    scrollCurrentIntoView (index) {
+      if (index == null || index < 0) return
+      scrollSelectorIntoView(this, `#study-item-${index}`)
+    },
     async recursionPlayAt (index, session) {
       const list = this.playQueue
       const current = list[index]
@@ -218,6 +224,7 @@ export default {
         return
       }
       this.currentValue = current.value
+      this.scrollCurrentIntoView(index)
       await this.play(current.value)
       if (!this.isPlaySession(session)) return
       const next = list[index + 1]
@@ -226,6 +233,7 @@ export default {
         return
       }
       this.currentValue = next.value
+      this.scrollCurrentIntoView(index + 1)
       this.playTimer = setTimeout(() => {
         if (!this.isPlaySession(session)) return
         this.recursionPlayAt(index + 1, session)

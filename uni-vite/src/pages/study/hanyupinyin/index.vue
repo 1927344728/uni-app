@@ -38,7 +38,8 @@
       
       <view v-if="pinyinCharacters.length" class="pinyin_container">
         <view
-          v-for="item in pinyinCharacters"
+          v-for="(item, index) in pinyinCharacters"
+          :id="'study-item-' + index"
           :key="item.value"
           class="item"
           :class="{
@@ -87,7 +88,7 @@
 </template>
 
 <script>
-import { COS_DOMAIN_NAME, encodeMediaUrl } from '@/common/js/common.js'
+import { COS_DOMAIN_NAME, encodeMediaUrl, scrollSelectorIntoView } from '@/common/js/common.js'
 import { PINYIN_TYPE_OPTIONS, PINYIN_CHARACTERS } from './constant.js'
 
 export default {
@@ -276,6 +277,10 @@ export default {
     isPlaySession (session) {
       return this.playingAll && session === this.playSession
     },
+    scrollCurrentIntoView (index) {
+      if (index == null || index < 0) return
+      scrollSelectorIntoView(this, `#study-item-${index}`)
+    },
     async recursionPlayAt (index, session) {
       const list = this.playQueue
       const current = list[index]
@@ -284,6 +289,7 @@ export default {
         return
       }
       this.pinyinValue = current.value
+      this.scrollCurrentIntoView(index)
       await this.play(current.value)
       if (!this.isPlaySession(session)) return
       const next = list[index + 1]
@@ -292,6 +298,7 @@ export default {
         return
       }
       this.pinyinValue = next.value
+      this.scrollCurrentIntoView(index + 1)
       this.playTimer = setTimeout(() => {
         if (!this.isPlaySession(session)) return
         this.recursionPlayAt(index + 1, session)

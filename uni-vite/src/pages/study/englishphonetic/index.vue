@@ -1,5 +1,5 @@
 <template>
-  <view class="pingyin_page">
+  <view class="englishphonetic_page">
     <view class="pinyin_header">
       <text class="pinyin_title">英文音标发音学习</text>
       <view class="description">点击任意音标即可播放发音</view>
@@ -38,7 +38,8 @@
       
       <view v-if="shownItems.length" class="pinyin_container">
         <view
-          v-for="item in shownItems"
+          v-for="(item, index) in shownItems"
+          :id="'study-item-' + index"
           :key="item.value"
           class="item"
           :class="{
@@ -87,11 +88,12 @@
 </template>
 
 <script>
-import { COS_DOMAIN_NAME, encodeMediaUrl } from '@/common/js/common.js'
+import { COS_DOMAIN_NAME, encodeMediaUrl, scrollSelectorIntoView } from '@/common/js/common.js'
 import { TTSService } from '@/common/tts'
 import { PHONETIC_TYPE_OPTIONS, PHONETIC_SYMBOLS } from './constant.js'
 
 const AUDIO_DIR = 'englishphonetic'
+const AUDIO_VER = '20260918'
 const UNIT_NAME = '音标'
 const TTS_OPTIONS = { lang: 'en-US' }
 const tts = new TTSService()
@@ -210,7 +212,7 @@ export default {
       return this.playTts(item, token)
     },
     playAudioFile (fileName, token) {
-      const src = encodeMediaUrl(`${COS_DOMAIN_NAME}/audio/${AUDIO_DIR}/${fileName}.mp3`)
+      const src = encodeMediaUrl(`${COS_DOMAIN_NAME}/audio/${AUDIO_DIR}/${fileName}.mp3?v=${AUDIO_VER}`)
       return new Promise((resolve) => {
         const ctx = this.ensureAudio()
         this.unbindAudio()
@@ -314,6 +316,10 @@ export default {
     isPlaySession (session) {
       return this.playingAll && session === this.playSession
     },
+    scrollCurrentIntoView (index) {
+      if (index == null || index < 0) return
+      scrollSelectorIntoView(this, `#study-item-${index}`)
+    },
     async recursionPlayAt (index, session) {
       const list = this.playQueue
       const current = list[index]
@@ -322,6 +328,7 @@ export default {
         return
       }
       this.currentValue = current.value
+      this.scrollCurrentIntoView(index)
       await this.play(current.value)
       if (!this.isPlaySession(session)) return
       const next = list[index + 1]
@@ -330,6 +337,7 @@ export default {
         return
       }
       this.currentValue = next.value
+      this.scrollCurrentIntoView(index + 1)
       this.playTimer = setTimeout(() => {
         if (!this.isPlaySession(session)) return
         this.recursionPlayAt(index + 1, session)
