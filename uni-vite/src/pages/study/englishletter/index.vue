@@ -73,11 +73,9 @@
 </template>
 
 <script>
-import { COS_DOMAIN_NAME, encodeMediaUrl } from '@/common/js/common.js'
 import { TTSService } from '@/common/tts'
 import { LETTERS } from './constant.js'
 
-const AUDIO_DIR = 'englishletter'
 const UNIT_NAME = '字母'
 const TTS_OPTIONS = { lang: 'en-US' }
 const tts = new TTSService()
@@ -87,14 +85,11 @@ export default {
     return {
       currentValue: 'A',
       searchKey: '',
-      audioContext: null,
       playingAll: false,
       playToken: 0,
       playSession: 0,
       playTimer: null,
-      playQueue: [],
-      playWait: null,
-      audioHandlers: null
+      playQueue: []
     }
   },
   computed: {
@@ -105,11 +100,9 @@ export default {
       return LETTERS.filter(c => {
         const value = (c.value || '').toLowerCase()
         const pair = `${value}${value}`
-        const audio = (c.audio || '').toLowerCase()
         const name = (c.name || '').toLowerCase()
         return value.startsWith(key)
           || pair.startsWith(key)
-          || audio.startsWith(key)
           || name.includes(key)
           || (c.name && c.name.includes(raw))
       })
@@ -125,7 +118,7 @@ export default {
     this.stop()
   },
   onUnload () {
-    this.stop({ destroy: true })
+    this.stop()
   },
   methods: {
     onClickSearch () {
@@ -149,66 +142,13 @@ export default {
       this.currentValue = item.value
       this.play(item.value)
     },
-    ensureAudio () {
-      if (this.audioContext) return this.audioContext
-      const ctx = uni.createInnerAudioContext()
-      try { ctx.obeyMuteSwitch = false } catch (e) {}
-      ctx.autoplay = false
-      this.audioContext = ctx
-      return ctx
-    },
-    unbindAudio () {
-      const ctx = this.audioContext
-      const handlers = this.audioHandlers
-      if (!ctx || !handlers) return
-      try { handlers.ended && ctx.offEnded(handlers.ended) } catch (e) {}
-      try { handlers.error && ctx.offError(handlers.error) } catch (e) {}
-      this.audioHandlers = null
-    },
-    settlePlay (ok) {
-      const wait = this.playWait
-      this.playWait = null
-      if (wait) wait(ok)
-    },
     speakText (item) {
       return item && item.value
     },
-    play (value) {
+    async play (value) {
       const item = LETTERS.find(c => c.value === value)
-      if (!item) return Promise.resolve(false)
-      this.settlePlay(false)
+      if (!item) return false
       const token = ++this.playToken
-      const fileName = (item.audio || '').trim()
-      if (fileName) return this.playAudioFile(fileName, token)
-      return this.playTts(item, token)
-    },
-    playAudioFile (fileName, token) {
-      const src = encodeMediaUrl(`${COS_DOMAIN_NAME}/audio/${AUDIO_DIR}/${fileName}.mp3`)
-      return new Promise((resolve) => {
-        const ctx = this.ensureAudio()
-        this.unbindAudio()
-        this.playWait = resolve
-        const done = (ok) => {
-          if (token !== this.playToken) return
-          this.unbindAudio()
-          this.settlePlay(ok)
-        }
-        const handlers = {
-          ended: () => done(true),
-          error: () => done(false)
-        }
-        this.audioHandlers = handlers
-        ctx.onEnded(handlers.ended)
-        ctx.onError(handlers.error)
-        ctx.src = src
-        try {
-          ctx.play()
-        } catch (e) {
-          done(false)
-        }
-      })
-    },
-    async playTts (item, token) {
       const text = this.speakText(item)
       if (!text) return false
       try {
@@ -229,30 +169,13 @@ export default {
         this.playTimer = null
       }
     },
-    stopAudio () {
-      this.unbindAudio()
-      if (!this.audioContext) return
-      try { this.audioContext.stop() } catch (e) {}
-    },
-    destroyAudio () {
-      this.stopAudio()
-      if (!this.audioContext) return
-      try { this.audioContext.destroy() } catch (e) {}
-      this.audioContext = null
-    },
-    stop (options = {}) {
+    stop () {
       this.playingAll = false
       this.playQueue = []
       this.playSession += 1
       this.playToken += 1
       this.clearPlayTimer()
-      this.settlePlay(false)
       try { tts.stop() } catch (e) {}
-      if (options.destroy) {
-        this.destroyAudio()
-      } else {
-        this.stopAudio()
-      }
     },
     currentPlay () {
       if (!this.currentValue) {
