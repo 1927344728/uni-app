@@ -2,14 +2,14 @@
   "expo": {
     "name": "一兆轻知",
     "slug": "yizhao",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "yizhao",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "buildNumber": "10006"
+      "buildNumber": "10007"
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +20,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.yizhao",
-      "versionCode": 10006
+      "versionCode": 10007
     },
     "web": {
       "output": "static",

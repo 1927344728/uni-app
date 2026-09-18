@@ -8,7 +8,7 @@ export const COL_HEIGHT_DIFF_MAX = 3
 export const INIT_WORD_COUNT = 10
 export const DROP_WORD_COUNT = 5
 /** 单字瓦片高度 / 列内间距 / 内边距（rpx），用于动态计算 board 高度 */
-export const TILE_HEIGHT_RPX = 96
+export const TILE_HEIGHT_RPX = 80
 export const TILE_GAP_RPX = 8
 export const COL_PAD_Y_RPX = 16
 export const BOARD_PAD_Y_RPX = 24
