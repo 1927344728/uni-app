@@ -851,7 +851,7 @@ export default function ResourcePage({ config }) {
         loading={loading}
         columns={columns}
         data={rows}
-        border={config.mergeCells ? { wrapper: true, cell: true } : undefined}
+        border={{ wrapper: true, cell: true }}
         scroll={{ x: true }}
         pagination={{
           current: page,

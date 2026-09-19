@@ -36,11 +36,13 @@ export default function Dashboard() {
           rowKey={(row) => String(row.userId || row.id || row.phone || row.userName || 'anonymous')}
           data={rows}
           pagination={false}
+          border={{ wrapper: true, cell: true }}
           expandedRowRender={(row) => (
             <Table
               rowKey="path"
               size="small"
               pagination={false}
+              border={{ wrapper: true, cell: true }}
               data={row.calls || []}
               columns={[
                 { title: '接口路径', dataIndex: 'path' },

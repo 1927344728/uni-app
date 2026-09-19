@@ -164,7 +164,8 @@ public class AuthorityFilter extends OncePerRequestFilter {
         Map.entry("banners", "ops.banners"),
         Map.entry("home-entries", "ops.homeEntries"),
         Map.entry("categories", "ops.categories"),
-        Map.entry("word-libraries", "ops.wordLibraries")
+        Map.entry("word-libraries", "ops.wordLibraries"),
+        Map.entry("files", "ops.files")
     );
     String suffix = path.substring("/api/admin/".length());
     String resource = suffix.split("/")[0];
@@ -172,12 +173,16 @@ public class AuthorityFilter extends OncePerRequestFilter {
   }
 
   private String buttonPermission(String page, String path, String method) {
-    if ("POST".equalsIgnoreCase(method)) return page + ".create";
+    if ("POST".equalsIgnoreCase(method)) {
+      if (path.endsWith("/upload")) return page + ".upload";
+      return page + ".create";
+    }
     if ("DELETE".equalsIgnoreCase(method)) return page + ".delete";
     if ("PUT".equalsIgnoreCase(method)) {
       if (path.endsWith("/password")) return page + ".resetPassword";
       if (path.endsWith("/role")) return page + ".changeRole";
       if (path.endsWith("/permissions")) return page + ".edit";
+      if (path.endsWith("/restore")) return page + ".restore";
       return page + ".edit";
     }
     return null;

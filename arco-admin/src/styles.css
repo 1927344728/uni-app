@@ -153,6 +153,27 @@ body {
   justify-content: center;
 }
 
+/* 后台表格：单元格边框 */
+.admin-content .arco-table-container {
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+}
+
+.admin-content .arco-table-th,
+.admin-content .arco-table-td {
+  border-right: 1px solid #e5e6eb;
+  border-bottom: 1px solid #e5e6eb;
+}
+
+.admin-content .arco-table-th:last-child,
+.admin-content .arco-table-td:last-child {
+  border-right: none;
+}
+
+.admin-content .arco-table-tr:last-child .arco-table-td {
+  border-bottom: none;
+}
+
 .admin-header {
   height: 56px;
   display: flex;
@@ -402,5 +423,175 @@ body {
   min-width: 96px;
   height: 40px;
   box-shadow: 0 8px 24px rgba(22, 93, 255, 0.28);
+}
+
+/* 预览弹层：容器自己写死可用高度，不依赖弹层 flex 链 */
+.arco-modal.file-preview-modal.is-video {
+  width: min(1280px, 94vw) !important;
+}
+
+.arco-modal.file-preview-modal.is-video .arco-modal-content,
+.arco-modal.file-preview-modal.is-image .arco-modal-content {
+  padding: 12px 16px;
+  overflow: hidden;
+}
+
+.file-preview-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  background: #f7f8fa;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.file-preview-body.is-image,
+.file-preview-body.is-video {
+  height: calc(80vh - 140px);
+  max-height: calc(80vh - 140px);
+}
+
+.file-preview-body.is-video {
+  background: #000;
+}
+
+.file-preview-body.is-audio {
+  height: auto;
+  min-height: 96px;
+  background: transparent;
+}
+
+.file-preview-fallback {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px;
+  color: #4e5969;
+  line-height: 1.6;
+}
+
+.file-preview-media {
+  display: block;
+  max-width: 100%;
+  max-height: calc(80vh - 140px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.file-preview-body.is-video .file-preview-media {
+  background: #000;
+}
+
+.file-preview-audio {
+  width: 100%;
+  margin: 24px 16px;
+}
+
+.file-upload-panel {
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #e5e6eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.file-upload-panel .arco-upload-trigger,
+.file-upload-panel .arco-upload {
+  width: 100%;
+  display: block;
+}
+
+.file-upload-panel .arco-upload-drag {
+  width: 100%;
+  padding: 0;
+  border: 1px dashed #c9cdd4;
+  border-radius: 8px;
+}
+
+.file-upload-drag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 112px;
+  padding: 20px 16px;
+  color: #4e5969;
+}
+
+.file-upload-drag-icon {
+  font-size: 28px;
+  color: #165dff;
+  margin-bottom: 4px;
+}
+
+.file-upload-drag-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d2129;
+}
+
+.file-upload-drag-desc {
+  font-size: 12px;
+  color: #86909c;
+}
+
+.file-upload-progress {
+  margin-top: 10px;
+  max-width: 420px;
+}
+
+.file-thumb {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.file-thumb-image {
+  background: #f2f3f5;
+}
+
+.file-thumb-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.file-thumb-mark {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0;
+}
+
+.file-thumb-mark.is-audio {
+  background: #00b42a;
+}
+
+.file-thumb-mark.is-video {
+  background: #f77234;
+}
+
+.file-thumb-mark.is-other {
+  background: #86909c;
+}
+
+.admin-content .arco-table-td.cell-nowrap,
+.admin-content .arco-table-td.cell-nowrap .arco-table-cell {
+  white-space: nowrap;
 }
 

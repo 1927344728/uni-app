@@ -175,6 +175,7 @@ export default function UserPage() {
         rowKey="id"
         loading={loading}
         data={rows}
+        border={{ wrapper: true, cell: true }}
         scroll={{ x: true }}
         pagination={{
           current: page,

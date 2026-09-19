@@ -11,6 +11,7 @@ import {
   IconSafe,
   IconSettings,
   IconStorage,
+  IconUpload,
   IconUser,
   IconVideoCamera,
 } from '@arco-design/web-react/icon';
@@ -20,6 +21,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-
 import { RESOURCES, ADMIN_ROLE_OPTIONS } from './config/resources';
 import { useAuth } from './state/auth';
 import Dashboard from './pages/Dashboard';
+import FilePage from './pages/FilePage';
 import Login from './pages/Login';
 import PermissionPage from './pages/PermissionPage';
 import ResourcePage from './pages/ResourcePage';
@@ -72,6 +74,8 @@ function AdminLayout() {
   const location = useLocation();
   const contentResources = RESOURCES.filter((item) => item.path.startsWith('/content') && canPage(item.pagePermission));
   const opsResources = RESOURCES.filter((item) => item.path.startsWith('/ops') && canPage(item.pagePermission));
+  const canFiles = canPage('ops.files');
+  const showOps = opsResources.length > 0 || canFiles;
   const [openKeys, setOpenKeys] = useState(() => {
     const key = siderOpenKey(location.pathname);
     return key ? [key] : [];
@@ -85,7 +89,9 @@ function AdminLayout() {
           ? '用户'
           : location.pathname === '/system/permissions'
             ? '权限管理'
-            : RESOURCES.find((item) => item.path === location.pathname)?.label || '管理后台';
+            : location.pathname === '/ops/files'
+              ? '文件上传'
+              : RESOURCES.find((item) => item.path === location.pathname)?.label || '管理后台';
     document.title = `${pageName}·一兆轻知`;
   }, [location.pathname]);
 
@@ -118,11 +124,16 @@ function AdminLayout() {
               ))}
             </Menu.SubMenu>
           )}
-          {opsResources.length > 0 && (
+          {showOps && (
             <Menu.SubMenu key="ops" title={<><IconSettings /> 运营</>}>
               {opsResources.map((item) => (
                 <Menu.Item key={item.path}>{iconMap[item.key]} {item.label}</Menu.Item>
               ))}
+              {canFiles && (
+                <Menu.Item key="/ops/files">
+                  <IconUpload /> 文件上传
+                </Menu.Item>
+              )}
             </Menu.SubMenu>
           )}
           {(canPage('system.users') || canPage('system.permissions')) && (
@@ -158,6 +169,7 @@ function AdminLayout() {
                 element={<Guard permission={item.pagePermission}><ResourcePage config={item} /></Guard>}
               />
             ))}
+            <Route path="/ops/files" element={<Guard permission="ops.files"><FilePage /></Guard>} />
             <Route path="/system/users" element={<Guard permission="system.users"><UserPage /></Guard>} />
             <Route path="/system/permissions" element={<Guard permission="system.permissions"><PermissionPage /></Guard>} />
             <Route path="*" element={<Result status="404" title="页面不存在" />} />

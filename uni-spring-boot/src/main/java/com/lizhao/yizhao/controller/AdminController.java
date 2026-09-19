@@ -290,7 +290,7 @@ public class AdminController {
     return ok(permissionPayload(id));
   }
 
-  @GetMapping("/{resource}")
+  @GetMapping("/{resource:^(?!files$).+}")
   public ResponseEntity<CommonResponse<Page<Object>>> list(
       @PathVariable String resource,
       @RequestParam(required = false) String keyword,
@@ -314,7 +314,7 @@ public class AdminController {
     return ok(pageList(filtered, currentPage, currentSize));
   }
 
-  @GetMapping("/{resource}/{id}")
+  @GetMapping("/{resource:^(?!files$).+}/{id}")
   public ResponseEntity<CommonResponse<Object>> detail(@PathVariable String resource, @PathVariable String id) {
     ResourceDef def = resources.get(resource);
     if (def == null) return fail(HttpStatus.NOT_FOUND, "资源不存在");
@@ -323,7 +323,7 @@ public class AdminController {
     return ok(entity.get());
   }
 
-  @PostMapping("/{resource}")
+  @PostMapping("/{resource:^(?!files$).+}")
   public ResponseEntity<CommonResponse<Object>> create(@PathVariable String resource, @RequestBody Map<String, Object> body) {
     ResourceDef def = resources.get(resource);
     if (def == null) return fail(HttpStatus.NOT_FOUND, "资源不存在");
@@ -334,7 +334,7 @@ public class AdminController {
     return ok(def.repository().save(entity));
   }
 
-  @PutMapping("/{resource}/{id}")
+  @PutMapping("/{resource:^(?!files$).+}/{id}")
   public ResponseEntity<CommonResponse<Object>> update(@PathVariable String resource, @PathVariable String id, @RequestBody Map<String, Object> body) {
     ResourceDef def = resources.get(resource);
     if (def == null) return fail(HttpStatus.NOT_FOUND, "资源不存在");
@@ -350,7 +350,7 @@ public class AdminController {
     return ok(def.repository().save(entity.get()));
   }
 
-  @DeleteMapping("/{resource}/{id}")
+  @DeleteMapping("/{resource:^(?!files$).+}/{id}")
   public ResponseEntity<CommonResponse<String>> delete(@PathVariable String resource, @PathVariable String id) {
     ResourceDef def = resources.get(resource);
     if (def == null) return fail(HttpStatus.NOT_FOUND, "资源不存在");

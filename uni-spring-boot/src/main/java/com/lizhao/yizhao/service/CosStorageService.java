@@ -50,6 +50,18 @@ public class CosStorageService {
     }
   }
 
+  public void delete(String objectKey) {
+    String key = sanitizeObjectKey(objectKey);
+    try {
+      getClient().deleteObject(properties.getBucket(), key);
+      logger.info("COS deleted, key={}", key);
+    } catch (CosException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new CosException("删除文件失败: " + e.getMessage(), e);
+    }
+  }
+
   public void upload(String objectKey, byte[] bytes, String contentType) {
     upload(objectKey, bytes, contentType, "public, max-age=86400");
   }

@@ -347,6 +347,14 @@ export const PAGE_PERMISSIONS = [
       return true;
     }).map((button) => ({ key: `${item.pagePermission}.${button.key}`, label: button.label })),
   })),
+  {
+    key: 'ops.files',
+    label: '文件上传',
+    buttons: [
+      { key: 'ops.files.upload', label: '上传' },
+      { key: 'ops.files.delete', label: '删除' },
+    ],
+  },
   { key: 'system.users', label: '用户', buttons: ['create', 'edit', 'delete', 'restore', 'resetPassword', 'changeRole'].map((key) => ({ key: `system.users.${key}`, label: BUTTONS.find((button) => button.key === key)?.label || key })) },
   { key: 'system.permissions', label: '权限管理', buttons: [{ key: 'system.permissions.edit', label: '编辑' }] },
 ];
